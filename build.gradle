@@ -1,0 +1,118 @@
+buildscript {
+    ext.kotlin_version = org.gradle.kotlin.dsl.KotlinDependencyExtensionsKt.embeddedKotlinVersion
+
+    repositories {
+        mavenLocal()
+        google()
+        mavenCentral()
+        jcenter()
+        maven { url 'https://plugins.gradle.org/m2/' }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+allprojects { project ->
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'signing'
+
+    group = 'com.didiglobal.booster'
+    version = '0.1.0'
+
+    repositories {
+        mavenLocal()
+        google()
+        mavenCentral()
+        jcenter()
+    }
+
+    javadoc {
+        failOnError = false
+    }
+
+    task packageJavadoc(type: Jar) {
+        classifier = 'javadoc'
+        from javadoc
+    }
+
+    task packageSources(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    artifacts {
+        archives packageJavadoc, packageSources
+    }
+
+    signing {
+        sign configurations.archives
+    }
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                pom.project {
+                    groupId project.group
+                    artifactId project.name
+                    version project.version
+                    description project.description ?: ''
+
+                    scm {
+                        connection 'scm:git:git://github.com/didi/booster.git'
+                        developerConnection 'scm:git:git@github.com:didi/booster.git'
+                        url 'https://github.com/didi/booster'
+                    }
+
+                    licenses {
+                        license {
+                            name 'Apache License'
+                            url 'https://www.apache.org/licenses/LICENSE-2.0'
+                        }
+                    }
+                }
+                pom.withXml { xml ->
+                    (['git', 'log', '--format=%aN %aE'].execute() | ['sort', '-u'].execute()).with {
+                        waitForOrKill(5000)
+                        if (0 == exitValue()) {
+                            def developers = xml.asNode().appendNode('developers')
+                            text.eachLine { line ->
+                                def author = line.split('\\s+')
+                                if (author.length > 1) {
+                                    developers.appendNode('developer').with {
+                                        appendNode('id', author[0])
+                                        appendNode('email', author[1])
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
+                    authentication(userName: OSSRH_USERNAME, password: OSSRH_PASSWORD)
+                }
+                snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
+                    authentication(userName: OSSRH_USERNAME, password: OSSRH_PASSWORD)
+                }
+            }
+        }
+    }
+
+    test {
+        testLogging {
+            events "passed", "skipped", "failed", "standardOut", "standardError"
+        }
+    }
+}
+
+subprojects { project ->
+    rootProject.clean.dependsOn project.clean
+}
+
+dependencies {
+    implementation project(':booster-gradle-plugin')
+}
+
+

@@ -1,0 +1,8 @@
+apply from: '../gradle/booster.gradle'
+
+dependencies {
+    compile project(':booster-android-gradle-v3_0')
+    compile project(':booster-android-gradle-v3_2')
+    compileOnly 'com.android.tools.build:gradle:3.0.0'
+    testCompileOnly 'com.android.tools.build:gradle:3.0.0'
+}

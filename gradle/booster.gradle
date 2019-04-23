@@ -1,0 +1,39 @@
+import com.didiglobal.booster.buildprops.BuildPropsPlugin
+
+apply plugin: 'kotlin'
+apply plugin: 'kotlin-kapt'
+apply plugin: BuildPropsPlugin
+
+sourceSets {
+    main {
+        java {
+            srcDirs += []
+        }
+        kotlin {
+            srcDirs += ['src/main/kotlin', 'src/main/java']
+        }
+    }
+    test {
+        java {
+            srcDirs += []
+        }
+        kotlin {
+            srcDirs += ['src/main/kotlin', 'src/main/java']
+        }
+    }
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+}

@@ -1,0 +1,5 @@
+dependencies {
+    compile project(':booster-task-artifact')
+    compile project(':booster-task-dependency')
+    compile project(':booster-task-permission')
+}

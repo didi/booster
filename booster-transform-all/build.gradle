@@ -1,0 +1,6 @@
+dependencies {
+    compile project(':booster-transform-bugfix-toast')
+    compile project(':booster-transform-lint')
+    compile project(':booster-transform-shrink')
+    compile project(':booster-transform-usage')
+}
