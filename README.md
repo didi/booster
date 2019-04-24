@@ -59,9 +59,9 @@ $ ./gradlew assembleRelease
 
 # Documentation | 文档
 
-About the details, please see [Wiki](./wiki)
+About the details, please see [Wiki](../../wiki)
 
-详见 [Wiki](./wiki)。
+详见 [Wiki](../../wiki)。
 
 # Contributing
 
