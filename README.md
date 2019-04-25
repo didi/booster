@@ -4,9 +4,16 @@
 ![Travis (.org)](https://img.shields.io/travis/didi/booster.svg?style=for-the-badge)
 ![GitHub contributors](https://img.shields.io/github/release/didi/booster.svg?style=for-the-badge)
 
-Booster is an easy-to-use, lightweight, powerful and extensible quality optimization toolkit designed specially for mobile applications. Using the dynamic discovering and loading mechanism, booster provides the ability for customizing. In other words, Booster is an quality optimization framework for mobile applications
+Booster is an easy-to-use, lightweight, powerful and extensible quality optimization toolkit designed specially for mobile applications. Using the dynamic discovering and loading mechanism, Booster provides the ability for customizing. In other words, Booster is a quality optimization framework for mobile applications.
 
 Booster 是专门为移动应用而设计的简单易用、轻量级、功能强大且可扩展的质量优化工具包，其通过动态发现和加载机制提供可扩展的能力，换言之，Booster 也是一个移动应用质量优化框架。
+
+## Features | 特性
+
+- Performance detection | 性能检测
+- Performance optimzation | 性能优化
+- Package size reduction | 包体积瘦身
+- Code instrumentation | 代码注入
 
 ## Prerequisite | 先决条件
 
