@@ -16,58 +16,27 @@ Booster 主要由 Transformer 和 Task 组成，Transformer 主要用于对字�
 
 ![Booster Architecture](https://github.com/didichuxing/booster/raw/master/assets/booster-architecture.png)
 
-## Features | 特性
+## What can Booster be used for? | Booster 能做什么？
 
-- Performance detection | 性能检测
-- Performance optimzation | 性能优化
-- Package size reduction | 包体积瘦身
-- Code instrumentation | 代码注入
+- Detecting performance issues | 检测性能问题
 
-### Built-in Transformers | 内置 Transformers
+  Potential performance issues could be found by using Booster, for example, calling APIs that may block the UI thread or main thread, such as I/O APIs.
 
-- [booster-transform-bugfix-toast](./booster-transform-bugfix-toast)
+  使用 Booster 可以发现潜在的性能问题，例如，在应用中调用可能阻塞 UI 线程或者主线程的 API，如：I/O API。
 
-    Used to fix system bug caused by Toast on Android 7.1.1 (N MR1)
+- Optimizing runtime performance | 优化运行时性能
 
-    用于修复 Android 7.1.1 (N MR1) 中 Toast 导致的系统错误
+  Thread management has always been a problem for developers, starting too many threads may cause OOM, fortunately, these issues can be solved by Booster.
 
-- [booster-transform-lint](./booster-transform-lint)
+  对于开发者来说，线程管理一直是个头疼的问题，过多的线程可能会导致内存不足，然而幸运的是，这些问题都能通过 Booster 来解决。
 
-    Used for potential performance issue detecting
+- Reducing app size | 为应用瘦身
 
-    用于检测潜在的性能问题
+  Such as image resources compression, constants removal, etc.
 
-- [booster-transform-shrink](./booster-transform-shrink)
+  像图片资源压缩、代码中常量的删除，都可以通过 Booster 来完成
 
-    Used for constants shrinking in class file
-
-    用于清除 class 文件中的常量（如：BuildConfig.class、R$id.class、R$layout.class 等）
-
-- [booster-transform-usage](./booster-transform-usage)
-
-    Used for API usage searching
-
-    用于扫描特定 API 的使用情况
-
-### Built-in Tasks | 内置 Tasks
-
-- [booster-task-artifact](./booster-task-artifact)
-
-    Provides tasks show all artifacts
-
-    提供显示 artifact 的 task
-
-- [booster-task-dependency](./booster-task-dependency)
-
-    Provides tasks to show the module identifier and file path of each dependency
-
-    提供显示所有依赖项的标识符及文件路径的 task
-
-- [booster-task-permission](./booster-task-permission)
-
-    Provides tasks to show Android permission usage of each dependency
-
-    提供显示所有依赖项使用的 Android 权限的 task
+- Other things you can imagine | 其它你能想像得到的
 
 ## Prerequisite | 先决条件
 
