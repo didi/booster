@@ -26,9 +26,15 @@ Booster 主要由 Transformer 和 Task 组成，Transformer 主要用于对字�
 
 - Optimizing runtime performance | 优化运行时性能
 
-  Thread management has always been a problem for developers, starting too many threads may cause OOM, fortunately, these issues can be solved by Booster.
+  Thread management has always been a problem for developers, especially the threads started by third-party SDKs, starting too many threads may cause OOM, fortunately, these issues can be solved by Booster.
 
-  对于开发者来说，线程管理一直是个头疼的问题，过多的线程可能会导致内存不足，然而幸运的是，这些问题都能通过 Booster 来解决。
+  对于开发者来说，线程管理一直是个头疼的问题，特别是第三方 SDK 中的线程，过多的线程可能会导致内存不足，然而幸运的是，这些问题都能通过 Booster 来解决。
+
+- Fixing system bugs | 修复系统错误
+
+  Such as fixing the crash caused by `Toast` globally on [Android API 25](https://developer.android.com/studio/releases/platforms#7.1).
+
+  例如全局性地修复 [Android API 25](https://developer.android.com/studio/releases/platforms#7.1) 版本中 `Toast` 导致的崩溃。
 
 - Reducing app size | 为应用瘦身
 
