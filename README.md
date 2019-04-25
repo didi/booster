@@ -1,4 +1,4 @@
-# Booster
+![Booster](assets/booster-logo.png)
 
 ![GitHub](https://img.shields.io/github/license/didi/booster.svg?style=for-the-badge)
 ![Travis (.org)](https://img.shields.io/travis/didi/booster.svg?style=for-the-badge)
