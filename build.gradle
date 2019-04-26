@@ -58,7 +58,9 @@ allprojects { project ->
                     groupId project.group
                     artifactId project.name
                     version project.version
-                    description project.description ?: ''
+                    name project.name
+                    url 'https://github.com/didi/booster'
+                    description project.description ?: project.name
 
                     scm {
                         connection 'scm:git:git://github.com/didi/booster.git'
