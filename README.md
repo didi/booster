@@ -2,7 +2,7 @@
 
 ![GitHub](https://img.shields.io/github/license/didi/booster.svg?style=for-the-badge)
 ![Travis (.org)](https://img.shields.io/travis/didi/booster.svg?style=for-the-badge)
-![GitHub contributors](https://img.shields.io/github/release/didi/booster.svg?style=for-the-badge)
+![GitHub release](https://img.shields.io/github/release/didi/booster.svg?style=for-the-badge)
 
 ## Overview | 概览
 
