@@ -25,9 +25,9 @@ open class BuildPropsGenerator : AbstractTask() {
     fun run() {
         val pkg = mkpkg("${project.group}.${project.name}")
         val path = "${pkg.replace(".", File.separator)}${File.separator}Build.java"
-        val revision = File(project.rootProject.projectDir, ".git${File.separator}logs${File.separator}HEAD").readText().let {
-            StringTokenizer(it).nextToken(1)
-        }
+        val revision = File(project.rootProject.projectDir, ".git${File.separator}logs${File.separator}HEAD").useLines {
+            StringTokenizer(it.last()).nextToken(1)
+        } ?: ""
 
         File(output, path).also {
             it.parentFile.mkdirs()
