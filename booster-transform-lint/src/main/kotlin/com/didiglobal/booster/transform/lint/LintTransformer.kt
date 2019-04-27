@@ -45,16 +45,17 @@ class LintTransformer : ClassTransformer {
     override fun onPostTransform(context: TransformContext) {
         val factory = SAXParserFactory.newInstance()
         val parser = factory.newSAXParser()
-        val manifest = context.artifacts.get(ArtifactManager.MERGED_MANIFESTS).single().file("AndroidManifest.xml")
-        val graph = builder.build()
-        val apis = if (context.hasProperty(PROPERTY_LINT_APIS)) context.lintApis else LINT_APIS
+        context.artifacts.get(ArtifactManager.MERGED_MANIFESTS).map {
+            val manifest = it.file("AndroidManifest.xml")
+            val graph = builder.build()
+            val apis = if (context.hasProperty(PROPERTY_LINT_APIS)) context.lintApis else LINT_APIS
 
-        ComponentHandler().let { handler ->
-            parser.parse(manifest, handler)
-            graph.analyse(handler.applications, APPLICATION_ENTRY_POINTS, apis)
-            graph.analyse(handler.activities, ACTIVITY_ENTRY_POINTS, apis)
-            graph.analyse(handler.services, SERVICE_ENTRY_POINTS, apis)
-
+            ComponentHandler().let { handler ->
+                parser.parse(manifest, handler)
+                graph.analyse(handler.applications, APPLICATION_ENTRY_POINTS, apis)
+                graph.analyse(handler.activities, ACTIVITY_ENTRY_POINTS, apis)
+                graph.analyse(handler.services, SERVICE_ENTRY_POINTS, apis)
+            }
         }
     }
 

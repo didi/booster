@@ -9,11 +9,9 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 
 class VariantScopeV32 {
 
@@ -85,11 +83,7 @@ class VariantScopeV32 {
 
     @NotNull
     static Collection<File> getFinalArtifactFiles(@NotNull final VariantScope scope, @NotNull final ArtifactType type) {
-        try {
-            return scope.getArtifacts().getFinalArtifactFiles(type).getFiles();
-        } catch (final RuntimeException e) {
-            return Collections.emptyList();
-        }
+        return scope.getArtifacts().getFinalArtifactFiles(type).getFiles();
     }
 
 }

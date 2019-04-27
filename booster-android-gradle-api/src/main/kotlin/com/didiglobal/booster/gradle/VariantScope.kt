@@ -6,17 +6,79 @@ import com.android.repository.Revision
 import java.io.File
 
 private val ANDROID_GRADLE_PLUGIN_VERSION = Revision.parseRevision(Version.ANDROID_GRADLE_PLUGIN_VERSION)
-private val GTE_V32 = ANDROID_GRADLE_PLUGIN_VERSION.major >= 3 && ANDROID_GRADLE_PLUGIN_VERSION.minor >= 2
-private val ALL_ARTIFACTS_GETTER = if (GTE_V32) VariantScopeV32::getAllArtifacts else VariantScopeV30::getAllArtifacts
-private val ALL_CLASSES_GETTER = if (GTE_V32) VariantScopeV32::getAllClasses else VariantScopeV30::getAllClasses
-private val APK_GETTER = if (GTE_V32) VariantScopeV32::getApk else VariantScopeV30::getApk
-private val JAVAC_GETTER = if (GTE_V32) VariantScopeV32::getJavac else VariantScopeV30::getJavac
-private val MERGED_ASSETS_GETTER = if (GTE_V32) VariantScopeV32::getMergedAssets else VariantScopeV30::getMergedAssets
-private val MERGED_MANIFESTS_GETTER = if (GTE_V32) VariantScopeV32::getMergedManifests else VariantScopeV30::getMergedManifests
-private val MERGED_RESOURCE_GETTER = if (GTE_V32) VariantScopeV32::getMergedRes else VariantScopeV30::getMergedRes
-private val PROCESSED_RES_GETTER = if (GTE_V32) VariantScopeV32::getProcessedRes else VariantScopeV30::getProcessedRes
-private val SYMBOL_LIST_GETTER = if (GTE_V32) VariantScopeV32::getSymbolList else VariantScopeV30::getSymbolList
-private val SYMBOL_LIST_WITH_PACKAGE_NAME_GETTER = if (GTE_V32) VariantScopeV32::getSymbolListWithPackageName else VariantScopeV30::getSymbolListWithPackageName
+private val GTE_V3X = ANDROID_GRADLE_PLUGIN_VERSION.major >= 3
+private val GTE_V33 = GTE_V3X && ANDROID_GRADLE_PLUGIN_VERSION.minor >= 3
+private val GTE_V32 = GTE_V3X && ANDROID_GRADLE_PLUGIN_VERSION.minor >= 2
+
+private val ALL_ARTIFACTS_GETTER =
+        when {
+            GTE_V33 -> VariantScopeV33::getAllArtifacts
+            GTE_V32 -> VariantScopeV32::getAllArtifacts
+            else -> VariantScopeV30::getAllArtifacts
+        }
+
+private val ALL_CLASSES_GETTER =
+        when {
+            GTE_V33 -> VariantScopeV33::getAllClasses
+            GTE_V32 -> VariantScopeV32::getAllClasses
+            else -> VariantScopeV30::getAllClasses
+        }
+
+private val APK_GETTER =
+        when {
+            GTE_V33 -> VariantScopeV33::getApk
+            GTE_V32 -> VariantScopeV32::getApk
+            else -> VariantScopeV30::getApk
+        }
+
+private val JAVAC_GETTER =
+        when {
+            GTE_V33 -> VariantScopeV33::getJavac
+            GTE_V32 -> VariantScopeV32::getJavac
+            else -> VariantScopeV30::getJavac
+        }
+
+private val MERGED_ASSETS_GETTER =
+        when {
+            GTE_V33 -> VariantScopeV33::getMergedAssets
+            GTE_V32 -> VariantScopeV32::getMergedAssets
+            else -> VariantScopeV30::getMergedAssets
+        }
+
+private val MERGED_MANIFESTS_GETTER =
+        when {
+            GTE_V33 -> VariantScopeV33::getMergedManifests
+            GTE_V32 -> VariantScopeV32::getMergedManifests
+            else -> VariantScopeV30::getMergedManifests
+        }
+
+private val MERGED_RESOURCE_GETTER =
+        when {
+            GTE_V33 -> VariantScopeV33::getMergedRes
+            GTE_V32 -> VariantScopeV32::getMergedRes
+            else -> VariantScopeV30::getMergedRes
+        }
+
+private val PROCESSED_RES_GETTER =
+        when {
+            GTE_V33 -> VariantScopeV33::getProcessedRes
+            GTE_V32 -> VariantScopeV32::getProcessedRes
+            else -> VariantScopeV30::getProcessedRes
+        }
+
+private val SYMBOL_LIST_GETTER =
+        when {
+            GTE_V33 -> VariantScopeV33::getSymbolList
+            GTE_V32 -> VariantScopeV32::getSymbolList
+            else -> VariantScopeV30::getSymbolList
+        }
+
+private val SYMBOL_LIST_WITH_PACKAGE_NAME_GETTER =
+        when {
+            GTE_V33 -> VariantScopeV33::getSymbolListWithPackageName
+            GTE_V32 -> VariantScopeV32::getSymbolListWithPackageName
+            else -> VariantScopeV30::getSymbolListWithPackageName
+        }
 
 /**
  * The output directory of APK files
