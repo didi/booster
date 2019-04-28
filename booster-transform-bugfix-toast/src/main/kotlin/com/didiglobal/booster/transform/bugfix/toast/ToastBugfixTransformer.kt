@@ -17,6 +17,10 @@ import org.objectweb.asm.tree.MethodInsnNode
 class ToastBugfixTransformer : ClassTransformer {
 
     override fun transform(context: TransformContext, klass: ClassNode): ClassNode {
+        if (klass.name == `TOAST'`) {
+            return klass
+        }
+
         klass.methods.forEach { method ->
             method.instructions?.iterator()?.asIterable()?.filterIsInstance(MethodInsnNode::class.java)?.filter {
                 it.owner == TOAST && it.name == "show" && it.desc == "()V"
