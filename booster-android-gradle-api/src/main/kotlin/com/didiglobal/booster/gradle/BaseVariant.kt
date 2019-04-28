@@ -32,10 +32,8 @@ val BaseVariant.variantData: BaseVariantData
 
 val BaseVariant.javaCompilerTask: Task
     get() = if (GTE_V33) {
-        println(ANDROID_GRADLE_PLUGIN_VERSION)
         this.javaCompileProvider.get()
     } else {
-        println(ANDROID_GRADLE_PLUGIN_VERSION)
         @Suppress("DEPRECATION")
         this.javaCompiler
     }
