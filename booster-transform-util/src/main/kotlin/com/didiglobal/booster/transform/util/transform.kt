@@ -3,8 +3,10 @@ package com.didiglobal.booster.transform.util
 import com.didiglobal.booster.kotlinx.parallelWalk
 import com.didiglobal.booster.kotlinx.redirect
 import com.didiglobal.booster.kotlinx.touch
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
+import java.io.OutputStream
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
 import java.util.jar.JarOutputStream
@@ -67,5 +69,25 @@ fun File.transform(output: File, transformer: (ByteArray) -> ByteArray = ::nop) 
 }
 
 fun InputStream.transform(transformer: (ByteArray) -> ByteArray): ByteArray {
-    return transformer(this.readBytes())
+    return transformer(readBytes())
+}
+
+const val DEFAULT_BUFFER_SIZE = 8 * 1024
+
+private fun InputStream.readBytes(estimatedSize: Int = DEFAULT_BUFFER_SIZE): ByteArray {
+    val buffer = ByteArrayOutputStream(Math.max(estimatedSize, this.available()))
+    copyTo(buffer)
+    return buffer.toByteArray()
+}
+
+private fun InputStream.copyTo(out: OutputStream, bufferSize: Int = DEFAULT_BUFFER_SIZE): Long {
+    var bytesCopied: Long = 0
+    val buffer = ByteArray(bufferSize)
+    var bytes = read(buffer)
+    while (bytes >= 0) {
+        out.write(buffer, 0, bytes)
+        bytesCopied += bytes
+        bytes = read(buffer)
+    }
+    return bytesCopied
 }
