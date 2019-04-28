@@ -5,11 +5,6 @@ import com.android.builder.model.Version
 import com.android.repository.Revision
 import java.io.File
 
-private val ANDROID_GRADLE_PLUGIN_VERSION = Revision.parseRevision(Version.ANDROID_GRADLE_PLUGIN_VERSION)
-private val GTE_V3X = ANDROID_GRADLE_PLUGIN_VERSION.major >= 3
-private val GTE_V33 = GTE_V3X && ANDROID_GRADLE_PLUGIN_VERSION.minor >= 3
-private val GTE_V32 = GTE_V3X && ANDROID_GRADLE_PLUGIN_VERSION.minor >= 2
-
 private val ALL_ARTIFACTS_GETTER =
         when {
             GTE_V33 -> VariantScopeV33::getAllArtifacts

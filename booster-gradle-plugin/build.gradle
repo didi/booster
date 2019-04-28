@@ -2,7 +2,7 @@ apply from: '../gradle/booster.gradle'
 
 dependencies {
     kapt 'com.google.auto.service:auto-service:1.0-rc4'
-    compile project(':booster-gradle-base')
+    compile project(':booster-android-gradle-api')
     compile project(':booster-task-spi')
     compile project(':booster-transform-spi')
     compile project(':booster-transform-util')

@@ -1,6 +1,7 @@
 package com.didiglobal.booster.gradle
 
 import com.android.build.gradle.BaseExtension
+import com.android.repository.Revision
 import org.gradle.api.Project
 
 /**
@@ -11,3 +12,11 @@ import org.gradle.api.Project
 inline fun <reified T : BaseExtension> Project.getAndroid(): T {
     return extensions.getByName("android") as T
 }
+
+/**
+ * The gradle version
+ */
+val Project.gradleVersion: Revision
+    get() {
+        return Revision.parseRevision(gradle.gradleVersion)
+    }

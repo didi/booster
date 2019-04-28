@@ -1,6 +1,7 @@
 package com.didiglobal.booster.task.dependency
 
 import com.android.build.gradle.api.BaseVariant
+import com.didiglobal.booster.gradle.javaCompilerTask
 import com.didiglobal.booster.gradle.scope
 import com.didiglobal.booster.task.spi.VariantProcessor
 import com.google.auto.service.AutoService
@@ -15,7 +16,7 @@ class DependencyVariantProcessor : VariantProcessor {
             it.variant = variant
             it.outputs.upToDateWhen { false }
         }.also {
-            variant.javaCompiler.dependsOn(it)
+            variant.javaCompilerTask.dependsOn(it)
             checkSnapshot.dependsOn(it)
         }
     }

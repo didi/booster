@@ -4,6 +4,7 @@ import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.api.InstallableVariantImpl
 import com.android.build.gradle.internal.scope.VariantScope
 import com.android.build.gradle.internal.variant.BaseVariantData
+import org.gradle.api.Task
 
 /**
  * The variant dependencies
@@ -28,3 +29,13 @@ val BaseVariant.scope: VariantScope
  */
 val BaseVariant.variantData: BaseVariantData
     get() = if (this is InstallableVariantImpl) this.variantData else javaClass.getDeclaredMethod("getVariantData").invoke(this) as BaseVariantData
+
+val BaseVariant.javaCompilerTask: Task
+    get() = if (GTE_V33) {
+        println(ANDROID_GRADLE_PLUGIN_VERSION)
+        this.javaCompileProvider.get()
+    } else {
+        println(ANDROID_GRADLE_PLUGIN_VERSION)
+        @Suppress("DEPRECATION")
+        this.javaCompiler
+    }
