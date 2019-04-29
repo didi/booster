@@ -1,29 +1,4 @@
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.8'
-    }
-}
-
 apply from: '../gradle/booster.gradle'
-apply plugin: 'com.google.protobuf'
-
-sourceSets {
-    main {
-        proto {
-            srcDirs += ['src/main/proto']
-        }
-    }
-    test {
-        proto {
-            srcDirs += ['src/main/proto']
-        }
-    }
-}
 
 dependencies {
     compile 'com.google.protobuf:protobuf-java:3.7.0-rc1'
