@@ -1,4 +1,4 @@
-package com.didiglobal.booster.aapt.parser
+package com.didiglobal.booster.aapt2
 
 import java.io.Closeable
 import java.io.File

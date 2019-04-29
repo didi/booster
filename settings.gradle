@@ -1,4 +1,3 @@
-include ':booster-aapt'
 include ':booster-aapt2'
 include ':booster-android-api'
 include ':booster-android-bugfix'

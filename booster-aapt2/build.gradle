@@ -2,5 +2,4 @@ apply from: '../gradle/booster.gradle'
 
 dependencies {
     compile 'com.google.protobuf:protobuf-java:3.7.0-rc1'
-    compile project(':booster-aapt')
 }

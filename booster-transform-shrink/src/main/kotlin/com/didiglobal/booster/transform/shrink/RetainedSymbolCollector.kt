@@ -2,7 +2,7 @@ package com.didiglobal.booster.transform.shrink
 
 import android.aapt.pb.internal.ResourcesInternal
 import com.android.aapt.Resources
-import com.didiglobal.booster.aapt.parser.BinaryParser
+import com.didiglobal.booster.aapt2.BinaryParser
 import com.didiglobal.booster.aapt2.MAGIC
 import com.didiglobal.booster.aapt2.RES_FILE
 import com.didiglobal.booster.kotlinx.stackTraceAsString
