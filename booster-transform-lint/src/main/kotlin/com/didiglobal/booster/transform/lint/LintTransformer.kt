@@ -3,7 +3,6 @@ package com.didiglobal.booster.transform.lint
 import com.didiglobal.booster.kotlinx.MAGENTA
 import com.didiglobal.booster.kotlinx.RESET
 import com.didiglobal.booster.kotlinx.asIterable
-import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
@@ -45,8 +44,7 @@ class LintTransformer : ClassTransformer {
     override fun onPostTransform(context: TransformContext) {
         val factory = SAXParserFactory.newInstance()
         val parser = factory.newSAXParser()
-        context.artifacts.get(ArtifactManager.MERGED_MANIFESTS).map {
-            val manifest = it.file("AndroidManifest.xml")
+        context.artifacts.get(ArtifactManager.MERGED_MANIFESTS).map { manifest ->
             val graph = builder.build()
             val apis = if (context.hasProperty(PROPERTY_LINT_APIS)) context.lintApis else LINT_APIS
 

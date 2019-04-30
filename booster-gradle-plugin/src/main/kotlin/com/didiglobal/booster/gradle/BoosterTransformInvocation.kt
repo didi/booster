@@ -1,5 +1,6 @@
 package com.didiglobal.booster.gradle
 
+import com.android.SdkConstants
 import com.android.build.api.transform.Context
 import com.android.build.api.transform.Format
 import com.android.build.api.transform.SecondaryInput
@@ -17,6 +18,7 @@ import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.TransformListener
 import com.didiglobal.booster.transform.Transformer
 import com.didiglobal.booster.transform.util.transform
+import com.didiglobal.booster.util.FileFinder
 import java.io.File
 import java.util.ServiceLoader
 import java.util.concurrent.ForkJoinPool
@@ -90,8 +92,20 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
             ArtifactManager.JAVAC -> return variant.scope.javac
             ArtifactManager.MERGED_ASSETS -> return variant.scope.mergedAssets
             ArtifactManager.MERGED_RES -> return variant.scope.mergedRes
-            ArtifactManager.MERGED_MANIFESTS -> return variant.scope.mergedManifests
-            ArtifactManager.PROCESSED_RES -> return variant.scope.processedRes
+            ArtifactManager.MERGED_MANIFESTS -> {
+                ForkJoinPool().apply {
+                    return invoke(FileFinder(variant.scope.mergedManifests.toTypedArray()) {
+                        SdkConstants.FN_ANDROID_MANIFEST_XML == it.name
+                    })
+                }.shutdown()
+            }
+            ArtifactManager.PROCESSED_RES -> {
+                ForkJoinPool().apply {
+                    return invoke(FileFinder(variant.scope.processedRes) {
+                        it.name.startsWith(SdkConstants.FN_RES_BASE) && it.name.endsWith(SdkConstants.EXT_RES)
+                    })
+                }.shutdown()
+            }
             ArtifactManager.SYMBOL_LIST -> return variant.scope.symbolList
             ArtifactManager.SYMBOL_LIST_WITH_PACKAGE_NAME -> return variant.scope.symbolListWithPackageName
         }

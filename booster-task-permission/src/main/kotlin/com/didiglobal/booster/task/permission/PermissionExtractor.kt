@@ -1,5 +1,6 @@
 package com.didiglobal.booster.task.permission
 
+import com.android.SdkConstants
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactScope.ALL
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactType.AAR
@@ -32,7 +33,7 @@ internal open class PermissionExtractor : DefaultTask() {
     fun run() {
         variant.scope.getArtifactFileCollection(RUNTIME_CLASSPATH, ALL, AAR).files.forEach { aar ->
             ZipFile(aar).use { zip ->
-                zip.getEntry("AndroidManifest.xml")?.let { entry ->
+                zip.getEntry(SdkConstants.FN_ANDROID_MANIFEST_XML)?.let { entry ->
                     zip.getInputStream(entry).use { source ->
                         PermissionUsageHandler().also { handler ->
                             factory.newSAXParser().parse(source, handler)
