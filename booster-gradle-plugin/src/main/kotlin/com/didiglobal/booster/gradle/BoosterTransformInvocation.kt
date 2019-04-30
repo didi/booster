@@ -4,7 +4,10 @@ import com.android.SdkConstants
 import com.android.build.api.transform.Context
 import com.android.build.api.transform.Format
 import com.android.build.api.transform.SecondaryInput
-import com.android.build.api.transform.Status
+import com.android.build.api.transform.Status.ADDED
+import com.android.build.api.transform.Status.CHANGED
+import com.android.build.api.transform.Status.NOTCHANGED
+import com.android.build.api.transform.Status.REMOVED
 import com.android.build.api.transform.TransformInput
 import com.android.build.api.transform.TransformInvocation
 import com.android.build.api.transform.TransformOutputProvider
@@ -127,17 +130,17 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
         }
     }
 
+    @Suppress("NON_EXHAUSTIVE_WHEN")
     internal fun doIncrementalTransform() {
         this.inputs.parallelStream().forEach { input ->
-            input.jarInputs.parallelStream().filter { it.status != Status.NOTCHANGED }.forEach { jarInput ->
-                if (Status.REMOVED == jarInput.status || Status.CHANGED == jarInput.status) {
-                    jarInput.file.delete()
-                }
-
-                if (Status.ADDED == jarInput.status || Status.CHANGED == jarInput.status) {
-                    val root = outputProvider.getContentLocation(jarInput.name, jarInput.contentTypes, jarInput.scopes, Format.JAR)
-                    jarInput.file.transform(root) { bytecode ->
-                        bytecode.transform(this)
+            input.jarInputs.parallelStream().filter { it.status != NOTCHANGED }.forEach { jarInput ->
+                when (jarInput.status) {
+                    REMOVED -> jarInput.file.delete()
+                    CHANGED, ADDED -> {
+                        val root = outputProvider.getContentLocation(jarInput.name, jarInput.contentTypes, jarInput.scopes, Format.JAR)
+                        jarInput.file.transform(root) { bytecode ->
+                            bytecode.transform(this)
+                        }
                     }
                 }
             }
@@ -145,19 +148,17 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
             input.directoryInputs.parallelStream().forEach { dirInput ->
                 dirInput.changedFiles.ifNotEmpty {
                     it.forEach { file, status ->
-                        if (Status.REMOVED == status || Status.CHANGED == status) {
-                            file.delete()
-                        }
-
-                        if (Status.ADDED == status || Status.CHANGED == status) {
-                            val root = outputProvider.getContentLocation(dirInput.name, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY)
-                            val path = file.absolutePath.substring(dirInput.file.absolutePath.length + File.separator.length)
-                            file.transform(File(root, path)) { bytecode ->
-                                bytecode.transform(this)
+                        when (status) {
+                            REMOVED -> file.delete()
+                            ADDED, CHANGED -> {
+                                val root = outputProvider.getContentLocation(dirInput.name, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY)
+                                val path = file.absolutePath.substring(dirInput.file.absolutePath.length + File.separator.length)
+                                file.transform(File(root, path)) { bytecode ->
+                                    bytecode.transform(this)
+                                }
                             }
                         }
                     }
-
                 }
             }
         }
