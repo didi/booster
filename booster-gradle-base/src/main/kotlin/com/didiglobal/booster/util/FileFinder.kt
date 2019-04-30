@@ -1,6 +1,7 @@
 package com.didiglobal.booster.util
 
 import java.io.File
+import java.util.concurrent.ForkJoinPool
 import java.util.concurrent.RecursiveTask
 
 /**
@@ -8,7 +9,7 @@ import java.util.concurrent.RecursiveTask
  *
  * @author johnsonlee
  */
-class FileFinder(private val roots: Collection<File>, private val filter: (File) -> Boolean) : RecursiveTask<Collection<File>>() {
+class FileFinder(private val roots: Collection<File>, private val filter: (File) -> Boolean = { true }) : RecursiveTask<Collection<File>>() {
 
     constructor(roots: Array<File>, filter: (File) -> Boolean) : this(roots.toList(), filter)
 
@@ -33,6 +34,15 @@ class FileFinder(private val roots: Collection<File>, private val filter: (File)
         }
 
         return result + tasks.flatMap { it.join() }
+    }
+
+    fun execute(): Collection<File> {
+        val pool = ForkJoinPool()
+        try {
+            return pool.invoke(this)
+        } finally {
+            pool.shutdown()
+        }
     }
 
 }

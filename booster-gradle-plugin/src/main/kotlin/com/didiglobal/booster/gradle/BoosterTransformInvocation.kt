@@ -17,6 +17,8 @@ import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactTyp
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH
 import com.didiglobal.booster.kotlinx.ifNotEmpty
 import com.didiglobal.booster.transform.ArtifactManager
+import com.didiglobal.booster.transform.Klass
+import com.didiglobal.booster.transform.KlassPool
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.TransformListener
 import com.didiglobal.booster.transform.Transformer
@@ -53,6 +55,8 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
     override val runtimeClasspath = delegate.runtimeClasspath
 
     override val artifacts = this
+
+    override val klassPool = KlassPoolImpl(classLoader)
 
     override fun hasProperty(name: String): Boolean {
         return project.hasProperty(name)
@@ -95,20 +99,12 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
             ArtifactManager.JAVAC -> return variant.scope.javac
             ArtifactManager.MERGED_ASSETS -> return variant.scope.mergedAssets
             ArtifactManager.MERGED_RES -> return variant.scope.mergedRes
-            ArtifactManager.MERGED_MANIFESTS -> {
-                ForkJoinPool().apply {
-                    return invoke(FileFinder(variant.scope.mergedManifests.toTypedArray()) {
-                        SdkConstants.FN_ANDROID_MANIFEST_XML == it.name
-                    })
-                }.shutdown()
-            }
-            ArtifactManager.PROCESSED_RES -> {
-                ForkJoinPool().apply {
-                    return invoke(FileFinder(variant.scope.processedRes) {
-                        it.name.startsWith(SdkConstants.FN_RES_BASE) && it.name.endsWith(SdkConstants.EXT_RES)
-                    })
-                }.shutdown()
-            }
+            ArtifactManager.MERGED_MANIFESTS -> return FileFinder(variant.scope.mergedManifests) {
+                SdkConstants.FN_ANDROID_MANIFEST_XML == it.name
+            }.execute()
+            ArtifactManager.PROCESSED_RES -> return FileFinder(variant.scope.processedRes) {
+                it.name.startsWith(SdkConstants.FN_RES_BASE) && it.name.endsWith(SdkConstants.EXT_RES)
+            }.execute()
             ArtifactManager.SYMBOL_LIST -> return variant.scope.symbolList
             ArtifactManager.SYMBOL_LIST_WITH_PACKAGE_NAME -> return variant.scope.symbolListWithPackageName
         }
@@ -168,6 +164,44 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
         return transformers.fold(this) { bytes, transformer ->
             transformer.transform(invocation, bytes)
         }
+    }
+
+    internal class KlassPoolImpl(val classLoader: ClassLoader) : KlassPool {
+
+        private val klasses = mutableMapOf<String, Klass>()
+
+        override fun get(name: String): Klass {
+            return klasses.getOrDefault(name, findClass(name))
+        }
+
+        internal fun findClass(name: String): Klass {
+            return try {
+                LoadedKlass(this, Class.forName(name, false, classLoader)).also {
+                    klasses[name] = it
+                }
+            } catch (e: Throwable) {
+                DefaultKlass(name)
+            }
+        }
+
+    }
+
+    internal class DefaultKlass(name: String) : Klass {
+
+        override val qualifiedName: String = name
+
+        override fun isAssignableFrom(type: String) = false
+
+    }
+
+    internal class LoadedKlass(val pool: KlassPoolImpl, val clazz: Class<out Any>) : Klass {
+
+        override val qualifiedName: String = clazz.name
+
+        override fun isAssignableFrom(type: String) = isAssignableForm(pool.findClass(type))
+
+        private fun isAssignableForm(klass: Klass) = klass is LoadedKlass && clazz.isAssignableFrom(klass.clazz)
+
     }
 
 }

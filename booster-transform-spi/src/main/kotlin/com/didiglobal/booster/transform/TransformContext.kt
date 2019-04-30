@@ -51,6 +51,11 @@ interface TransformContext {
     val artifacts: ArtifactManager
 
     /**
+     * The class pool
+     */
+    val klassPool: KlassPool
+
+    /**
      * Check if has the specified property. Generally, the property is equivalent to project property
      *
      * @param name the name of property

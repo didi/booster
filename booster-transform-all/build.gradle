@@ -2,6 +2,7 @@ dependencies {
     compile project(':booster-transform-lint')
     compile project(':booster-transform-shared-preferences')
     compile project(':booster-transform-shrink')
+    compile project(':booster-transform-thread')
     compile project(':booster-transform-toast')
     compile project(':booster-transform-usage')
 }
