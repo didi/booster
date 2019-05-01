@@ -9,6 +9,10 @@ import java.util.Objects
  */
 class CallGraph private constructor(val edges: Map<Node, Set<Node>>) : Iterable<CallGraph.Edge> {
 
+    companion object {
+        val ROOT = Node()
+    }
+
     override fun iterator(): Iterator<Edge> {
         return edges.map { pair ->
             pair.value.map {
@@ -18,6 +22,8 @@ class CallGraph private constructor(val edges: Map<Node, Set<Node>>) : Iterable<
     }
 
     class Node(val type: String, val name: String, val desc: String) {
+
+        internal constructor(): this("", "", "")
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -40,14 +46,16 @@ class CallGraph private constructor(val edges: Map<Node, Set<Node>>) : Iterable<
         }
 
         companion object {
-            fun from(s: String): Node {
-                val lbrace = s.lastIndexOf('(')
-                val dot = s.lastIndexOf('.', lbrace)
-                if (lbrace < 0 || dot < 0) {
+
+            fun valueOf(s: String): Node {
+                val lp = s.lastIndexOf('(')
+                val dot = s.lastIndexOf('.', lp)
+                if (lp < 0 || dot < 0) {
                     throw IllegalArgumentException(s)
                 }
-                return Node(s.substring(0, dot), s.substring(dot + 1, lbrace), s.substring(lbrace))
+                return Node(s.substring(0, dot), s.substring(dot + 1, lp), s.substring(lp))
             }
+
         }
     }
 
