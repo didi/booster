@@ -10,8 +10,8 @@ interface KlassPool {
     /**
      * Returns an instance [Klass]
      *
-     * @param name the qualified name of class
+     * @param type the qualified name of class
      */
-    fun get(name: String): Klass
+    fun get(type: String): Klass
 
 }
