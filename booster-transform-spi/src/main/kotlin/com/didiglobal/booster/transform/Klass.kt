@@ -14,7 +14,16 @@ interface Klass {
 
     /**
      * Tests if this class is assignable from the specific type
+     *
+     * @param type the qualified name of type
      */
     fun isAssignableFrom(type: String): Boolean
+
+    /**
+     * Tests if this class is assignable from the specific type
+     *
+     * @param klass the [Klass] object to be checked
+     */
+    fun isAssignableFrom(klass: Klass): Boolean
 
 }

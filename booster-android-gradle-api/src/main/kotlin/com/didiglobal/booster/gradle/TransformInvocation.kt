@@ -51,13 +51,3 @@ val TransformInvocation.compileClasspath: Collection<File>
  */
 val TransformInvocation.runtimeClasspath: Collection<File>
     get() = compileClasspath + project.getAndroid<BaseExtension>().bootClasspath
-
-/**
- * Returns the classloader of the specified invocation
- *
- * @author johnsonlee
- */
-val TransformInvocation.classLoader: ClassLoader
-    get() = URLClassLoader(runtimeClasspath.map {
-        it.toURI().toURL()
-    }.toTypedArray())

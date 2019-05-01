@@ -25,6 +25,7 @@ import com.didiglobal.booster.transform.Transformer
 import com.didiglobal.booster.transform.util.transform
 import com.didiglobal.booster.util.FileFinder
 import java.io.File
+import java.net.URLClassLoader
 import java.util.ServiceLoader
 import java.util.concurrent.ForkJoinPool
 
@@ -56,7 +57,7 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
 
     override val artifacts = this
 
-    override val klassPool = KlassPoolImpl(classLoader)
+    override val klassPool = KlassPoolImpl(runtimeClasspath)
 
     override fun hasProperty(name: String): Boolean {
         return project.hasProperty(name)
@@ -166,11 +167,14 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
         }
     }
 
-    internal class KlassPoolImpl(val classLoader: ClassLoader) : KlassPool {
+    internal class KlassPoolImpl(private val classpath: Collection<File>) : KlassPool {
+
+        private val classLoader = URLClassLoader(classpath.map { it.toURI().toURL() }.toTypedArray())
 
         private val klasses = mutableMapOf<String, Klass>()
 
-        override fun get(name: String): Klass {
+        override fun get(type: String): Klass {
+            val name = type.replace('/', '.')
             return klasses.getOrDefault(name, findClass(name))
         }
 
@@ -184,6 +188,10 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
             }
         }
 
+        override fun toString(): String {
+            return "classpath: $classpath"
+        }
+
     }
 
     internal class DefaultKlass(name: String) : Klass {
@@ -192,15 +200,17 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
 
         override fun isAssignableFrom(type: String) = false
 
+        override fun isAssignableFrom(klass: Klass) = klass.qualifiedName == this.qualifiedName
+
     }
 
     internal class LoadedKlass(val pool: KlassPoolImpl, val clazz: Class<out Any>) : Klass {
 
         override val qualifiedName: String = clazz.name
 
-        override fun isAssignableFrom(type: String) = isAssignableForm(pool.findClass(type))
+        override fun isAssignableFrom(type: String) = isAssignableFrom(pool.findClass(type.replace('/', '.')))
 
-        private fun isAssignableForm(klass: Klass) = klass is LoadedKlass && clazz.isAssignableFrom(klass.clazz)
+        override fun isAssignableFrom(klass: Klass) = klass is LoadedKlass && clazz.isAssignableFrom(klass.clazz)
 
     }
 
