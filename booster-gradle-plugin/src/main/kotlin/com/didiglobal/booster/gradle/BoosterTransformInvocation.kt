@@ -174,7 +174,7 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
         private val klasses = mutableMapOf<String, Klass>()
 
         override fun get(type: String): Klass {
-            val name = type.replace('/', '.')
+            val name = normalize(type)
             return klasses.getOrDefault(name, findClass(name))
         }
 
@@ -208,10 +208,16 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
 
         override val qualifiedName: String = clazz.name
 
-        override fun isAssignableFrom(type: String) = isAssignableFrom(pool.findClass(type.replace('/', '.')))
+        override fun isAssignableFrom(type: String) = isAssignableFrom(pool.findClass(normalize(type)))
 
         override fun isAssignableFrom(klass: Klass) = klass is LoadedKlass && clazz.isAssignableFrom(klass.clazz)
 
     }
 
+}
+
+private fun normalize(type: String) = if (type.contains('/')) {
+    type.replace('/', '.')
+} else {
+    type
 }
