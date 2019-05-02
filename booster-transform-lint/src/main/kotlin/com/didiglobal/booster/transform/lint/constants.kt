@@ -2,16 +2,23 @@ package com.didiglobal.booster.transform.lint
 
 import com.didiglobal.booster.transform.lint.graph.CallGraph.Node
 
-internal val SENSITIVE_WORDS = arrayOf("activity", "fragment", "dialog", "view", "widget", "layout")
+internal val SENSITIVES = arrayOf(
+        "activity",
+        "fragment",
+        "dialog",
+        "view",
+        "widget",
+        "layout"
+)
 
 internal val IGNORES = arrayOf(
-        "android/support/",
-        "androidx/",
-        "android/arch/",
-        "android/car/",
-        "android/databinding/",
-        "com/android/",
-        "com/google/android/"
+        "android/support/*",
+        "androidx/*",
+        "android/arch/*",
+        "android/car/*",
+        "android/databinding/*",
+        "com/android/*",
+        "com/google/android/*"
 )
 
 /**

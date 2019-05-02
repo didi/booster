@@ -31,6 +31,11 @@ interface TransformContext {
     val temporaryDir: File
 
     /**
+     * The reports directory
+     */
+    val reportsDir: File
+
+    /**
      * The executor service
      */
     val executor: ExecutorService

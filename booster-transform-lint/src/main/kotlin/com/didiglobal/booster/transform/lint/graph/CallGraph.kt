@@ -7,10 +7,29 @@ import java.util.Objects
  *
  * @author johnsonlee
  */
-class CallGraph private constructor(val edges: Map<Node, Set<Node>>) : Iterable<CallGraph.Edge> {
+class CallGraph private constructor(private val edges: Map<Node, Set<Node>>, val title: String = "") : Iterable<CallGraph.Edge> {
 
     companion object {
-        val ROOT = Node()
+        /**
+         * A virtual root node of call graph
+         */
+        val ROOT = Node("*", "*", "*")
+    }
+
+    val nodes: Collection<Node>
+        get() = this.map {
+            listOf(it.from, it.to)
+        }.flatten().toSet()
+
+    operator fun get(node: Node): Set<Node> = edges[node] ?: emptySet()
+
+    /**
+     * Print this call graph
+     *
+     * @param printer An instance of [CallGraphPrinter]
+     */
+    fun print(printer: CallGraphPrinter) {
+        printer.print(this)
     }
 
     override fun iterator(): Iterator<Edge> {
@@ -22,8 +41,6 @@ class CallGraph private constructor(val edges: Map<Node, Set<Node>>) : Iterable<
     }
 
     class Node(val type: String, val name: String, val desc: String) {
-
-        internal constructor(): this("", "", "")
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -37,13 +54,9 @@ class CallGraph private constructor(val edges: Map<Node, Set<Node>>) : Iterable<
             return type == other.type && name == other.name && desc == other.desc
         }
 
-        override fun hashCode(): Int {
-            return Objects.hash(type, name, desc)
-        }
+        override fun hashCode() = Objects.hash(type, name, desc)
 
-        override fun toString(): String {
-            return "$type.$name$desc"
-        }
+        override fun toString() = "$type.$name$desc"
 
         companion object {
 
@@ -61,9 +74,7 @@ class CallGraph private constructor(val edges: Map<Node, Set<Node>>) : Iterable<
 
     class Edge(val from: Node, val to: Node) {
 
-        override fun hashCode(): Int {
-            return Objects.hash(from, to)
-        }
+        override fun hashCode() = Objects.hash(from, to)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -77,41 +88,57 @@ class CallGraph private constructor(val edges: Map<Node, Set<Node>>) : Iterable<
             return from == other.from && to == other.to
         }
 
-        override fun toString(): String {
-            return "$from -> $to"
-        }
+        override fun toString() = "$from -> $to"
+
     }
 
     class Builder {
 
         private val edges = mutableMapOf<Node, MutableSet<Node>>()
 
-        fun addEdge(edge: Edge): Builder {
-            this.edges.getOrPut(edge.from) {
-                mutableSetOf()
-            }.add(edge.to)
-            return this
+        private var title = ""
+
+        fun getTitle() = title
+
+        fun setTitle(title: String) = this.also {
+            this.title = title
         }
 
-        fun hasEdge(edge: Edge): Boolean {
-            return this.hasEdge(edge.from, edge.to)
+        fun addEdges(vararg edges: Edge) = this.also {
+            edges.forEach {
+                addEdge(it.from, it.to)
+            }
         }
 
-        fun hasEdge(from: Node, to: Node): Boolean {
-            return this.edges.containsKey(from) && this.edges[from]?.contains(to) == true
-        }
+        fun hasEdge(edge: Edge) = this.hasEdge(edge.from, edge.to)
 
-        fun addEdge(from: Node, to: Node): Builder {
-            this.edges.getOrPut(from) {
+        fun hasEdge(from: Node, to: Node) = this.edges.containsKey(from) && this.edges[from]?.contains(to) == true
+
+        fun addEdge(from: Node, to: Node) = this.also {
+            edges.getOrPut(from) {
                 mutableSetOf()
             }.add(to)
-            return this
         }
 
-        fun build(): CallGraph {
-            return CallGraph(this.edges)
-        }
+        fun build() = CallGraph(this.edges, this.title)
 
     }
 
+}
+
+fun Iterable<CallGraph.Node>.toEdges(): Collection<CallGraph.Edge> {
+    val iterator = iterator()
+    if (!iterator.hasNext()) {
+        return emptyList()
+    }
+
+    val result = mutableListOf<CallGraph.Edge>()
+    var current = iterator.next()
+    while (iterator.hasNext()) {
+        val next = iterator.next()
+        result.add(CallGraph.Edge(current, next))
+        current = next
+    }
+
+    return result
 }

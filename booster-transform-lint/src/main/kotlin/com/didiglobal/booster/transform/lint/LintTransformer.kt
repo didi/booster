@@ -1,13 +1,19 @@
 package com.didiglobal.booster.transform.lint
 
-import com.didiglobal.booster.kotlinx.MAGENTA
+import com.didiglobal.booster.kotlinx.GREEN
 import com.didiglobal.booster.kotlinx.RESET
+import com.didiglobal.booster.kotlinx.Wildcard
 import com.didiglobal.booster.kotlinx.asIterable
+import com.didiglobal.booster.kotlinx.file
+import com.didiglobal.booster.kotlinx.ifNotEmpty
+import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
 import com.didiglobal.booster.transform.lint.graph.CallGraph
 import com.didiglobal.booster.transform.lint.graph.CallGraph.Node
+import com.didiglobal.booster.transform.lint.graph.graphviz.DirectedCallGraphPrinter
+import com.didiglobal.booster.transform.lint.graph.toEdges
 import com.didiglobal.booster.util.ComponentHandler
 import com.google.auto.service.AutoService
 import org.objectweb.asm.tree.ClassNode
@@ -26,9 +32,20 @@ import javax.xml.parsers.SAXParserFactory
 @AutoService(ClassTransformer::class)
 class LintTransformer : ClassTransformer {
 
-    private val builder = CallGraph.Builder()
+    /**
+     * The lint graph
+     */
+    private val graphBuilders = mutableMapOf<String, CallGraph.Builder>()
+
+    /**
+     * The global call graph
+     */
+    private lateinit var globalBuilder: CallGraph.Builder
 
     override fun onPreTransform(context: TransformContext) {
+        graphBuilders.clear()
+        globalBuilder = CallGraph.Builder()
+
         val parser = SAXParserFactory.newInstance().newSAXParser()
         context.artifacts.get(ArtifactManager.MERGED_MANIFESTS).forEach { manifest ->
             val handler = ComponentHandler()
@@ -46,7 +63,7 @@ class LintTransformer : ClassTransformer {
                     entryPoints.map {
                         CallGraph.Node(component.replace('.', '/'), it.name, it.desc)
                     }.forEach {
-                        builder.addEdge(CallGraph.ROOT, it)
+                        globalBuilder.addEdge(CallGraph.ROOT, it)
                     }
                 }
             }
@@ -54,85 +71,130 @@ class LintTransformer : ClassTransformer {
     }
 
     override fun transform(context: TransformContext, klass: ClassNode): ClassNode {
-        if (klass.isIgnored) {
+        if (klass.isExcluded) {
             return klass
         }
 
-        klass.methods.forEach { method ->
+        val ignores = context.getProperty(PROPERTY_IGNORES)?.split(',')?.map {
+            Wildcard(it)
+        }?.toSet() ?: emptySet()
+
+        klass.methods.forEach mloop@{ method ->
+            val signature = "${klass.name}.${method.name}${method.desc}"
             when {
+                ignores.any { it.matches(signature) } -> return@mloop
                 // any method signature is sensitive
                 method.isSensitive -> {
-                    builder.addEdge(CallGraph.ROOT, CallGraph.Node(klass.name, method.name, method.desc))
+                    globalBuilder.addEdge(CallGraph.ROOT, Node(klass.name, method.name, method.desc))
                 }
                 // finalizer is not reliable in Android
                 method.name == "finalize" && method.desc == "()V" && method.instructions.size() > 1 && !klass.name.startsWith("com/didiglobal/booster/instrument/") -> {
-                    println(" ⚠️  $MAGENTA${klass.name}.${method.name}${method.desc}$RESET")
+                    graphBuilders.getOrPut(klass.name) {
+                        CallGraph.Builder().setTitle(klass.name.replace('/', '.'))
+                    }.addEdge(CallGraph.ROOT, Node(klass.name, method.name, method.desc))
                 }
             }
 
             // construct call graph by scanning INVOKE* instructions
-            method.instructions.iterator().asIterable().filterIsInstance(MethodInsnNode::class.java).forEach { invoke ->
-                val from = CallGraph.Node(klass.name, method.name, method.desc)
-                val to = CallGraph.Node(invoke.owner, invoke.name, invoke.desc)
+            method.instructions.iterator().asIterable().filterIsInstance(MethodInsnNode::class.java).forEach iloop@{ invoke ->
+                if (ignores.any { it.matches("${invoke.owner}.${invoke.name}${invoke.desc}") }) {
+                    return@iloop
+                }
+
+                val to = Node(invoke.owner, invoke.name, invoke.desc)
+                val from = Node(klass.name, method.name, method.desc)
 
                 // break circular invocation
-                if (!builder.hasEdge(to, from)) {
-                    builder.addEdge(from, to)
+                if (!globalBuilder.hasEdge(to, from)) {
+                    globalBuilder.addEdge(from, to)
                 }
             }
         }
+
         return klass
     }
 
     override fun onPostTransform(context: TransformContext) {
-        val apis = context.lintApis
-        val graph = builder.build()
-        graph.edges[CallGraph.ROOT]?.forEach { entryPoint ->
-            graph.analyse(context, entryPoint, listOf(entryPoint), apis)
+        println("${GREEN}Generating lint reports...$RESET")
+        val t0 = System.currentTimeMillis()
+        val graph = globalBuilder.build()
+        val lints = if (context.hasProperty(PROPERTY_APIS)) {
+            val uri = URI(context.getProperty(PROPERTY_APIS))
+            val url = if (uri.isAbsolute) uri.toURL() else File(uri).toURI().toURL()
+
+            url.openStream().bufferedReader().use {
+                it.lines().filter(String::isNotBlank).map { line ->
+                    Node.valueOf(line.trim())
+                }.collect(Collectors.toSet())
+            }
+        } else LINT_APIS
+
+        // Analyse global call graph and separate each chain to individual graph
+        graph[CallGraph.ROOT].forEach { node ->
+            graph.analyse(context, node, listOf(CallGraph.ROOT, node), lints) { chain ->
+                val builder = graphBuilders.getOrPut(node.type) {
+                    CallGraph.Builder().setTitle(node.type.replace('/', '.'))
+                }
+                chain.toEdges().forEach { edge ->
+                    builder.addEdges(edge)
+                }
+            }
+        }
+
+        // Print individual call graph into dot file
+        graphBuilders.map {
+            Pair(context.reportsDir.file(it.key.replace('/', '.') + ".dot"), it.value.build())
+        }.parallelStream().forEach {
+            it.second.print(DirectedCallGraphPrinter(it.first.touch()))
+        }
+        val t1 = System.currentTimeMillis()
+        println("${Build.ARTIFACT}: ${(t1 - t0) / 1000} seconds")
+    }
+
+    /**
+     * Analyse from *node* recursively
+     *
+     * @param context The transform context
+     * @param node The entry point
+     * @param chain The call chain
+     * @param apis The apis to lint
+     */
+    private fun CallGraph.analyse(context: TransformContext, node: Node, chain: List<Node>, apis: Set<Node>, action: (List<Node>) -> Unit) {
+        this[node].forEach loop@{ target ->
+            // break circular invocation
+            if (chain.contains(target)) {
+                return@loop
+            }
+
+            val newChain = chain.plus(target)
+            if (isHit(apis, target, context)) {
+                action(newChain)
+                return@loop
+            }
+
+            analyse(context, target, newChain, apis, action)
         }
     }
 
 }
 
-private val ClassNode.isIgnored: Boolean
+private fun isHit(apis: Set<Node>, target: Node, context: TransformContext) = apis.contains(target) || apis.any {
+    target.name == it.name && target.desc == it.desc && context.klassPool.get(it.type).isAssignableFrom(target.type)
+}
+
+private val ClassNode.isExcluded: Boolean
     get() = IGNORES.any {
         this.name.startsWith(it)
     }
 
 private val MethodNode.isSensitive: Boolean
-    get() = SENSITIVE_WORDS.any {
+    get() = SENSITIVES.any {
         this.desc.contains(it, true)
     }
 
-private val TransformContext.lintApis: Set<Node>
-    get() {
-        return if (hasProperty(PROPERTY_LINT_APIS)) {
-            val uri = URI(this.getProperty(PROPERTY_LINT_APIS))
-            val url = if (uri.isAbsolute) uri.toURL() else File(uri).toURI().toURL()
+private val PROPERTY_PREFIX = Build.ARTIFACT.replace('-', '.')
 
-            url.openStream().bufferedReader().use {
-                return it.lines().filter(String::isNotBlank).map { line ->
-                    Node.valueOf(line.trim())
-                }.collect(Collectors.toSet())
-            }
-        } else LINT_APIS
-    }
+private val PROPERTY_APIS = "$PROPERTY_PREFIX.apis"
 
-private fun CallGraph.analyse(context: TransformContext, node: Node, parent: List<Node>, apis: Set<Node>) {
-    this.edges[node]?.forEach { target ->
-        // break circular invocation
-        if (parent.contains(target)) {
-            return
-        }
-
-        val paths = parent.plus(target)
-        if (apis.contains(target) || apis.any { target.name == it.name && target.desc == it.desc && context.klassPool.get(it.type).isAssignableFrom(target.type) }) {
-            println(" ⚠️  $MAGENTA${paths.joinToString("$RESET -> $MAGENTA")} $RESET")
-            return
-        }
-        analyse(context, target, paths, apis)
-    }
-}
-
-private val PROPERTY_LINT_APIS = "${Build.ARTIFACT.replace('-', '.')}.apis"
+private val PROPERTY_IGNORES = "$PROPERTY_PREFIX.ignores"
 
