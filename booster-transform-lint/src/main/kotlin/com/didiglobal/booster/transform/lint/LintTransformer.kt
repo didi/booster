@@ -8,7 +8,7 @@ import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
-import com.didiglobal.booster.transform.lint.dot.DirectedCallGraphPrinter
+import com.didiglobal.booster.transform.lint.dot.GraphType
 import com.didiglobal.booster.transform.lint.graph.CallGraph
 import com.didiglobal.booster.transform.lint.graph.CallGraph.Node
 import com.didiglobal.booster.transform.lint.graph.toEdges
@@ -141,8 +141,10 @@ class LintTransformer : ClassTransformer {
         // Print individual call graph into dot file
         graphBuilders.map {
             Pair(context.reportsDir.file(Build.ARTIFACT).file(context.name).file(it.key.separatorsToSystem() + ".dot"), it.value.build())
-        }.parallelStream().forEach {
-            it.second.print(DirectedCallGraphPrinter(it.first.touch()))
+        }.parallelStream().forEach { pair ->
+            pair.first.touch().printWriter().use { printer ->
+                pair.second.print(printer, GraphType.DIGRAPH::format)
+            }
         }
     }
 

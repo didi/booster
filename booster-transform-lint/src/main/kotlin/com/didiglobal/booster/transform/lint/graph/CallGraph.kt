@@ -1,5 +1,6 @@
 package com.didiglobal.booster.transform.lint.graph
 
+import java.io.PrintWriter
 import java.util.Objects
 
 /**
@@ -25,11 +26,9 @@ class CallGraph private constructor(private val edges: Map<Node, Set<Node>>, val
 
     /**
      * Print this call graph
-     *
-     * @param printer An instance of [CallGraphPrinter]
      */
-    fun print(printer: CallGraphPrinter) {
-        printer.print(this)
+    fun print(out: PrintWriter = PrintWriter(System.out, true), transform: (CallGraph) -> CharSequence) {
+        out.println(transform(this))
     }
 
     override fun iterator(): Iterator<Edge> {
