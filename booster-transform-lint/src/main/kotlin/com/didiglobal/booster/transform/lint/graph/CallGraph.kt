@@ -42,16 +42,10 @@ class CallGraph private constructor(private val edges: Map<Node, Set<Node>>, val
 
     class Node(val type: String, val name: String, val desc: String) {
 
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            if (other !is Node) {
-                return false
-            }
-
-            return type == other.type && name == other.name && desc == other.desc
+        override fun equals(other: Any?) = when {
+            other === this -> true
+            other is Node -> other.type == this.type && other.name == this.name && other.desc == this.desc
+            else -> false
         }
 
         override fun hashCode() = Objects.hash(type, name, desc)
@@ -76,16 +70,10 @@ class CallGraph private constructor(private val edges: Map<Node, Set<Node>>, val
 
         override fun hashCode() = Objects.hash(from, to)
 
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            if (other !is Edge) {
-                return false
-            }
-
-            return from == other.from && to == other.to
+        override fun equals(other: Any?) = when {
+            other === this -> true
+            other is Edge -> other.from == this.from && other.to == this.to
+            else -> false
         }
 
         override fun toString() = "$from -> $to"

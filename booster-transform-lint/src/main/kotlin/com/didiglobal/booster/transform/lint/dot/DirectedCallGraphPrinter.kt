@@ -1,4 +1,4 @@
-package com.didiglobal.booster.transform.lint.graph.graphviz
+package com.didiglobal.booster.transform.lint.dot
 
 import com.didiglobal.booster.kotlinx.RGB
 import com.didiglobal.booster.transform.lint.graph.CallGraph

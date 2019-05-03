@@ -9,7 +9,7 @@ import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
 import com.didiglobal.booster.transform.lint.graph.CallGraph
 import com.didiglobal.booster.transform.lint.graph.CallGraph.Node
-import com.didiglobal.booster.transform.lint.graph.graphviz.DirectedCallGraphPrinter
+import com.didiglobal.booster.transform.lint.dot.DirectedCallGraphPrinter
 import com.didiglobal.booster.transform.lint.graph.toEdges
 import com.didiglobal.booster.util.ComponentHandler
 import com.google.auto.service.AutoService
