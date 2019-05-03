@@ -143,7 +143,7 @@ class LintTransformer : ClassTransformer {
 
         // Print individual call graph into dot file
         graphBuilders.map {
-            Pair(context.reportsDir.file(it.key.replace('/', '.') + ".dot"), it.value.build())
+            Pair(context.reportsDir.file(Build.ARTIFACT).file(it.key.replace('/', '.') + ".dot"), it.value.build())
         }.parallelStream().forEach {
             it.second.print(DirectedCallGraphPrinter(it.first.touch()))
         }
