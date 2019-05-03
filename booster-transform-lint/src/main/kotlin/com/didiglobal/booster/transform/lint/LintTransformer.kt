@@ -1,11 +1,8 @@
 package com.didiglobal.booster.transform.lint
 
-import com.didiglobal.booster.kotlinx.GREEN
-import com.didiglobal.booster.kotlinx.RESET
 import com.didiglobal.booster.kotlinx.Wildcard
 import com.didiglobal.booster.kotlinx.asIterable
 import com.didiglobal.booster.kotlinx.file
-import com.didiglobal.booster.kotlinx.ifNotEmpty
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.TransformContext
@@ -115,8 +112,6 @@ class LintTransformer : ClassTransformer {
     }
 
     override fun onPostTransform(context: TransformContext) {
-        println("${GREEN}Generating lint reports...$RESET")
-        val t0 = System.currentTimeMillis()
         val graph = globalBuilder.build()
         val lints = if (context.hasProperty(PROPERTY_APIS)) {
             val uri = URI(context.getProperty(PROPERTY_APIS))
@@ -147,8 +142,6 @@ class LintTransformer : ClassTransformer {
         }.parallelStream().forEach {
             it.second.print(DirectedCallGraphPrinter(it.first.touch()))
         }
-        val t1 = System.currentTimeMillis()
-        println("${Build.ARTIFACT}: ${(t1 - t0) / 1000} seconds")
     }
 
     /**
