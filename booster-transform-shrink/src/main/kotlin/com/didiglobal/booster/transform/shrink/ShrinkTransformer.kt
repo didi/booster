@@ -1,36 +1,33 @@
 package com.didiglobal.booster.transform.shrink
 
-import com.didiglobal.booster.kotlinx.BLUE
-import com.didiglobal.booster.kotlinx.RED
-import com.didiglobal.booster.kotlinx.RESET
-import com.didiglobal.booster.kotlinx.YELLOW
+import com.didiglobal.booster.kotlinx.Wildcard
 import com.didiglobal.booster.kotlinx.asIterable
-import com.didiglobal.booster.kotlinx.head
-import com.didiglobal.booster.kotlinx.separatorsToSystem
+import com.didiglobal.booster.kotlinx.execute
+import com.didiglobal.booster.kotlinx.file
+import com.didiglobal.booster.kotlinx.ifNotEmpty
+import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.ArtifactManager.Companion.JAVAC
 import com.didiglobal.booster.transform.ArtifactManager.Companion.MERGED_RES
 import com.didiglobal.booster.transform.ArtifactManager.Companion.SYMBOL_LIST
-import com.didiglobal.booster.transform.ArtifactManager.Companion.SYMBOL_LIST_WITH_PACKAGE_NAME
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
 import com.didiglobal.booster.transform.asm.simpleName
+import com.didiglobal.booster.util.FileFinder
 import com.google.auto.service.AutoService
-import org.gradle.api.logging.Logging
-import org.objectweb.asm.Opcodes
+import org.objectweb.asm.Opcodes.ACC_FINAL
+import org.objectweb.asm.Opcodes.ACC_STATIC
+import org.objectweb.asm.Opcodes.GETSTATIC
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldInsnNode
 import org.objectweb.asm.tree.FieldNode
 import org.objectweb.asm.tree.LdcInsnNode
-import java.util.concurrent.ForkJoinPool
+import java.io.File
+import java.io.PrintWriter
 
 internal const val R_STYLEABLE = "R\$styleable"
 internal const val R_STYLEABLE_CLASS = "$R_STYLEABLE.class"
 internal const val ANDROID_R = "android/R$"
 internal const val COM_ANDROID_INTERNAL_R = "com/android/internal/R$"
-
-internal val CONST_TYPE_SIGNATURES = setOf("Z", "B", "C", "S", "I", "J", "F", "D", "L/java/lang/String;")
-
-private val logger = Logging.getLogger(ShrinkTransformer::class.java)
 
 /**
  * Represents a class node transformer for constants shrinking
@@ -40,37 +37,75 @@ private val logger = Logging.getLogger(ShrinkTransformer::class.java)
 @AutoService(ClassTransformer::class)
 class ShrinkTransformer : ClassTransformer {
 
-    private lateinit var applicationId: String
-    private lateinit var pkgRStyleable: String
+    private lateinit var appPackage: String
+    private lateinit var appRStyleable: String
+    private lateinit var appRStyleableClass: String
     private lateinit var symbols: SymbolList
     private lateinit var retainedSymbols: Set<String>
+    private lateinit var ignores: Set<Wildcard>
+    private lateinit var logger: PrintWriter
 
     override fun onPreTransform(context: TransformContext) {
-        this.applicationId = context.artifacts.get(SYMBOL_LIST_WITH_PACKAGE_NAME).single().head()!!.replace('.', '/')
+        this.appPackage = context.applicationId.replace('.', '/')
+        this.logger = context.reportsDir.file(Build.ARTIFACT).file(context.name).file("report.txt").touch().printWriter()
         this.symbols = SymbolList.from(context.artifacts.get(SYMBOL_LIST).single())
-        this.pkgRStyleable = "$applicationId/$R_STYLEABLE"
+        this.appRStyleable = "$appPackage/$R_STYLEABLE"
+        this.appRStyleableClass = "$appPackage/$R_STYLEABLE_CLASS"
+        this.ignores = context.getProperty(PROPERTY_IGNORES)?.split(',')?.map { Wildcard(it) }?.toSet() ?: emptySet()
+        val redundant = context.findRedundantR()
 
-        ForkJoinPool().also { pool ->
-            context.deleteLibraryRs(pool, applicationId)
-            retainedSymbols = context.findRetainedSymbols(pool)
-        }.shutdown()
+        logger.println("$PROPERTY_IGNORES=$ignores\n")
 
-        logger.info("Retained symbols: \n  ${retainedSymbols.joinTo(StringBuilder(), "\n  - ")}")
+        // Find symbols that should be retained
+        this.retainedSymbols = context.findRetainedSymbols()
+        retainedSymbols.ifNotEmpty { symbols ->
+            logger.println("Retained symbols:")
+            symbols.forEach {
+                logger.println("  - R.id.$it")
+            }
+            logger.println()
+        }
+
+        // Remove redundant R class files
+        redundant.ifNotEmpty { pairs ->
+            val totalSize = redundant.map { it.first.length() }.sum()
+            val maxWidth = redundant.map { it.second.length }.max()?.plus(10) ?: 10
+
+            logger.println("Delete files:")
+
+            pairs.forEach {
+                if (it.first.delete()) {
+                    logger.println(" - `${it.second}`")
+                }
+            }
+
+            logger.println("-".repeat(maxWidth))
+            logger.println("Total: $totalSize bytes")
+            logger.println()
+        }
     }
 
     override fun transform(context: TransformContext, klass: ClassNode): ClassNode {
         when {
-            klass.name == this.pkgRStyleable -> klass.removeIntFields()
+            this.ignores.any { it.matches(klass.name) } -> {
+                logger.println("Ignore `${klass.name}`")
+                return klass
+            }
+            klass.name == this.appRStyleable -> klass.removeIntFields()
             klass.simpleName == "BuildConfig" -> klass.removeConstantFields()
             else -> replaceSymbolReferenceWithConstant(klass)
         }
         return klass
     }
 
+    override fun onPostTransform(context: TransformContext) {
+        logger.close()
+    }
+
     private fun replaceSymbolReferenceWithConstant(klass: ClassNode) {
         klass.methods.forEach { method ->
             val insns = method.instructions.iterator().asIterable().filter {
-                it.opcode == Opcodes.GETSTATIC
+                it.opcode == GETSTATIC
             }.map {
                 it as FieldInsnNode
             }.filter {
@@ -89,17 +124,66 @@ class ShrinkTransformer : ClassTransformer {
                     method.instructions.insertBefore(field, LdcInsnNode(symbols.getInt(type, field.name)))
                     method.instructions.remove(field)
                 } catch (e: NullPointerException) {
-                    println("$RED ! Unresolvable symbol R.$type.${field.name} : ${klass.name}.${method.name}${method.desc} $RESET")
+                    logger.println("Unresolvable symbol `R.$type.${field.name}` : ${klass.name}.${method.name}${method.desc}")
                 }
             }
 
             // Replace library's R fields with application's R fields
             intArrayFields.forEach { field ->
-                field.owner = "$applicationId/${field.owner.substring(field.owner.lastIndexOf('/') + 1)}"
+                field.owner = "$appPackage/${field.owner.substring(field.owner.lastIndexOf('/') + 1)}"
             }
         }
     }
 
+    private fun TransformContext.findRedundantR(): List<Pair<File, String>> {
+        return artifacts.get(JAVAC).map { classes ->
+            val base = classes.toURI()
+
+            FileFinder(classes) { r ->
+                r.name.startsWith("R") && r.name.endsWith(".class") && (r.name[1] == '$' || r.name.length == 7)
+            }.execute().map { r ->
+                Pair(r, base.relativize(r.toURI()).path)
+            }
+        }.flatten().filter {
+            it.second != appRStyleableClass // keep application's R$styleable.class
+        }.filter { pair ->
+            !ignores.any { it.matches(pair.second) }
+        }
+    }
+
+    private fun ClassNode.removeIntFields() {
+        fields.map {
+            it as FieldNode
+        }.filter { field ->
+            val signature = "$name.${field.name}${field.desc}"
+            !ignores.any { it.matches(signature) }
+        }.filter {
+            it.desc == "I"
+        }.forEach {
+            fields.remove(it)
+            logger.println("Remove `$name.${it.name} : ${it.desc}` = 0x${(it.value as Int).toString(16)}")
+        }
+    }
+
+    private fun ClassNode.removeConstantFields() {
+        fields.map {
+            it as FieldNode
+        }.filter { field ->
+            val signature = "$name.${field.name}${field.desc}"
+            !ignores.any { it.matches(signature) }
+        }.filter {
+            0 != (ACC_STATIC and it.access) && 0 != (ACC_FINAL and it.access) && it.value != null
+        }.forEach {
+            fields.remove(it)
+            logger.println("Remove `$name.${it.name} : ${it.desc}` = ${it.valueAsString()}")
+        }
+    }
+
+}
+
+private fun FieldNode.valueAsString() = when {
+    this.value is String -> "\"${this.value}\""
+    else -> this.value.toString()
 }
 
 /**
@@ -107,51 +191,12 @@ class ShrinkTransformer : ClassTransformer {
  *
  * - attribute `constraint_referenced_ids` in `ConstraintLayout`
  */
-private fun TransformContext.findRetainedSymbols(pool: ForkJoinPool): Set<String> {
+private fun TransformContext.findRetainedSymbols(): Set<String> {
     return artifacts.get(MERGED_RES).map {
-        pool.invoke(RetainedSymbolCollector(it))
+        RetainedSymbolCollector(it).execute()
     }.flatten().toSet()
 }
 
-/**
- * Delete R files of libraries
- */
-private fun TransformContext.deleteLibraryRs(pool: ForkJoinPool, applicationId: String) {
-    return artifacts.get(JAVAC).map {
-        pool.invoke(RCollector(it))
-    }.flatten().filter {
-        // only keep application's R$styleable.class
-        !it.parent.endsWith(applicationId.separatorsToSystem()) || it.name != R_STYLEABLE_CLASS
-    }.forEach {
-        // delete library's R
-        if (it.delete()) {
-            println("$YELLOW x ${it.absolutePath}$RESET")
-        } else {
-            println("$BLUE ? ${it.absolutePath}$RESET")
-        }
-    }
-}
+private val PROPERTY_PREFIX = Build.ARTIFACT.replace('-', '.')
 
-private fun ClassNode.removeIntFields() {
-    fields.map {
-        it as FieldNode
-    }.filter {
-        it.desc == "I"
-    }.forEach {
-        fields.remove(it)
-        println("$YELLOW x $name.${it.name} : ${it.desc}$RESET")
-    }
-}
-
-private fun ClassNode.removeConstantFields() {
-    fields.map {
-        it as FieldNode
-    }.filter {
-        0 != (Opcodes.ACC_STATIC and it.access)
-                && 0 != (Opcodes.ACC_FINAL and it.access)
-                && CONST_TYPE_SIGNATURES.contains(it.desc)
-    }.forEach {
-        fields.remove(it)
-        println("$YELLOW x $name.${it.name} : ${it.desc}$RESET")
-    }
-}
+private val PROPERTY_IGNORES = "$PROPERTY_PREFIX.ignores"

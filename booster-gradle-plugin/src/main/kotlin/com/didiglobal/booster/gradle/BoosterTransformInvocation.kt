@@ -15,6 +15,7 @@ import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactSco
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactType.AAR
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactType.JAR
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH
+import com.didiglobal.booster.kotlinx.execute
 import com.didiglobal.booster.kotlinx.ifNotEmpty
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.Klass
@@ -60,6 +61,8 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
     override val artifacts = this
 
     override val klassPool = KlassPoolImpl(runtimeClasspath)
+
+    override val applicationId = delegate.applicationId
 
     override fun hasProperty(name: String): Boolean {
         return project.hasProperty(name)

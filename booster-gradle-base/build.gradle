@@ -1,9 +1,0 @@
-apply from: '../gradle/booster.gradle'
-
-dependencies {
-    compile gradleApi()
-    compile project(':booster-kotlinx')
-    compile 'com.google.auto.service:auto-service:1.0-rc4'
-    compileOnly 'com.android.tools.build:gradle:3.0.0'
-    testCompileOnly 'com.android.tools.build:gradle:3.0.0'
-}

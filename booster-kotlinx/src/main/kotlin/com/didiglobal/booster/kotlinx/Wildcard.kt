@@ -113,6 +113,8 @@ class Wildcard(private val pattern: String, private val ignoreCase: Boolean = fa
         else -> false
     }
 
+    override fun toString() = this.pattern
+
     private fun checkIndexOf(str: String, strStartIndex: Int, search: String): Int {
         val endIndex = str.length - search.length
         if (endIndex >= strStartIndex) {

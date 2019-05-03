@@ -61,6 +61,11 @@ interface TransformContext {
     val klassPool: KlassPool
 
     /**
+     * The application identifier
+     */
+    val applicationId: String
+
+    /**
      * Check if has the specified property. Generally, the property is equivalent to project property
      *
      * @param name the name of property

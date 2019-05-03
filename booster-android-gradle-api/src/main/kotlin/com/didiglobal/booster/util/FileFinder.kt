@@ -36,13 +36,4 @@ class FileFinder(private val roots: Collection<File>, private val filter: (File)
         return result + tasks.flatMap { it.join() }
     }
 
-    fun execute(): Collection<File> {
-        val pool = ForkJoinPool()
-        try {
-            return pool.invoke(this)
-        } finally {
-            pool.shutdown()
-        }
-    }
-
 }

@@ -5,10 +5,14 @@ import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.api.BaseVariant
+import com.didiglobal.booster.kotlinx.execute
+import com.didiglobal.booster.kotlinx.head
+import com.didiglobal.booster.util.FileFinder
 import org.gradle.api.Project
 import org.gradle.api.internal.AbstractTask
+import org.objectweb.asm.ClassReader
+import org.objectweb.asm.tree.ClassNode
 import java.io.File
-import java.net.URLClassLoader
 
 /**
  * Represents the booster transform for
@@ -51,3 +55,32 @@ val TransformInvocation.compileClasspath: Collection<File>
  */
 val TransformInvocation.runtimeClasspath: Collection<File>
     get() = compileClasspath + project.getAndroid<BaseExtension>().bootClasspath
+
+/**
+ * Returns the application id
+ */
+val TransformInvocation.applicationId: String
+    get() {
+        val packages = variant.scope.symbolListWithPackageName.filter {
+            it.length() > 0
+        }.map {
+            it.head()!!
+        }.toSet()
+
+        return variant.scope.javac.map { classes ->
+            val base = classes.toURI()
+            FileFinder(classes) { file ->
+                file.name == "BuildConfig.class" && file.inputStream().use { bytecode ->
+                    ClassNode().also { klass ->
+                        ClassReader(bytecode).accept(klass, 0)
+                    }.fields.any {
+                        it.name == "APPLICATION_ID" && it.desc == "Ljava/lang/String;" && packages.contains(it.value)
+                    }
+                }
+            }.execute().map {
+                base.relativize(it.toURI()).path.let { path ->
+                    path.substring(0, path.lastIndexOf('/'))
+                }.replace('/', '.')
+            }.toSet()
+        }.flatten().single()
+    }
