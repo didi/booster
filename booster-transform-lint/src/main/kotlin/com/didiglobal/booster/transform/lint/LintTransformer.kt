@@ -7,9 +7,9 @@ import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
+import com.didiglobal.booster.transform.lint.dot.DirectedCallGraphPrinter
 import com.didiglobal.booster.transform.lint.graph.CallGraph
 import com.didiglobal.booster.transform.lint.graph.CallGraph.Node
-import com.didiglobal.booster.transform.lint.dot.DirectedCallGraphPrinter
 import com.didiglobal.booster.transform.lint.graph.toEdges
 import com.didiglobal.booster.util.ComponentHandler
 import com.google.auto.service.AutoService
@@ -39,9 +39,14 @@ class LintTransformer : ClassTransformer {
      */
     private lateinit var globalBuilder: CallGraph.Builder
 
+    private lateinit var ignores: Set<Wildcard>
+
     override fun onPreTransform(context: TransformContext) {
-        graphBuilders.clear()
-        globalBuilder = CallGraph.Builder()
+        this.graphBuilders.clear()
+        this.globalBuilder = CallGraph.Builder()
+        this.ignores = context.getProperty(PROPERTY_IGNORES)?.split(',')?.map {
+            Wildcard(it)
+        }?.toSet() ?: emptySet()
 
         val parser = SAXParserFactory.newInstance().newSAXParser()
         context.artifacts.get(ArtifactManager.MERGED_MANIFESTS).forEach { manifest ->
@@ -72,14 +77,10 @@ class LintTransformer : ClassTransformer {
             return klass
         }
 
-        val ignores = context.getProperty(PROPERTY_IGNORES)?.split(',')?.map {
-            Wildcard(it)
-        }?.toSet() ?: emptySet()
-
         klass.methods.forEach mloop@{ method ->
             val signature = "${klass.name}.${method.name}${method.desc}"
             when {
-                ignores.any { it.matches(signature) } -> return@mloop
+                this.ignores.any { it.matches(signature) } -> return@mloop
                 // any method signature is sensitive
                 method.isSensitive -> {
                     globalBuilder.addEdge(CallGraph.ROOT, Node(klass.name, method.name, method.desc))
@@ -94,7 +95,7 @@ class LintTransformer : ClassTransformer {
 
             // construct call graph by scanning INVOKE* instructions
             method.instructions.iterator().asIterable().filterIsInstance(MethodInsnNode::class.java).forEach iloop@{ invoke ->
-                if (ignores.any { it.matches("${invoke.owner}.${invoke.name}${invoke.desc}") }) {
+                if (this.ignores.any { it.matches("${invoke.owner}.${invoke.name}${invoke.desc}") }) {
                     return@iloop
                 }
 
