@@ -5,6 +5,7 @@ import com.didiglobal.booster.kotlinx.asIterable
 import com.didiglobal.booster.kotlinx.execute
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.ifNotEmpty
+import com.didiglobal.booster.kotlinx.map
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.ArtifactManager.Companion.JAVAC
 import com.didiglobal.booster.transform.ArtifactManager.Companion.MERGED_RES
@@ -99,7 +100,7 @@ class ShrinkTransformer : ClassTransformer {
     }
 
     override fun onPostTransform(context: TransformContext) {
-        logger.close()
+        this.logger.close()
     }
 
     private fun replaceSymbolReferenceWithConstant(klass: ClassNode) {
@@ -141,7 +142,7 @@ class ShrinkTransformer : ClassTransformer {
 
             FileFinder(classes) { r ->
                 r.name.startsWith("R") && r.name.endsWith(".class") && (r.name[1] == '$' || r.name.length == 7)
-            }.execute().map { r ->
+            }.map { r ->
                 Pair(r, base.relativize(r.toURI()).path)
             }
         }.flatten().filter {

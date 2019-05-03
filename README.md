@@ -85,9 +85,9 @@ Conveniently, the `booster-task-all` module can be depended to enable all tasks.
 
 另外，Booster 也提供了一系列的 [Gradle Task](https://docs.gradle.org/current/userguide/tutorial_using_tasks.html) 来帮助开发者提升效率，为了方便起见，可以通过依赖 `booster-task-all` 来启用所有的 task。
 
-Then build an optimized package by executing the *assemble* task:
+Then build an optimized package by executing the *assemble* task, after the build process completed, the reports could be found at `build/reports/`
 
-然后通过执行 `assemble` task 来构建一个优化过的应用包：
+然后通过执行 `assemble` task 来构建一个优化过的应用包，构建完成后，在 `build/reports/` 目录下会生成相应的报告
 
 ```bash
 $ ./gradlew assembleRelease

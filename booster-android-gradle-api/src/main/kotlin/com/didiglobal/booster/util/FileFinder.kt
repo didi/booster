@@ -1,7 +1,6 @@
 package com.didiglobal.booster.util
 
 import java.io.File
-import java.util.concurrent.ForkJoinPool
 import java.util.concurrent.RecursiveTask
 
 /**
@@ -11,9 +10,9 @@ import java.util.concurrent.RecursiveTask
  */
 class FileFinder(private val roots: Collection<File>, private val filter: (File) -> Boolean = { true }) : RecursiveTask<Collection<File>>() {
 
-    constructor(roots: Array<File>, filter: (File) -> Boolean) : this(roots.toList(), filter)
+    constructor(roots: Array<File>, filter: (File) -> Boolean = { true }) : this(roots.toList(), filter)
 
-    constructor(root: File, filter: (File) -> Boolean) : this(listOf(root), filter)
+    constructor(root: File, filter: (File) -> Boolean = { true }) : this(listOf(root), filter)
 
     override fun compute(): Collection<File> {
         val tasks = mutableListOf<RecursiveTask<Collection<File>>>()

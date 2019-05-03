@@ -1,6 +1,7 @@
 apply from: '../gradle/booster.gradle'
 
 dependencies {
+    compile project(':booster-android-gradle-api')
     compile project(':booster-transform-spi')
     compile project(':booster-kotlinx')
 }

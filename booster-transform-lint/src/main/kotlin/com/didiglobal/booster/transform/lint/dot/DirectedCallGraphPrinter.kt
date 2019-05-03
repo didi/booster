@@ -59,11 +59,10 @@ class DirectedCallGraphPrinter(private val writer: Writer, private val autoFlush
 internal fun CallGraph.Node.toPrettyString(): String {
     val lp = this.desc.indexOf('(')
     val rp = this.desc.lastIndexOf(')')
-    val type = this.type.substring(this.type.lastIndexOf('/') + 1)
-    val desc = ArgumentsParser(this.desc, lp + 1, rp - lp - 1).parse().map {
-        val dot = it.lastIndexOf('.')
-        if (dot < 0) it else it.substring(dot + 1)
-    }.joinToString(", ", "(", ")")
+    val type = this.type.substringAfterLast('/')
+    val desc = ArgumentsParser(this.desc, lp + 1, rp - lp - 1).parse().joinToString(", ", "(", ")") {
+        it.substringAfterLast('.')
+    }
     return "$type:$name$desc"
 }
 

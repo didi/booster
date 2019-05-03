@@ -84,37 +84,27 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
 
     override fun getContext(): Context = delegate.context
 
-    override fun onPreTransform(context: TransformContext) {
-        transformers.forEach {
-            it.onPreTransform(this)
-        }
+    override fun onPreTransform(context: TransformContext) = transformers.forEach {
+        it.onPreTransform(this)
     }
 
-    override fun onPostTransform(context: TransformContext) {
-        transformers.forEach {
-            it.onPostTransform(this)
-        }
+    override fun onPostTransform(context: TransformContext) = transformers.forEach {
+        it.onPostTransform(this)
     }
 
-    override fun get(type: String): Collection<File> {
-        when (type) {
-            ArtifactManager.AAR -> return variant.scope.getArtifactCollection(RUNTIME_CLASSPATH, ALL, AAR).artifactFiles.files
-            ArtifactManager.ALL_CLASSES -> return variant.scope.allClasses
-            ArtifactManager.APK -> return variant.scope.apk
-            ArtifactManager.JAR -> return variant.scope.getArtifactCollection(RUNTIME_CLASSPATH, ALL, JAR).artifactFiles.files
-            ArtifactManager.JAVAC -> return variant.scope.javac
-            ArtifactManager.MERGED_ASSETS -> return variant.scope.mergedAssets
-            ArtifactManager.MERGED_RES -> return variant.scope.mergedRes
-            ArtifactManager.MERGED_MANIFESTS -> return FileFinder(variant.scope.mergedManifests) {
-                SdkConstants.FN_ANDROID_MANIFEST_XML == it.name
-            }.execute()
-            ArtifactManager.PROCESSED_RES -> return FileFinder(variant.scope.processedRes) {
-                it.name.startsWith(SdkConstants.FN_RES_BASE) && it.name.endsWith(SdkConstants.EXT_RES)
-            }.execute()
-            ArtifactManager.SYMBOL_LIST -> return variant.scope.symbolList
-            ArtifactManager.SYMBOL_LIST_WITH_PACKAGE_NAME -> return variant.scope.symbolListWithPackageName
-        }
-        TODO("Unexpected type: $type")
+    override fun get(type: String): Collection<File> = when (type) {
+        ArtifactManager.AAR                           -> variant.scope.getArtifactCollection(RUNTIME_CLASSPATH, ALL, AAR).artifactFiles.files
+        ArtifactManager.ALL_CLASSES                   -> variant.scope.allClasses
+        ArtifactManager.APK                           -> variant.scope.apk
+        ArtifactManager.JAR                           -> variant.scope.getArtifactCollection(RUNTIME_CLASSPATH, ALL, JAR).artifactFiles.files
+        ArtifactManager.JAVAC                         -> variant.scope.javac
+        ArtifactManager.MERGED_ASSETS                 -> variant.scope.mergedAssets
+        ArtifactManager.MERGED_RES                    -> variant.scope.mergedRes
+        ArtifactManager.MERGED_MANIFESTS              -> FileFinder(variant.scope.mergedManifests) { SdkConstants.FN_ANDROID_MANIFEST_XML == it.name }.execute()
+        ArtifactManager.PROCESSED_RES                 -> FileFinder(variant.scope.processedRes) { it.name.startsWith(SdkConstants.FN_RES_BASE) && it.name.endsWith(SdkConstants.EXT_RES) }.execute()
+        ArtifactManager.SYMBOL_LIST                   -> variant.scope.symbolList
+        ArtifactManager.SYMBOL_LIST_WITH_PACKAGE_NAME -> variant.scope.symbolListWithPackageName
+        else -> TODO("Unexpected type: $type")
     }
 
     internal fun doFullTransform() {
@@ -148,14 +138,14 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
             }
 
             input.directoryInputs.parallelStream().forEach { dirInput ->
+                val base = dirInput.file.toURI()
                 dirInput.changedFiles.ifNotEmpty {
                     it.forEach { file, status ->
                         when (status) {
                             REMOVED -> file.delete()
                             ADDED, CHANGED -> {
                                 val root = outputProvider.getContentLocation(dirInput.name, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY)
-                                val path = file.absolutePath.substring(dirInput.file.absolutePath.length + File.separator.length)
-                                file.transform(File(root, path)) { bytecode ->
+                                file.transform(File(root, base.relativize(file.toURI()).path)) { bytecode ->
                                     bytecode.transform(this)
                                 }
                             }

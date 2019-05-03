@@ -5,8 +5,8 @@ import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.api.BaseVariant
-import com.didiglobal.booster.kotlinx.execute
 import com.didiglobal.booster.kotlinx.head
+import com.didiglobal.booster.kotlinx.map
 import com.didiglobal.booster.util.FileFinder
 import org.gradle.api.Project
 import org.gradle.api.internal.AbstractTask
@@ -77,10 +77,8 @@ val TransformInvocation.applicationId: String
                         it.name == "APPLICATION_ID" && it.desc == "Ljava/lang/String;" && packages.contains(it.value)
                     }
                 }
-            }.execute().map {
-                base.relativize(it.toURI()).path.let { path ->
-                    path.substring(0, path.lastIndexOf('/'))
-                }.replace('/', '.')
+            }.map {
+                base.relativize(it.toURI()).path.substringBeforeLast('/').replace('/', '.')
             }.toSet()
         }.flatten().single()
     }

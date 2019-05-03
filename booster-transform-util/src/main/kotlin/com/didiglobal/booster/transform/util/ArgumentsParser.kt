@@ -1,6 +1,13 @@
 package com.didiglobal.booster.transform.util
 
-class ArgumentsParser(private val args: String, private val offset: Int = 0, private val length: Int = args.length) {
+/**
+ * Represents a parser of java method argument list
+ *
+ * @param signature the method parameters signature
+ * @param offset the start index to parse
+ * @param length the length from *offset* to parse
+ */
+class ArgumentsParser(private val signature: String, private val offset: Int = 0, private val length: Int = signature.length) {
 
     private val limit = offset + length
 
@@ -56,6 +63,6 @@ class ArgumentsParser(private val args: String, private val offset: Int = 0, pri
         return buf.toString()
     }
 
-    private fun nextChar() = if (pos < limit) args[pos++].toInt() else -1
+    private fun nextChar() = if (pos < limit) signature[pos++].toInt() else -1
 
 }
