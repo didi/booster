@@ -16,7 +16,6 @@ import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactTyp
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactType.JAR
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH
 import com.didiglobal.booster.kotlinx.ifNotEmpty
-import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.Klass
 import com.didiglobal.booster.transform.KlassPool
@@ -50,7 +49,7 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
 
     override val temporaryDir: File = delegate.context.temporaryDir
 
-    override val reportsDir: File = File(buildDir, "reports${File.separator}$name").also { it.mkdirs() }
+    override val reportsDir: File = File(buildDir, "reports").also { it.mkdirs() }
 
     override val executor = ForkJoinPool(Runtime.getRuntime().availableProcessors(), ForkJoinPool.defaultForkJoinWorkerThreadFactory, null, true)
 
