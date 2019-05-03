@@ -46,7 +46,7 @@ class ToastTransformer : ClassTransformer {
     }
 
     private fun MethodInsnNode.optimize(klass: ClassNode, method: MethodNode) {
-        println(" * ${this.owner}.${this.name}${this.desc} => $SHADOW_TOAST.apply(L$SHADOW_TOAST;)V: ${klass.name}.${method.name}${method.desc}")
+        logger.println(" * ${this.owner}.${this.name}${this.desc} => $SHADOW_TOAST.apply(L$SHADOW_TOAST;)V: ${klass.name}.${method.name}${method.desc}")
         this.owner = SHADOW_TOAST
         this.name = "show"
         this.desc = "(L$TOAST;)V"
