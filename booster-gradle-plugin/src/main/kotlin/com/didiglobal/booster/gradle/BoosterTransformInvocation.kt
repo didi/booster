@@ -50,7 +50,7 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
 
     override val temporaryDir: File = delegate.context.temporaryDir
 
-    override val reportsDir: File = File(buildDir, "reports").also { it.mkdirs() }
+    override val reportsDir: File = File(buildDir, "reports${File.separator}$name").also { it.mkdirs() }
 
     override val executor = ForkJoinPool(Runtime.getRuntime().availableProcessors(), ForkJoinPool.defaultForkJoinWorkerThreadFactory, null, true)
 
