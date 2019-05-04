@@ -3,7 +3,7 @@ package com.didiglobal.booster.transform.lint.dot
 import com.didiglobal.booster.kotlinx.RGB
 import com.didiglobal.booster.transform.lint.graph.CallGraph
 import com.didiglobal.booster.transform.lint.graph.CallGraphFormatter
-import com.didiglobal.booster.transform.lint.palette.WEB_SAFE_COLOR_PALETTE
+import com.didiglobal.booster.transform.lint.palette.WebSafeColorPalette
 import com.didiglobal.booster.transform.util.ArgumentsParser
 
 /**
@@ -23,13 +23,13 @@ enum class GraphType : CallGraphFormatter {
                 appendln("    rankdir = LR;")
                 graph.nodes.joinTo(this, "\n    ", "    ", "\n") { node ->
                     val id = graph.title.substringAfterLast('.')
-                    val color = RGB.valueOf(WEB_SAFE_COLOR_PALETTE.random(0x000000, 0xffffff)) // except white color
+                    val color = RGB.valueOf(WebSafeColorPalette.random(0x000000, 0xffffff)) // except white color
                     "\"${if (node == CallGraph.ROOT) id else node.toPrettyString()}\" [color=\"#$color\",fillcolor=\"#${color}40\"];"
 
                 }
                 graph.joinTo(this, "\n    ", "    ", "\n") { edge ->
                     val id = graph.title.substringAfterLast('.')
-                    val color = RGB.valueOf(WEB_SAFE_COLOR_PALETTE.random(0x000000, 0xffffff)).toString() // except white color
+                    val color = RGB.valueOf(WebSafeColorPalette.random(0x000000, 0xffffff)).toString() // except white color
                     val from = if (edge.from == CallGraph.ROOT) id else edge.from.toPrettyString()
                     val to = if (edge.to == CallGraph.ROOT) id else edge.to.toPrettyString()
                     "\"$from\" -> \"$to\" [color=\"#$color\",fontcolor=\"#$color\"];"

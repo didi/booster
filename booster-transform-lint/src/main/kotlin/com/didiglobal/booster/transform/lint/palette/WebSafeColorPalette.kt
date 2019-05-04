@@ -7,7 +7,7 @@ import java.util.Random
  *
  * @author johnsonlee
  */
-object WEB_SAFE_COLOR_PALETTE {
+object WebSafeColorPalette {
 
     private const val N = 216
 
