@@ -151,7 +151,9 @@ private fun MethodInsnNode.transformInvokeVirtual(context: TransformContext, kla
     }
 
     private fun TypeInsnNode.transformWithName(context: TransformContext, klass: ClassNode, method: MethodNode, type: String, prefix: String = "") {
-        this.find { it.opcode == Opcodes.INVOKESPECIAL }?.isInstanceOf(MethodInsnNode::class.java) { init ->
+        this.find {
+            it.opcode == Opcodes.INVOKESPECIAL
+        }?.isInstanceOf { init: MethodInsnNode ->
             if (this.desc == init.owner && "<init>" == init.name) {
                 val name = "new${prefix.capitalize()}${this.desc.substringAfterLast('/')}"
                 val desc = "${init.desc.substringBeforeLast(')')}Ljava/lang/String;)L${this.desc};"

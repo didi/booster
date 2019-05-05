@@ -15,7 +15,7 @@ fun AbstractInsnNode.find(predicate: (AbstractInsnNode) -> Boolean): AbstractIns
     return null
 }
 
-inline fun <reified T> AbstractInsnNode.isInstanceOf(type: Class<T>, action: (T) -> Unit) {
+inline fun <reified T> AbstractInsnNode.isInstanceOf(action: (T) -> Unit) {
     if (this is T) {
         action(this as T)
     }
