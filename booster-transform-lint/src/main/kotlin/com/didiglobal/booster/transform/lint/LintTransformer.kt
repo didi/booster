@@ -45,9 +45,7 @@ class LintTransformer : ClassTransformer {
     override fun onPreTransform(context: TransformContext) {
         this.graphBuilders.clear()
         this.globalBuilder = CallGraph.Builder()
-        this.ignores = context.getProperty(PROPERTY_IGNORES)?.split(',')?.map {
-            Wildcard(it)
-        }?.toSet() ?: emptySet()
+        this.ignores = context.getProperty(PROPERTY_IGNORES)?.split(',')?.map(Wildcard.Companion::valueOf)?.toSet() ?: DEFAULT_PROPERTY_IGNORES_DEFAULT
 
         val parser = SAXParserFactory.newInstance().newSAXParser()
         context.artifacts.get(ArtifactManager.MERGED_MANIFESTS).forEach { manifest ->
@@ -194,4 +192,10 @@ private val PROPERTY_PREFIX = Build.ARTIFACT.replace('-', '.')
 private val PROPERTY_APIS = "$PROPERTY_PREFIX.apis"
 
 private val PROPERTY_IGNORES = "$PROPERTY_PREFIX.ignores"
+
+private val DEFAULT_PROPERTY_IGNORES_DEFAULT = listOf(
+        "android/*",
+        "androidx/*",
+        "com/android/*"
+).map(Wildcard.Companion::valueOf).toSet()
 
