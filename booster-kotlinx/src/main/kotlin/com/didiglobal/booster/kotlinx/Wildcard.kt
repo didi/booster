@@ -72,6 +72,20 @@ class Wildcard(private val pattern: String, private val ignoreCase: Boolean = fa
         return false
     }
 
+    override fun hashCode() = this.pattern.hashCode()
+
+    override fun equals(other: Any?) = when {
+        other === this -> true
+        other is Wildcard -> other.pattern == this.pattern
+        else -> false
+    }
+
+    override fun toString() = this.pattern
+
+    companion object {
+        fun valueOf(pattern: String) = Wildcard(pattern)
+    }
+
     private fun splitOnTokens(text: String): Array<String> {
         // used by wildcardMatch
         // package level so a unit test may run on this
@@ -104,16 +118,6 @@ class Wildcard(private val pattern: String, private val ignoreCase: Boolean = fa
 
         return list.toTypedArray()
     }
-
-    override fun hashCode() = this.pattern.hashCode()
-
-    override fun equals(other: Any?) = when {
-        other === this -> true
-        other is Wildcard -> other.pattern == this.pattern
-        else -> false
-    }
-
-    override fun toString() = this.pattern
 
     private fun checkIndexOf(str: String, strStartIndex: Int, search: String): Int {
         val endIndex = str.length - search.length
