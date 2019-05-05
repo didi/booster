@@ -45,7 +45,7 @@ public class ShadowThread {
     }
 
     public static String makeThreadName(final String name) {
-        return MARK + name.replace('/', '.');
+        return MARK;
     }
 
     public static String makeThreadName(final String name, final String prefix) {

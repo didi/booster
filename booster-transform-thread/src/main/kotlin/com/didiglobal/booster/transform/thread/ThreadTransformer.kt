@@ -48,7 +48,7 @@ class ThreadTransformer : ClassTransformer {
                     Opcodes.INVOKESPECIAL -> (it as MethodInsnNode).transformInvokeSpecial(context, klass, method)
                     Opcodes.NEW -> (it as TypeInsnNode).transform(context, klass, method)
                     Opcodes.ARETURN -> if (method.desc == "L$THREAD;") {
-                        method.instructions.insertBefore(it, LdcInsnNode(makeThreadName(klass.name)))
+                        method.instructions.insertBefore(it, LdcInsnNode(makeThreadName(klass.className)))
                         method.instructions.insertBefore(it, MethodInsnNode(Opcodes.INVOKESTATIC, SHADOW_THREAD, "setThreadName", "(Ljava/lang/Thread;Ljava/lang/String;)Ljava/lang/Thread;", false))
                         logger.println(" + $SHADOW_THREAD.makeThreadName(Ljava/lang/String;Ljava/lang/String;) @return: ${klass.name}.${method.name}${method.desc}")
                     }
@@ -58,24 +58,24 @@ class ThreadTransformer : ClassTransformer {
         return klass
     }
 
-    private fun MethodInsnNode.transformInvokeVirtual(context: TransformContext, klass: ClassNode, method: MethodNode) {
-        if (context.klassPool.get(THREAD).isAssignableFrom(this.owner)) {
-            when ("${this.name}${this.desc}") {
-                "start()V" -> {
-                    method.instructions.insertBefore(this, LdcInsnNode(makeThreadName(klass.name)))
-                    method.instructions.insertBefore(this, MethodInsnNode(Opcodes.INVOKESTATIC, SHADOW_THREAD, "setThreadName", "(Ljava/lang/Thread;Ljava/lang/String;)Ljava/lang/Thread;", false))
-                    logger.println(" + $SHADOW_THREAD.makeThreadName(Ljava/lang/String;Ljava/lang/String;) => ${this.owner}.${this.name}${this.desc}: ${klass.name}.${method.name}${method.desc}")
-                    this.owner = THREAD
-                }
-                "setName(Ljava/lang/String;)V" -> {
-                    method.instructions.insertBefore(this, LdcInsnNode(makeThreadName(klass.name)))
-                    method.instructions.insertBefore(this, MethodInsnNode(Opcodes.INVOKESTATIC, SHADOW_THREAD, "makeThreadName", "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", false))
-                    logger.println(" + $SHADOW_THREAD.makeThreadName(Ljava/lang/String;Ljava/lang/String;) => ${this.owner}.${this.name}${this.desc}: ${klass.name}.${method.name}${method.desc}")
-                    this.owner = THREAD
-                }
+private fun MethodInsnNode.transformInvokeVirtual(context: TransformContext, klass: ClassNode, method: MethodNode) {
+    if (context.klassPool.get(THREAD).isAssignableFrom(this.owner)) {
+        when ("${this.name}${this.desc}") {
+            "start()V" -> {
+                method.instructions.insertBefore(this, LdcInsnNode(makeThreadName(klass.className)))
+                method.instructions.insertBefore(this, MethodInsnNode(Opcodes.INVOKESTATIC, SHADOW_THREAD, "setThreadName", "(Ljava/lang/Thread;Ljava/lang/String;)Ljava/lang/Thread;", false))
+                logger.println(" + $SHADOW_THREAD.makeThreadName(Ljava/lang/String;Ljava/lang/String;) => ${this.owner}.${this.name}${this.desc}: ${klass.name}.${method.name}${method.desc}")
+                this.owner = THREAD
+            }
+            "setName(Ljava/lang/String;)V" -> {
+                method.instructions.insertBefore(this, LdcInsnNode(makeThreadName(klass.className)))
+                method.instructions.insertBefore(this, MethodInsnNode(Opcodes.INVOKESTATIC, SHADOW_THREAD, "makeThreadName", "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", false))
+                logger.println(" + $SHADOW_THREAD.makeThreadName(Ljava/lang/String;Ljava/lang/String;) => ${this.owner}.${this.name}${this.desc}: ${klass.name}.${method.name}${method.desc}")
+                this.owner = THREAD
             }
         }
     }
+}
 
     private fun MethodInsnNode.transformInvokeSpecial(context: TransformContext, klass: ClassNode, method: MethodNode) {
         if (this.owner == THREAD && this.name == "<init>") {
@@ -83,7 +83,7 @@ class ThreadTransformer : ClassTransformer {
                 "()V",
                 "(Ljava/lang/Runnable;)V",
                 "(Ljava/lang/ThreadGroup;Ljava/lang/Runnable;)V" -> {
-                    method.instructions.insertBefore(this, LdcInsnNode(makeThreadName(klass.name)))
+                    method.instructions.insertBefore(this, LdcInsnNode(makeThreadName(klass.className)))
                     val r = this.desc.lastIndexOf(')')
                     val desc = "${this.desc.substring(0, r)}Ljava/lang/String;${this.desc.substring(r)}"
                     logger.println(" + $SHADOW_THREAD.makeThreadName(Ljava/lang/String;Ljava/lang/String;) => ${this.owner}.${this.name}${this.desc}: ${klass.name}.${method.name}${method.desc}")
@@ -94,13 +94,13 @@ class ThreadTransformer : ClassTransformer {
                 "(Ljava/lang/ThreadGroup;Ljava/lang/String;)V",
                 "(Ljava/lang/Runnable;Ljava/lang/String;)V",
                 "(Ljava/lang/ThreadGroup;Ljava/lang/Runnable;Ljava/lang/String;)V" -> {
-                    method.instructions.insertBefore(this, LdcInsnNode(makeThreadName(klass.name)))
+                    method.instructions.insertBefore(this, LdcInsnNode(makeThreadName(klass.className)))
                     method.instructions.insertBefore(this, MethodInsnNode(Opcodes.INVOKESTATIC, SHADOW_THREAD, "makeThreadName", "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", false))
                     logger.println(" + $SHADOW_THREAD.makeThreadName(Ljava/lang/String;Ljava/lang/String;) => ${this.owner}.${this.name}${this.desc}: ${klass.name}.${method.name}${method.desc}")
                 }
                 "(Ljava/lang/ThreadGroup;Ljava/lang/Runnable;Ljava/lang/String;J)V" -> {
                     method.instructions.insertBefore(this, InsnNode(Opcodes.POP2)) // discard the last argument: stackSize
-                    method.instructions.insertBefore(this, LdcInsnNode(makeThreadName(klass.name)))
+                    method.instructions.insertBefore(this, LdcInsnNode(makeThreadName(klass.className)))
                     method.instructions.insertBefore(this, MethodInsnNode(Opcodes.INVOKESTATIC, SHADOW_THREAD, "makeThreadName", "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", false))
                     logger.println(" + $SHADOW_THREAD.makeThreadName(Ljava/lang/String;Ljava/lang/String;) => ${this.owner}.${this.name}${this.desc}: ${klass.name}.${method.name}${method.desc}")
                     this.desc = "(Ljava/lang/ThreadGroup;Ljava/lang/Runnable;Ljava/lang/String;)V"
@@ -119,7 +119,7 @@ class ThreadTransformer : ClassTransformer {
                         logger.println(" * ${this.owner}.${this.name}${this.desc} => $SHADOW_EXECUTORS.${this.name}$desc: ${klass.name}.${method.name}${method.desc}")
                         this.owner = SHADOW_EXECUTORS
                         this.desc = desc
-                        method.instructions.insertBefore(this, LdcInsnNode(makeThreadName(klass.name)))
+                        method.instructions.insertBefore(this, LdcInsnNode(makeThreadName(klass.className)))
                     }
                     "newCachedThreadPool",
                     "newFixedThreadPool",
@@ -133,7 +133,7 @@ class ThreadTransformer : ClassTransformer {
                         this.owner = SHADOW_EXECUTORS
                         this.name = name
                         this.desc = desc
-                        method.instructions.insertBefore(this, LdcInsnNode(makeThreadName(klass.name)))
+                        method.instructions.insertBefore(this, LdcInsnNode(makeThreadName(klass.className)))
                     }
                 }
             }
@@ -163,7 +163,7 @@ class ThreadTransformer : ClassTransformer {
                 init.opcode = Opcodes.INVOKESTATIC
                 init.itf = false
                 // add name as last parameter
-                method.instructions.insertBefore(init, LdcInsnNode(makeThreadName(klass.name)))
+                method.instructions.insertBefore(init, LdcInsnNode(makeThreadName(klass.className)))
 
                 // remove the next DUP of NEW
                 val dup = this.next
@@ -179,7 +179,10 @@ class ThreadTransformer : ClassTransformer {
 
 }
 
-private fun makeThreadName(name: String) = MARK + name.replace('/', '.')
+private val ClassNode.className: String
+    get() = this.name.replace('/', '.')
+
+private fun makeThreadName(name: String) = MARK + name
 
 internal val MARK = "\u200B"
 
