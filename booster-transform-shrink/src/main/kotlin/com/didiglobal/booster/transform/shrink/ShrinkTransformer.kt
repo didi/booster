@@ -12,7 +12,6 @@ import com.didiglobal.booster.transform.ArtifactManager.Companion.MERGED_RES
 import com.didiglobal.booster.transform.ArtifactManager.Companion.SYMBOL_LIST
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
-import com.didiglobal.booster.transform.asm.simpleName
 import com.didiglobal.booster.util.FileFinder
 import com.google.auto.service.AutoService
 import org.objectweb.asm.Opcodes.ACC_FINAL
@@ -53,12 +52,15 @@ class ShrinkTransformer : ClassTransformer {
         this.appRStyleable = "$appPackage/$R_STYLEABLE"
         this.appRStyleableClass = "$appPackage/$R_STYLEABLE_CLASS"
         this.ignores = context.getProperty(PROPERTY_IGNORES)?.split(',')?.map { Wildcard(it) }?.toSet() ?: emptySet()
-        val redundant = context.findRedundantR()
-
-        logger.println("$PROPERTY_IGNORES=$ignores\n")
 
         // Find symbols that should be retained
         this.retainedSymbols = context.findRetainedSymbols()
+        if (this.retainedSymbols.isNotEmpty()) {
+            this.ignores = this.ignores.plus(setOf(Wildcard.valueOf("android/support/constraint/R\$id.class")))
+        }
+
+        logger.println("$PROPERTY_IGNORES=$ignores\n")
+
         retainedSymbols.ifNotEmpty { symbols ->
             logger.println("Retained symbols:")
             symbols.forEach {
@@ -68,6 +70,7 @@ class ShrinkTransformer : ClassTransformer {
         }
 
         // Remove redundant R class files
+        val redundant = context.findRedundantR()
         redundant.ifNotEmpty { pairs ->
             val totalSize = redundant.map { it.first.length() }.sum()
             val maxWidth = redundant.map { it.second.length }.max()?.plus(10) ?: 10
@@ -87,14 +90,12 @@ class ShrinkTransformer : ClassTransformer {
     }
 
     override fun transform(context: TransformContext, klass: ClassNode): ClassNode {
-        when {
-            this.ignores.any { it.matches(klass.name) } -> {
-                logger.println("Ignore `${klass.name}`")
-                return klass
-            }
-            klass.name == this.appRStyleable -> klass.removeIntFields()
-            klass.simpleName == "BuildConfig" -> klass.removeConstantFields()
-            else -> replaceSymbolReferenceWithConstant(klass)
+        if (this.ignores.any { it.matches(klass.name) }) {
+            logger.println("Ignore `${klass.name}`")
+            return klass
+        } else {
+            klass.removeConstantFields()
+            klass.replaceSymbolReferenceWithConstant()
         }
         return klass
     }
@@ -103,8 +104,37 @@ class ShrinkTransformer : ClassTransformer {
         this.logger.close()
     }
 
-    private fun replaceSymbolReferenceWithConstant(klass: ClassNode) {
-        klass.methods.forEach { method ->
+    private fun TransformContext.findRedundantR(): List<Pair<File, String>> {
+        return artifacts.get(JAVAC).map { classes ->
+            val base = classes.toURI()
+
+            FileFinder(classes) { r ->
+                r.name.startsWith("R") && r.name.endsWith(".class") && (r.name[1] == '$' || r.name.length == 7)
+            }.map { r ->
+                Pair(r, base.relativize(r.toURI()).path)
+            }
+        }.flatten().filter {
+            it.second != appRStyleableClass // keep application's R$styleable.class
+        }.filter { pair ->
+            !ignores.any { it.matches(pair.second) }
+        }
+    }
+
+    private fun ClassNode.removeConstantFields() {
+        fields.map {
+            it as FieldNode
+        }.filter { field ->
+            !ignores.any { it.matches("$name.${field.name}${field.desc}") }
+        }.filter {
+            0 != (ACC_STATIC and it.access) && 0 != (ACC_FINAL and it.access) && it.value != null
+        }.forEach {
+            fields.remove(it)
+            logger.println("Remove `$name.${it.name} : ${it.desc}` = ${it.valueAsString()}")
+        }
+    }
+
+    private fun ClassNode.replaceSymbolReferenceWithConstant() {
+        this.methods.forEach { method ->
             val insns = method.instructions.iterator().asIterable().filter {
                 it.opcode == GETSTATIC
             }.map {
@@ -125,7 +155,7 @@ class ShrinkTransformer : ClassTransformer {
                     method.instructions.insertBefore(field, LdcInsnNode(symbols.getInt(type, field.name)))
                     method.instructions.remove(field)
                 } catch (e: NullPointerException) {
-                    logger.println("Unresolvable symbol `R.$type.${field.name}` : ${klass.name}.${method.name}${method.desc}")
+                    logger.println("Unresolvable symbol `R.$type.${field.name}` : ${this.name}.${method.name}${method.desc}")
                 }
             }
 
@@ -133,50 +163,6 @@ class ShrinkTransformer : ClassTransformer {
             intArrayFields.forEach { field ->
                 field.owner = "$appPackage/${field.owner.substring(field.owner.lastIndexOf('/') + 1)}"
             }
-        }
-    }
-
-    private fun TransformContext.findRedundantR(): List<Pair<File, String>> {
-        return artifacts.get(JAVAC).map { classes ->
-            val base = classes.toURI()
-
-            FileFinder(classes) { r ->
-                r.name.startsWith("R") && r.name.endsWith(".class") && (r.name[1] == '$' || r.name.length == 7)
-            }.map { r ->
-                Pair(r, base.relativize(r.toURI()).path)
-            }
-        }.flatten().filter {
-            it.second != appRStyleableClass // keep application's R$styleable.class
-        }.filter { pair ->
-            !ignores.any { it.matches(pair.second) }
-        }
-    }
-
-    private fun ClassNode.removeIntFields() {
-        fields.map {
-            it as FieldNode
-        }.filter { field ->
-            val signature = "$name.${field.name}${field.desc}"
-            !ignores.any { it.matches(signature) }
-        }.filter {
-            it.desc == "I"
-        }.forEach {
-            fields.remove(it)
-            logger.println("Remove `$name.${it.name} : ${it.desc}` = 0x${(it.value as Int).toString(16)}")
-        }
-    }
-
-    private fun ClassNode.removeConstantFields() {
-        fields.map {
-            it as FieldNode
-        }.filter { field ->
-            val signature = "$name.${field.name}${field.desc}"
-            !ignores.any { it.matches(signature) }
-        }.filter {
-            0 != (ACC_STATIC and it.access) && 0 != (ACC_FINAL and it.access) && it.value != null
-        }.forEach {
-            fields.remove(it)
-            logger.println("Remove `$name.${it.name} : ${it.desc}` = ${it.valueAsString()}")
         }
     }
 
