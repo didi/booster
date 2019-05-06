@@ -92,7 +92,6 @@ class ShrinkTransformer : ClassTransformer {
     override fun transform(context: TransformContext, klass: ClassNode): ClassNode {
         if (this.ignores.any { it.matches(klass.name) }) {
             logger.println("Ignore `${klass.name}`")
-            return klass
         } else {
             klass.removeConstantFields()
             klass.replaceSymbolReferenceWithConstant()
