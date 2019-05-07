@@ -4,6 +4,7 @@ import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.api.InstallableVariantImpl
 import com.android.build.gradle.internal.scope.VariantScope
 import com.android.build.gradle.internal.variant.BaseVariantData
+import org.gradle.api.Project
 import org.gradle.api.Task
 
 /**
@@ -21,6 +22,9 @@ val BaseVariant.dependencies: ResolvedArtifactResults
  */
 val BaseVariant.scope: VariantScope
     get() = variantData.scope
+
+val BaseVariant.project: Project
+    get() = scope.globalScope.project
 
 /**
  * The variant data
