@@ -2,7 +2,6 @@ package com.didiglobal.booster.gradle
 
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.publishing.AndroidArtifacts
-import com.didiglobal.booster.kotlinx.Formatter
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.int
 import com.didiglobal.booster.kotlinx.separatorsToSystem
@@ -14,7 +13,10 @@ import java.io.PrintWriter
 
 /**
  * Represents the dependencies of the specified variant
+ *
+ * @author johnsonlee
  */
+@Suppress("UnstableApiUsage")
 class ResolvedArtifactResults(private val variant: BaseVariant) : Collection<ResolvedArtifactResult> {
 
     private val results: Iterable<ResolvedArtifactResult>
@@ -36,8 +38,7 @@ class ResolvedArtifactResults(private val variant: BaseVariant) : Collection<Res
         maxFileWidth = int(map { it.file.path.length }.max()).value
     }
 
-    override val size: Int
-        get() = results.count()
+    override val size = results.count()
 
     override fun contains(element: ResolvedArtifactResult) = results.contains(element)
 
@@ -53,28 +54,28 @@ class ResolvedArtifactResults(private val variant: BaseVariant) : Collection<Res
     private val output = variant.variantData.scope.globalScope.intermediatesDir.file("dependencies").file(variant.dirName.separatorsToSystem()).file("dependencies.txt")
 
     /**
-     * Default dependency formatter
+     * Default dependency stringify
      */
-    private val formatter: Formatter<ResolvedArtifactResult> = { result ->
+    private val stringify: (ResolvedArtifactResult) -> String = { result ->
         result.id.componentIdentifier.displayName + " ".repeat(maxNameWidth + 1 - result.id.componentIdentifier.displayName.length) + result.file + " ".repeat(maxFileWidth + 1 - result.file.path.length) + result.file.length()
     }
 
     /**
-     * Dump it to file with specific formatter
+     * Dump it to file with specific stringify
      */
-    fun dump(file: File = output, formatter: Formatter<ResolvedArtifactResult> = this.formatter) {
+    fun dump(file: File = output, stringifier: (ResolvedArtifactResult) -> String = this.stringify) {
         file.touch().printWriter().use {
-            print(it, formatter)
+            print(it, stringifier)
         }
     }
 
     /**
      * Print all component artifacts
      */
-    fun print(printer: PrintWriter = PrintWriter(System.out, true), formatter: Formatter<ResolvedArtifactResult> = this.formatter) {
+    fun print(printer: PrintWriter = PrintWriter(System.out, true), stringifier: (ResolvedArtifactResult) -> String = this.stringify) {
         forEach { result ->
             printer.apply {
-                println(formatter(result))
+                println(stringifier(result))
             }.flush()
         }
     }

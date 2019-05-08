@@ -19,5 +19,3 @@ fun String.md5(): String {
 fun String.matches(wildcard: Wildcard): Boolean {
     return wildcard.matches(this)
 }
-
-typealias Formatter<T> = (value: T) -> CharSequence
