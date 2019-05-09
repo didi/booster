@@ -3,6 +3,8 @@ package com.didiglobal.booster.kotlinx
 import java.util.concurrent.ForkJoinPool
 import java.util.concurrent.ForkJoinTask
 
+val NCPU = Runtime.getRuntime().availableProcessors()
+
 /**
  * Execute this task
  *
