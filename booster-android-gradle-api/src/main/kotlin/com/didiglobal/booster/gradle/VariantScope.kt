@@ -1,8 +1,6 @@
 package com.didiglobal.booster.gradle
 
 import com.android.build.gradle.internal.scope.VariantScope
-import com.android.builder.model.Version
-import com.android.repository.Revision
 import java.io.File
 
 private val ALL_ARTIFACTS_GETTER =

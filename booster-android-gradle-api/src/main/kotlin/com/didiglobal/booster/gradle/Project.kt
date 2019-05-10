@@ -9,14 +9,13 @@ import org.gradle.api.Project
  *
  * @author johnsonlee
  */
-inline fun <reified T : BaseExtension> Project.getAndroid(): T {
-    return extensions.getByName("android") as T
-}
+inline fun <reified T : BaseExtension> Project.getAndroid(): T = extensions.getByName("android") as T
 
 /**
  * The gradle version
  */
 val Project.gradleVersion: Revision
-    get() {
-        return Revision.parseRevision(gradle.gradleVersion)
-    }
+    get() = Revision.parseRevision(gradle.gradleVersion)
+
+val Project.aapt2Enabled: Boolean
+    get() = GTE_V33 || ProjectV32.isAapt2Enabled(this)
