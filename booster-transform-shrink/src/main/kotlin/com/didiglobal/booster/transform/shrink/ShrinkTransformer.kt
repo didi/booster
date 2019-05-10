@@ -5,14 +5,13 @@ import com.didiglobal.booster.kotlinx.asIterable
 import com.didiglobal.booster.kotlinx.execute
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.ifNotEmpty
-import com.didiglobal.booster.kotlinx.map
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.ArtifactManager.Companion.JAVAC
 import com.didiglobal.booster.transform.ArtifactManager.Companion.MERGED_RES
 import com.didiglobal.booster.transform.ArtifactManager.Companion.SYMBOL_LIST
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
-import com.didiglobal.booster.util.FileFinder
+import com.didiglobal.booster.util.search
 import com.google.auto.service.AutoService
 import org.objectweb.asm.Opcodes.ACC_FINAL
 import org.objectweb.asm.Opcodes.ACC_STATIC
@@ -107,7 +106,7 @@ class ShrinkTransformer : ClassTransformer {
         return artifacts.get(JAVAC).map { classes ->
             val base = classes.toURI()
 
-            FileFinder(classes) { r ->
+            classes.search { r ->
                 r.name.startsWith("R") && r.name.endsWith(".class") && (r.name[1] == '$' || r.name.length == 7)
             }.map { r ->
                 Pair(r, base.relativize(r.toURI()).path)

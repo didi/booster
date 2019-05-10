@@ -1,9 +1,8 @@
 package com.didiglobal.booster.transform.util
 
-import com.didiglobal.booster.kotlinx.forEach
 import com.didiglobal.booster.kotlinx.redirect
 import com.didiglobal.booster.kotlinx.touch
-import com.didiglobal.booster.util.FileFinder
+import com.didiglobal.booster.util.search
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
@@ -22,7 +21,7 @@ fun File.transform(output: File, transformer: (ByteArray) -> ByteArray = { it ->
     when {
         isDirectory -> {
             val base = this.toURI()
-            FileFinder(this).forEach {
+            this.search().forEach {
                 it.transform(File(output, base.relativize(it.toURI()).path), transformer)
             }
         }

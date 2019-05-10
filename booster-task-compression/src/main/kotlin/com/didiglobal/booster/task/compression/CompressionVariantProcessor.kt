@@ -6,11 +6,10 @@ import com.android.build.gradle.tasks.ProcessAndroidResources
 import com.didiglobal.booster.gradle.processedRes
 import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.gradle.scope
-import com.didiglobal.booster.kotlinx.execute
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.task.spi.VariantProcessor
-import com.didiglobal.booster.util.FileFinder
+import com.didiglobal.booster.util.search
 import com.google.auto.service.AutoService
 import java.io.File
 import java.io.PrintWriter
@@ -44,9 +43,9 @@ class CompressionVariantProcessor : VariantProcessor {
     }
 
     private fun compressProcessedRes(variant: BaseVariant) {
-        val files = FileFinder(variant.scope.processedRes) {
+        val files = variant.scope.processedRes.search {
             it.name.startsWith(SdkConstants.FN_RES_BASE) && it.extension == SdkConstants.EXT_RES
-        }.execute()
+        }
         val maxWidth = files.map { it.name.length }.max() ?: 0
         val base = variant.project.projectDir.toURI()
 

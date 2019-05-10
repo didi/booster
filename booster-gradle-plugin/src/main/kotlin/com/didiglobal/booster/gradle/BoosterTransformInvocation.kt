@@ -15,7 +15,6 @@ import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactSco
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactType.AAR
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactType.JAR
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH
-import com.didiglobal.booster.kotlinx.execute
 import com.didiglobal.booster.kotlinx.ifNotEmpty
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.Klass
@@ -24,7 +23,7 @@ import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.TransformListener
 import com.didiglobal.booster.transform.Transformer
 import com.didiglobal.booster.transform.util.transform
-import com.didiglobal.booster.util.FileFinder
+import com.didiglobal.booster.util.search
 import java.io.File
 import java.net.URLClassLoader
 import java.util.ServiceLoader
@@ -100,8 +99,8 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
         ArtifactManager.JAVAC                         -> variant.scope.javac
         ArtifactManager.MERGED_ASSETS                 -> variant.scope.mergedAssets
         ArtifactManager.MERGED_RES                    -> variant.scope.mergedRes
-        ArtifactManager.MERGED_MANIFESTS              -> FileFinder(variant.scope.mergedManifests) { SdkConstants.FN_ANDROID_MANIFEST_XML == it.name }.execute()
-        ArtifactManager.PROCESSED_RES                 -> FileFinder(variant.scope.processedRes) { it.name.startsWith(SdkConstants.FN_RES_BASE) && it.name.endsWith(SdkConstants.EXT_RES) }.execute()
+        ArtifactManager.MERGED_MANIFESTS              -> variant.scope.mergedManifests.search { SdkConstants.FN_ANDROID_MANIFEST_XML == it.name }
+        ArtifactManager.PROCESSED_RES                 -> variant.scope.processedRes.search { it.name.startsWith(SdkConstants.FN_RES_BASE) && it.name.endsWith(SdkConstants.EXT_RES) }
         ArtifactManager.SYMBOL_LIST                   -> variant.scope.symbolList
         ArtifactManager.SYMBOL_LIST_WITH_PACKAGE_NAME -> variant.scope.symbolListWithPackageName
         else -> TODO("Unexpected type: $type")

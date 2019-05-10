@@ -6,8 +6,7 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.api.BaseVariant
 import com.didiglobal.booster.kotlinx.head
-import com.didiglobal.booster.kotlinx.map
-import com.didiglobal.booster.util.FileFinder
+import com.didiglobal.booster.util.search
 import org.gradle.api.Project
 import org.gradle.api.internal.AbstractTask
 import org.objectweb.asm.ClassReader
@@ -69,7 +68,7 @@ val TransformInvocation.applicationId: String
 
         return variant.scope.javac.map { classes ->
             val base = classes.toURI()
-            FileFinder(classes) { file ->
+            classes.search { file ->
                 file.name == "BuildConfig.class" && file.inputStream().use { bytecode ->
                     ClassNode().also { klass ->
                         ClassReader(bytecode).accept(klass, 0)
