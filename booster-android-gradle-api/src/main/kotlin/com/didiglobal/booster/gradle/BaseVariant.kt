@@ -34,10 +34,42 @@ val BaseVariant.project: Project
 val BaseVariant.variantData: BaseVariantData
     get() = if (this is InstallableVariantImpl) this.variantData else javaClass.getDeclaredMethod("getVariantData").invoke(this) as BaseVariantData
 
+@Suppress("DEPRECATION")
 val BaseVariant.javaCompilerTask: Task
     get() = if (GTE_V33) {
         this.javaCompileProvider.get()
     } else {
-        @Suppress("DEPRECATION")
         this.javaCompiler
+    }
+
+@Suppress("DEPRECATION")
+val BaseVariant.preBuildTask: Task
+    get() = if (GTE_V33) {
+        this.preBuildProvider.get()
+    } else {
+        this.preBuild
+    }
+
+@Suppress("DEPRECATION")
+val BaseVariant.assembleTask: Task
+    get() = if (GTE_V33) {
+        this.assembleProvider.get()
+    } else {
+        this.assemble
+    }
+
+@Suppress("DEPRECATION")
+val BaseVariant.mergeAssetsTask: Task
+    get() = if (GTE_V33) {
+        this.mergeAssetsProvider.get()
+    } else {
+        this.mergeAssets
+    }
+
+@Suppress("DEPRECATION")
+val BaseVariant.mergeResourcesTask: Task
+    get() = if (GTE_V33) {
+        this.mergeResourcesProvider.get()
+    } else {
+        this.mergeResources
     }

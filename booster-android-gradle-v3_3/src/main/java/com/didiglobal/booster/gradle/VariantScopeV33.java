@@ -4,6 +4,7 @@ import com.android.build.api.artifact.ArtifactType;
 import com.android.build.gradle.internal.scope.AnchorOutputType;
 import com.android.build.gradle.internal.scope.InternalArtifactType;
 import com.android.build.gradle.internal.scope.VariantScope;
+import com.android.sdklib.BuildToolInfo;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -84,6 +85,11 @@ class VariantScopeV33 {
     @NotNull
     static Collection<File> getFinalArtifactFiles(@NotNull final VariantScope scope, @NotNull final ArtifactType type) {
         return scope.getArtifacts().getFinalArtifactFiles(type).getFiles();
+    }
+
+    @NotNull
+    static BuildToolInfo getBuildTools(@NotNull final VariantScope scope) {
+        return scope.getGlobalScope().getAndroidBuilder().getBuildToolInfo();
     }
 
 }

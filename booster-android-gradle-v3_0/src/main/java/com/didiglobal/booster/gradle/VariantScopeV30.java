@@ -4,6 +4,7 @@ import com.android.build.gradle.internal.scope.TaskOutputHolder.AnchorOutputType
 import com.android.build.gradle.internal.scope.TaskOutputHolder.OutputType;
 import com.android.build.gradle.internal.scope.TaskOutputHolder.TaskOutputType;
 import com.android.build.gradle.internal.scope.VariantScope;
+import com.android.sdklib.BuildToolInfo;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -84,6 +85,11 @@ class VariantScopeV30 {
     @NotNull
     static Collection<File> getOutput(@NotNull final VariantScope scope, @NotNull final OutputType type) {
         return scope.getOutput(type).getFiles();
+    }
+
+    @NotNull
+    static BuildToolInfo getBuildTools(@NotNull final VariantScope scope) {
+        return scope.getGlobalScope().getAndroidBuilder().getBuildToolInfo();
     }
 
 }
