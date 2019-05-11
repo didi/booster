@@ -34,26 +34,26 @@ import java.util.zip.ZipOutputStream
  * Represents a variant processor for resources compression, the task dependency graph shows as below:
  *
  * ```
- *               +------------------+
- *               | processResources |
- *               +--------+---------+
- *                        |
- *            +-----------+------------+
- *            |                        |
- *            v                        v
- * +----------+----------+   +---------+---------+
- * |  compressResources  |   |  compressAssets   |
- * +----------+----------+   +---------+---------+
- *            |                        |
- *            v                        v
- * +----------+----------+   +---------+---------+
- * |   reduceResources   |   |    mergeAssets    |
- * +----------+----------+   +-------------------+
- *            |
- *            v
- * +----------+----------+
- * |   mergeResources    |
- * +---------------------+
+ *                     +------------------+
+ *                     | processResources |
+ *                     +--------+---------+
+ *                              |
+ *               +--------------+-----------+
+ *               |                          |
+ *               v                          v
+ * +-------------+------------+   +---------+---------+
+ * |    compressResources     |   |  compressAssets   |
+ * +-------------+------------+   +---------+---------+
+ *               |                          |
+ *               v                          v
+ * +-------------+------------+   +---------+---------+
+ * | removeRedundantResources |   |    mergeAssets    |
+ * +-------------+------------+   +-------------------+
+ *               |
+ *               v
+ * +-------------+------------+
+ * |     mergeResources       |
+ * +--------------------------+
  *
  * ```
  *
@@ -63,15 +63,16 @@ import java.util.zip.ZipOutputStream
 class CompressionVariantProcessor : VariantProcessor {
 
     override fun process(variant: BaseVariant) {
+        val aapt2 = variant.project.aapt2Enabled
+        val pngFilter = if (aapt2) ::isFlatPng else ::isPng
         val results = CompressionResult()
         val processRes = variant.project.tasks.withType(ProcessAndroidResources::class.java).findByName("process${variant.name.capitalize()}Resources")?.doLast {
             compressProcessedRes(variant, results)
             generateReport(variant, results)
         }
 
-        val aapt2 = variant.project.aapt2Enabled
-        val pngFilter = if (aapt2) ::isFlatPng else ::isPng
-        val reduceRedundancy = variant.project.tasks.create("reduce${variant.name.capitalize()}Redundancy", ReduceRedundancy::class.java) {
+        val klassRemoveRedundantFlatImages = if (aapt2) RemoveRedundantFlatImages::class else RemoveRedundantImages::class
+        val reduceRedundancy = variant.project.tasks.create("remove${variant.name.capitalize()}RedundantResources", klassRemoveRedundantFlatImages.java) {
             it.outputs.upToDateWhen { false }
             it.variant = variant
             it.results = results
