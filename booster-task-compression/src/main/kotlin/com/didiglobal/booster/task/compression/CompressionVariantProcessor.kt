@@ -5,6 +5,8 @@ import com.android.SdkConstants.DOT_PNG
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.tasks.ProcessAndroidResources
 import com.didiglobal.booster.gradle.aapt2Enabled
+import com.didiglobal.booster.gradle.mergeAssetsTask
+import com.didiglobal.booster.gradle.mergeResourcesTask
 import com.didiglobal.booster.gradle.mergedAssets
 import com.didiglobal.booster.gradle.mergedRes
 import com.didiglobal.booster.gradle.processedRes
@@ -25,8 +27,35 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
 
+
+
+
 /**
- * Represents a variant processor for processed resources compression
+ * Represents a variant processor for resources compression, the task dependency graph shows as below:
+ *
+ * ```
+ *               +------------------+
+ *               | processResources |
+ *               +--------+---------+
+ *                        |
+ *            +-----------+------------+
+ *            |                        |
+ *            v                        v
+ * +----------+----------+   +---------+---------+
+ * |  compressResources  |   |  compressAssets   |
+ * +----------+----------+   +---------+---------+
+ *            |                        |
+ *            v                        v
+ * +----------+----------+   +---------+---------+
+ * |   reduceResources   |   |    mergeAssets    |
+ * +----------+----------+   +-------------------+
+ *            |
+ *            v
+ * +----------+----------+
+ * |   mergeResources    |
+ * +---------------------+
+ *
+ * ```
  *
  * @author johnsonlee
  */
@@ -40,6 +69,15 @@ class CompressionVariantProcessor : VariantProcessor {
             generateReport(variant, results)
         }
 
+        val aapt2 = variant.project.aapt2Enabled
+        val pngFilter = if (aapt2) ::isFlatPng else ::isPng
+        val reduceRedundancy = variant.project.tasks.create("reduce${variant.name.capitalize()}Redundancy", ReduceRedundancy::class.java) {
+            it.outputs.upToDateWhen { false }
+            it.variant = variant
+            it.results = results
+            it.sources = { variant.scope.mergedRes.search(pngFilter) }
+        }.dependsOn(variant.mergeResourcesTask)
+
         val pngquant = Pngquant.find(variant.project.findProperty(PROPERTY_PNGQUANT)?.toString())
         if (pngquant.isInstalled) {
             // assets compression
@@ -49,11 +87,9 @@ class CompressionVariantProcessor : VariantProcessor {
                 it.results = results
                 it.sources = { variant.scope.mergedAssets.search(::isPng) }
                 it.compressor = pngquant
-            }.dependsOn(variant.mergeAssets)
+            }.dependsOn(variant.mergeAssetsTask)
 
             // resources compression
-            val aapt2 = variant.project.aapt2Enabled
-            val pngFilter = if (aapt2) ::isFlatPng else ::isPng
             val klassCompressImage = if (aapt2) CompressFlatImages::class else CompressImages::class
             val compressResources = variant.project.tasks.create("compress${variant.name.capitalize()}Resources", klassCompressImage.java) {
                 it.outputs.upToDateWhen { false }
@@ -61,7 +97,7 @@ class CompressionVariantProcessor : VariantProcessor {
                 it.results = results
                 it.sources = { variant.scope.mergedRes.search(pngFilter) }
                 it.compressor = pngquant
-            }.dependsOn(variant.mergeResources)
+            }.dependsOn(reduceRedundancy)
 
             processRes?.dependsOn(compressAssets, compressResources)
         }
@@ -122,6 +158,12 @@ private fun File.repack(shouldCompress: (ZipEntry) -> Boolean) {
 private fun generateReport(variant: BaseVariant, results: CompressionResult) {
     val base = variant.project.buildDir.toURI()
     val table = results.map {
+        // 1. relative path
+        // 2. original size
+        // 3. compressed size
+        // 4. reduced size
+        // 5. formatted reduced size
+        // 6. reduction percentage
         Sextuple(
                 base.relativize(it.first.toURI()).path,
                 it.second,

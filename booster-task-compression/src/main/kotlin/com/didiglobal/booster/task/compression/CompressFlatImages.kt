@@ -1,15 +1,11 @@
 package com.didiglobal.booster.task.compression
 
-import android.aapt.pb.internal.ResourcesInternal
 import com.android.SdkConstants.DOT_PNG
 import com.android.SdkConstants.FD_RES
 import com.android.SdkConstants.FD_RES_DRAWABLE
 import com.android.SdkConstants.FD_RES_MIPMAP
 import com.android.builder.model.AndroidProject.FD_INTERMEDIATES
 import com.android.sdklib.BuildToolInfo
-import com.didiglobal.booster.aapt2.BinaryParser
-import com.didiglobal.booster.aapt2.MAGIC
-import com.didiglobal.booster.aapt2.RES_FILE
 import com.didiglobal.booster.gradle.buildTools
 import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.gradle.scope
@@ -20,7 +16,6 @@ import com.didiglobal.booster.task.compression.compressor.Pngquant.Companion.EXI
 import org.gradle.api.Action
 import org.gradle.api.tasks.TaskAction
 import org.gradle.process.ExecSpec
-import java.io.File
 
 /**
  * Represents a task for compiled image compression
@@ -41,10 +36,10 @@ internal open class CompressFlatImages : CompressImages() {
         compressedRes.file(FD_RES_MIPMAP).mkdirs()
         compressedRes.file(FD_RES_DRAWABLE).mkdirs()
 
-        sources().map {
+        sources().parallelStream().map {
             it to it.metadata
-        }.filterNot {
-            it.second == null
+        }.filter {
+            it.second != null
         }.map {
             val compressed = compressedRes.file("${it.second!!.resourceName}$DOT_PNG")
             // 1 - flat file
@@ -58,7 +53,7 @@ internal open class CompressFlatImages : CompressImages() {
             }, Action { spec: ExecSpec ->
                 spec.commandLine(aapt2, "compile", "-o", it.first.parent, compressed)
             })
-        }.parallelStream().forEach {
+        }.forEach {
             val s0 = it.third.length()
             val rc = project.exec(it.fourth)
             when (rc.exitValue) {
@@ -76,53 +71,6 @@ internal open class CompressFlatImages : CompressImages() {
                 else -> rc.rethrowFailure()
             }
         }
-    }
-
-    private val File.metadata: ResourcesInternal.CompiledFile?
-        get() = try {
-            BinaryParser(this).use { parser ->
-                val magic = parser.readInt()
-                if (MAGIC != magic) {
-                    logger.error("Invalid AAPT2 container file: `${this.absolutePath}`")
-                    return null
-                }
-
-                val version = parser.readInt()
-                if (version <= 0) {
-                    logger.error("Invalid AAPT2 container file: `${this.absolutePath}`")
-                    return null
-                }
-
-                val count = parser.readInt()
-                if (count <= 0) {
-                    logger.warn("Empty AAPT2 container `${this.absolutePath}`")
-                    return null
-                }
-
-                return parser.parseResEntry()
-            }
-        } catch (t: Throwable) {
-            logger.error("Parse `${this.absolutePath}` failed", t)
-            null
-        }
-
-    @Suppress("UNUSED_VARIABLE")
-    private fun BinaryParser.parseResEntry(): ResourcesInternal.CompiledFile? {
-        val p = tell()
-        val type = readInt()
-        val length = readLong()
-
-        try {
-            if (type == RES_FILE) {
-                val headerSize = readInt()
-                val dataSize = readLong()
-                return parse { ResourcesInternal.CompiledFile.parseFrom(readBytes(headerSize)) }
-            }
-        } finally {
-            seek(p + length.toInt())
-        }
-
-        return null
     }
 
 }
