@@ -109,11 +109,13 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
     internal fun doFullTransform() {
         this.inputs.parallelStream().forEach { input ->
             input.directoryInputs.parallelStream().forEach {
+                project.logger.info("Transforming ${it.file}")
                 it.file.transform(outputProvider.getContentLocation(it.file.name, it.contentTypes, it.scopes, Format.DIRECTORY)) { bytecode ->
                     bytecode.transform(this)
                 }
             }
             input.jarInputs.parallelStream().forEach {
+                project.logger.info("Transforming ${it.file}")
                 it.file.transform(outputProvider.getContentLocation(it.name, it.contentTypes, it.scopes, Format.JAR)) { bytecode ->
                     bytecode.transform(this)
                 }
@@ -129,6 +131,7 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
                     REMOVED -> jarInput.file.delete()
                     CHANGED, ADDED -> {
                         val root = outputProvider.getContentLocation(jarInput.name, jarInput.contentTypes, jarInput.scopes, Format.JAR)
+                        project.logger.info("Transforming ${jarInput.file}")
                         jarInput.file.transform(root) { bytecode ->
                             bytecode.transform(this)
                         }
@@ -144,6 +147,7 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
                             REMOVED -> file.delete()
                             ADDED, CHANGED -> {
                                 val root = outputProvider.getContentLocation(dirInput.name, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY)
+                                project.logger.info("Transforming $file")
                                 file.transform(File(root, base.relativize(file.toURI()).path)) { bytecode ->
                                     bytecode.transform(this)
                                 }
