@@ -24,7 +24,6 @@ import java.io.File
 import java.io.PrintWriter
 
 internal const val R_STYLEABLE = "R\$styleable"
-internal const val R_STYLEABLE_CLASS = "$R_STYLEABLE.class"
 internal const val ANDROID_R = "android/R$"
 internal const val COM_ANDROID_INTERNAL_R = "com/android/internal/R$"
 
@@ -38,7 +37,6 @@ class ShrinkTransformer : ClassTransformer {
 
     private lateinit var appPackage: String
     private lateinit var appRStyleable: String
-    private lateinit var appRStyleableClass: String
     private lateinit var symbols: SymbolList
     private lateinit var retainedSymbols: Set<String>
     private lateinit var ignores: Set<Wildcard>
@@ -49,15 +47,24 @@ class ShrinkTransformer : ClassTransformer {
         this.logger = context.reportsDir.file(Build.ARTIFACT).file(context.name).file("report.txt").touch().printWriter()
         this.symbols = SymbolList.from(context.artifacts.get(SYMBOL_LIST).single())
         this.appRStyleable = "$appPackage/$R_STYLEABLE"
-        this.appRStyleableClass = "$appPackage/$R_STYLEABLE_CLASS"
         this.ignores = context.getProperty(PROPERTY_IGNORES)?.split(',')?.map { Wildcard(it) }?.toSet() ?: emptySet()
 
-        // Find symbols that should be retained
-        this.retainedSymbols = context.findRetainedSymbols()
-        if (this.retainedSymbols.isNotEmpty()) {
-            this.ignores = this.ignores.plus(setOf(Wildcard.valueOf("android/support/constraint/R\$id.class")))
+        val classpath = context.compileClasspath.map { it.absolutePath }
+        if (classpath.any { it.contains(PREFIX_CONSTRAINT_LAYOUT) }) {
+            // Find symbols that should be retained
+            this.retainedSymbols = context.findRetainedSymbols()
+            if (this.retainedSymbols.isNotEmpty()) {
+                this.ignores += setOf(Wildcard.valueOf("android/support/constraint/R\$id"))
+            }
+        } else {
+            this.retainedSymbols = emptySet()
         }
 
+        if (classpath.any { it.contains(PREFIX_GREENDAO) }) {
+            this.ignores += Wildcard.valueOf(PATTERN_FIELD_TABLENAME)
+        }
+
+        logger.println(classpath.joinToString("\n  - ", "classpath:\n  - ", "\n"))
         logger.println("$PROPERTY_IGNORES=$ignores\n")
 
         retainedSymbols.ifNotEmpty { symbols ->
@@ -109,10 +116,10 @@ class ShrinkTransformer : ClassTransformer {
             classes.search { r ->
                 r.name.startsWith("R") && r.name.endsWith(".class") && (r.name[1] == '$' || r.name.length == 7)
             }.map { r ->
-                Pair(r, base.relativize(r.toURI()).path)
+                r to base.relativize(r.toURI()).path.substringBeforeLast(".class")
             }
         }.flatten().filter {
-            it.second != appRStyleableClass // keep application's R$styleable.class
+            it.second != appRStyleable // keep application's R$styleable.class
         }.filter { pair ->
             !ignores.any { it.matches(pair.second) }
         }
@@ -122,7 +129,7 @@ class ShrinkTransformer : ClassTransformer {
         fields.map {
             it as FieldNode
         }.filter { field ->
-            !ignores.any { it.matches("$name.${field.name}${field.desc}") }
+            !ignores.any { it.matches("$name.${field.name}:${field.desc}") }
         }.filter {
             0 != (ACC_STATIC and it.access) && 0 != (ACC_FINAL and it.access) && it.value != null
         }.forEach {
@@ -185,3 +192,9 @@ private fun TransformContext.findRetainedSymbols(): Set<String> {
 private val PROPERTY_PREFIX = Build.ARTIFACT.replace('-', '.')
 
 private val PROPERTY_IGNORES = "$PROPERTY_PREFIX.ignores"
+
+private val PREFIX_CONSTRAINT_LAYOUT = "${File.separatorChar}com.android.support.constraint${File.separatorChar}constraint-layout"
+
+private val PREFIX_GREENDAO = "${File.separatorChar}org.greenrobot${File.separatorChar}greendao${File.separatorChar}"
+
+internal const val PATTERN_FIELD_TABLENAME = "*.TABLENAME:Ljava/lang/String;"
