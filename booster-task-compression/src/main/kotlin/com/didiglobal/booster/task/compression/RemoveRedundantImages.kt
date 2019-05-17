@@ -1,6 +1,5 @@
 package com.didiglobal.booster.task.compression
 
-import android.aapt.pb.internal.ResourcesInternal
 import com.android.build.gradle.api.BaseVariant
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
@@ -13,7 +12,7 @@ internal open class RemoveRedundantImages: DefaultTask() {
 
     lateinit var variant: BaseVariant
 
-    lateinit var results: CompressionResult
+    lateinit var results: CompressionResults
 
     lateinit var sources: () -> Collection<File>
 

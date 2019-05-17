@@ -16,6 +16,7 @@ import com.didiglobal.booster.task.compression.compressor.Pngquant.Companion.EXI
 import org.gradle.api.Action
 import org.gradle.api.tasks.TaskAction
 import org.gradle.process.ExecSpec
+import java.io.File
 
 /**
  * Represents a task for compiled image compression
@@ -54,19 +55,17 @@ internal open class CompressFlatImages : CompressImages() {
                 spec.commandLine(aapt2, "compile", "-o", it.first.parent, compressed)
             })
         }.forEach {
-            val s0 = it.third.length()
+            val s0 = File(it.second.sourcePath).length()
             val rc = project.exec(it.fourth)
             when (rc.exitValue) {
                 0 -> {
                     val s1 = it.third.length()
-                    if (s0 > s1) { // skip if larger
-                        results.add(Triple(it.first, s0, s1))
-                        project.exec(it.fifth)
-                    }
+                    results.add(CompressionResult(it.first, s0, s1, File(it.second.sourcePath)))
+                    project.exec(it.fifth)
                 }
                 EXIT_LARGER_THAN_ORIGINAL,
                 EXIT_UNSATISFIED_QUALITY -> {
-                    /* ignore compressed result*/
+                    results.add(CompressionResult(it.first, s0, s0, File(it.second.sourcePath)))
                 }
                 else -> rc.rethrowFailure()
             }

@@ -22,7 +22,7 @@ internal open class CompressImages : DefaultTask() {
 
     lateinit var sources: () -> Collection<File>
 
-    lateinit var results: CompressionResult
+    lateinit var results: CompressionResults
 
     lateinit var compressor: ImageCompressor
 
@@ -41,11 +41,11 @@ internal open class CompressImages : DefaultTask() {
             when (rc.exitValue) {
                 0 -> {
                     val s1 = it.first.length()
-                    results.add(Triple(it.first, s0, s1))
+                    results.add(CompressionResult(it.first, s0, s1, it.first))
                 }
                 EXIT_LARGER_THAN_ORIGINAL,
                 EXIT_UNSATISFIED_QUALITY -> {
-                    /* ignore compressed result*/
+                    results.add(CompressionResult(it.first, s0, s0, it.first))
                 }
                 else -> rc.rethrowFailure()
             }

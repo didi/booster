@@ -29,7 +29,8 @@ internal open class RemoveRedundantFlatImages : RemoveRedundantImages() {
             }.takeLast(group.value.size - 1)
         }.flatten().parallelStream().forEach {
             if (it.first.delete()) {
-                results.add(Triple(it.first, File(it.second.sourcePath).length(), 0))
+                val original = File(it.second.sourcePath)
+                results.add(CompressionResult(it.first, original.length(), 0, original))
             }
         }
     }

@@ -12,7 +12,8 @@ import com.didiglobal.booster.gradle.mergedRes
 import com.didiglobal.booster.gradle.processedRes
 import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.gradle.scope
-import com.didiglobal.booster.kotlinx.Sextuple
+import com.didiglobal.booster.kotlinx.Octuple
+import com.didiglobal.booster.kotlinx.Quadruple
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.task.compression.compressor.PROPERTY_PNGQUANT
@@ -26,8 +27,6 @@ import java.util.concurrent.CopyOnWriteArrayList
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
-
-
 
 
 /**
@@ -65,7 +64,7 @@ class CompressionVariantProcessor : VariantProcessor {
     override fun process(variant: BaseVariant) {
         val aapt2 = variant.project.aapt2Enabled
         val pngFilter = if (aapt2) ::isFlatPng else ::isPng
-        val results = CompressionResult()
+        val results = CompressionResults()
         val processRes = variant.project.tasks.withType(ProcessAndroidResources::class.java).findByName("process${variant.name.capitalize()}Resources")?.doLast {
             compressProcessedRes(variant, results)
             generateReport(variant, results)
@@ -106,7 +105,7 @@ class CompressionVariantProcessor : VariantProcessor {
 
 }
 
-private fun compressProcessedRes(variant: BaseVariant, results: CompressionResult) {
+private fun compressProcessedRes(variant: BaseVariant, results: CompressionResults) {
     val files = variant.scope.processedRes.search {
         it.name.startsWith(SdkConstants.FN_RES_BASE) && it.extension == SdkConstants.EXT_RES
     }
@@ -116,7 +115,7 @@ private fun compressProcessedRes(variant: BaseVariant, results: CompressionResul
             !NO_COMPRESS.contains(it.name.substringAfterLast('.'))
         }
         val s1 = ap_.length()
-        results.add(Triple(ap_, s0, s1))
+        results.add(CompressionResult(ap_, s0, s1, ap_))
     }
 }
 
@@ -156,36 +155,38 @@ private fun File.repack(shouldCompress: (ZipEntry) -> Boolean) {
  *
  * reduction percentage | file path | reduced size
  */
-private fun generateReport(variant: BaseVariant, results: CompressionResult) {
+private fun generateReport(variant: BaseVariant, results: CompressionResults) {
     val base = variant.project.buildDir.toURI()
     val table = results.map {
-        // 1. relative path
-        // 2. original size
-        // 3. compressed size
-        // 4. reduced size
-        // 5. formatted reduced size
-        // 6. reduction percentage
-        Sextuple(
+        val delta = it.second - it.third
+        CompressionReport(
                 base.relativize(it.first.toURI()).path,
                 it.second,
                 it.third,
-                it.second - it.third,
-                decimal(it.second - it.third),
-                percentage((it.second - it.third).toDouble() * 100 / it.second)
+                delta,
+                if (delta == 0L) "0" else decimal(delta),
+                if (delta == 0L) "0%" else percentage((delta).toDouble() * 100 / it.second),
+                decimal(it.second),
+                it.fourth
         )
     }
     val maxWith1 = table.map { it.first.length }.max() ?: 0
     val maxWith5 = table.map { it.fifth.length }.max() ?: 0
     val maxWith6 = table.map { it.sixth.length }.max() ?: 0
+    val maxWith7 = table.map { it.seventh.length }.max() ?: 0
     val fullWith = maxWith1 + maxWith5 + maxWith6 + 8
 
     variant.project.buildDir.file("reports", Build.ARTIFACT, variant.name, "report.txt").touch().printWriter().use { logger ->
-        // sort by reduced size
-        table.sortedByDescending { it.fourth }.forEach {
-            logger.println("${it.sixth.padStart(maxWith6)} ${it.first.padEnd(maxWith1)} ${it.fifth.padStart(maxWith5)} bytes")
+        // sort by reduced size and original size
+        table.sortedWith(compareByDescending<CompressionReport> {
+            it.fourth
+        }.thenByDescending {
+            it.second
+        }).forEach {
+            logger.println("${it.sixth.padStart(maxWith6)} ${it.first.padEnd(maxWith1)} ${it.fifth.padStart(maxWith5)} ${it.seventh.padStart(maxWith7)} ${it.eighth}")
         }
-        logger.println("-".repeat(maxWith1 + maxWith5 + maxWith6 + 8))
-        logger.println(" TOTAL ${decimal(table.sumByDouble { it.fourth.toDouble() }).padStart(fullWith - 13)} bytes")
+        logger.println("-".repeat(maxWith1 + maxWith5 + maxWith6 + 2))
+        logger.println(" TOTAL ${decimal(table.sumByDouble { it.fourth.toDouble() }).padStart(fullWith - 13)}")
     }
 
 }
@@ -193,11 +194,26 @@ private fun generateReport(variant: BaseVariant, results: CompressionResult) {
 /**
  * Compression Result
  *
- * - File path
- * - Reduced size
- * - Reduction percentage
+ * 1. image file
+ * 2. original file size
+ * 3. current file size
+ * 4. original file path
  */
-typealias CompressionResult = CopyOnWriteArrayList<Triple<File, Long, Long>>
+internal typealias CompressionResult = Quadruple<File, Long, Long, File>
+
+internal typealias CompressionResults = CopyOnWriteArrayList<CompressionResult>
+
+/**
+ * 1. relative path
+ * 2. original size
+ * 3. compressed size
+ * 4. reduced size
+ * 5. formatted reduced size
+ * 6. reduction percentage
+ * 7. original size
+ * 8. original path
+ */
+private typealias CompressionReport = Octuple<String, Long, Long, Long, String, String, String, File>
 
 private val NO_COMPRESS = setOf(
         "jpg", "jpeg", "png", "gif",
