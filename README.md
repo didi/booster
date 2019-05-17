@@ -20,15 +20,15 @@ Booster 主要由 Transformer 和 Task 组成，Transformer 主要用于对字�
 
 - Detecting performance issues | 检测性能问题
 
-  Potential performance issues could be found by using Booster, for example, calling APIs that may block the UI thread or main thread, such as I/O APIs.
+  Potential performance issues could be found by using Booster, for example, calling APIs that may block the UI thread or main thread, such as I/O APIs. About the details, please see [booster-transform-lint](./booster-transform-lint).
 
-  使用 Booster 可以发现潜在的性能问题，例如，在应用中调用可能阻塞 UI 线程或者主线程的 API，如：I/O API。
+  使用 Booster 可以发现潜在的性能问题，例如，在应用中调用可能阻塞 UI 线程或者主线程的 API，如：I/O API。详见 [booster-transform-lint](./booster-transform-lint)。
 
 - Optimizing runtime performance | 优化运行时性能
 
-  Thread management has always been a problem for developers, especially the threads started by third-party SDKs, starting too many threads may cause OOM, fortunately, these issues can be solved by Booster.
+  Thread management has always been a problem for developers, especially the threads started by third-party SDKs, starting too many threads may cause OOM, fortunately, these issues can be solved by Booster. About multithreading performance optimization, please see [booster-transform-thread](./booster-transform-thread).
 
-  对于开发者来说，线程管理一直是个头疼的问题，特别是第三方 SDK 中的线程，过多的线程可能会导致内存不足，然而幸运的是，这些问题都能通过 Booster 来解决。
+  对于开发者来说，线程管理一直是个头疼的问题，特别是第三方 SDK 中的线程，过多的线程可能会导致内存不足，然而幸运的是，这些问题都能通过 Booster 来解决。关于多线程性能优化，详见 [booster-transform-thread](./booster-transform-thread)。
 
 - Fixing system bugs | 修复系统错误
 
@@ -38,9 +38,9 @@ Booster 主要由 Transformer 和 Task 组成，Transformer 主要用于对字�
 
 - Reducing app size | 为应用瘦身
 
-  Such as image resources compression, constants removal, etc.
+  Such as [image resources compression](./booster-transform-compression), [constants removal](./booster-transform-shrink), etc.
 
-  像图片资源压缩、代码中常量的删除，都可以通过 Booster 来完成
+  像[图片资源压缩](./booster-transform-compression)、[代码中常量的删除](./booster-transform-shrink)，都可以通过 Booster 来完成。
 
 - Other things you can imagine | 其它你能想像得到的
 
