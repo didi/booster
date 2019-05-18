@@ -1,7 +1,7 @@
 package com.didiglobal.booster.transform.usage
 
-import com.didiglobal.booster.kotlinx.RESET
-import com.didiglobal.booster.kotlinx.YELLOW
+import com.didiglobal.booster.kotlinx.CSI_RESET
+import com.didiglobal.booster.kotlinx.CSI_YELLOW
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
 import com.google.auto.service.AutoService
@@ -29,7 +29,7 @@ class UsageTransformer : ClassTransformer {
                 }.filter {
                     apis.contains(it)
                 }.forEach {
-                    println("$YELLOW ! ${klass.name}.${method.name}${method.desc}: $RESET$it")
+                    println("$CSI_YELLOW ! ${klass.name}.${method.name}${method.desc}: $CSI_RESET$it")
                 }
             }
         }

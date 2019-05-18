@@ -6,8 +6,8 @@ import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactSco
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactType.AAR
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH
 import com.didiglobal.booster.gradle.scope
-import com.didiglobal.booster.kotlinx.RESET
-import com.didiglobal.booster.kotlinx.YELLOW
+import com.didiglobal.booster.kotlinx.CSI_RESET
+import com.didiglobal.booster.kotlinx.CSI_YELLOW
 import com.didiglobal.booster.kotlinx.ifNotEmpty
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
@@ -38,7 +38,7 @@ internal open class PermissionExtractor : DefaultTask() {
                         PermissionUsageHandler().also { handler ->
                             factory.newSAXParser().parse(source, handler)
                         }.permissions.sorted().ifNotEmpty { permissions ->
-                            println("${aar.componentId} [$YELLOW${variant.name}$RESET]")
+                            println("${aar.componentId} [$$CSI_YELLOW${variant.name}$CSI_RESET]")
                             permissions.forEach { permission ->
                                 println("  - $permission")
                             }

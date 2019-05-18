@@ -2,8 +2,8 @@ package com.didiglobal.booster.task.dependency
 
 import com.android.build.gradle.api.BaseVariant
 import com.didiglobal.booster.gradle.dependencies
-import com.didiglobal.booster.kotlinx.RESET
-import com.didiglobal.booster.kotlinx.YELLOW
+import com.didiglobal.booster.kotlinx.CSI_RESET
+import com.didiglobal.booster.kotlinx.CSI_YELLOW
 import com.didiglobal.booster.kotlinx.ifNotEmpty
 import org.gradle.api.DefaultTask
 import org.gradle.api.internal.artifacts.repositories.resolver.MavenUniqueSnapshotComponentIdentifier
@@ -21,7 +21,7 @@ internal open class CheckSnapshot : DefaultTask() {
             }.map {
                 it.id.componentIdentifier as MavenUniqueSnapshotComponentIdentifier
             }.ifNotEmpty { snapshots ->
-                println("$YELLOW ⚠️  ${snapshots.size} SNAPSHOT artifacts found in ${variant.name} variant:$RESET\n${snapshots.joinToString("\n") { snapshot -> "$YELLOW→  ${snapshot.displayName}$RESET" }}")
+                println("$CSI_YELLOW ⚠️  ${snapshots.size} SNAPSHOT artifacts found in ${variant.name} variant:$CSI_RESET\n${snapshots.joinToString("\n") { snapshot -> "$CSI_YELLOW→  ${snapshot.displayName}$CSI_RESET" }}")
             }
         }
     }
