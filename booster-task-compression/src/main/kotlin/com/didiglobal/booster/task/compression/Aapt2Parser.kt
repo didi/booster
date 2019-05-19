@@ -56,3 +56,9 @@ private fun BinaryParser.parseResEntry(): ResourcesInternal.CompiledFile? {
     return null
 }
 
+internal val ResourcesInternal.CompiledFile.resourcePath: String
+    get() {
+        val src = File(this.sourcePath)
+        return "${src.parentFile.name}${File.separatorChar}${src.name}"
+    }
+

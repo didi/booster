@@ -4,6 +4,7 @@ import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.api.InstallableVariantImpl
 import com.android.build.gradle.internal.scope.VariantScope
 import com.android.build.gradle.internal.variant.BaseVariantData
+import com.android.build.gradle.tasks.ProcessAndroidResources
 import org.gradle.api.Project
 import org.gradle.api.Task
 
@@ -73,3 +74,6 @@ val BaseVariant.mergeResourcesTask: Task
     } else {
         this.mergeResources
     }
+
+val BaseVariant.processResTask: ProcessAndroidResources
+    get() = project.tasks.withType(ProcessAndroidResources::class.java).findByName("process${name.capitalize()}Resources")!!

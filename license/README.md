@@ -25,3 +25,6 @@ The following sections of the repository contain third-party code, to which diff
   - License: BSD ([3rdparty/asm/LICENSE.txt](./3rdparty/asm/LICENSE.txt))
   - Origin: Derived from ASM: a very small and fast Java bytecode manipulation framework, Copyright (c) 2000-2011 INRIA, France Telecom
 
+## libwebp prebuilt binary
+
+- Path: booster-task-compression/src/main/resources/libwebp

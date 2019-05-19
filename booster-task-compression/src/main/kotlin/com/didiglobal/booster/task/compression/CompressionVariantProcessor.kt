@@ -3,12 +3,10 @@ package com.didiglobal.booster.task.compression
 import com.android.SdkConstants
 import com.android.SdkConstants.DOT_PNG
 import com.android.build.gradle.api.BaseVariant
-import com.android.build.gradle.tasks.ProcessAndroidResources
 import com.didiglobal.booster.gradle.aapt2Enabled
-import com.didiglobal.booster.gradle.mergeAssetsTask
 import com.didiglobal.booster.gradle.mergeResourcesTask
-import com.didiglobal.booster.gradle.mergedAssets
 import com.didiglobal.booster.gradle.mergedRes
+import com.didiglobal.booster.gradle.processResTask
 import com.didiglobal.booster.gradle.processedRes
 import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.gradle.scope
@@ -16,11 +14,10 @@ import com.didiglobal.booster.kotlinx.Octuple
 import com.didiglobal.booster.kotlinx.Quadruple
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.touch
-import com.didiglobal.booster.task.compression.compressor.PROPERTY_PNGQUANT
-import com.didiglobal.booster.task.compression.compressor.Pngquant
 import com.didiglobal.booster.task.spi.VariantProcessor
 import com.didiglobal.booster.util.search
 import com.google.auto.service.AutoService
+import org.gradle.api.Project
 import java.io.File
 import java.text.DecimalFormat
 import java.util.concurrent.CopyOnWriteArrayList
@@ -65,9 +62,10 @@ class CompressionVariantProcessor : VariantProcessor {
         val aapt2 = variant.project.aapt2Enabled
         val pngFilter = if (aapt2) ::isFlatPng else ::isPng
         val results = CompressionResults()
-        val processRes = variant.project.tasks.withType(ProcessAndroidResources::class.java).findByName("process${variant.name.capitalize()}Resources")?.doLast {
-            compressProcessedRes(variant, results)
-            generateReport(variant, results)
+
+        variant.processResTask.doLast {
+            variant.compressProcessedRes(results)
+            variant.generateReport(results)
         }
 
         val klassRemoveRedundantFlatImages = if (aapt2) RemoveRedundantFlatImages::class else RemoveRedundantImages::class
@@ -78,35 +76,22 @@ class CompressionVariantProcessor : VariantProcessor {
             it.sources = { variant.scope.mergedRes.search(pngFilter) }
         }.dependsOn(variant.mergeResourcesTask)
 
-        val pngquant = Pngquant.find(variant.project.findProperty(PROPERTY_PNGQUANT)?.toString())
-        if (pngquant.isInstalled) {
-            // assets compression
-            val compressAssets = variant.project.tasks.create("compress${variant.name.capitalize()}Assets", CompressImages::class.java) {
-                it.outputs.upToDateWhen { false }
-                it.variant = variant
-                it.results = results
-                it.sources = { variant.scope.mergedAssets.search(::isPng) }
-                it.compressor = pngquant
-            }.dependsOn(variant.mergeAssetsTask)
-
-            // resources compression
-            val klassCompressImage = if (aapt2) CompressFlatImages::class else CompressImages::class
-            val compressResources = variant.project.tasks.create("compress${variant.name.capitalize()}Resources", klassCompressImage.java) {
-                it.outputs.upToDateWhen { false }
-                it.variant = variant
-                it.results = results
-                it.sources = { variant.scope.mergedRes.search(pngFilter) }
-                it.compressor = pngquant
-            }.dependsOn(reduceRedundancy)
-
-            processRes?.dependsOn(compressAssets, compressResources)
+        variant.project.compressor?.apply {
+            newCompressionTaskCreator().apply {
+                createAssetsCompressionTask(variant, results)
+                createResourcesCompressionTask(variant, results).dependsOn(reduceRedundancy)
+            }
         }
+
     }
 
 }
 
-private fun compressProcessedRes(variant: BaseVariant, results: CompressionResults) {
-    val files = variant.scope.processedRes.search {
+private val Project.compressor: CompressionTool?
+    get() = CompressionTool.get(this)
+
+private fun BaseVariant.compressProcessedRes(results: CompressionResults) {
+    val files = scope.processedRes.search {
         it.name.startsWith(SdkConstants.FN_RES_BASE) && it.extension == SdkConstants.EXT_RES
     }
     files.parallelStream().forEach { ap_ ->
@@ -155,8 +140,8 @@ private fun File.repack(shouldCompress: (ZipEntry) -> Boolean) {
  *
  * reduction percentage | file path | reduced size
  */
-private fun generateReport(variant: BaseVariant, results: CompressionResults) {
-    val base = variant.project.buildDir.toURI()
+private fun BaseVariant.generateReport(results: CompressionResults) {
+    val base = project.buildDir.toURI()
     val table = results.map {
         val delta = it.second - it.third
         CompressionReport(
@@ -176,7 +161,7 @@ private fun generateReport(variant: BaseVariant, results: CompressionResults) {
     val maxWith7 = table.map { it.seventh.length }.max() ?: 0
     val fullWith = maxWith1 + maxWith5 + maxWith6 + 8
 
-    variant.project.buildDir.file("reports", Build.ARTIFACT, variant.name, "report.txt").touch().printWriter().use { logger ->
+    project.buildDir.file("reports", Build.ARTIFACT, name, "report.txt").touch().printWriter().use { logger ->
         // sort by reduced size and original size
         table.sortedWith(compareByDescending<CompressionReport> {
             it.fourth
