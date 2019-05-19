@@ -38,9 +38,9 @@ Booster 主要由 Transformer 和 Task 组成，Transformer 主要用于对字�
 
 - Reducing app size | 为应用瘦身
 
-  Such as [image resources compression](./booster-transform-compression), [constants removal](./booster-transform-shrink), etc.
+  Such as [image resources compression](./booster-task-compression), [constants removal](./booster-transform-shrink), etc.
 
-  像[图片资源压缩](./booster-transform-compression)、[代码中常量的删除](./booster-transform-shrink)，都可以通过 Booster 来完成。
+  像[图片资源压缩](./booster-task-compression)、[代码中常量的删除](./booster-transform-shrink)，都可以通过 Booster 来完成。
 
 - Other things you can imagine | 其它你能想像得到的
 
