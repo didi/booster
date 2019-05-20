@@ -85,9 +85,9 @@ Conveniently, the `booster-task-all` module can be depended to enable all tasks.
 
 另外，Booster 也提供了一系列的 [Gradle Task](https://docs.gradle.org/current/userguide/tutorial_using_tasks.html) 来帮助开发者提升效率，为了方便起见，可以通过依赖 `booster-task-all` 来启用所有的 task。
 
-Then build an optimized package by executing the *assemble* task, after the build process completed, the reports could be found at `build/reports/`
+Then build an optimized package by executing the *assemble* task, after the build process completed, the reports could be found at `build/reports/`.
 
-然后通过执行 `assemble` task 来构建一个优化过的应用包，构建完成后，在 `build/reports/` 目录下会生成相应的报告
+然后通过执行 `assemble` task 来构建一个优化过的应用包，构建完成后，在 `build/reports/` 目录下会生成相应的报告。
 
 ```bash
 $ ./gradlew assembleRelease
@@ -95,19 +95,19 @@ $ ./gradlew assembleRelease
 
 ## Documentation | 文档
 
-About the details, please see [Wiki](../../wiki)
+About the details, please see [Wiki](../../wiki).
 
 详见 [Wiki](../../wiki)。
 
 ## Contributing
 
-Welcome to contribute by creating issues or sending pull requests. See [Contributing Guideline](./CONTRIBUTING.md)
+Welcome to contribute by creating issues or sending pull requests. See [Contributing Guideline](./CONTRIBUTING.md).
 
-欢迎大家以 issue 或者 pull request 的形式为本项本作贡献。详见 [Contributing Guideline](./CONTRIBUTING.md)
+欢迎大家以 issue 或者 pull request 的形式为本项本作贡献。详见 [Contributing Guideline](./CONTRIBUTING.md)。
 
 ## Community
 
-Welcome to join the community on [spectrum](https://spectrum.chat/booster)
+Welcome to join the community on [spectrum](https://spectrum.chat/booster).
 
 ## License
 
