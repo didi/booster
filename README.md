@@ -105,6 +105,10 @@ Welcome to contribute by creating issues or sending pull requests. See [Contribu
 
 欢迎大家以 issue 或者 pull request 的形式为本项本作贡献。详见 [Contributing Guideline](./CONTRIBUTING.md)
 
+## Community
+
+Welcome to join the community on [spectrum](https://spectrum.chat/booster)
+
 ## License
 
 Booster is licensed under the [Apache License 2.0](./LICENSE.txt).
