@@ -20,7 +20,7 @@ enum class GraphType : CallGraphFormatter {
                 appendln("    graph [bgcolor=\"transparent\",pad=\"0.555\"];")
                 appendln("    node [color=\"#00BFC4\",fillcolor=\"#00BFC440\",fontcolor=\"#333333\",fontname=Helvetica,shape=box,style=filled];")
                 appendln("    edge [fontname=Helvetica];")
-                appendln("    rankdir = LR;")
+                appendln("    rankdir = TB;")
                 graph.nodes.joinTo(this, "\n    ", "    ", "\n") { node ->
                     val id = graph.title.substringAfterLast('.')
                     val color = RGB.valueOf(WebSafeColorPalette.random(0x000000, 0xffffff)) // except white color
