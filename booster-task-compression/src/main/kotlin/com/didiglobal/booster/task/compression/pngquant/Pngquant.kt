@@ -1,9 +1,9 @@
 package com.didiglobal.booster.task.compression.pngquant
 
+import com.didiglobal.booster.kotlinx.OS
 import com.didiglobal.booster.task.compression.CompressionTool
 import com.didiglobal.booster.task.compression.SimpleCompressionTaskCreator
 import com.didiglobal.booster.task.compression.pngquant.Pngquant.Companion.PROGRAM
-import com.intellij.openapi.util.SystemInfo.isWindows
 import java.io.File
 
 /**
@@ -27,4 +27,4 @@ internal class Pngquant internal constructor(path: String? = null) : Compression
 
 }
 
-private val PNGQUANT = "$PROGRAM${if (isWindows) ".exe" else ""}"
+private val PNGQUANT = "$PROGRAM${OS.executableSuffix}"

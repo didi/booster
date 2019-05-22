@@ -1,16 +1,10 @@
 package com.didiglobal.booster.task.compression.cwebp
 
+import com.didiglobal.booster.kotlinx.OS
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.task.compression.CompressionTool
 import com.didiglobal.booster.task.compression.SimpleCompressionTaskCreator
 import com.didiglobal.booster.task.compression.cwebp.Cwebp.Companion.PROGRAM
-import com.intellij.openapi.util.SystemInfo.OS_ARCH
-import com.intellij.openapi.util.SystemInfo.OS_NAME
-import com.intellij.openapi.util.SystemInfo.OS_VERSION
-import com.intellij.openapi.util.SystemInfo.isLinux
-import com.intellij.openapi.util.SystemInfo.isMac
-import com.intellij.openapi.util.SystemInfo.isOsVersionAtLeast
-import com.intellij.openapi.util.SystemInfo.isWindows
 import java.io.File
 
 /**
@@ -50,22 +44,22 @@ internal class Cwebp internal constructor(path: String? = null, private val opaq
 
 }
 
-private val CWEBP = "$PROGRAM${if (isWindows) ".exe" else ""}"
+private val CWEBP = "$PROGRAM${OS.executableSuffix}"
 
 private val PREBUILT_LIBWEBP_EXECUTABLE = "libwebp/" + when {
-    isLinux -> "linux/" + when (OS_ARCH) {
-        "x86_64" -> OS_ARCH
-        else -> TODO("Unsupporeted architecture $OS_ARCH")
+    OS.isLinux() -> "linux/" + when (OS.arch) {
+        "x64", "x86_64", "amd64" -> "x64"
+        else -> TODO("Unsupported architecture ${OS.arch}")
     }
-    isMac -> "macosx/" + when {
-        isOsVersionAtLeast("10.14") -> "10.14"
-        isOsVersionAtLeast("10.13") -> "10.13"
-        isOsVersionAtLeast("10.12") -> "10.12"
-        else -> TODO("Unsupported system version $OS_VERSION")
+    OS.isMac() -> "macosx/" + when {
+        OS.version >= "10.14" -> "10.14"
+        OS.version >= "10.13" -> "10.13"
+        OS.version >= "10.12" -> "10.12"
+        else -> TODO("Unsupported system version ${OS.version}")
     }
-    isWindows -> "windows/" + when (OS_ARCH) {
-        "x86_64", "amd64" -> OS_ARCH
-        else -> TODO("Unsupported architecture $OS_ARCH")
+    OS.isWindows() -> "windows/" + when (OS.arch) {
+        "x64", "x86_64", "amd64" -> "x64"
+        else -> TODO("Unsupported architecture ${OS.arch}")
     }
-    else -> TODO("Unsupported OS $OS_NAME")
+    else -> TODO("Unsupported OS ${OS.name}")
 } + "/$CWEBP"

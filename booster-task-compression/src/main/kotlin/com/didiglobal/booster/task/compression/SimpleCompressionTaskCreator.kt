@@ -11,12 +11,9 @@ import com.didiglobal.booster.gradle.preBuildTask
 import com.didiglobal.booster.gradle.processResTask
 import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.gradle.scope
+import com.didiglobal.booster.kotlinx.OS
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.util.search
-import com.intellij.openapi.util.SystemInfo.OS_NAME
-import com.intellij.openapi.util.SystemInfo.isLinux
-import com.intellij.openapi.util.SystemInfo.isMac
-import com.intellij.openapi.util.SystemInfo.isWindows
 import org.gradle.api.DefaultTask
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskAction
@@ -86,9 +83,9 @@ open class InstallCompressor : DefaultTask() {
         cmdline.install(location)
         project.exec {
             it.commandLine = when {
-                isLinux || isMac -> listOf("chmod", "+x", location.absolutePath)
-                isWindows -> listOf("cacls", location.absolutePath, "/t", "/p", "everyone:f")
-                else -> TODO("Unsupported OS $OS_NAME")
+                OS.isLinux() || OS.isMac() -> listOf("chmod", "+x", location.absolutePath)
+                OS.isWindows() -> listOf("cacls", location.absolutePath, "/t", "/p", "everyone:f")
+                else -> TODO("Unsupported OS ${OS.name}")
             }
         }
     }

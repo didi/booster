@@ -16,18 +16,19 @@ import java.io.File
  */
 abstract class CompressionTool(val name: String, val path: String? = null) : CompressionTaskCreatorFactory {
 
-    val executable = (path ?: System.getenv("PATH")).split(File.pathSeparatorChar).map {
-        File(it)
-    }.map { path ->
-        when {
-            path.isDirectory -> path.listFiles { file ->
-                file.name == name && !file.isDirectory
-            }.firstOrNull()
-            else -> if (path.name == name) path else null
+    val executable: File?
+        get() = (path ?: System.getenv("PATH")).split(File.pathSeparatorChar).map {
+            File(it)
+        }.map { path ->
+            when {
+                path.isDirectory -> path.listFiles { file ->
+                    file.name == name && !file.isDirectory
+                }.firstOrNull()
+                else -> if (path.name == name) path else null
+            }
+        }.find {
+            it != null && it.exists()
         }
-    }.find {
-        it != null && it.exists()
-    }
 
     val isInstalled = executable?.exists() ?: false
 
