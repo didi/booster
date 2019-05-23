@@ -80,12 +80,14 @@ open class InstallCompressor : DefaultTask() {
     @TaskAction
     fun install() {
         logger.info("Installing ${cmdline.name} => ${location.absolutePath}")
-        cmdline.install(location)
-        project.exec {
-            it.commandLine = when {
-                OS.isLinux() || OS.isMac() -> listOf("chmod", "+x", location.absolutePath)
-                OS.isWindows() -> listOf("cacls", location.absolutePath, "/t", "/p", "everyone:f")
-                else -> TODO("Unsupported OS ${OS.name}")
+
+        if (cmdline.install(location) && location.exists()) {
+            project.exec {
+                it.commandLine = when {
+                    OS.isLinux() || OS.isMac() -> listOf("chmod", "+x", location.absolutePath)
+                    OS.isWindows() -> listOf("cacls", location.absolutePath, "/t", "/p", "everyone:f")
+                    else -> TODO("Unsupported OS ${OS.name}")
+                }
             }
         }
     }
