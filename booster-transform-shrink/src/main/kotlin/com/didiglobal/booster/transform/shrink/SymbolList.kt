@@ -71,8 +71,8 @@ class SymbolList private constructor(builder: Builder) : Iterable<SymbolList.Sym
          *
          * @param file symbol list file
          */
-        fun from(file: File): SymbolList {
-            return SymbolList.Builder().also { builder ->
+        fun from(file: File) = SymbolList.Builder().also { builder ->
+            if (file.exists()) {
                 file.forEachLine { line ->
                     val sp1 = line.nextColumnIndex(' ')
                     val dataType = line.substring(0, sp1)
@@ -113,8 +113,8 @@ class SymbolList private constructor(builder: Builder) : Iterable<SymbolList.Sym
                         else -> throw MalformedSymbolListException(file.absolutePath)
                     }
                 }
-            }.build()
-        }
+            }
+        }.build()
 
     }
 
