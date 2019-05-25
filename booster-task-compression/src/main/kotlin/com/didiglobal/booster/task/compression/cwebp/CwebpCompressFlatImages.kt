@@ -1,9 +1,12 @@
 package com.didiglobal.booster.task.compression.cwebp
 
+import android.aapt.pb.internal.ResourcesInternal
+import com.android.SdkConstants
 import com.android.SdkConstants.FD_RES
 import com.android.builder.model.AndroidProject.FD_INTERMEDIATES
 import com.android.sdklib.BuildToolInfo
 import com.didiglobal.booster.gradle.buildTools
+import com.didiglobal.booster.gradle.mergedManifests
 import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.gradle.scope
 import com.didiglobal.booster.kotlinx.CSI_RED
@@ -13,8 +16,11 @@ import com.didiglobal.booster.task.compression.Aapt2ActionData
 import com.didiglobal.booster.task.compression.CompressionResult
 import com.didiglobal.booster.task.compression.metadata
 import com.didiglobal.booster.task.compression.resourcePath
+import com.didiglobal.booster.util.search
 import org.gradle.api.tasks.TaskAction
 import java.io.File
+import java.util.stream.Collectors
+import javax.xml.parsers.SAXParserFactory
 
 /**
  * Represents a task for compiled image compression using cwebp
@@ -28,11 +34,30 @@ internal open class CwebpCompressFlatImages : CwebpCompressImages() {
         val compressedRes = intermediates.file("compressed_${FD_RES}_cwebp", variant.dirName, this.name)
         val cwebp = cmdline.executable!!.absolutePath
         val aapt2 = variant.scope.buildTools.getPath(BuildToolInfo.PathId.AAPT2)
+        val parser = SAXParserFactory.newInstance().newSAXParser()
+        val icons = variant.scope.mergedManifests.search {
+            it.name == SdkConstants.ANDROID_MANIFEST_XML
+        }.parallelStream().map { manifest ->
+            LauncherIconHandler().let {
+                parser.parse(manifest, it)
+                it.icons
+            }
+        }.flatMap {
+            it.parallelStream()
+        }.collect(Collectors.toSet())
+
+        val isNotLauncherIcon: (File, ResourcesInternal.CompiledFile) -> Boolean = { input, metadata ->
+            println("$icons: ${metadata.resourceName}")
+            if (!icons.contains(metadata.resourceName)) true else false.also {
+                val s0 = input.length()
+                results.add(CompressionResult(input, s0, s0, File(metadata.sourcePath)))
+            }
+        }
 
         sources().parallelStream().map {
             it to it.metadata
         }.filter {
-            it.second != null && filter(File(it.second!!.sourcePath))
+            it.second != null && isNotLauncherIcon(it.first, it.second!!) && filter(File(it.second!!.sourcePath))
         }.map {
             val output = compressedRes.file("${it.second!!.resourcePath.substringBeforeLast('.')}.webp")
             Aapt2ActionData(it.first, it.second!!, output,
