@@ -59,7 +59,7 @@ class SimpleCompressionTaskCreator(private val cmdline: CompressionTool, private
     }
 
     private fun BaseVariant.createCompressionToolIfNotExists(): Task {
-        val name = "install${cmdline.name.capitalize()}"
+        val name = "install${cmdline.name.substringBefore('.').capitalize()}"
         return project.tasks.findByName(name) ?: project.tasks.create(name, InstallCompressor::class.java) {
             it.outputs.upToDateWhen { false }
             it.cmdline = cmdline
