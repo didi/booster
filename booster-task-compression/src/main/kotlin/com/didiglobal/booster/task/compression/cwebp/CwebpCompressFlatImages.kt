@@ -47,7 +47,6 @@ internal open class CwebpCompressFlatImages : CwebpCompressImages() {
         }.collect(Collectors.toSet())
 
         val isNotLauncherIcon: (File, ResourcesInternal.CompiledFile) -> Boolean = { input, metadata ->
-            println("$icons: ${metadata.resourceName}")
             if (!icons.contains(metadata.resourceName)) true else false.also {
                 val s0 = input.length()
                 results.add(CompressionResult(input, s0, s0, File(metadata.sourcePath)))
