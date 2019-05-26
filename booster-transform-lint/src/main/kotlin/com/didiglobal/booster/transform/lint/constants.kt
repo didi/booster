@@ -185,6 +185,7 @@ internal val LINT_APIS = setOf(
         "java/lang/ClassLoader.getSystemResourceAsStream(Ljava/lang/String;)Ljava/io/InputStream;",
         // </editor-fold>
         // <editor-fold desc="- I/O">
+        "java/io/FileDescriptor.sync()V",
         "java/io/InputStream.read()I",
         "java/io/InputStream.read([B)I",
         "java/io/InputStream.read([BII)I",
