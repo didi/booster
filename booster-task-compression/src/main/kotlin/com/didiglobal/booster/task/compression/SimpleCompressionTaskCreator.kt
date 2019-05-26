@@ -85,7 +85,7 @@ open class InstallCompressor : DefaultTask() {
             project.exec {
                 it.commandLine = when {
                     OS.isLinux() || OS.isMac() -> listOf("chmod", "+x", location.absolutePath)
-                    OS.isWindows() -> listOf("cacls", location.absolutePath, "/t", "/p", "everyone:f")
+                    OS.isWindows() -> listOf("cmd", "/c echo y | cacls ${location.absolutePath} /t /p everyone:f")
                     else -> TODO("Unsupported OS ${OS.name}")
                 }
             }
