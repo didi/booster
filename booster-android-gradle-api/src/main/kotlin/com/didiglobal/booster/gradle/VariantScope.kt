@@ -67,7 +67,7 @@ private val SYMBOL_LIST_WITH_PACKAGE_NAME_GETTER = when {
 private val BUILD_TOOLS_GETTER = when {
     GTE_V33 -> VariantScopeV33::getBuildTools
     GTE_V32 -> VariantScopeV32::getBuildTools
-    else -> VariantScopeV32::getBuildTools
+    else -> VariantScopeV30::getBuildTools
 }
 
 /**
