@@ -20,17 +20,23 @@ internal open class RemoveRedundantFlatImages : RemoveRedundantImages() {
         resources.filter {
             it.second != null
         }.groupBy({
-            it.second!!.resourceName.substringAfterLast('/')
+            it.second!!.resourceName.substringBeforeLast('/')
         }, {
-            it.first to it.second!!
-        }).map { group ->
-            group.value.sortedByDescending {
-                it.second.config.density
-            }.takeLast(group.value.size - 1)
-        }.flatten().parallelStream().forEach {
-            if (it.first.delete()) {
-                val original = File(it.second.sourcePath)
-                results.add(CompressionResult(it.first, original.length(), 0, original))
+            it.first to it.second
+        }).forEach { entry ->
+            entry.value.groupBy({
+                it.second!!.resourceName.substringAfterLast('/')
+            }, {
+                it.first to it.second!!
+            }).map { group ->
+                group.value.sortedByDescending {
+                    it.second.config.density
+                }.takeLast(group.value.size - 1)
+            }.flatten().parallelStream().forEach {
+                if (it.first.delete()) {
+                    val original = File(it.second.sourcePath)
+                    results.add(CompressionResult(it.first, original.length(), 0, original))
+                }
             }
         }
     }
