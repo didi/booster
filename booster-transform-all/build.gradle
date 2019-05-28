@@ -5,4 +5,5 @@ dependencies {
     compile project(':booster-transform-thread')
     compile project(':booster-transform-toast')
     compile project(':booster-transform-usage')
+    compile project(':booster-transform-media-player')
 }
