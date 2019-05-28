@@ -1,6 +1,5 @@
 package com.didiglobal.booster.transform.asm
 
-import com.didiglobal.booster.transform.TransformContext
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.ClassNode
@@ -13,11 +12,12 @@ import org.objectweb.asm.tree.TypeInsnNode
  *
  * @author johnsonlee
  */
-fun TypeInsnNode.transform(context: TransformContext, klass: ClassNode, method: MethodNode, instantializer: TypeInsnNode, type: String, prefix: String = "") {
+fun TypeInsnNode.transform(klass: ClassNode, method: MethodNode, instantializer: TypeInsnNode, type: String, prefix: String = "") {
     var next: AbstractInsnNode? = this.next
 
     loop@ while (null != next) {
         if (Opcodes.INVOKESPECIAL != next.opcode) {
+            next = next.next
             continue
         }
 
