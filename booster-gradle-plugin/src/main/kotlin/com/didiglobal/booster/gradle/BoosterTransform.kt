@@ -4,8 +4,10 @@ import com.android.build.api.transform.QualifiedContent
 import com.android.build.api.transform.Transform
 import com.android.build.api.transform.TransformInvocation
 import com.android.build.gradle.internal.pipeline.TransformManager
+import com.android.builder.model.AndroidProject
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.touch
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 /**
@@ -33,6 +35,18 @@ abstract class BoosterTransform : Transform() {
                 onPreTransform(this)
                 doIncrementalTransform()
             } else {
+                val dexBuilder = File(
+                    java.lang.String.join(
+                        File.separator,
+                        buildDir.absolutePath,
+                        AndroidProject.FD_INTERMEDIATES,
+                        "transforms",
+                        "dexBuilder"
+                    )
+                )
+                if (dexBuilder.exists()) {
+                    dexBuilder.deleteRecursively()
+                }
                 outputProvider.deleteAll()
                 onPreTransform(this)
                 doFullTransform()
