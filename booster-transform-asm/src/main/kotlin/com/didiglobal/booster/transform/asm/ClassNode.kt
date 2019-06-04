@@ -7,3 +7,9 @@ import org.objectweb.asm.tree.ClassNode
  */
 val ClassNode.simpleName: String
     get() = this.name.substring(this.name.lastIndexOf('/') + 1)
+
+/**
+ * The name of class
+ */
+val ClassNode.className: String
+    get() = name.replace('/', '.')

@@ -5,6 +5,7 @@ import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
+import com.didiglobal.booster.transform.asm.className
 import com.didiglobal.booster.transform.asm.find
 import com.didiglobal.booster.transform.asm.isInstanceOf
 import com.google.auto.service.AutoService
@@ -180,9 +181,6 @@ private fun MethodInsnNode.transformInvokeVirtual(context: TransformContext, kla
     }
 
 }
-
-private val ClassNode.className: String
-    get() = this.name.replace('/', '.')
 
 private fun makeThreadName(name: String) = MARK + name
 
