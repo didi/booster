@@ -36,13 +36,12 @@ abstract class BoosterTransform : Transform() {
                 doIncrementalTransform()
             } else {
                 val dexBuilder = File(
-                    java.lang.String.join(
-                        File.separator,
+                    listOf(
                         buildDir.absolutePath,
                         AndroidProject.FD_INTERMEDIATES,
                         "transforms",
                         "dexBuilder"
-                    )
+                    ).joinToString(File.separator)
                 )
                 if (dexBuilder.exists()) {
                     dexBuilder.deleteRecursively()
