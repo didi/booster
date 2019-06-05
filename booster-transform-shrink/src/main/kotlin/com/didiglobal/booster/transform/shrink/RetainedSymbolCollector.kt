@@ -111,8 +111,13 @@ internal fun Resources.XmlNode.findAllRetainedSymbols(): Collection<String> {
                 }
             }.attributeList?.forEach { attr ->
                 when (attr.name) {
-                    "constraint_referenced_ids" -> {
-                        addAll(attr.value.split(PATTERN_COMMA))
+                    "constraint_referenced_ids" -> addAll(attr.value.split(PATTERN_COMMA))
+                    else -> if (attr.name.startsWith("layout_constraint")) {
+                        addAll(attr.value.split(PATTERN_COMMA).filter {
+                            it != "parent"
+                        }.map {
+                            it.substringAfter('/')
+                        })
                     }
                 }
             }
