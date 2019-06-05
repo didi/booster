@@ -57,7 +57,7 @@ class WebViewTransformer : ClassTransformer {
 
         val method = klass.methods?.find {
             "${it.name}${it.desc}" == "onCreate()V"
-        } ?: klass.defaultOnCreate()
+        } ?: klass.defaultOnCreate
 
         method.instructions?.let { insn ->
             insn.findAll(RETURN, ATHROW).forEach { ret ->
@@ -70,14 +70,15 @@ class WebViewTransformer : ClassTransformer {
     }
 }
 
-private fun ClassNode.defaultOnCreate(): MethodNode = MethodNode(ACC_PUBLIC, "onCreate", "()V", null, null).apply {
-    maxStack = 1
-    instructions.add(InsnList().apply {
-        add(VarInsnNode(ALOAD, 0))
-        add(MethodInsnNode(INVOKESPECIAL, superName, name, desc, false))
-        add(InsnNode(RETURN))
-    })
-    methods?.add(this)
-}
+private val ClassNode.defaultOnCreate: MethodNode
+    get() = MethodNode(ACC_PUBLIC, "onCreate", "()V", null, null).apply {
+        maxStack = 1
+        instructions.add(InsnList().apply {
+            add(VarInsnNode(ALOAD, 0))
+            add(MethodInsnNode(INVOKESPECIAL, superName, name, desc, false))
+            add(InsnNode(RETURN))
+        })
+        methods?.add(this)
+    }
 
 private const val SHADOW_WEBVIEW = "com/didiglobal/booster/instrument/ShadowWebView"
