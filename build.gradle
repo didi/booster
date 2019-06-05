@@ -19,7 +19,7 @@ allprojects { project ->
     apply plugin: 'signing'
 
     group = 'com.didiglobal.booster'
-    version = '0.7.0'
+    version = '0.8.0'
 
     repositories {
         mavenLocal()
