@@ -47,7 +47,7 @@ Booster 主要由 Transformer 和 Task 组成，Transformer 主要用于对字�
 ## Prerequisite | 先决条件
 
 - Gradle version 4.1+ | Gradle 4.1 以上版本
-- Android Gradle Plugin version 3.0+ | Android Gradle 插件 3.0 以上版本
+- Android Gradle Plugin version 3.0+ (3.2.x or 3.3.x is recommended) | Android Gradle 插件 3.0 以上版本（推荐使用 3.2.x 或 3.3.x）
 
 ## Getting Started | 快速上手
 
