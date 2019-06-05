@@ -2,6 +2,7 @@ package com.didiglobal.booster.task.compression
 
 import org.gradle.api.tasks.TaskAction
 import java.io.File
+import java.io.IOException
 import java.util.stream.Collectors
 
 /**
@@ -33,9 +34,15 @@ internal open class RemoveRedundantFlatImages : RemoveRedundantImages() {
                     it.second.config.density
                 }.takeLast(group.value.size - 1)
             }.flatten().parallelStream().forEach {
-                if (it.first.delete()) {
-                    val original = File(it.second.sourcePath)
-                    results.add(CompressionResult(it.first, original.length(), 0, original))
+                try {
+                    if (it.first.delete()) {
+                        val original = File(it.second.sourcePath)
+                        results.add(CompressionResult(it.first, original.length(), 0, original))
+                    } else {
+                        logger.error("Cannot delete file `${it.first}`")
+                    }
+                } catch (e: IOException) {
+                    logger.error("Cannot delete file `${it.first}`", e)
                 }
             }
         }
