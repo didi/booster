@@ -14,8 +14,6 @@ Booster provides a collection of modules for performance detection, multithreadi
 >
 > Booster 提供了性能检测、多线程优化、资源索引内联、资源去冗余、资源压缩、系统 Bug 修复等一系列功能模块，可以使得稳定性能够提升 15% ~ 25%，包体积可以减小 1MB ~ 10MB。
 
-
-
 ## What can Booster be used for? | Booster 能做什么？
 
 - Performance detection | 性能检测
@@ -108,34 +106,12 @@ buildscript {
 
 Here are all the modules of Booster:
 
-- [booster-task-compression](./booster-task-compression) - 资源压缩
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-task-compression:$booster_version"
-  ```
+### Performance | 性能
 
 - [booster-transform-lint](./booster-transform-lint) - 性能瓶颈检测
 
   ```groovy
   classpath "com.didiglobal.booster:booster-transform-lint:$booster_version"
-  ```
-
-- [booster-transform-media-player](./booster-transform-media-player) - 修复 MediaPlayer 崩溃
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-transform-media-player:$booster_version"
-  ```
-
-- [booster-transform-shared-preferences](./booster-transform-shared-preferences) - 优化 `SharedPreferences`
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-transform-shared-preferences:$booster_version"
-  ```
-
-- [booster-transform-shrink](./booster-transform-shrink) - 资源索引内联及常量字段删除
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-transform-shrink:$booster_version"
   ```
 
 - [booster-transform-thread](./booster-transform-thread) - 多线程优化
@@ -144,10 +120,44 @@ Here are all the modules of Booster:
   classpath "com.didiglobal.booster:booster-transform-thread:$booster_version"
   ```
 
-- [booster-transform-toast](./booster-transform-toast) - 修复 Toast 在 Android 7.1 上的 Bug
+- [booster-transform-webview](./booster-transform-webview) - WebView 预加载
 
   ```groovy
-  classpath "com.didiglobal.booster:booster-transform-toast:$booster_version"
+  classpath "com.didiglobal.booster:booster-transform-webview:$booster_version"
+  ```
+
+- [booster-transform-shared-preferences](./booster-transform-shared-preferences) - `SharedPreferences` 优化
+
+  ```groovy
+  classpath "com.didiglobal.booster:booster-transform-shared-preferences:$booster_version"
+  ```
+
+### Package Size | 包体积
+
+- [booster-task-compression](./booster-task-compression) - 资源压缩
+
+  ```groovy
+  classpath "com.didiglobal.booster:booster-task-compression:$booster_version"
+  ```
+
+- [booster-transform-shrink](./booster-transform-shrink) - 资源索引内联及常量字段删除
+
+  ```groovy
+  classpath "com.didiglobal.booster:booster-transform-shrink:$booster_version"
+  ```
+
+### System Bug
+
+- [booster-transform-finalizer-watchdog-daemon](./booster-transform-finalizer-watchdog-daemon) - 修复 *finalizer* 导致的 `TimeoutException`
+
+  ```groovy
+  classpath "com.didiglobal.booster:booster-transform-finalizer-watchdog-daemon:$booster_version"
+  ```
+
+- [booster-transform-media-player](./booster-transform-media-player) - 修复 MediaPlayer 崩溃
+
+  ```groovy
+  classpath "com.didiglobal.booster:booster-transform-media-player:$booster_version"
   ```
 
 - [booster-transform-res-check](./booster-transform-res-check) - 检查覆盖安装导致的 *Resources* 和 *Assets* 未加载的 Bug
@@ -156,10 +166,10 @@ Here are all the modules of Booster:
   classpath "com.didiglobal.booster:booster-transform-res-check:$booster_version"
   ```
 
-- [booster-transform-webview](./booster-transform-webview) - WebView 预加载
+- [booster-transform-toast](./booster-transform-toast) - 修复 Toast 在 Android 7.1 上的 Bug
 
   ```groovy
-  classpath "com.didiglobal.booster:booster-transform-webview:$booster_version"
+  classpath "com.didiglobal.booster:booster-transform-toast:$booster_version"
   ```
 
 ## Documentation | 文档
@@ -170,7 +180,7 @@ About the details, please see [Wiki](../../wiki).
 
 Welcome to contribute by creating issues or sending pull requests. See [Contributing Guideline](./CONTRIBUTING.md).
 
-欢迎大家以 issue 或者 pull request 的形式为本项本作贡献。详见 [Contributing Guideline](./CONTRIBUTING.md)。
+> 欢迎大家以 issue 或者 pull request 的形式为本项本作贡献。详见 [Contributing Guideline](./CONTRIBUTING.md)。
 
 ## Community
 
