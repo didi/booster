@@ -123,37 +123,37 @@ Here are all the modules of Booster:
 - [booster-transform-media-player](./booster-transform-media-player) - 修复 MediaPlayer 崩溃
 
   ```groovy
-  classpath "com.didiglobal.booster:booster-transform-media-player:$booster-version"
+  classpath "com.didiglobal.booster:booster-transform-media-player:$booster_version"
   ```
 
 - [booster-transform-shared-preferences](./booster-transform-shared-preferences) - 优化 `SharedPreferences`
 
   ```groovy
-  classpath "com.didiglobal.booster:booster-transform-shared-preferences:$booster-version"
+  classpath "com.didiglobal.booster:booster-transform-shared-preferences:$booster_version"
   ```
 
 - [booster-transform-shrink](./booster-transform-shrink) - 资源索引内联及常量字段删除
 
   ```groovy
-  classpath "com.didiglobal.booster:booster-transform-shrink:$booster-version"
+  classpath "com.didiglobal.booster:booster-transform-shrink:$booster_version"
   ```
 
 - [booster-transform-thread](./booster-transform-thread) - 多线程优化
 
   ```groovy
-  classpath "com.didiglobal.booster:booster-transform-thread:$booster-version"
+  classpath "com.didiglobal.booster:booster-transform-thread:$booster_version"
   ```
 
 - [booster-transform-toast](./booster-transform-toast) - 修复 Toast 在 Android 7.1 上的 Bug
 
   ```groovy
-  classpath "com.didiglobal.booster:booster-transform-toast:$booster-version"
+  classpath "com.didiglobal.booster:booster-transform-toast:$booster_version"
   ```
 
 - [booster-transform-webview](./booster-transform-webview) - WebView 预加载
 
   ```groovy
-  classpath "com.didiglobal.booster:booster-transform-webview:$booster-version"
+  classpath "com.didiglobal.booster:booster-transform-webview:$booster_version"
   ```
 
 ## Documentation | 文档
