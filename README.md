@@ -59,7 +59,7 @@ The plugin can be added to the buildscript classpath and applied:
 
 ```groovy
 buildscript {
-    ext.booster_version = '0.8.0'
+    ext.booster_version = '0.9.0'
     repositories {
         google()
         mavenCentral()
@@ -92,7 +92,7 @@ The integration method above is just for convenience, the best practise of using
 
 ```groovy
 buildscript {
-    ext.booster_version = '0.8.0'
+    ext.booster_version = '0.9.0'
     repositories {
         google()
         mavenCentral()
@@ -148,6 +148,12 @@ Here are all the modules of Booster:
 
   ```groovy
   classpath "com.didiglobal.booster:booster-transform-toast:$booster_version"
+  ```
+
+- [booster-transform-res-check](./booster-transform-res-check) - 检查覆盖安装导致的 *Resources* 和 *Assets* 未加载的 Bug
+
+  ```groovy
+  classpath "com.didiglobal.booster:booster-transform-res-check:$booster_version"
   ```
 
 - [booster-transform-webview](./booster-transform-webview) - WebView 预加载
