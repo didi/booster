@@ -106,7 +106,7 @@ buildscript {
 
 Here are all the modules of Booster:
 
-### Performance | 性能
+### Performance
 
 - [booster-transform-lint](./booster-transform-lint) - 性能瓶颈检测
 
@@ -132,7 +132,7 @@ Here are all the modules of Booster:
   classpath "com.didiglobal.booster:booster-transform-shared-preferences:$booster_version"
   ```
 
-### Package Size | 包体积
+### Package Size
 
 - [booster-task-compression](./booster-task-compression) - 资源压缩
 
