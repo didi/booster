@@ -1,6 +1,7 @@
 dependencies {
     compile project(':booster-transform-lint')
     compile project(':booster-transform-logcat')
+    compile project(':booster-transform-activity-thread')
     compile project(':booster-transform-finalizer-watchdog-daemon')
     compile project(':booster-transform-media-player')
     compile project(':booster-transform-res-check')
