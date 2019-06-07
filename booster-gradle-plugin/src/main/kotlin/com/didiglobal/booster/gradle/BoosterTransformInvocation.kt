@@ -63,6 +63,8 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
 
     override val applicationId = delegate.applicationId
 
+    override val isDebuggable = delegate.variant.buildType.isDebuggable
+
     override fun hasProperty(name: String): Boolean {
         return project.hasProperty(name)
     }

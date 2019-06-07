@@ -66,6 +66,11 @@ interface TransformContext {
     val applicationId: String
 
     /**
+     * The buildType is debuggable
+     */
+    val isDebuggable: Boolean
+
+    /**
      * Check if has the specified property. Generally, the property is equivalent to project property
      *
      * @param name the name of property
