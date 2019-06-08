@@ -2,7 +2,7 @@ package com.didiglobal.booster.instrument;
 
 import android.os.Handler;
 import android.util.Log;
-import com.didiglobal.booster.android.bugfix.CaughtCallback;
+import com.didiglobal.booster.android.bugfix.ActivityThreadCallback;
 
 import static com.didiglobal.booster.android.bugfix.Constants.TAG;
 import static com.didiglobal.booster.android.bugfix.Reflection.getFieldValue;
@@ -41,7 +41,7 @@ public class ActivityThreadHooker {
 
         try {
             final Handler handler = getHandler(thread);
-            if (null == handler || !(hooked = setFieldValue(handler, "mCallback", new CaughtCallback(handler)))) {
+            if (null == handler || !(hooked = setFieldValue(handler, "mCallback", new ActivityThreadCallback(handler)))) {
                 Log.i(TAG, "Hook ActivityThread.mH.mCallback failed");
             }
         } catch (final Throwable t) {
