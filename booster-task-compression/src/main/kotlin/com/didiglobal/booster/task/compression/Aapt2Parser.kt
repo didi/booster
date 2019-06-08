@@ -1,9 +1,9 @@
 package com.didiglobal.booster.task.compression
 
-import android.aapt.pb.internal.ResourcesInternal
 import com.didiglobal.booster.aapt2.BinaryParser
 import com.didiglobal.booster.aapt2.MAGIC
 import com.didiglobal.booster.aapt2.RES_FILE
+import com.didiglobal.booster.aapt2.ResourcesInternal
 import org.gradle.api.logging.Logging
 import java.io.File
 

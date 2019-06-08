@@ -1,7 +1,7 @@
 package com.didiglobal.booster.task.compression
 
-import android.aapt.pb.internal.ResourcesInternal
 import com.android.build.gradle.api.BaseVariant
+import com.didiglobal.booster.aapt2.ResourcesInternal
 import org.gradle.api.DefaultTask
 import java.io.File
 

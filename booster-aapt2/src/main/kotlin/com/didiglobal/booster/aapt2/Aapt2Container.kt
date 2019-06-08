@@ -1,7 +1,5 @@
 package com.didiglobal.booster.aapt2
 
-import android.aapt.pb.internal.ResourcesInternal
-import com.android.aapt.Resources
 import java.lang.RuntimeException
 
 import java.nio.ByteBuffer

@@ -1,10 +1,10 @@
 package com.didiglobal.booster.task.compression.cwebp
 
-import android.aapt.pb.internal.ResourcesInternal
 import com.android.SdkConstants
 import com.android.SdkConstants.FD_RES
 import com.android.builder.model.AndroidProject.FD_INTERMEDIATES
 import com.android.sdklib.BuildToolInfo
+import com.didiglobal.booster.aapt2.ResourcesInternal
 import com.didiglobal.booster.gradle.buildTools
 import com.didiglobal.booster.gradle.mergedManifests
 import com.didiglobal.booster.gradle.project
