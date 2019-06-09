@@ -99,15 +99,7 @@ public final class ShadowLog {
         return 0;
     }
 
-    public static int wtfStack(String tag, String msg) {
-        return 0;
-    }
-
     public static int println(int priority, String tag, String msg) {
-        return 0;
-    }
-
-    public static int printlns(int bufID, int priority, String tag, String msg, Throwable tr) {
         return 0;
     }
 

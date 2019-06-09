@@ -4,7 +4,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 
 /**
- * Shadow of {@code android.util.Log}
  *
  * @author neighbWang
  */
