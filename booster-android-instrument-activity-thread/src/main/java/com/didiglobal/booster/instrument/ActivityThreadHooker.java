@@ -2,7 +2,6 @@ package com.didiglobal.booster.instrument;
 
 import android.os.Handler;
 import android.util.Log;
-import com.didiglobal.booster.android.bugfix.ActivityThreadCallback;
 
 import static com.didiglobal.booster.android.bugfix.Constants.TAG;
 import static com.didiglobal.booster.android.bugfix.Reflection.getFieldValue;

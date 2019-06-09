@@ -1,4 +1,4 @@
-package com.didiglobal.booster.android.bugfix;
+package com.didiglobal.booster.instrument;
 
 import android.content.res.Resources;
 import android.os.Build;
@@ -9,14 +9,12 @@ import android.os.Process;
 import android.util.AndroidRuntimeException;
 import android.util.Log;
 import android.view.WindowManager;
+import com.didiglobal.booster.android.bugfix.Constants;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.didiglobal.booster.android.bugfix.Constants.ASSET_MANAGER_GET_RESOURCE_VALUE;
-import static com.didiglobal.booster.android.bugfix.Constants.LOADED_APK_GET_ASSETS;
-import static com.didiglobal.booster.android.bugfix.Constants.SYSTEM_PACKAGE_PREFIXES;
 import static com.didiglobal.booster.android.bugfix.Constants.TAG;
 
 /**
@@ -24,7 +22,19 @@ import static com.didiglobal.booster.android.bugfix.Constants.TAG;
  *
  * @author neighbWang
  */
-public class ActivityThreadCallback implements Handler.Callback {
+class ActivityThreadCallback implements Handler.Callback {
+
+    private static final String LOADED_APK_GET_ASSETS = "android.app.LoadedApk.getAssets";
+
+    private static final String ASSET_MANAGER_GET_RESOURCE_VALUE = "android.content.res.AssetManager.getResourceValue";
+
+    private static final String[] SYSTEM_PACKAGE_PREFIXES = {
+            "java.",
+            "android.",
+            "dalvik.",
+            "com.android.",
+            Constants.class.getPackage().getName() + "."
+    };
 
     private final Handler mHandler;
 
