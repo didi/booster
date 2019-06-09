@@ -55,33 +55,20 @@ class ActivityThreadTransformer : ClassTransformer {
             return klass
         }
 
-        val clinit = klass.methods?.find {
-            "${it.name}${it.desc}" == "<clinit>()V"
-        } ?: klass.defaultClinit
-
-        clinit.instructions?.findAll(RETURN, ATHROW)?.forEach {
-            clinit.instructions?.insertBefore(it, MethodInsnNode(INVOKESTATIC, ACTIVITY_THREAD_HOOKER, "hook", "()V", false))
-            logger.println(" + $ACTIVITY_THREAD_HOOKER.hook()V before @${if (it.opcode == ATHROW) "athrow" else "return"}: ${klass.name}.${clinit.name}${clinit.desc}")
+        mapOf(
+            "<clinit>()V" to klass.defaultClinit,
+            "<init>()V" to klass.defaultInit,
+            "onCreate()V" to klass.defaultOnCreate
+        ).forEach { (unique, defaultMethod) ->
+            val method = klass.methods?.find {
+                "${it.name}${it.desc}" == unique
+            } ?: defaultMethod
+            method.instructions?.findAll(RETURN, ATHROW)?.forEach {
+                method.instructions?.insertBefore(it, MethodInsnNode(INVOKESTATIC, ACTIVITY_THREAD_HOOKER, "hook", "()V", false))
+                logger.println(" + $ACTIVITY_THREAD_HOOKER.hook()V before @${if (it.opcode == ATHROW) "athrow" else "return"}: ${klass.name}.${method.name}${method.desc}")
+            }
         }
 
-
-        val init = klass.methods?.find {
-            "${it.name}${it.desc}" == "<init>()V"
-        } ?: klass.defaultInit
-
-        init.instructions?.findAll(RETURN, ATHROW)?.forEach {
-            init.instructions?.insertBefore(it, MethodInsnNode(INVOKESTATIC, ACTIVITY_THREAD_HOOKER, "hook", "()V", false))
-            logger.println(" + $ACTIVITY_THREAD_HOOKER.hook()V before @${if (it.opcode == ATHROW) "athrow" else "return"}: ${klass.name}.${init.name}${init.desc}")
-        }
-
-        val onCreate = klass.methods?.find {
-            "${it.name}${it.desc}" == "onCreate()V"
-        } ?: klass.defaultOnCreate
-
-        onCreate.instructions?.findAll(RETURN, ATHROW)?.forEach {
-            onCreate.instructions?.insertBefore(it, MethodInsnNode(INVOKESTATIC, ACTIVITY_THREAD_HOOKER, "hook", "()V", false))
-            logger.println(" + $ACTIVITY_THREAD_HOOKER.hook()V before @${if (it.opcode == ATHROW) "athrow" else "return"}: ${klass.name}.${onCreate.name}${onCreate.desc}")
-        }
         return klass
     }
 }
@@ -103,7 +90,6 @@ private val ClassNode.defaultInit: MethodNode
         })
         methods?.add(this)
     }
-
 
 private val ClassNode.defaultOnCreate: MethodNode
     get() = MethodNode(ACC_PUBLIC, "onCreate", "()V", null, null).apply {
