@@ -15,4 +15,6 @@ script:
 - "./gradlew check -POSSRH_USERNAME=${SONATYPE_USERNAME} -POSSRH_PASSWORD=${SONATYPE_PASSWORD}"
 - "./gradlew test -POSSRH_USERNAME=${SONATYPE_USERNAME} -POSSRH_PASSWORD=${SONATYPE_PASSWORD}"
 notifications:
-    webhooks: {{https://im-dichat.xiaojukeji.com/api/hooks/travis/a323f436-bd7e-4908-92a8-f82f7dfa7a33}}
+    webhooks:
+        - https://im-dichat.xiaojukeji.com/api/hooks/travis/a323f436-bd7e-4908-92a8-f82f7dfa7a33
+        - https://im-dichat.xiaojukeji.com/api/hooks/travis/03c5d16a-76f9-4ce0-a616-7cc67f55ea4d
