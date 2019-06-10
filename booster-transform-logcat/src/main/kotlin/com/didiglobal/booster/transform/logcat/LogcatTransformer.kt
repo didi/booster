@@ -17,9 +17,10 @@ import java.io.PrintWriter
 private const val LOGCAT = "android/util/Log"
 private const val THROWABLE = "java/lang/Throwable"
 private const val SYSTEM = "java/lang/System"
-private const val SHADOW_LOG = "com/didiglobal/booster/instrument/ShadowLog"
-private const val SHADOW_SYSTEM = "com/didiglobal/booster/instrument/ShadowSystem"
-private const val SHADOW_THROWABLE = "com/didiglobal/booster/instrument/ShadowThrowable"
+private const val INSTRUMENT = "com/didiglobal/booster/instrument/"
+private const val SHADOW_LOG = "${INSTRUMENT}ShadowLog"
+private const val SHADOW_SYSTEM = "${INSTRUMENT}ShadowSystem"
+private const val SHADOW_THROWABLE = "${INSTRUMENT}ShadowThrowable"
 private val SHADOW_LOG_METHODS = setOf("v", "d", "i", "w", "e", "wtf", "println")
 
 /**
@@ -39,7 +40,7 @@ class LogcatTransformer : ClassTransformer {
     }
 
     override fun transform(context: TransformContext, klass: ClassNode): ClassNode {
-        if (context.isDebuggable || klass.name.startsWith("com/didiglobal/booster/instrument/")) {
+        if (context.isDebuggable || klass.name.startsWith(INSTRUMENT)) {
             return klass
         }
         klass.methods.forEach { method ->
