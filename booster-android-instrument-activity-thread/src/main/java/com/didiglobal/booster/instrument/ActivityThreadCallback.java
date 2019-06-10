@@ -31,6 +31,7 @@ class ActivityThreadCallback implements Handler.Callback {
     private static final String[] SYSTEM_PACKAGE_PREFIXES = {
             "java.",
             "android.",
+            "androidx.",
             "dalvik.",
             "com.android.",
             Constants.class.getPackage().getName() + "."
