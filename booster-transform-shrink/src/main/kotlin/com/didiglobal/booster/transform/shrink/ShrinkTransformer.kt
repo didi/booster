@@ -38,7 +38,6 @@ class ShrinkTransformer : ClassTransformer {
     private lateinit var appPackage: String
     private lateinit var appRStyleable: String
     private lateinit var symbols: SymbolList
-    private lateinit var retainedSymbols: Set<String>
     private lateinit var ignores: Set<Wildcard>
     private lateinit var logger: PrintWriter
 
@@ -49,15 +48,16 @@ class ShrinkTransformer : ClassTransformer {
         this.appRStyleable = "$appPackage/$R_STYLEABLE"
         this.ignores = context.getProperty(PROPERTY_IGNORES)?.split(',')?.map { Wildcard(it) }?.toSet() ?: emptySet()
 
+        val retainedSymbols: Set<String>
         val classpath = context.compileClasspath.map { it.absolutePath }
         if (classpath.any { it.contains(PREFIX_CONSTRAINT_LAYOUT) }) {
             // Find symbols that should be retained
-            this.retainedSymbols = context.findRetainedSymbols()
-            if (this.retainedSymbols.isNotEmpty()) {
+            retainedSymbols = context.findRetainedSymbols()
+            if (retainedSymbols.isNotEmpty()) {
                 this.ignores += setOf(Wildcard.valueOf("android/support/constraint/R\$id"))
             }
         } else {
-            this.retainedSymbols = emptySet()
+            retainedSymbols = emptySet()
         }
 
         if (classpath.any { it.contains(PREFIX_GREENDAO) }) {
@@ -139,7 +139,7 @@ class ShrinkTransformer : ClassTransformer {
     }
 
     private fun ClassNode.replaceSymbolReferenceWithConstant() {
-        this.methods.forEach { method ->
+        methods.forEach { method ->
             val insns = method.instructions.iterator().asIterable().filter {
                 it.opcode == GETSTATIC
             }.map {
@@ -150,7 +150,7 @@ class ShrinkTransformer : ClassTransformer {
                         && !(it.owner.startsWith(COM_ANDROID_INTERNAL_R) || it.owner.startsWith(ANDROID_R))
             }
 
-            val intFields = insns.filter { "I" == it.desc && !retainedSymbols.contains(it.name) }
+            val intFields = insns.filter { "I" == it.desc }
             val intArrayFields = insns.filter { "[I" == it.desc }
 
             // Replace int field with constant
@@ -160,7 +160,7 @@ class ShrinkTransformer : ClassTransformer {
                     method.instructions.insertBefore(field, LdcInsnNode(symbols.getInt(type, field.name)))
                     method.instructions.remove(field)
                 } catch (e: NullPointerException) {
-                    logger.println("Unresolvable symbol `R.$type.${field.name}` : ${this.name}.${method.name}${method.desc}")
+                    logger.println("Unresolvable symbol `R.$type.${field.name}` : $name.${method.name}${method.desc}")
                 }
             }
 
@@ -174,8 +174,8 @@ class ShrinkTransformer : ClassTransformer {
 }
 
 private fun FieldNode.valueAsString() = when {
-    this.value is String -> "\"${this.value}\""
-    else -> this.value.toString()
+    value is String -> "\"$value\""
+    else -> value.toString()
 }
 
 /**
