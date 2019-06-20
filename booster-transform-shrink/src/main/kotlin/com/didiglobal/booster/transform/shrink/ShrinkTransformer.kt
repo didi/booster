@@ -42,7 +42,7 @@ class ShrinkTransformer : ClassTransformer {
     private lateinit var logger: PrintWriter
 
     override fun onPreTransform(context: TransformContext) {
-        this.appPackage = context.applicationId.replace('.', '/')
+        this.appPackage = context.originalApplicationId.replace('.', '/')
         this.logger = context.reportsDir.file(Build.ARTIFACT).file(context.name).file("report.txt").touch().printWriter()
         this.symbols = SymbolList.from(context.artifacts.get(SYMBOL_LIST).single())
         this.appRStyleable = "$appPackage/$R_STYLEABLE"
