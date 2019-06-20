@@ -88,7 +88,6 @@ class VariantScopeV30 {
         try {
             return scope.getOutput(type).getFiles();
         } catch (RuntimeException e) {
-            System.out.println("===runtime==" + e.getMessage());
             return Collections.emptySet();
         }
     }
