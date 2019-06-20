@@ -66,6 +66,11 @@ interface TransformContext {
     val applicationId: String
 
     /**
+     * The original application ID before any overrides from flavors
+     */
+    val originalApplicationId: String
+
+    /**
      * The buildType is debuggable
      */
     val isDebuggable: Boolean
