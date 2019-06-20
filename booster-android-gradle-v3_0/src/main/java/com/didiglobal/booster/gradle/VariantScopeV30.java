@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -79,12 +80,17 @@ class VariantScopeV30 {
     @NotNull
     static Map<String, Collection<File>> getAllArtifacts(@NotNull final VariantScope scope) {
         return Stream.concat(Arrays.stream(TaskOutputType.values()), Arrays.stream(AnchorOutputType.values()))
-                .collect(Collectors.toMap(OutputType::name, v -> getOutput(scope, v)));
+                .collect(Collectors.toMap(Enum::name, v -> getOutput(scope, v)));
     }
 
     @NotNull
     static Collection<File> getOutput(@NotNull final VariantScope scope, @NotNull final OutputType type) {
-        return scope.getOutput(type).getFiles();
+        try {
+            return scope.getOutput(type).getFiles();
+        } catch (RuntimeException e) {
+            System.out.println("===runtime==" + e.getMessage());
+            return Collections.emptySet();
+        }
     }
 
     @NotNull
