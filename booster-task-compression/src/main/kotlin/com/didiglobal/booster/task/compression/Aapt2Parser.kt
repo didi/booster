@@ -14,13 +14,13 @@ internal val File.metadata: ResourcesInternal.CompiledFile?
         BinaryParser(this).use { parser ->
             val magic = parser.readInt()
             if (MAGIC != magic) {
-                logger.error("Invalid AAPT2 container file: `${this.absolutePath}`")
+                logger.error("Invalid AAPT2 container magic 0x${magic.toString(16)}: `${this.absolutePath}`")
                 return null
             }
 
             val version = parser.readInt()
             if (version <= 0) {
-                logger.error("Invalid AAPT2 container file: `${this.absolutePath}`")
+                logger.error("Invalid AAPT2 container version $version: `${this.absolutePath}`")
                 return null
             }
 
