@@ -53,6 +53,8 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
 
     override val executor = ForkJoinPool(Runtime.getRuntime().availableProcessors(), ForkJoinPool.defaultForkJoinWorkerThreadFactory, null, true)
 
+    override val bootClasspath = delegate.bootClasspath
+
     override val compileClasspath = delegate.compileClasspath
 
     override val runtimeClasspath = delegate.runtimeClasspath

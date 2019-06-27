@@ -24,37 +24,29 @@ abstract class BoosterTransform : Transform() {
     override fun getInputTypes(): MutableSet<QualifiedContent.ContentType> = TransformManager.CONTENT_CLASS
 
     final override fun transform(invocation: TransformInvocation?) {
-        if (invocation == null) {
-            return
-        }
+        invocation?.let {
+            BoosterTransformInvocation(it).apply {
+                dumpInputs(this)
 
-        BoosterTransformInvocation(invocation).apply {
-            dumpInputs(this)
-
-            if (isIncremental) {
-                onPreTransform(this)
-                doIncrementalTransform()
-            } else {
-                val dexBuilder = File(
-                    listOf(
-                        buildDir.absolutePath,
-                        AndroidProject.FD_INTERMEDIATES,
-                        "transforms",
-                        "dexBuilder"
-                    ).joinToString(File.separator)
-                )
-                if (dexBuilder.exists()) {
-                    dexBuilder.deleteRecursively()
+                if (isIncremental) {
+                    onPreTransform(this)
+                    doIncrementalTransform()
+                } else {
+                    buildDir.file(AndroidProject.FD_INTERMEDIATES, "transforms", "dexBuilder").let { dexBuilder ->
+                        if (dexBuilder.exists()) {
+                            dexBuilder.deleteRecursively()
+                        }
+                    }
+                    outputProvider.deleteAll()
+                    onPreTransform(this)
+                    doFullTransform()
                 }
-                outputProvider.deleteAll()
-                onPreTransform(this)
-                doFullTransform()
-            }
 
-            this.onPostTransform(this)
-        }.executor.apply {
-            shutdown()
-            awaitTermination(1, TimeUnit.MINUTES)
+                this.onPostTransform(this)
+            }.executor.apply {
+                shutdown()
+                awaitTermination(1, TimeUnit.MINUTES)
+            }
         }
     }
 

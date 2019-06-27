@@ -31,6 +31,9 @@ val TransformInvocation.variant: BaseVariant
         TODO("variant not found")
     }
 
+val TransformInvocation.bootClasspath: Collection<File>
+    get() = project.getAndroid<BaseExtension>().bootClasspath
+
 /**
  * Returns the compile classpath of this transform invocation
  *
@@ -49,7 +52,7 @@ val TransformInvocation.compileClasspath: Collection<File>
  * @author johnsonlee
  */
 val TransformInvocation.runtimeClasspath: Collection<File>
-    get() = compileClasspath + project.getAndroid<BaseExtension>().bootClasspath
+    get() = compileClasspath + bootClasspath
 
 /**
  * Returns the application id

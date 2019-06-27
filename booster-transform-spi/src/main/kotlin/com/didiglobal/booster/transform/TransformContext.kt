@@ -41,6 +41,11 @@ interface TransformContext {
     val executor: ExecutorService
 
     /**
+     * The boot classpath
+     */
+    val bootClasspath: Collection<File>
+
+    /**
      * The compile classpath
      */
     val compileClasspath: Collection<File>
