@@ -9,7 +9,6 @@ import android.os.Process;
 import android.util.AndroidRuntimeException;
 import android.util.Log;
 import android.view.WindowManager;
-import com.didiglobal.booster.android.bugfix.Constants;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -34,7 +33,7 @@ class ActivityThreadCallback implements Handler.Callback {
             "androidx.",
             "dalvik.",
             "com.android.",
-            Constants.class.getPackage().getName() + "."
+            ActivityThreadCallback.class.getPackage().getName() + "."
     };
 
     private final Handler mHandler;
