@@ -170,6 +170,17 @@ Here are all the modules of Booster:
   classpath "com.didiglobal.booster:booster-transform-toast:$booster_version"
   ```
 
+- [booster-transform-activity-thread](./booster-transform-activity-thread) - 处理系统 Crash
+
+  ```groovy
+  classpath "com.didiglobal.booster:booster-transform-activity-thread:$booster_version"
+  ```
+
+## Samples | 示例
+
+- [transformer-with-asm](https://github.com/boostersamples/transformer-with-asm)
+- [transformer-with-javassist](https://github.com/boostersamples/transformer-with-javassist)
+
 ## Documentation | 文档
 
 About the details, please see [Wiki](../../wiki).
