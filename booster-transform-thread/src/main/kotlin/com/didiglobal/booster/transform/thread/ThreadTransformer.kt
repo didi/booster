@@ -199,7 +199,9 @@ private fun MethodInsnNode.transformInvokeVirtual(context: TransformContext, kla
     private fun optimizeAsyncTask(klass: ClassNode) {
         val method = klass.methods?.find {
             "${it.name}${it.desc}" == "<clinit>()V"
-        } ?: klass.defaultClinit
+        } ?: klass.defaultClinit.also {
+            klass.methods.add(it)
+        }
 
         method.instructions?.let { insn ->
             insn.findAll(Opcodes.RETURN, Opcodes.ATHROW).forEach {
@@ -217,8 +219,7 @@ private fun makeThreadName(name: String) = MARK + name
 private val ClassNode.defaultClinit: MethodNode
     get() = MethodNode(Opcodes.ACC_STATIC, "<clinit>", "()V", null, null).apply {
         maxStack = 1
-        instructions.insert(InsnNode(Opcodes.RETURN))
-        methods?.add(this)
+        instructions.add(InsnNode(Opcodes.RETURN))
     }
 
 

@@ -62,7 +62,9 @@ class ActivityThreadTransformer : ClassTransformer {
         ).forEach { (unique, defaultMethod) ->
             val method = klass.methods?.find {
                 "${it.name}${it.desc}" == unique
-            } ?: defaultMethod
+            } ?: defaultMethod.also {
+                klass.methods.add(it)
+            }
             method.instructions?.findAll(RETURN, ATHROW)?.forEach {
                 method.instructions?.insertBefore(it, MethodInsnNode(INVOKESTATIC, ACTIVITY_THREAD_HOOKER, "hook", "()V", false))
                 logger.println(" + $ACTIVITY_THREAD_HOOKER.hook()V before @${if (it.opcode == ATHROW) "athrow" else "return"}: ${klass.name}.${method.name}${method.desc}")
@@ -76,30 +78,27 @@ class ActivityThreadTransformer : ClassTransformer {
 private val ClassNode.defaultClinit: MethodNode
     get() = MethodNode(Opcodes.ACC_STATIC, "<clinit>", "()V", null, null).apply {
         maxStack = 1
-        instructions.insert(InsnNode(RETURN))
-        methods?.add(this)
+        instructions.add(InsnNode(RETURN))
     }
 
 private val ClassNode.defaultInit: MethodNode
     get() = MethodNode(ACC_PUBLIC, "<init>", "()V", null, null).apply {
         maxStack = 1
-        instructions.insert(InsnList().apply {
+        instructions.add(InsnList().apply {
             add(VarInsnNode(ALOAD, 0))
             add(MethodInsnNode(INVOKESPECIAL, superName, name, desc, false))
             add(InsnNode(RETURN))
         })
-        methods?.add(this)
     }
 
 private val ClassNode.defaultOnCreate: MethodNode
     get() = MethodNode(ACC_PUBLIC, "onCreate", "()V", null, null).apply {
-        instructions?.add(InsnList().apply {
+        instructions.add(InsnList().apply {
             add(VarInsnNode(ALOAD, 0))
             add(MethodInsnNode(INVOKESPECIAL, superName, name, desc, false))
             add(InsnNode(RETURN))
         })
         maxStack = 1
-        methods?.add(this)
     }
 
 const val ACTIVITY_THREAD_HOOKER = "com/didiglobal/booster/instrument/ActivityThreadHooker"

@@ -56,7 +56,9 @@ class ResCheckTransformer : ClassTransformer {
 
         val attachBaseContext = klass.methods?.find {
             "${it.name}${it.desc}" == "attachBaseContext(Landroid/content/Context;)V"
-        } ?: klass.defaultAttachBaseContext
+        } ?: klass.defaultAttachBaseContext.also {
+            klass.methods.add(it)
+        }
 
         attachBaseContext.instructions?.apply {
             iterator().asIterable().find {
@@ -74,7 +76,9 @@ class ResCheckTransformer : ClassTransformer {
 
         val onCreate = klass.methods?.find {
             "${it.name}${it.desc}" == "onCreate()V"
-        } ?: klass.defaultOnCreate
+        } ?: klass.defaultOnCreate.also {
+            klass.methods.add(it)
+        }
 
 
         onCreate.instructions?.apply {
@@ -95,25 +99,23 @@ class ResCheckTransformer : ClassTransformer {
 
 private val ClassNode.defaultAttachBaseContext: MethodNode
     get() = MethodNode(ACC_PROTECTED, "attachBaseContext", "(Landroid/content/Context;)V", null, null).apply {
-        instructions?.add(InsnList().apply {
+        maxStack = 1
+        instructions.add(InsnList().apply {
             add(VarInsnNode(ALOAD, 0))
             add(VarInsnNode(ALOAD, 1))
             add(MethodInsnNode(INVOKESPECIAL, superName, name, desc, false))
             add(InsnNode(RETURN))
         })
-        maxStack = 1
-        methods?.add(this)
     }
 
 private val ClassNode.defaultOnCreate: MethodNode
     get() = MethodNode(ACC_PUBLIC, "onCreate", "()V", null, null).apply {
-        instructions?.add(InsnList().apply {
+        maxStack = 1
+        instructions.add(InsnList().apply {
             add(VarInsnNode(ALOAD, 0))
             add(MethodInsnNode(INVOKESPECIAL, superName, name, desc, false))
             add(InsnNode(RETURN))
         })
-        maxStack = 1
-        methods?.add(this)
     }
 
 const val APPLICATION = "android/app/Application"
