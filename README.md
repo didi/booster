@@ -60,11 +60,21 @@ buildscript {
         google()
         mavenCentral()
         jcenter()
+        maven { url 'https://oss.sonatype.org/content/repositories/public' }
     }
     dependencies {
         classpath "com.didiglobal.booster:booster-gradle-plugin:$booster_version"
         classpath "com.didiglobal.booster:booster-task-all:$booster_version"
         classpath "com.didiglobal.booster:booster-transform-all:$booster_version"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        jcenter()
+        maven { url 'https://oss.sonatype.org/content/repositories/public' }
     }
 }
 
@@ -93,11 +103,21 @@ buildscript {
         google()
         mavenCentral()
         jcenter()
+        maven { url 'https://oss.sonatype.org/content/repositories/public' }
     }
     dependencies {
         classpath "com.didiglobal.booster:booster-gradle-plugin:$booster_version"
         // figure out the features you really need, then choose the right module for integration
         // 弄清楚真正需要的特性，然后从下面的模块列表中选择正确的模块进行集成
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        jcenter()
+        maven { url 'https://oss.sonatype.org/content/repositories/public' }
     }
 }
 ```
