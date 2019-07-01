@@ -210,6 +210,12 @@ Here are all the modules of Booster:
   classpath "com.didiglobal.booster:booster-task-list-permission:$booster_version"
   ```
 
+- [booster-task-list-shared-library](./booster-task-list-shared-library) - 显示 AAR 包含的动态库清单
+
+  ```groovy
+  classpath "com.didiglobal.booster:booster-task-list-shared-library:$booster_version"
+  ```
+
 ## Samples | 示例
 
 - [transformer-with-asm](https://github.com/boostersamples/transformer-with-asm)

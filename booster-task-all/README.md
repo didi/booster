@@ -8,4 +8,5 @@ This module is a summary of all Booster gradle tasks:
 - [booster-task-compression](../booster-task-compression)
 - [booster-task-list-artifact](../booster-task-list-artifact)
 - [booster-task-list-permission](../booster-task-list-permission)
+- [booster-task-list-shared-library](../booster-task-list-shared-library)
 
