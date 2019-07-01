@@ -24,11 +24,11 @@ val TransformInvocation.project: Project
  */
 val TransformInvocation.variant: BaseVariant
     get() = project.getAndroid<BaseExtension>().let { android ->
-        when (android) {
-            is AppExtension -> return android.applicationVariants.single { it.name == this.context.variantName }
-            is LibraryExtension -> return android.libraryVariants.single { it.name == this.context.variantName }
+        return when (android) {
+            is AppExtension -> android.applicationVariants.single { it.name == this.context.variantName }
+            is LibraryExtension -> android.libraryVariants.single { it.name == this.context.variantName }
+            else -> TODO("variant not found")
         }
-        TODO("variant not found")
     }
 
 val TransformInvocation.bootClasspath: Collection<File>

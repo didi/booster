@@ -1,7 +1,6 @@
 package com.didiglobal.booster.gradle
 
 import com.android.build.gradle.api.BaseVariant
-import com.android.build.gradle.internal.api.InstallableVariantImpl
 import com.android.build.gradle.internal.scope.VariantScope
 import com.android.build.gradle.internal.variant.BaseVariantData
 import com.android.build.gradle.tasks.ProcessAndroidResources
@@ -33,7 +32,7 @@ val BaseVariant.project: Project
  * @author johnsonlee
  */
 val BaseVariant.variantData: BaseVariantData
-    get() = if (this is InstallableVariantImpl) this.variantData else javaClass.getDeclaredMethod("getVariantData").invoke(this) as BaseVariantData
+    get() = javaClass.getDeclaredMethod("getVariantData").invoke(this) as BaseVariantData
 
 @Suppress("DEPRECATION")
 val BaseVariant.javaCompilerTask: Task

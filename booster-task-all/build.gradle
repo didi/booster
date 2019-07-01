@@ -1,6 +1,6 @@
 dependencies {
-    compile project(':booster-task-artifact')
+    compile project(':booster-task-check-snapshot')
     compile project(':booster-task-compression')
-    compile project(':booster-task-dependency')
-    compile project(':booster-task-permission')
+    compile project(':booster-task-list-artifact')
+    compile project(':booster-task-list-permission')
 }

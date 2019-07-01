@@ -196,6 +196,20 @@ Here are all the modules of Booster:
   classpath "com.didiglobal.booster:booster-transform-activity-thread:$booster_version"
   ```
 
+### Utility
+
+- [booster-task-check-snapshot](./booster-task-check-snapshot) - 检查 SNAPSHOT 版本
+
+  ```groovy
+  classpath "com.didiglobal.booster:booster-task-check-snapshot:$booster_version"
+  ```
+
+- [booster-task-list-permission](./booster-task-list-permission) - 显示 AAR 使用的权限清单
+
+  ```groovy
+  classpath "com.didiglobal.booster:booster-task-list-permission:$booster_version"
+  ```
+
 ## Samples | 示例
 
 - [transformer-with-asm](https://github.com/boostersamples/transformer-with-asm)
