@@ -1,4 +1,4 @@
-# booster-task-list-so
+# booster-task-list-shared-library
 
 This module is used to list shared libraries of each dependency
 
