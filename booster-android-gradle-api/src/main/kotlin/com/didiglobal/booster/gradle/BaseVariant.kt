@@ -36,7 +36,7 @@ val BaseVariant.variantData: BaseVariantData
 
 @Suppress("DEPRECATION")
 val BaseVariant.javaCompilerTask: Task
-    get() = if (GTE_V33) {
+    get() = if (GTE_V3_3) {
         this.javaCompileProvider.get()
     } else {
         this.javaCompiler
@@ -44,7 +44,7 @@ val BaseVariant.javaCompilerTask: Task
 
 @Suppress("DEPRECATION")
 val BaseVariant.preBuildTask: Task
-    get() = if (GTE_V33) {
+    get() = if (GTE_V3_3) {
         this.preBuildProvider.get()
     } else {
         this.preBuild
@@ -52,7 +52,7 @@ val BaseVariant.preBuildTask: Task
 
 @Suppress("DEPRECATION")
 val BaseVariant.assembleTask: Task
-    get() = if (GTE_V33) {
+    get() = if (GTE_V3_3) {
         this.assembleProvider.get()
     } else {
         this.assemble
@@ -60,7 +60,7 @@ val BaseVariant.assembleTask: Task
 
 @Suppress("DEPRECATION")
 val BaseVariant.mergeAssetsTask: Task
-    get() = if (GTE_V33) {
+    get() = if (GTE_V3_3) {
         this.mergeAssetsProvider.get()
     } else {
         this.mergeAssets
@@ -68,7 +68,7 @@ val BaseVariant.mergeAssetsTask: Task
 
 @Suppress("DEPRECATION")
 val BaseVariant.mergeResourcesTask: Task
-    get() = if (GTE_V33) {
+    get() = if (GTE_V3_3) {
         this.mergeResourcesProvider.get()
     } else {
         this.mergeResources

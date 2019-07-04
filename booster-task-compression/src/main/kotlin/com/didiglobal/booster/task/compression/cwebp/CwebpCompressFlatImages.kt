@@ -14,8 +14,10 @@ import com.didiglobal.booster.kotlinx.CSI_RESET
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.task.compression.Aapt2ActionData
 import com.didiglobal.booster.task.compression.CompressionResult
-import com.didiglobal.booster.task.compression.metadata
-import com.didiglobal.booster.task.compression.resourcePath
+import com.didiglobal.booster.aapt2.metadata
+import com.didiglobal.booster.aapt2.resourcePath
+import com.didiglobal.booster.gradle.GTE_V3_2
+import com.didiglobal.booster.kotlinx.CSI_YELLOW
 import com.didiglobal.booster.util.search
 import org.gradle.api.tasks.TaskAction
 import java.io.File
@@ -56,11 +58,11 @@ internal open class CwebpCompressFlatImages : CwebpCompressImages() {
         sources().parallelStream().map {
             it to it.metadata
         }.filter {
-            it.second != null && isNotLauncherIcon(it.first, it.second!!) && filter(File(it.second!!.sourcePath))
+            isNotLauncherIcon(it.first, it.second) && filter(File(it.second!!.sourcePath))
         }.map {
-            val output = compressedRes.file("${it.second!!.resourcePath.substringBeforeLast('.')}.webp")
-            Aapt2ActionData(it.first, it.second!!, output,
-                    listOf(cwebp, "-mt", "-quiet", "-q", "80", it.second!!.sourcePath, "-o", output.absolutePath),
+            val output = compressedRes.file("${it.second.resourcePath.substringBeforeLast('.')}.webp")
+            Aapt2ActionData(it.first, it.second, output,
+                    listOf(cwebp, "-mt", "-quiet", "-q", "80", it.second.sourcePath, "-o", output.absolutePath),
                     listOf(aapt2, "compile", "-o", it.first.parent, output.absolutePath))
         }.forEach {
             it.output.parentFile.mkdirs()
@@ -101,7 +103,10 @@ internal open class CwebpCompressFlatImages : CwebpCompressImages() {
 
     @TaskAction
     override fun run() {
-        compress { true }
+        when {
+            GTE_V3_2 -> compress { true }
+            else -> logger.warn("${CSI_YELLOW}Compressing legacy flat images by cwebp is not supported yet$CSI_RESET")
+        }
     }
 
 }

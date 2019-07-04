@@ -18,4 +18,4 @@ val Project.gradleVersion: Revision
     get() = Revision.parseRevision(gradle.gradleVersion)
 
 val Project.aapt2Enabled: Boolean
-    get() = GTE_V33 || ProjectV32.isAapt2Enabled(this)
+    get() = GTE_V3_3 || ProjectV32.isAapt2Enabled(this)

@@ -1,5 +1,9 @@
 package com.didiglobal.booster.task.compression
 
+import com.didiglobal.booster.aapt2.metadata
+import com.didiglobal.booster.gradle.GTE_V3_2
+import com.didiglobal.booster.kotlinx.CSI_RESET
+import com.didiglobal.booster.kotlinx.CSI_YELLOW
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.io.IOException
@@ -14,21 +18,27 @@ internal open class RemoveRedundantFlatImages : RemoveRedundantImages() {
 
     @TaskAction
     override fun run() {
+        when {
+            GTE_V3_2 -> removeFlatImages()
+            else -> logger.warn("${CSI_YELLOW}Removing legacy flat images is not supported yet$CSI_RESET")
+
+        }
+    }
+
+    private fun removeFlatImages() {
         val resources = sources().parallelStream().map {
             it to it.metadata
         }.collect(Collectors.toSet())
 
-        resources.filter {
-            it.second != null
-        }.groupBy({
-            it.second!!.resourceName.substringBeforeLast('/')
+        resources.groupBy({
+            it.second.resourceName.substringBeforeLast('/')
         }, {
             it.first to it.second
         }).forEach { entry ->
             entry.value.groupBy({
-                it.second!!.resourceName.substringAfterLast('/')
+                it.second.resourceName.substringAfterLast('/')
             }, {
-                it.first to it.second!!
+                it.first to it.second
             }).map { group ->
                 group.value.sortedByDescending {
                     it.second.config.density

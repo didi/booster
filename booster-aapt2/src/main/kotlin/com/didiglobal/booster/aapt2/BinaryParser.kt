@@ -19,6 +19,8 @@ class BinaryParser : Closeable {
 
     private val _channel: FileChannel?
 
+    private val _file: String
+
     /**
      * Initialize with the specified buffer
      *
@@ -27,6 +29,7 @@ class BinaryParser : Closeable {
     constructor(buffer: ByteBuffer) {
         _buffer = buffer
         _channel = null
+        _file = "<buffer>"
     }
 
     /**
@@ -38,6 +41,7 @@ class BinaryParser : Closeable {
     constructor(file: File, order: ByteOrder = ByteOrder.LITTLE_ENDIAN) {
         _channel = FileChannel.open(file.toPath(), StandardOpenOption.READ)
         _buffer = _channel.map(FileChannel.MapMode.READ_ONLY, 0, file.length()).order(order)
+        _file = file.absolutePath
     }
 
     /**
@@ -53,6 +57,9 @@ class BinaryParser : Closeable {
      */
     internal val buffer: ByteBuffer
         get() = _buffer
+
+    internal val file: String
+        get() = _file
 
     /**
      * The capacity of buffer
@@ -77,9 +84,7 @@ class BinaryParser : Closeable {
      *
      * @param handler the handler for remaining data parsing
      */
-    fun <T> parse(handler: (ByteBuffer) -> T): T {
-        return handler(_buffer)
-    }
+    fun <T> parse(handler: (ByteBuffer) -> T) = handler(_buffer)
 
     /**
      * Returns the next byte

@@ -92,4 +92,9 @@ class VariantScopeV33 {
         return scope.getGlobalScope().getAndroidBuilder().getBuildToolInfo();
     }
 
+    @NotNull
+    static Collection<File> getRawAndroidResources(@NotNull final VariantScope scope) {
+        return scope.getVariantData().getAllRawAndroidResources().getFiles();
+    }
+
 }

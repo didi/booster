@@ -1,31 +1,25 @@
 package com.didiglobal.booster.aapt2
 
-import java.lang.RuntimeException
-
 import java.nio.ByteBuffer
 
 /**
  * Represents the AAPT2 container
  */
-class Aapt2Container(magic: Int = MAGIC, val version: Int, private vararg val _entries: Entry<Any>) {
+class Aapt2Container(val header: Header, private vararg val _entries: Entry<*>) {
+
+    data class Header(val magic: Int = MAGIC, val version: Int = 1, val count: Int = 1)
 
     abstract class Entry<T>(val type: Int, val data: T)
 
-    open class ResTableEntry(data: Resources.ResourceTable) : Entry<Resources.ResourceTable>(RES_TABLE, data)
+    open class ResTable(data: Resources.ResourceTable) : Entry<Resources.ResourceTable>(RES_TABLE, data)
 
-    open class ResFileEntry(data: ResourcesInternal.CompiledFile) : Entry<ResourcesInternal.CompiledFile>(RES_FILE, data)
+    open class ResFile(data: ResourcesInternal.CompiledFile) : Entry<ResourcesInternal.CompiledFile>(RES_FILE, data)
 
-    open class PngEntry(header: ResourcesInternal.CompiledFile, val image: ByteBuffer) : ResFileEntry(header)
+    open class Png(header: ResourcesInternal.CompiledFile, val image: ByteBuffer) : ResFile(header)
 
-    open class XmlEntry(file: ResourcesInternal.CompiledFile, val xml: Resources.XmlNode): ResFileEntry(file)
+    open class Xml(file: ResourcesInternal.CompiledFile, val root: Resources.XmlNode): ResFile(file)
 
-    init {
-        if (magic != MAGIC) {
-            throw RuntimeException("Invalid aapt2 container")
-        }
-    }
-
-    val entries: List<Entry<Any>>
+    val entries: List<Entry<*>>
         get() = listOf(*_entries)
 
 }
