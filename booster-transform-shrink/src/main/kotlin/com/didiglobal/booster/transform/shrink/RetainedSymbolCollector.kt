@@ -1,6 +1,10 @@
 package com.didiglobal.booster.transform.shrink
 
-import com.didiglobal.booster.aapt2.*
+import com.didiglobal.booster.aapt2.BinaryParser
+import com.didiglobal.booster.aapt2.MAGIC
+import com.didiglobal.booster.aapt2.RES_FILE
+import com.didiglobal.booster.aapt2.Resources
+import com.didiglobal.booster.aapt2.ResourcesInternal
 import com.didiglobal.booster.kotlinx.stackTraceAsString
 import org.gradle.api.logging.Logging
 import java.io.File

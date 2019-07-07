@@ -1,5 +1,7 @@
 package com.didiglobal.booster.aapt2
 
+import com.didiglobal.booster.aapt.Configuration
+import java.io.File
 import java.nio.ByteBuffer
 
 /**
@@ -8,6 +10,14 @@ import java.nio.ByteBuffer
 class Aapt2Container(val header: Header, private vararg val _entries: Entry<*>) {
 
     data class Header(val magic: Int = MAGIC, val version: Int = 1, val count: Int = 1)
+
+    data class Metadata(val resourceName: String, val sourcePath: String, val config: Configuration) {
+
+        val sourceFile = File(sourcePath)
+
+        val resourcePath = "${sourceFile.parentFile.name}${File.separatorChar}${sourceFile.name}"
+
+    }
 
     abstract class Entry<T>(val type: Int, val data: T)
 

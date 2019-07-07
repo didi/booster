@@ -4,7 +4,8 @@ import com.android.SdkConstants
 import com.android.SdkConstants.FD_RES
 import com.android.builder.model.AndroidProject.FD_INTERMEDIATES
 import com.android.sdklib.BuildToolInfo
-import com.didiglobal.booster.aapt2.ResourcesInternal
+import com.didiglobal.booster.aapt2.Aapt2Container
+import com.didiglobal.booster.aapt2.metadata
 import com.didiglobal.booster.gradle.buildTools
 import com.didiglobal.booster.gradle.mergedManifests
 import com.didiglobal.booster.gradle.project
@@ -14,10 +15,6 @@ import com.didiglobal.booster.kotlinx.CSI_RESET
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.task.compression.Aapt2ActionData
 import com.didiglobal.booster.task.compression.CompressionResult
-import com.didiglobal.booster.aapt2.metadata
-import com.didiglobal.booster.aapt2.resourcePath
-import com.didiglobal.booster.gradle.GTE_V3_2
-import com.didiglobal.booster.kotlinx.CSI_YELLOW
 import com.didiglobal.booster.util.search
 import org.gradle.api.tasks.TaskAction
 import java.io.File
@@ -48,7 +45,7 @@ internal open class CwebpCompressFlatImages : CwebpCompressImages() {
             it.parallelStream()
         }.collect(Collectors.toSet())
 
-        val isNotLauncherIcon: (File, ResourcesInternal.CompiledFile) -> Boolean = { input, metadata ->
+        val isNotLauncherIcon: (File, Aapt2Container.Metadata) -> Boolean = { input, metadata ->
             if (!icons.contains(metadata.resourceName)) true else false.also {
                 val s0 = input.length()
                 results.add(CompressionResult(input, s0, s0, File(metadata.sourcePath)))
@@ -103,10 +100,7 @@ internal open class CwebpCompressFlatImages : CwebpCompressImages() {
 
     @TaskAction
     override fun run() {
-        when {
-            GTE_V3_2 -> compress { true }
-            else -> logger.warn("${CSI_YELLOW}Compressing legacy flat images by cwebp is not supported yet$CSI_RESET")
-        }
+        compress { true }
     }
 
 }

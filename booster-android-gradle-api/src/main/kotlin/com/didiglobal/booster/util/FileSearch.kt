@@ -1,5 +1,6 @@
 package com.didiglobal.booster.util
 
+import com.didiglobal.booster.kotlinx.asIterable
 import com.didiglobal.booster.kotlinx.execute
 import java.io.File
 import java.util.concurrent.RecursiveTask
@@ -9,7 +10,7 @@ import java.util.concurrent.RecursiveTask
  *
  * @author johnsonlee
  */
-class FileSearch internal constructor(private val roots: Collection<File>, private val filter: (File) -> Boolean = { true }) : RecursiveTask<Collection<File>>() {
+class FileSearch internal constructor(private val roots: Iterable<File>, private val filter: (File) -> Boolean = { true }) : RecursiveTask<Collection<File>>() {
 
     internal constructor(roots: Array<File>, filter: (File) -> Boolean = { true }) : this(roots.toList(), filter)
 
@@ -40,6 +41,8 @@ class FileSearch internal constructor(private val roots: Collection<File>, priva
 
 fun File.search(filter: (File) -> Boolean = { true }): Collection<File> = FileSearch(this, filter).execute()
 
-fun Collection<File>.search(filter: (File) -> Boolean = { true }): Collection<File> = FileSearch(this, filter).execute()
+fun Iterable<File>.search(filter: (File) -> Boolean = { true }): Collection<File> = FileSearch(this, filter).execute()
+
+fun Iterator<File>.search(filter: (File) -> Boolean = { true }): Collection<File> = FileSearch(this.asIterable(), filter).execute()
 
 fun Array<File>.search(filter: (File) -> Boolean = { true }): Collection<File> = FileSearch(this, filter).execute()

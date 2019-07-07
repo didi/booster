@@ -7,14 +7,11 @@ import com.android.SdkConstants.FD_RES_MIPMAP
 import com.android.builder.model.AndroidProject.FD_INTERMEDIATES
 import com.android.sdklib.BuildToolInfo
 import com.didiglobal.booster.aapt2.metadata
-import com.didiglobal.booster.aapt2.resourcePath
-import com.didiglobal.booster.gradle.GTE_V3_2
 import com.didiglobal.booster.gradle.buildTools
 import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.gradle.scope
 import com.didiglobal.booster.kotlinx.CSI_RED
 import com.didiglobal.booster.kotlinx.CSI_RESET
-import com.didiglobal.booster.kotlinx.CSI_YELLOW
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.task.compression.Aapt2ActionData
 import com.didiglobal.booster.task.compression.CompressionResult
@@ -30,13 +27,6 @@ internal open class PngquantCompressFlatImages : PngquantCompressImages() {
 
     @TaskAction
     override fun run() {
-        when {
-            GTE_V3_2 -> compress()
-            else -> logger.warn("${CSI_YELLOW}Compressing legacy images by pngquant is not supported yet$CSI_RESET")
-        }
-    }
-
-    private fun compress() {
         val intermediates = variant.project.buildDir.file(FD_INTERMEDIATES)
         val compiledRes = intermediates.file("compiled_${FD_RES}_pngquant", variant.dirName, this.name)
         val compressedRes = intermediates.file("compressed_${FD_RES}_pngquant", variant.dirName, this.name)
@@ -52,7 +42,7 @@ internal open class PngquantCompressFlatImages : PngquantCompressImages() {
         }.map {
             val output = compressedRes.file("${it.second.resourcePath.substringBeforeLast('.')}$DOT_PNG")
             Aapt2ActionData(it.first, it.second, output,
-                    listOf(pngquant, "--strip", "--skip-if-larger", "-f", "-o", output.absolutePath, "-s", "1", it.second!!.sourcePath),
+                    listOf(pngquant, "--strip", "--skip-if-larger", "-f", "-o", output.absolutePath, "-s", "1", it.second.sourcePath),
                     listOf(aapt2, "compile", "-o", it.first.parent, output.absolutePath))
         }.forEach {
             it.output.parentFile.mkdirs()

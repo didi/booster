@@ -1,11 +1,14 @@
 package com.didiglobal.booster.aapt2
 
+import com.didiglobal.booster.aapt.Configuration
 import com.didiglobal.booster.aapt2.Aapt2Container.Entry
 import com.didiglobal.booster.aapt2.Aapt2Container.Header
+import com.didiglobal.booster.aapt2.Aapt2Container.Metadata
 import com.didiglobal.booster.aapt2.Aapt2Container.Png
 import com.didiglobal.booster.aapt2.Aapt2Container.ResFile
 import com.didiglobal.booster.aapt2.Aapt2Container.ResTable
 import com.didiglobal.booster.aapt2.Aapt2Container.Xml
+import com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy
 import java.io.File
 
 val File.header: Header
@@ -13,23 +16,92 @@ val File.header: Header
         parser.parseHeader()
     }
 
-val File.metadata: ResourcesInternal.CompiledFile
+val File.metadata: Metadata
     get() = BinaryParser(this).use { parser ->
-        parser.parseHeader()
-        val type = parser.readInt()
-        val length = parser.readLong()
+        val magic = parser.readInt()
+        parser.seek(0)
 
-        return when (type) {
-            RES_FILE -> {
-                val headerSize = parser.readInt()
-                val dataSize = parser.readLong()
-                parser.parse {
-                    ResourcesInternal.CompiledFile.parseFrom(parser.readBytes(headerSize))
+        return when (magic) {
+            MAGIC -> {
+                parser.parseHeader()
+                val type = parser.readInt()
+                val length = parser.readLong()
+
+                when (type) {
+                    RES_FILE -> parser.parseResFileMetadata()
+                    else -> throw RuntimeException("Unsupported entry type: 0x${type.toString(16)}")
                 }
             }
-            else -> throw RuntimeException("Unsupported entry type: 0x${type.toString(16)}")
+            RES_FILE -> parser.parseLegacyMetadata()
+            else -> throw Aapt2ParseException("Unrecognized file `$absolutePath`")
         }
     }
+
+private fun BinaryParser.parseResFileMetadata(): Metadata {
+    val headerSize = readInt()
+    val dataSize = readLong()
+
+    return parse {
+        ResourcesInternal.CompiledFile.parseFrom(readBytes(headerSize))
+    }.let {
+        Metadata(it.resourceName, it.sourcePath, Configuration().apply {
+            size = it.config.serializedSize
+            imsi.apply {
+                mcc = it.config.mcc.toShort()
+                mnc = it.config.mnc.toShort()
+            }
+            it.config.localeBytes.let { l ->
+                l.copyTo(locale.language, 0, 0, 2)
+                l.copyTo(locale.country, 2, 0, 2)
+            }
+            screenType.apply {
+                orientation = it.config.orientationValue.toByte()
+                touchscreen = it.config.touchscreenValue.toByte()
+                density = it.config.density.toShort()
+            }
+            input.apply {
+                keyboard = it.config.keyboardValue.toByte()
+                navigation = it.config.navigationValue.toByte()
+                flags = 0 // TODO
+            }
+            screenSize.apply {
+                width = it.config.screenWidth.toShort()
+                height = it.config.screenHeight.toShort()
+            }
+            version.apply {
+                sdk = it.config.sdkVersion.toShort()
+                minor = 0
+            }
+            screenConfig.apply {
+                layout = it.config.layoutDirectionValue.toByte()
+                uiMode = it.config.uiModeTypeValue.toByte()
+                smallestWidthDp = it.config.smallestScreenWidthDp.toShort()
+            }
+            screenSizeDp.apply {
+                width = it.config.screenWidthDp.toShort()
+                height = it.config.screenHeightDp.toShort()
+            }
+            // TODO localScript = ...
+            // TODO localeVariant = ...
+            screenConfig2.apply {
+                layout = it.config.screenRoundValue.toByte()
+                colorMode = (it.config.hdrValue shl 2 and it.config.wideColorGamutValue).toByte()
+            }
+        })
+    }
+}
+
+private fun BinaryParser.parseLegacyMetadata(): Metadata {
+    val entryType = readInt()
+    val entryLength = readLong()
+    return parse {
+        ResourcesInternalLegacy.CompiledFileLegacy.parseFrom(readBytes(entryLength.toInt()))
+    }.let {
+        Metadata(it.resourceName, it.sourcePath, BinaryParser(it.config.data.newInput()).use { parser ->
+            parser.parseConfiguration()
+        })
+    }
+}
 
 val File.entries: List<Entry<*>>
     get() = BinaryParser(this).use { parser ->
@@ -90,6 +162,62 @@ fun BinaryParser.parseResEntry(): Entry<*> {
         seek(p + length.toInt())
     }
 
+}
+
+fun BinaryParser.parseConfiguration() = Configuration().apply {
+    size = readInt()
+    imsi.mcc = readShort()
+    imsi.mnc = readShort()
+    locale.language[1] = readByte()
+    locale.language[0] = readByte()
+    locale.country[1] = readByte()
+    locale.country[0] = readByte()
+    screenType.orientation = readByte()
+    screenType.touchscreen = readByte()
+    screenType.density = readShort()
+    input.keyboard = readByte()
+    input.navigation = readByte()
+    input.flags = readByte()
+    input.pad0 = readByte()
+    screenSize.width = readShort()
+    screenSize.height = readShort()
+    version.sdk = readShort()
+    version.minor = readShort()
+
+    if (size >= 32) {
+        screenConfig.layout = readByte()
+        screenConfig.uiMode = readByte()
+        screenConfig.smallestWidthDp = readShort()
+    }
+
+    // Android 3.0+
+    if (size >= 36) {
+        screenSizeDp.width = readShort()
+        screenSizeDp.height = readShort()
+    }
+
+    // Android 5.0+
+    if (size >= 48) {
+        localeScript[0] = readByte()
+        localeScript[1] = readByte()
+        localeScript[2] = readByte()
+        localeScript[3] = readByte()
+        localeVariant[0] = readByte()
+        localeVariant[1] = readByte()
+        localeVariant[2] = readByte()
+        localeVariant[3] = readByte()
+        localeVariant[4] = readByte()
+        localeVariant[5] = readByte()
+        localeVariant[6] = readByte()
+        localeVariant[7] = readByte()
+    }
+
+    // Android 6.0+
+    if (size >= 52) {
+        screenConfig2.layout = readByte()
+        screenConfig2.colorMode = readByte()
+        screenConfig2.pad2 = readShort()
+    }
 }
 
 private fun BinaryParser.parseResFile(): ResFile {

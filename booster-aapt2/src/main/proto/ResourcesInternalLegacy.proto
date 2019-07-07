@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+import "Resources.proto";
+
+package aapt.pb.internal;
+
+option java_package = "com.didiglobal.booster.aapt2.legacy";
+option optimize_for = LITE_RUNTIME;
+
+// A configuration description that wraps the binary form of the C++ class
+// aapt::ConfigDescription, with an added product definition.
+// TODO(adamlesinski): Flesh this out to be represented in proto.
+message ConfigDescription {
+  bytes data = 1;
+  string product = 2;
+}
+
+// The top level message representing an external resource file (layout XML, PNG, etc).
+// This is used to represent a compiled file before it is linked. Only useful to aapt2.
+message CompiledFileLegacy {
+  message Symbol {
+    // The name of the symbol (in the form package:type/name).
+    string resource_name = 1;
+
+    // The position in the file at which this symbol is defined. For debug use.
+    aapt.pb.SourcePosition source = 2;
+  }
+
+  // The name of the resource (in the form package:type/name).
+  string resource_name = 1;
+
+  // The configuration for which the resource is defined.
+  ConfigDescription config = 2;
+
+  // The filesystem path to where the source file originated.
+  // Mainly used to display helpful error messages.
+  string source_path = 3;
+}
