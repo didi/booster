@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-Please provides the following informations.
+Please provide the following informations.
 
 - System version
 
