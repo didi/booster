@@ -29,7 +29,7 @@ val File.metadata: Metadata
 
                 when (type) {
                     RES_FILE -> parser.parseResFileMetadata()
-                    else -> throw RuntimeException("Unsupported entry type: 0x${type.toString(16)}")
+                    else -> throw RuntimeException("Unsupported entry type 0x${type.toString(16)} `$absolutePath`")
                 }
             }
             RES_FILE -> parser.parseLegacyMetadata()
@@ -46,13 +46,17 @@ private fun BinaryParser.parseResFileMetadata(): Metadata {
     }.let {
         Metadata(it.resourceName, it.sourcePath, Configuration().apply {
             size = it.config.serializedSize
+            if (size <= 0) {
+                return@apply
+            }
+
             imsi.apply {
                 mcc = it.config.mcc.toShort()
                 mnc = it.config.mnc.toShort()
             }
-            it.config.localeBytes.let { l ->
-                l.copyTo(locale.language, 0, 0, 2)
-                l.copyTo(locale.country, 2, 0, 2)
+            locale.apply {
+                // TODO language = ...
+                // TODO country = ...
             }
             screenType.apply {
                 orientation = it.config.orientationValue.toByte()
@@ -82,7 +86,11 @@ private fun BinaryParser.parseResFileMetadata(): Metadata {
                 height = it.config.screenHeightDp.toShort()
             }
             // TODO localScript = ...
-            // TODO localeVariant = ...
+            it.config.localeBytes.takeIf { l ->
+                l.size() > 0
+            }?.let { l ->
+                l.copyTo(localeVariant, 0, 0, l.size())
+            }
             screenConfig2.apply {
                 layout = it.config.screenRoundValue.toByte()
                 colorMode = (it.config.hdrValue shl 2 and it.config.wideColorGamutValue).toByte()
@@ -159,7 +167,7 @@ fun BinaryParser.parseResEntry(): Entry<*> {
             else -> TODO("Unknown type 0x`${type.toString(16)}`")
         }
     } finally {
-        seek(p + length.toInt())
+        //seek(p + length.toInt())
     }
 
 }
@@ -229,20 +237,27 @@ private fun BinaryParser.parseResFile(): ResFile {
     val padding = readBytes((4 - tell() % 4) % 4)
 
     return when (header.type) {
-        Resources.FileReference.Type.PNG -> Png(header, parse {
-            val p = tell()
-            val magic = readInt()
-            if (0x474E5089 != magic) {
-                throw Aapt2ParseException("Not a PNG entry `$file`")
-            }
-            seek(p)
-            it
-        })
+        Resources.FileReference.Type.PNG -> parsePng(header)
         Resources.FileReference.Type.BINARY_XML -> TODO("binary XML")
         Resources.FileReference.Type.PROTO_XML -> Xml(header, Resources.XmlNode.parseFrom(readBytes(dataSize.toInt())))
-        Resources.FileReference.Type.UNKNOWN -> TODO("unknown RES_FILE")
+        Resources.FileReference.Type.UNKNOWN -> when (header.resourcePath.substringAfter('.')) {
+            "png", "9.png" -> parsePng(header)
+            else -> TODO("Unknown RES_FILE `$file`")
+        }
         Resources.FileReference.Type.UNRECOGNIZED -> TODO("Unrecognized resource file `${header.sourcePath}`")
     }
+}
+
+private fun BinaryParser.parsePng(header: ResourcesInternal.CompiledFile): Png {
+    return Png(header, parse {
+        val p = tell()
+        val magic = readInt()
+        if (0x474E5089 != magic) {
+            throw Aapt2ParseException("Not a PNG entry `$file`")
+        }
+        seek(p)
+        it
+    })
 }
 
 val ResourcesInternal.CompiledFile.resourcePath: String
