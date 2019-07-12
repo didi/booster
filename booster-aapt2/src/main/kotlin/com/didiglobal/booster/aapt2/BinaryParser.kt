@@ -32,6 +32,12 @@ class BinaryParser : Closeable {
         _file = "<buffer>"
     }
 
+    constructor(buffer: ByteArray) {
+        _buffer = ByteBuffer.wrap(buffer)
+        _channel = null
+        _file = "<buffer>"
+    }
+
     /**
      * Initialize with the specified file and byte order
      *

@@ -105,7 +105,7 @@ private fun BinaryParser.parseLegacyMetadata(): Metadata {
     return parse {
         ResourcesInternalLegacy.CompiledFileLegacy.parseFrom(readBytes(entryLength.toInt()))
     }.let {
-        Metadata(it.resourceName, it.sourcePath, BinaryParser(it.config.data.newInput()).use { parser ->
+        Metadata(it.resourceName, it.sourcePath, BinaryParser(it.config.data.toByteArray()).use { parser ->
             parser.parseConfiguration()
         })
     }
