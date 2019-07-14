@@ -152,7 +152,9 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
                         when (status) {
                             REMOVED -> file.delete()
                             ADDED, CHANGED -> {
-                                val root = outputProvider.getContentLocation(dirInput.name, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY)
+                                val root = outputProvider.getContentLocation(dirInput.name, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY).parentFile.listFiles().first { item ->
+                                    item.isDirectory
+                                }
                                 project.logger.info("Transforming $file")
                                 file.transform(File(root, base.relativize(file.toURI()).path)) { bytecode ->
                                     bytecode.transform(this)
