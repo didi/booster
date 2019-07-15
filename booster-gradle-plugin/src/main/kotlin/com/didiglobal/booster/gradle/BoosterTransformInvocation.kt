@@ -116,7 +116,7 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
         this.inputs.parallelStream().forEach { input ->
             input.directoryInputs.parallelStream().forEach {
                 project.logger.info("Transforming ${it.file}")
-                it.file.transform(outputProvider.getContentLocation(it.file.name, it.contentTypes, it.scopes, Format.DIRECTORY)) { bytecode ->
+                it.file.transform(outputProvider.getContentLocation(it.name, it.contentTypes, it.scopes, Format.DIRECTORY)) { bytecode ->
                     bytecode.transform(this)
                 }
             }
