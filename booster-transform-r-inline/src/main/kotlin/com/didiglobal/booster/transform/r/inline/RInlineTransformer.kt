@@ -1,4 +1,4 @@
-package com.didiglobal.booster.transform.shrink
+package com.didiglobal.booster.transform.r.inline
 
 import com.didiglobal.booster.kotlinx.Wildcard
 import com.didiglobal.booster.kotlinx.asIterable
@@ -33,7 +33,7 @@ internal const val COM_ANDROID_INTERNAL_R = "com/android/internal/R$"
  * @author johnsonlee
  */
 @AutoService(ClassTransformer::class)
-class ShrinkTransformer : ClassTransformer {
+class RInlineTransformer : ClassTransformer {
 
     private lateinit var appPackage: String
     private lateinit var appRStyleable: String
@@ -58,10 +58,6 @@ class ShrinkTransformer : ClassTransformer {
             }
         } else {
             retainedSymbols = emptySet()
-        }
-
-        if (classpath.any { it.contains(PREFIX_GREENDAO) }) {
-            this.ignores += Wildcard.valueOf(PATTERN_FIELD_TABLENAME)
         }
 
         logger.println(classpath.joinToString("\n  - ", "classpath:\n  - ", "\n"))
@@ -99,7 +95,6 @@ class ShrinkTransformer : ClassTransformer {
         if (this.ignores.any { it.matches(klass.name) }) {
             logger.println("Ignore `${klass.name}`")
         } else {
-            klass.removeConstantFields()
             klass.replaceSymbolReferenceWithConstant()
         }
         return klass
@@ -122,19 +117,6 @@ class ShrinkTransformer : ClassTransformer {
             it.second != appRStyleable // keep application's R$styleable.class
         }.filter { pair ->
             !ignores.any { it.matches(pair.second) }
-        }
-    }
-
-    private fun ClassNode.removeConstantFields() {
-        fields.map {
-            it as FieldNode
-        }.filter { field ->
-            !ignores.any { it.matches("$name.${field.name}:${field.desc}") }
-        }.filter {
-            0 != (ACC_STATIC and it.access) && 0 != (ACC_FINAL and it.access) && it.value != null
-        }.forEach {
-            fields.remove(it)
-            logger.println("Remove `$name.${it.name} : ${it.desc}` = ${it.valueAsString()}")
         }
     }
 
@@ -194,7 +176,3 @@ private val PROPERTY_PREFIX = Build.ARTIFACT.replace('-', '.')
 private val PROPERTY_IGNORES = "$PROPERTY_PREFIX.ignores"
 
 private val PREFIX_CONSTRAINT_LAYOUT = "${File.separatorChar}com.android.support.constraint${File.separatorChar}constraint-layout"
-
-private val PREFIX_GREENDAO = "${File.separatorChar}org.greenrobot${File.separatorChar}greendao${File.separatorChar}"
-
-internal const val PATTERN_FIELD_TABLENAME = "*.TABLENAME:Ljava/lang/String;"

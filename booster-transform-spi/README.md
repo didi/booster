@@ -6,6 +6,6 @@ This module provides [Transformer SPI](./src/main/kotlin/com/didiglobal/booster/
 
 - [booster-transform-bugfix-toast](../booster-transform-bugfix-toast)
 - [booster-transform-lint](../booster-transform-lint)
-- [booster-transform-shrink](../booster-transform-shrink)
+- [booster-transform-r-inline](../booster-transform-r-inline)
 - [booster-transform-usage](../booster-transform-usage)
 

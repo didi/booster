@@ -36,9 +36,9 @@ Booster provides a collection of modules for performance detection, multithreadi
 
 - Package size reduction | 应用瘦身
 
-  Such as [image resources compression](./booster-task-compression), [constants removal](./booster-transform-shrink), etc.
+  Such as [image resources compression](./booster-task-compression), [r inline](./booster-transform-r-inline), etc.
 
-  > 如：[资源压缩及冗余资源删除](./booster-task-compression)、[资源索引内联及常量删除](./booster-transform-shrink)。
+  > 如：[资源压缩及冗余资源删除](./booster-task-compression)、[资源索引内联](./booster-transform-r-inline)。
 
 - Other things you can imagine | 其它你能想像得到的
 
@@ -158,10 +158,10 @@ Here are all the modules of Booster:
   classpath "com.didiglobal.booster:booster-task-compression:$booster_version"
   ```
 
-- [booster-transform-shrink](./booster-transform-shrink) - 资源索引内联及常量字段删除
+- [booster-transform-r-inline](./booster-transform-r-inline) - 资源索引内联
 
   ```groovy
-  classpath "com.didiglobal.booster:booster-transform-shrink:$booster_version"
+  classpath "com.didiglobal.booster:booster-transform-r-inline:$booster_version"
   ```
 
 ### System Bug

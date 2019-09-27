@@ -1,4 +1,4 @@
-package com.didiglobal.booster.transform.shrink
+package com.didiglobal.booster.transform.r.inline
 
 import java.lang.Exception
 

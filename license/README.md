@@ -18,7 +18,7 @@ The following sections of the repository contain third-party code, to which diff
 - Path: booster-transform-lint/src/main/kotlin/com/didiglobal/booster/transform/lint/LintTransformer.kt
   - License: BSD ([3rdparty/asm/LICENSE.txt](./3rdparty/asm/LICENSE.txt))
   - Origin: Derived from ASM: a very small and fast Java bytecode manipulation framework, Copyright (c) 2000-2011 INRIA, France Telecom
-- Path: booster-transform-shrink/src/main/kotlin/com/didiglobal/booster/transform/shrink/ShrinkTransformer.kt
+- Path: booster-transform-r-inline/src/main/kotlin/com/didiglobal/booster/transform/r/inline/RInlineTransformer.kt
   - License: BSD ([3rdparty/asm/LICENSE.txt](./3rdparty/asm/LICENSE.txt))
   - Origin: Derived from ASM: a very small and fast Java bytecode manipulation framework, Copyright (c) 2000-2011 INRIA, France Telecom
 - Path: booster-transform-usage/src/main/kotlin/com/didiglobal/booster/transform/usage/UsageTransformer.kt

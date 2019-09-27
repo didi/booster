@@ -1,6 +1,6 @@
-# booster-transform-shrink
+# booster-transform-r-inline
 
-This module is used for constants shrinking, such as fields in `BuildConfig`, `R$id`, `R$layout`, `R$string`, etc.
+This module is used for resource index inline, such as fields in `R$id`, `R$layout`, `R$string`, etc.
 
 ## Properties
 
@@ -8,17 +8,17 @@ The following table shows the properties that transformer supports:
 
 | Property                         | Description                                                  | Example                            |
 | -------------------------------- | ------------------------------------------------------------ | ---------------------------------- |
-| `booster.transform.shrink.ignores` | comma separated wildcard patterns to ignore                  | android/\*,androidx/\*             |
+| `booster.transform.r.inline.ignores` | comma separated wildcard patterns to ignore                  | android/\*,androidx/\*             |
 
 The properties can be passthrough the command line as following:
 
 ```bash
-./gradlew assembleDebug -Pbooster.transform.shrink.ignores=android/*,androidx/*
+./gradlew assembleDebug -Pbooster.transform.r.inline.ignores=android/*,androidx/*
 ```
 
 or configured in the `gradle.properties`:
 
 ```properties
-booster.transform.shrink.ignores=android/*,androidx/*
+booster.transform.r.inline.ignores=android/*,androidx/*
 ```
 

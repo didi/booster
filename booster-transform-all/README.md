@@ -9,7 +9,7 @@ This module is a summary of all transformers:
 - [booster-transform-media-player](./booster-transform-media-player)
 - [booster-transform-res-check](./booster-transform-res-check)
 - [booster-transform-shared-preferences](./booster-transform-shared-preferences)
-- [booster-transform-shrink](./booster-transform-shrink)
+- [booster-transform-r-inline](./booster-transform-r-inline)
 - [booster-transform-thread](./booster-transform-thread)
 - [booster-transform-toast](./booster-transform-toast)
 - [booster-transform-usage](./booster-transform-usage)

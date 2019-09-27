@@ -1,4 +1,4 @@
-package com.didiglobal.booster.transform.shrink
+package com.didiglobal.booster.transform.r.inline
 
 import com.didiglobal.booster.aapt2.BinaryParser
 import com.didiglobal.booster.aapt2.MAGIC
