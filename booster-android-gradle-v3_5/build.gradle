@@ -1,0 +1,7 @@
+apply from: '../gradle/booster.gradle'
+
+dependencies {
+    compile gradleApi()
+    compileOnly 'com.android.tools.build:gradle:3.5.0'
+    testCompileOnly 'com.android.tools.build:gradle:3.5.0'
+}
