@@ -55,7 +55,7 @@ internal open class CwebpCompressFlatImages : CwebpCompressImages() {
         sources().parallelStream().map {
             it to it.metadata
         }.filter {
-            isNotLauncherIcon(it.first, it.second) && filter(File(it.second!!.sourcePath))
+            isNotLauncherIcon(it.first, it.second) && filter(File(it.second.sourcePath))
         }.map {
             val output = compressedRes.file("${it.second.resourcePath.substringBeforeLast('.')}.webp")
             Aapt2ActionData(it.first, it.second, output,
