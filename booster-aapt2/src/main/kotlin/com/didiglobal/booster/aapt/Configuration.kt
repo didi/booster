@@ -186,9 +186,20 @@ class Configuration {
     }
 
     class ScreenConfig {
+        /**
+         * @see SCREEN_LAYOUT_DIR_UNDEFINED
+         * @see SCREEN_LAYOUT_DIR_LTR
+         * @see SCREEN_LAYOUT_DIR_RTL
+         */
         var layout: Byte = 0
         var uiMode: Byte = 0
         var smallestWidthDp: Short = 0
+
+        companion object {
+            const val SCREEN_LAYOUT_DIR_UNDEFINED: Byte = 0
+            const val SCREEN_LAYOUT_DIR_LTR: Byte = 1
+            const val SCREEN_LAYOUT_DIR_RTL: Byte = 2
+        }
     }
 
     class ScreenConfig2 {
