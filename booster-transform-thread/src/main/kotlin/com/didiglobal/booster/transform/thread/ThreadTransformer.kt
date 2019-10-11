@@ -139,7 +139,6 @@ private fun MethodInsnNode.transformInvokeVirtual(context: TransformContext, kla
                         method.instructions.insertBefore(this, LdcInsnNode(makeThreadName(klass.className)))
                     }
                     "newCachedThreadPool",
-                    "newFixedThreadPool",
                     "newSingleThreadExecutor",
                     "newSingleThreadScheduledExecutor",
                     "newScheduledThreadPool" -> {

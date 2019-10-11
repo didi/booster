@@ -144,26 +144,6 @@ public class ShadowExecutors {
 
     // </editor-fold>
 
-    // <editor-fold desc="* optimized fixed thread pool">
-
-    public static ExecutorService newOptimizedFixedThreadPool(final int nThreads) {
-        return new ThreadPoolExecutor(0, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), Executors.defaultThreadFactory());
-    }
-
-    public static ExecutorService newOptimizedFixedThreadPool(final int nThreads, final String name) {
-        return new ThreadPoolExecutor(0, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), new NamedThreadFactory(name));
-    }
-
-    public static ExecutorService newOptimizedFixedThreadPool(final int nThreads, final ThreadFactory factory) {
-        return new ThreadPoolExecutor(0, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), factory);
-    }
-
-    public static ExecutorService newOptimizedFixedThreadPool(final int nThreads, final ThreadFactory factory, final String name) {
-        return new ThreadPoolExecutor(0, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), new NamedThreadFactory(factory, name));
-    }
-
-    // </editor-fold>
-
     // <editor-fold desc="* optimized single thread executor">
 
     public static ExecutorService newOptimizedSingleThreadExecutor() {
