@@ -235,6 +235,8 @@ Welcome to contribute by creating issues or sending pull requests. See [Contribu
 
 Welcome to join the community on [spectrum](https://spectrum.chat/booster).
 
+![Booster交流群](https://user-images.githubusercontent.com/2344882/67552126-f9a5c580-f73c-11e9-9f65-a23df5678921.png)
+
 ## License
 
 Booster is licensed under the [Apache License 2.0](./LICENSE.txt).
