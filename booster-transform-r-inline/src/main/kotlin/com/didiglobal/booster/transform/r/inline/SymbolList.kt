@@ -22,6 +22,8 @@ class SymbolList private constructor(builder: Builder) : Iterable<SymbolList.Sym
         return (this.symbols.find { it.type == type && it.name == name && it is IntArraySymbol }?.value as? IntArray)!!
     }
 
+    fun isEmpty() = this.symbols.isEmpty()
+
     abstract class Symbol<out T>(val type: String, val name: String, val value: T) {
 
         override fun hashCode(): Int {

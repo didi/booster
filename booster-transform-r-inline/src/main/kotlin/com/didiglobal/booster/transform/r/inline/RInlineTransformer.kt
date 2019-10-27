@@ -13,8 +13,7 @@ import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
 import com.didiglobal.booster.util.search
 import com.google.auto.service.AutoService
-import org.objectweb.asm.Opcodes.ACC_FINAL
-import org.objectweb.asm.Opcodes.ACC_STATIC
+import org.gradle.api.logging.Logging
 import org.objectweb.asm.Opcodes.GETSTATIC
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldInsnNode
@@ -48,13 +47,20 @@ class RInlineTransformer : ClassTransformer {
         this.appRStyleable = "$appPackage/$R_STYLEABLE"
         this.ignores = context.getProperty(PROPERTY_IGNORES)?.split(',')?.map { Wildcard(it) }?.toSet() ?: emptySet()
 
+        if (this.symbols.isEmpty()) {
+            logger_.error("Inline R symbols failed: R.txt doesn't exist or blank")
+            this.logger.println("Inlining R symbols failed: R.txt doesn't exist or blank")
+            return
+        }
+
         val retainedSymbols: Set<String>
         val classpath = context.compileClasspath.map { it.absolutePath }
-        if (classpath.any { it.contains(PREFIX_CONSTRAINT_LAYOUT) }) {
+        if (classpath.any { it.contains(PREFIX_SUPPORT_CONSTRAINT_LAYOUT) || it.contains(PREFIX_JETPACK_CONSTRAINT_LAYOUT) }) {
             // Find symbols that should be retained
             retainedSymbols = context.findRetainedSymbols()
             if (retainedSymbols.isNotEmpty()) {
                 this.ignores += setOf(Wildcard.valueOf("android/support/constraint/R\$id"))
+                this.ignores += setOf(Wildcard.valueOf("androidx/constraintlayout/R\$id"))
             }
         } else {
             retainedSymbols = emptySet()
@@ -92,11 +98,16 @@ class RInlineTransformer : ClassTransformer {
     }
 
     override fun transform(context: TransformContext, klass: ClassNode): ClassNode {
+        if (this.symbols.isEmpty()) {
+            return klass
+        }
+
         if (this.ignores.any { it.matches(klass.name) }) {
             logger.println("Ignore `${klass.name}`")
         } else {
             klass.replaceSymbolReferenceWithConstant()
         }
+
         return klass
     }
 
@@ -175,4 +186,8 @@ private val PROPERTY_PREFIX = Build.ARTIFACT.replace('-', '.')
 
 private val PROPERTY_IGNORES = "$PROPERTY_PREFIX.ignores"
 
-private val PREFIX_CONSTRAINT_LAYOUT = "${File.separatorChar}com.android.support.constraint${File.separatorChar}constraint-layout"
+private val PREFIX_SUPPORT_CONSTRAINT_LAYOUT = "${File.separatorChar}com.android.support.constraint${File.separatorChar}constraint-layout"
+
+private val PREFIX_JETPACK_CONSTRAINT_LAYOUT = "${File.separator}androidx.constraintlayout${File.separator}constraintlayout"
+
+private val logger_ = Logging.getLogger(RInlineTransformer::class.java)
