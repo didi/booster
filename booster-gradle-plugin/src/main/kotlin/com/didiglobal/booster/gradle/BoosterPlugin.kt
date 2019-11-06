@@ -1,6 +1,7 @@
 package com.didiglobal.booster.gradle
 
 import com.android.build.gradle.AppExtension
+import com.android.build.gradle.FeatureExtension
 import com.android.build.gradle.LibraryExtension
 import com.didiglobal.booster.task.spi.VariantProcessor
 import org.gradle.api.Plugin
@@ -16,11 +17,12 @@ class BoosterPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
         when {
-            project.plugins.hasPlugin("com.android.application") -> project.getAndroid<AppExtension>().let { android ->
+            project.plugins.hasPlugin("com.android.application") || project.plugins.hasPlugin("com.android.dynamic-feature") -> project.getAndroid<AppExtension>().let { android ->
                 android.registerTransform(BoosterAppTransform())
                 project.afterEvaluate {
                     ServiceLoader.load(VariantProcessor::class.java, javaClass.classLoader).toList().let { processors ->
                         android.applicationVariants.forEach { variant ->
+                            println("#### ${variant.name}: isBaseModule=${variant.variantData.isBaseModule()}, isDynamicFeature=${variant.variantData.isDynamicFeature()}, analyticsVariantType=${variant.variantData.getAnalyticsVariantType()}")
                             processors.forEach { processor ->
                                 processor.process(variant)
                             }
@@ -33,6 +35,20 @@ class BoosterPlugin : Plugin<Project> {
                 project.afterEvaluate {
                     ServiceLoader.load(VariantProcessor::class.java, javaClass.classLoader).toList().let { processors ->
                         android.libraryVariants.forEach { variant ->
+                            println("#### ${variant.name}: isBaseModule=${variant.variantData.isBaseModule()}, isDynamicFeature=${variant.variantData.isDynamicFeature()}, analyticsVariantType=${variant.variantData.getAnalyticsVariantType()}")
+                            processors.forEach { processor ->
+                                processor.process(variant)
+                            }
+                        }
+                    }
+                }
+            }
+            project.plugins.hasPlugin("com.android.feature") -> project.getAndroid<FeatureExtension>().let { android ->
+                android.registerTransform(BoosterFeatureTransform())
+                project.afterEvaluate {
+                    ServiceLoader.load(VariantProcessor::class.java, javaClass.classLoader).toList().let { processors ->
+                        android.featureVariants.forEach { variant ->
+                            println("#### ${variant.name}: isBaseModule=${variant.variantData.isBaseModule()}, isDynamicFeature=${variant.variantData.isDynamicFeature()}, analyticsVariantType=${variant.variantData.getAnalyticsVariantType()}")
                             processors.forEach { processor ->
                                 processor.process(variant)
                             }
