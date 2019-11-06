@@ -22,7 +22,6 @@ class BoosterPlugin : Plugin<Project> {
                 project.afterEvaluate {
                     ServiceLoader.load(VariantProcessor::class.java, javaClass.classLoader).toList().let { processors ->
                         android.applicationVariants.forEach { variant ->
-                            println("#### ${variant.name}: isBaseModule=${variant.variantData.isBaseModule()}, isDynamicFeature=${variant.variantData.isDynamicFeature()}, analyticsVariantType=${variant.variantData.getAnalyticsVariantType()}")
                             processors.forEach { processor ->
                                 processor.process(variant)
                             }
@@ -35,7 +34,6 @@ class BoosterPlugin : Plugin<Project> {
                 project.afterEvaluate {
                     ServiceLoader.load(VariantProcessor::class.java, javaClass.classLoader).toList().let { processors ->
                         android.libraryVariants.forEach { variant ->
-                            println("#### ${variant.name}: isBaseModule=${variant.variantData.isBaseModule()}, isDynamicFeature=${variant.variantData.isDynamicFeature()}, analyticsVariantType=${variant.variantData.getAnalyticsVariantType()}")
                             processors.forEach { processor ->
                                 processor.process(variant)
                             }
@@ -48,7 +46,6 @@ class BoosterPlugin : Plugin<Project> {
                 project.afterEvaluate {
                     ServiceLoader.load(VariantProcessor::class.java, javaClass.classLoader).toList().let { processors ->
                         android.featureVariants.forEach { variant ->
-                            println("#### ${variant.name}: isBaseModule=${variant.variantData.isBaseModule()}, isDynamicFeature=${variant.variantData.isDynamicFeature()}, analyticsVariantType=${variant.variantData.getAnalyticsVariantType()}")
                             processors.forEach { processor ->
                                 processor.process(variant)
                             }
