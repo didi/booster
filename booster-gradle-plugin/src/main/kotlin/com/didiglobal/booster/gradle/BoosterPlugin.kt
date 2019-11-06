@@ -1,7 +1,6 @@
 package com.didiglobal.booster.gradle
 
 import com.android.build.gradle.AppExtension
-import com.android.build.gradle.FeatureExtension
 import com.android.build.gradle.LibraryExtension
 import com.didiglobal.booster.task.spi.VariantProcessor
 import org.gradle.api.Plugin
@@ -34,18 +33,6 @@ class BoosterPlugin : Plugin<Project> {
                 project.afterEvaluate {
                     ServiceLoader.load(VariantProcessor::class.java, javaClass.classLoader).toList().let { processors ->
                         android.libraryVariants.forEach { variant ->
-                            processors.forEach { processor ->
-                                processor.process(variant)
-                            }
-                        }
-                    }
-                }
-            }
-            project.plugins.hasPlugin("com.android.feature") -> project.getAndroid<FeatureExtension>().let { android ->
-                android.registerTransform(BoosterFeatureTransform())
-                project.afterEvaluate {
-                    ServiceLoader.load(VariantProcessor::class.java, javaClass.classLoader).toList().let { processors ->
-                        android.featureVariants.forEach { variant ->
                             processors.forEach { processor ->
                                 processor.process(variant)
                             }
