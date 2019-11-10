@@ -9,8 +9,11 @@ import com.didiglobal.booster.task.spi.VariantProcessor
 import com.didiglobal.booster.transform.shared.preferences.Build
 import com.google.auto.service.AutoService
 
+/**
+ * @author neighbWang
+ */
 @AutoService(VariantProcessor::class)
-class SharedPreferencesEditorVariantProcessor : VariantProcessor {
+class SharedPreferencesVariantProcessor : VariantProcessor {
 
     override fun process(variant: BaseVariant) {
         if (variant !is LibraryVariant && !variant.variantData.isDynamicFeature()) {

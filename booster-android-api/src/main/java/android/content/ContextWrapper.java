@@ -5,6 +5,8 @@ import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
 
+import java.io.File;
+
 public class ContextWrapper extends Context {
 
     public ContextWrapper(final Context base) {
@@ -57,6 +59,16 @@ public class ContextWrapper extends Context {
 
     @Override
     public Object getSystemService(final String name) {
+        throw new RuntimeException("Stub!");
+    }
+
+    @Override
+    public Context getApplicationContext() {
+        throw new RuntimeException("Stub!");
+    }
+
+    @Override
+    public File getFilesDir() {
         throw new RuntimeException("Stub!");
     }
 
