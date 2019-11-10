@@ -5,6 +5,8 @@ import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
 
+import java.io.File;
+
 public abstract class Context {
 
     public abstract AssetManager getAssets();
@@ -24,5 +26,9 @@ public abstract class Context {
     public abstract void unregisterReceiver(final BroadcastReceiver receiver);
 
     public abstract Object getSystemService(final String name);
+
+    public abstract Context getApplicationContext();
+
+    public abstract File getFilesDir();
 
 }
