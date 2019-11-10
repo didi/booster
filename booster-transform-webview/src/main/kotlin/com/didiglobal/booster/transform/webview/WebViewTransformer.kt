@@ -65,7 +65,7 @@ class WebViewTransformer : ClassTransformer {
             insn.findAll(RETURN, ATHROW).forEach { ret ->
                 insn.insertBefore(ret, VarInsnNode(ALOAD, 0))
                 insn.insertBefore(ret, MethodInsnNode(INVOKESTATIC, SHADOW_WEBVIEW, "preloadWebView", "(Landroid/app/Application;)V", false))
-                logger.println(" + $SHADOW_WEBVIEW.preloadWebView(Landroid/app/Application;)V before @${if (ret.opcode == ATHROW) "athrow" else "return"}: ${klass.name}.${method.name}${method.desc} ")
+                logger.println(" + $SHADOW_WEBVIEW.preloadWebView(Landroid/app/Application;)V: ${klass.name}.${method.name}${method.desc} ")
             }
         }
         return klass
