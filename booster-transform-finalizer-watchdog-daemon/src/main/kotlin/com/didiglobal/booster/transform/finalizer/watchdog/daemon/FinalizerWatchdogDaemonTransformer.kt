@@ -60,7 +60,7 @@ class FinalizerWatchdogDaemonTransformer : ClassTransformer {
 
         method.instructions?.findAll(RETURN, ATHROW)?.forEach {
                 method.instructions?.insertBefore(it, MethodInsnNode(INVOKESTATIC, FINALIZER_WATCHDOG_DAEMON_KILLER, "kill", "()V", false))
-                logger.println(" + $FINALIZER_WATCHDOG_DAEMON_KILLER.kill()V before @${if (it.opcode == ATHROW) "athrow" else "return"}: ${klass.name}.${method.name}${method.desc} ")
+                logger.println(" + $FINALIZER_WATCHDOG_DAEMON_KILLER.kill()V: ${klass.name}.${method.name}${method.desc} ")
         }
 
         return klass

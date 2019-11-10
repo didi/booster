@@ -67,7 +67,7 @@ class ThreadTransformer : ClassTransformer {
                     Opcodes.ARETURN -> if (method.desc == "L$THREAD;") {
                         method.instructions.insertBefore(it, LdcInsnNode(makeThreadName(klass.className)))
                         method.instructions.insertBefore(it, MethodInsnNode(Opcodes.INVOKESTATIC, SHADOW_THREAD, "setThreadName", "(Ljava/lang/Thread;Ljava/lang/String;)Ljava/lang/Thread;", false))
-                        logger.println(" + $SHADOW_THREAD.makeThreadName(Ljava/lang/String;Ljava/lang/String;) @return: ${klass.name}.${method.name}${method.desc}")
+                        logger.println(" + $SHADOW_THREAD.makeThreadName(Ljava/lang/String;Ljava/lang/String;): ${klass.name}.${method.name}${method.desc}")
                     }
                 }
             }
@@ -205,7 +205,7 @@ private fun MethodInsnNode.transformInvokeVirtual(context: TransformContext, kla
         method.instructions?.let { insn ->
             insn.findAll(Opcodes.RETURN, Opcodes.ATHROW).forEach {
                 insn.insertBefore(it, MethodInsnNode(Opcodes.INVOKESTATIC, SHADOW_ASYNC_TASK, "optimizeAsyncTaskExecutor", "()V", false))
-                logger.println(" + $SHADOW_ASYNC_TASK.optimizeAsyncTaskExecutor()V before @${if (it.opcode == Opcodes.ATHROW) "athrow" else "return"}: ${klass.name}.${method.name}${method.desc} ")
+                logger.println(" + $SHADOW_ASYNC_TASK.optimizeAsyncTaskExecutor()V: ${klass.name}.${method.name}${method.desc} ")
 
             }
         }

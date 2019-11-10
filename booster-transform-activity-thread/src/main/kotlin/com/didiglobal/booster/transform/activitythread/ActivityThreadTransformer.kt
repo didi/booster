@@ -67,7 +67,7 @@ class ActivityThreadTransformer : ClassTransformer {
             }
             method.instructions?.findAll(RETURN, ATHROW)?.forEach {
                 method.instructions?.insertBefore(it, MethodInsnNode(INVOKESTATIC, ACTIVITY_THREAD_HOOKER, "hook", "()V", false))
-                logger.println(" + $ACTIVITY_THREAD_HOOKER.hook()V before @${if (it.opcode == ATHROW) "athrow" else "return"}: ${klass.name}.${method.name}${method.desc}")
+                logger.println(" + $ACTIVITY_THREAD_HOOKER.hook()V: ${klass.name}.${method.name}${method.desc}")
             }
         }
 

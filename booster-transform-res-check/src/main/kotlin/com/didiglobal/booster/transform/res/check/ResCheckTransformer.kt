@@ -70,7 +70,7 @@ class ResCheckTransformer : ClassTransformer {
                     add(VarInsnNode(ALOAD, 0))
                     add(MethodInsnNode(INVOKESTATIC, RES_CHECKER, "checkRes", "(Landroid/app/Application;)V", false))
                 })
-                logger.println(" + $RES_CHECKER.checkRes(Landroid/app/Application;)V after ${(it as MethodInsnNode).owner}.${it.name}${it.desc} : ${klass.name}.${it.name}${it.desc} ")
+                logger.println(" + $RES_CHECKER.checkRes(Landroid/app/Application;)V: ${klass.name}.${(it as MethodInsnNode).name}${it.desc} ")
             }
         }
 
@@ -89,7 +89,7 @@ class ResCheckTransformer : ClassTransformer {
                     add(VarInsnNode(ALOAD, 0))
                     add(MethodInsnNode(INVOKESTATIC, RES_CHECKER, "checkRes", "(Landroid/app/Application;)V", false))
                 })
-                logger.println(" + $RES_CHECKER.checkRes(Landroid/app/Application;)V after ${(it as MethodInsnNode).owner}.${it.name}${it.desc} : ${klass.name}.${it.name}${it.desc} ")
+                logger.println(" + $RES_CHECKER.checkRes(Landroid/app/Application;)V: ${klass.name}.${(it as MethodInsnNode).name}${it.desc} ")
             }
         }
         return klass

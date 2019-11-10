@@ -68,7 +68,7 @@ class SharedPreferencesTransformer : ClassTransformer {
                     ACTIVITY_GET_PREFERENCES to SHADOW_ACTIVITY_GET_PREFERENCES
                 ).forEach { (original, shadow) ->
                     if (it.opcode == original.opcode && it.name == original.name && it.desc == original.desc && context.klassPool.get(original.owner).isAssignableFrom(it.owner)) {
-                        logger.println("* optimize SharedPreferences ${it.owner}.${it.name}${it.desc} => ${klass.name}.${method.name}${method.desc}")
+                        logger.println(" * ${shadow.owner}${shadow.name}${shadow.desc} => ${it.owner}.${it.name}${it.desc}: ${klass.name}.${method.name}${method.desc}")
                         it.opcode = shadow.opcode
                         it.owner = shadow.owner
                         it.name = shadow.name
@@ -97,7 +97,7 @@ class SharedPreferencesTransformer : ClassTransformer {
                     add(VarInsnNode(Opcodes.ALOAD, 0))
                     add(MethodInsnNode(INVOKESTATIC, BOOSTER_SHARED_PREFERENCES, "init", "(L$CONTEXT;)V", false))
                 })
-                logger.println("+ $BOOSTER_SHARED_PREFERENCES.init(L$CONTEXT;)V => ${klass.name}.${(it as MethodInsnNode).name}${it.desc} ")
+                logger.println(" + $BOOSTER_SHARED_PREFERENCES.init(L$CONTEXT;)V: ${klass.name}.${(it as MethodInsnNode).name}${it.desc} ")
             }
         }
 
