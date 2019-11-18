@@ -3,11 +3,9 @@ package com.didiglobal.booster.instrument.sharedpreferences;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.FileObserver;
 import android.os.Handler;
 import android.os.Looper;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,7 +25,6 @@ public final class BoosterSharedPreferences implements SharedPreferences {
     private static final ExecutorService SYNC_EXECUTOR = Executors.newCachedThreadPool();
     private static final Map<String, BoosterSharedPreferences> sSharedPreferencesMap = new ConcurrentHashMap<>();
     private static final Object SENTINEL = new Object();
-    private static String sSharedPreferencesDir;
     private static Context sContext;
 
     private final ExecutorService mWriteExecutor = Executors.newSingleThreadExecutor();
@@ -35,7 +32,6 @@ public final class BoosterSharedPreferences implements SharedPreferences {
     private final Object mLock = new Object();
     private final Object mLoadLock = new Object();
     private final SharedPreferencesManager mManager;
-    private final FileChangeObserver mObserver;
 
     private volatile boolean mLoaded = false;
     private Map<String, Object> mKeyValueMap = new ConcurrentHashMap<>();
@@ -43,8 +39,6 @@ public final class BoosterSharedPreferences implements SharedPreferences {
     private BoosterSharedPreferences(final String name) {
         mManager = new SharedPreferencesManager(sContext, name);
         startLoadFromDisk();
-        mObserver = new FileChangeObserver(name);
-        mObserver.startWatching();
     }
 
     private void startLoadFromDisk() {
@@ -70,7 +64,6 @@ public final class BoosterSharedPreferences implements SharedPreferences {
         } else {
             sContext = context.getApplicationContext();
         }
-        sSharedPreferencesDir = sContext.getFilesDir().getParent() + File.separator + "shared_prefs";
     }
 
     @Override
@@ -294,11 +287,9 @@ public final class BoosterSharedPreferences implements SharedPreferences {
             @Override
             public void run() {
                 synchronized (mLock) {
-                    mObserver.stopWatching();
                     if (mManager.write(mMap) && mNeedNotifyListener) {
                         notifyListeners(mModifiedKeyList);
                     }
-                    mObserver.startWatching();
                 }
             }
 
@@ -327,40 +318,6 @@ public final class BoosterSharedPreferences implements SharedPreferences {
         @Override
         public void run() {
             loadFromXml();
-        }
-    }
-
-    private class FileChangeObserver extends FileObserver {
-
-        private static final int FILE_EVENTS = CLOSE_WRITE;
-        private final String name;
-
-        FileChangeObserver(String name) {
-            super(sSharedPreferencesDir, FILE_EVENTS);
-            this.name = name + ".xml";
-        }
-
-        @Override
-        public void onEvent(int event, String path) {
-            if (!name.equals(path)) {
-                return;
-            }
-            switch (event) {
-                case CLOSE_WRITE:
-                    SYNC_EXECUTOR.execute(new LoadThread());
-                    mObserver.startWatching();
-                    break;
-            }
-        }
-
-        @Override
-        public synchronized void startWatching() {
-            super.startWatching();
-        }
-
-        @Override
-        public synchronized void stopWatching() {
-            super.stopWatching();
         }
     }
 }
