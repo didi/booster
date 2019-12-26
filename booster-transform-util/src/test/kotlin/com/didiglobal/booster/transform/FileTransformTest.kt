@@ -8,6 +8,7 @@ import java.nio.file.Files
 import java.util.jar.JarFile
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 val PWD: String = System.getProperty("user.dir")
 val BUILD_DIR = File(PWD, "build")
@@ -31,6 +32,16 @@ class FileTransformTest {
                 assertEquals(aEntries.map { it.size }, bEntries.map { it.size })
             }
         }
+    }
+
+    @Test
+    fun `transform jar with duplicated entries`() {
+        val jar = javaClass.classLoader.getResource("pinyin4j-2.5.0.jar")
+        val src = File(jar!!.file)
+        val dest = Files.createTempDirectory(Build.GROUP).toFile().file(src.name)
+        src.transform(dest)
+        assertTrue { dest.exists() }
+        println(dest)
     }
 
 }

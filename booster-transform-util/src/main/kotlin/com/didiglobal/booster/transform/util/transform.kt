@@ -33,9 +33,11 @@ fun File.transform(output: File, transformer: (ByteArray) -> ByteArray = { it ->
                 "jar" -> {
                     JarOutputStream(output.touch().outputStream()).use { dest ->
                         JarFile(this).use { jar ->
+                            val entries = mutableSetOf<String>()
                             jar.entries().asSequence().forEach { entry ->
-                                dest.putNextEntry(JarEntry(entry.name))
-                                if (!entry.isDirectory) {
+                                if (!entries.contains(entry.name)) {
+                                    dest.putNextEntry(JarEntry(entry.name))
+                                    entries.add(entry.name)
                                     when (entry.name.substringAfterLast('.', "")) {
                                         "class" -> jar.getInputStream(entry).use { src ->
                                             logger.info("Transforming ${this.absolutePath}!/${entry.name}")
@@ -45,6 +47,9 @@ fun File.transform(output: File, transformer: (ByteArray) -> ByteArray = { it ->
                                             src.copyTo(dest)
                                         }
                                     }
+                                    dest.closeEntry()
+                                } else {
+                                    logger.error("Duplicated jar entry: ${this.absolutePath}!/${entry.name}")
                                 }
                             }
                         }
@@ -83,4 +88,8 @@ private fun InputStream.copyTo(out: OutputStream, bufferSize: Int = DEFAULT_BUFF
         bytes = read(buffer)
     }
     return bytesCopied
+}
+
+fun main(args: Array<String>) {
+    File("/Users/johnsonlee/Downloads/pinyin4j-2.5.0.jar").transform(File("/Users/johnsonlee/Downloads/pinyin4j-2.5.0-transformed.jar"))
 }
