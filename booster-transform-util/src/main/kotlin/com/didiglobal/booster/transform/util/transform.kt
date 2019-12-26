@@ -89,7 +89,3 @@ private fun InputStream.copyTo(out: OutputStream, bufferSize: Int = DEFAULT_BUFF
     }
     return bytesCopied
 }
-
-fun main(args: Array<String>) {
-    File("/Users/johnsonlee/Downloads/pinyin4j-2.5.0.jar").transform(File("/Users/johnsonlee/Downloads/pinyin4j-2.5.0-transformed.jar"))
-}
