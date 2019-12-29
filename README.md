@@ -55,7 +55,7 @@ The plugin can be added to the buildscript classpath and applied:
 
 ```groovy
 buildscript {
-    ext.booster_version = '0.27.0'
+    ext.booster_version = '0.28.0'
     repositories {
         google()
         mavenCentral()
@@ -98,7 +98,7 @@ The integration method above is just for convenience, the best practise of using
 
 ```groovy
 buildscript {
-    ext.booster_version = '0.27.0'
+    ext.booster_version = '0.28.0'
     repositories {
         google()
         mavenCentral()
@@ -235,7 +235,7 @@ Welcome to contribute by creating issues or sending pull requests. See [Contribu
 
 Welcome to join the community on [spectrum](https://spectrum.chat/booster).
 
-![Booster交流群](https://user-images.githubusercontent.com/2344882/70580799-0056a200-1bf0-11ea-8c2f-3157efcfac9d.png)
+![Booster交流群](https://user-images.githubusercontent.com/2344882/71557791-269c8e80-2a86-11ea-8272-4c2d12b5219d.png)
 
 ## License
 
