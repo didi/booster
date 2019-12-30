@@ -12,6 +12,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static com.didiglobal.booster.instrument.sharedpreferences.io.IoUtils.close;
 
@@ -25,6 +28,7 @@ class SharedPreferencesManager {
     private static final int S_IRWXG = 00070;
     private static final int S_IRWXO = 00007;
 
+    private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     private final File mSpFile;
     private final File mTempFile;
 
@@ -55,9 +59,9 @@ class SharedPreferencesManager {
             Log.e(TAG, "Couldn't write SharedPreferences file " + mTempFile, e);
         }
         if (fos != null) {
-            SharedPreferencesLock lock = null;
+            final Lock lock = readWriteLock.writeLock();
             try {
-                lock = new SharedPreferencesLock(mSpFile).lock();
+                lock.lock();
                 XmlUtils.writeMapXml(map, fos);
                 sync(fos);
                 if (mSpFile.exists()) {
@@ -68,10 +72,8 @@ class SharedPreferencesManager {
                 Log.e(TAG, "write message failed : " + e.getMessage());
                 return false;
             } finally {
+                lock.unlock();
                 close(fos);
-                if (lock != null) {
-                    lock.release();
-                }
             }
 
         }
@@ -82,21 +84,19 @@ class SharedPreferencesManager {
         if (!mSpFile.exists()) {
             return null;
         }
-        SharedPreferencesLock lock = null;
         prepare();
         if (mSpFile.canRead()) {
             BufferedInputStream str = null;
+            final Lock lock = readWriteLock.readLock();
             try {
-                lock = new SharedPreferencesLock(mSpFile).lock();
+                lock.lock();
                 str = new BufferedInputStream(new FileInputStream(this.mSpFile), 16 * 1024);
                 return XmlUtils.readMapXml(str);
             } catch (Exception e) {
                 return null;
             } finally {
+                lock.unlock();
                 close(str);
-                if (lock != null) {
-                    lock.release();
-                }
             }
         }
         return null;
