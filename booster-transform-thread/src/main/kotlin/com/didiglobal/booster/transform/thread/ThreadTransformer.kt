@@ -31,6 +31,7 @@ import javax.xml.parsers.SAXParserFactory
 class ThreadTransformer : ClassTransformer {
 
     private lateinit var logger: PrintWriter
+    private var optimizationEnabled = DEFAULT_OPTIMIZATION_ENABLED
     private val applications = mutableSetOf<String>()
 
     override fun onPreTransform(context: TransformContext) {
@@ -40,7 +41,7 @@ class ThreadTransformer : ClassTransformer {
             parser.parse(manifest, handler)
             applications.addAll(handler.applications)
         }
-
+        this.optimizationEnabled = context.getProperty(PROPERTY_OPTIMIZATION_ENABLED)?.toBoolean() ?: DEFAULT_OPTIMIZATION_ENABLED
         this.logger = context.reportsDir.file(Build.ARTIFACT).file(context.name).file("report.txt").touch().printWriter()
     }
 
@@ -75,24 +76,24 @@ class ThreadTransformer : ClassTransformer {
         return klass
     }
 
-private fun MethodInsnNode.transformInvokeVirtual(context: TransformContext, klass: ClassNode, method: MethodNode) {
-    if (context.klassPool.get(THREAD).isAssignableFrom(this.owner)) {
-        when ("${this.name}${this.desc}") {
-            "start()V" -> {
-                method.instructions.insertBefore(this, LdcInsnNode(makeThreadName(klass.className)))
-                method.instructions.insertBefore(this, MethodInsnNode(Opcodes.INVOKESTATIC, SHADOW_THREAD, "setThreadName", "(Ljava/lang/Thread;Ljava/lang/String;)Ljava/lang/Thread;", false))
-                logger.println(" + $SHADOW_THREAD.makeThreadName(Ljava/lang/String;Ljava/lang/String;) => ${this.owner}.${this.name}${this.desc}: ${klass.name}.${method.name}${method.desc}")
-                this.owner = THREAD
-            }
-            "setName(Ljava/lang/String;)V" -> {
-                method.instructions.insertBefore(this, LdcInsnNode(makeThreadName(klass.className)))
-                method.instructions.insertBefore(this, MethodInsnNode(Opcodes.INVOKESTATIC, SHADOW_THREAD, "makeThreadName", "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", false))
-                logger.println(" + $SHADOW_THREAD.makeThreadName(Ljava/lang/String;Ljava/lang/String;) => ${this.owner}.${this.name}${this.desc}: ${klass.name}.${method.name}${method.desc}")
-                this.owner = THREAD
+    private fun MethodInsnNode.transformInvokeVirtual(context: TransformContext, klass: ClassNode, method: MethodNode) {
+        if (context.klassPool.get(THREAD).isAssignableFrom(this.owner)) {
+            when ("${this.name}${this.desc}") {
+                "start()V" -> {
+                    method.instructions.insertBefore(this, LdcInsnNode(makeThreadName(klass.className)))
+                    method.instructions.insertBefore(this, MethodInsnNode(Opcodes.INVOKESTATIC, SHADOW_THREAD, "setThreadName", "(Ljava/lang/Thread;Ljava/lang/String;)Ljava/lang/Thread;", false))
+                    logger.println(" + $SHADOW_THREAD.makeThreadName(Ljava/lang/String;Ljava/lang/String;) => ${this.owner}.${this.name}${this.desc}: ${klass.name}.${method.name}${method.desc}")
+                    this.owner = THREAD
+                }
+                "setName(Ljava/lang/String;)V" -> {
+                    method.instructions.insertBefore(this, LdcInsnNode(makeThreadName(klass.className)))
+                    method.instructions.insertBefore(this, MethodInsnNode(Opcodes.INVOKESTATIC, SHADOW_THREAD, "makeThreadName", "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", false))
+                    logger.println(" + $SHADOW_THREAD.makeThreadName(Ljava/lang/String;Ljava/lang/String;) => ${this.owner}.${this.name}${this.desc}: ${klass.name}.${method.name}${method.desc}")
+                    this.owner = THREAD
+                }
             }
         }
     }
-}
 
     private fun MethodInsnNode.transformInvokeSpecial(context: TransformContext, klass: ClassNode, method: MethodNode) {
         if (this.owner == THREAD && this.name == "<init>") {
@@ -143,7 +144,7 @@ private fun MethodInsnNode.transformInvokeVirtual(context: TransformContext, kla
                     "newSingleThreadScheduledExecutor",
                     "newScheduledThreadPool" -> {
                         val r = this.desc.lastIndexOf(')')
-                        val name = this.name.replace("new", "newOptimized")
+                        val name = if (optimizationEnabled) this.name.replace("new", "newOptimized") else this.name
                         val desc = "${this.desc.substring(0, r)}Ljava/lang/String;${this.desc.substring(r)}"
                         logger.println(" * ${this.owner}.${this.name}${this.desc} => $SHADOW_EXECUTORS.$name$desc: ${klass.name}.${method.name}${method.desc}")
                         this.owner = SHADOW_EXECUTORS
@@ -161,7 +162,7 @@ private fun MethodInsnNode.transformInvokeVirtual(context: TransformContext, kla
         when (this.desc) {
             /*-*/ HANDLER_THREAD -> this.transformWithName(context, klass, method, SHADOW_HANDLER_THREAD)
             /*---------*/ THREAD -> this.transformWithName(context, klass, method, SHADOW_THREAD)
-            THREAD_POOL_EXECUTOR -> this.transformWithName(context, klass, method, SHADOW_THREAD_POOL_EXECUTOR, "Optimized")
+            THREAD_POOL_EXECUTOR -> this.transformWithName(context, klass, method, SHADOW_THREAD_POOL_EXECUTOR, if (optimizationEnabled) "Optimized" else "")
             /*----------*/ TIMER -> this.transformWithName(context, klass, method, SHADOW_TIMER)
         }
     }
@@ -222,7 +223,7 @@ private val ClassNode.defaultClinit: MethodNode
     }
 
 
-internal val MARK = "\u200B"
+internal const val MARK = "\u200B"
 
 const val SHADOW = "com/didiglobal/booster/instrument/Shadow"
 const val SHADOW_HANDLER_THREAD = "${SHADOW}HandlerThread"
