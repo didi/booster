@@ -3,27 +3,22 @@ package com.didiglobal.booster.task.compression
 import com.android.SdkConstants
 import com.android.SdkConstants.DOT_PNG
 import com.android.build.gradle.api.BaseVariant
-import com.didiglobal.booster.gradle.aapt2Enabled
-import com.didiglobal.booster.gradle.mergeResourcesTask
-import com.didiglobal.booster.gradle.mergedRes
-import com.didiglobal.booster.gradle.processResTask
-import com.didiglobal.booster.gradle.processedRes
-import com.didiglobal.booster.gradle.project
-import com.didiglobal.booster.gradle.scope
+import com.didiglobal.booster.gradle.*
 import com.didiglobal.booster.kotlinx.Octuple
 import com.didiglobal.booster.kotlinx.Quadruple
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.task.spi.VariantProcessor
+import com.didiglobal.booster.transform.util.transform
 import com.didiglobal.booster.util.search
 import com.google.auto.service.AutoService
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry
 import org.gradle.api.Project
 import java.io.File
 import java.text.DecimalFormat
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
-import java.util.zip.ZipOutputStream
 
 
 /**
@@ -107,24 +102,12 @@ private fun BaseVariant.compressProcessedRes(results: CompressionResults) {
 private fun File.repack(shouldCompress: (ZipEntry) -> Boolean) {
     val dest = File.createTempFile(SdkConstants.FN_RES_BASE + SdkConstants.RES_QUALIFIER_SEP, SdkConstants.DOT_RES)
 
-    ZipOutputStream(dest.outputStream()).use { output ->
-        ZipFile(this).use { zip ->
-            zip.entries().asSequence().forEach { origin ->
-                val target = ZipEntry(origin.name).apply {
-                    size = origin.size
-                    crc = origin.crc
-                    comment = origin.comment
-                    extra = origin.extra
-                    method = if (shouldCompress(origin)) ZipEntry.DEFLATED else origin.method
-                }
-
-                output.putNextEntry(target)
-                zip.getInputStream(origin).use {
-                    it.copyTo(output)
-                }
-                output.closeEntry()
+    ZipFile(this).use {
+        it.transform(dest, { origin: ZipEntry ->
+            ZipArchiveEntry(origin).apply {
+                method = if (shouldCompress(origin)) ZipEntry.DEFLATED else origin.method
             }
-        }
+        })
     }
 
     if (this.delete()) {
@@ -200,7 +183,7 @@ internal typealias CompressionResults = CopyOnWriteArrayList<CompressionResult>
  */
 private typealias CompressionReport = Octuple<String, Long, Long, Long, String, String, String, File>
 
-private val NO_COMPRESS = setOf(
+internal val NO_COMPRESS = setOf(
         "jpg", "jpeg", "png", "gif",
         "wav", "mp2", "mp3", "ogg", "aac",
         "mpg", "mpeg", "mid", "midi", "smf", "jet",
