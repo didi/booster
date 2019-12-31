@@ -3,6 +3,7 @@ package com.didiglobal.booster.transform.util
 import com.didiglobal.booster.kotlinx.redirect
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.util.search
+import org.apache.commons.compress.archivers.jar.JarArchiveEntry
 import org.gradle.api.logging.Logging
 import org.apache.commons.compress.archivers.zip.ParallelScatterZipCreator
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry
@@ -12,9 +13,10 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
-import java.util.jar.JarEntry
+import java.util.concurrent.Executors
 import java.util.jar.JarFile
-import java.util.jar.JarOutputStream
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
 
 private val logger = Logging.getLogger("transform")
 
@@ -35,7 +37,7 @@ fun File.transform(output: File, transformer: (ByteArray) -> ByteArray = { it ->
         isFile -> {
             when (output.extension.toLowerCase()) {
                 "jar" -> JarFile(this).use {
-                    it.transform(output, transformer)
+                    it.transform(output, ::JarArchiveEntry, transformer)
                 }
                 "class" -> inputStream().use {
                     logger.info("Transforming ${this.absolutePath}")
@@ -52,15 +54,13 @@ fun InputStream.transform(transformer: (ByteArray) -> ByteArray): ByteArray {
     return transformer(readBytes())
 }
 
-private fun JarFile.transform(output: File, transformer: (ByteArray) -> ByteArray = { it -> it }) {
-    val creator = ParallelScatterZipCreator()
+fun ZipFile.transform(output: File, entryFactory: (ZipEntry) -> ZipArchiveEntry = ::ZipArchiveEntry, transformer: (ByteArray) -> ByteArray = { it -> it }) {
+    val creator = ParallelScatterZipCreator(Executors.newWorkStealingPool())
     val entries = mutableSetOf<String>()
 
     entries().asSequence().forEach { entry ->
         if (!entries.contains(entry.name)) {
-            val zae = ZipArchiveEntry(entry.name).apply {
-                method = entry.method
-            }
+            val zae = entryFactory(entry)
             val stream = InputStreamSupplier {
                 when (entry.name.substringAfterLast('.', "")) {
                     "class" -> getInputStream(entry).use { src ->
