@@ -1,5 +1,7 @@
 package com.didiglobal.booster.task.compression
 
+import com.didiglobal.booster.compression.isFlatPng
+import com.didiglobal.booster.compression.isPng
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertFalse

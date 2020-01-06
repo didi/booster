@@ -11,7 +11,7 @@ class Aapt2Container(val header: Header, private vararg val _entries: Entry<*>) 
 
     data class Header(val magic: Int = MAGIC, val version: Int = 1, val count: Int = 1)
 
-    data class Metadata(val resourceName: String, val sourcePath: String, val config: Configuration) {
+    data class Metadata(val resourceName: String, val sourcePath: String, val configuration: Configuration) {
 
         val sourceFile = File(sourcePath)
 
