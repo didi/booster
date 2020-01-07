@@ -12,10 +12,7 @@ import javax.imageio.ImageIO
  */
 internal open class CwebpCompressOpaqueImages : CwebpCompressImages() {
 
-    @TaskAction
-    override fun run() {
-        compress { true }
-    }
+    override fun compress(filter: (File) -> Boolean) = super.compress { true }
 
 }
 

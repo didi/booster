@@ -1,6 +1,6 @@
 package com.didiglobal.booster.task.compression.cwebp
 
-import org.gradle.api.tasks.TaskAction
+import java.io.File
 
 /**
  * Represents a task for compiled image compression using cwebp
@@ -9,10 +9,7 @@ import org.gradle.api.tasks.TaskAction
  */
 internal open class CwebpCompressOpaqueFlatImages : CwebpCompressFlatImages() {
 
-    @TaskAction
-    override fun run() {
-        compress { true }
-    }
+    override fun compress(filter: (File) -> Boolean) = super.compress { true }
 
 }
 

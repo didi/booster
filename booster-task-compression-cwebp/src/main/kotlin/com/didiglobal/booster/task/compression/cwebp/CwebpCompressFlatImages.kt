@@ -102,10 +102,5 @@ internal open class CwebpCompressFlatImages : CwebpCompressImages() {
         }
     }
 
-    @TaskAction
-    override fun run() {
-        compress(File::hasNotAlpha)
-    }
-
 }
 
