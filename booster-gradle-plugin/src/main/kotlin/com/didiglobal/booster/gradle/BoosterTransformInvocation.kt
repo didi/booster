@@ -17,17 +17,13 @@ import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactTyp
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH
 import com.didiglobal.booster.kotlinx.ifNotEmpty
 import com.didiglobal.booster.transform.ArtifactManager
-import com.didiglobal.booster.transform.Klass
-import com.didiglobal.booster.transform.KlassPool
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.TransformListener
 import com.didiglobal.booster.transform.Transformer
 import com.didiglobal.booster.transform.util.transform
 import com.didiglobal.booster.util.search
 import java.io.File
-import java.net.URLClassLoader
 import java.util.ServiceLoader
-import java.util.concurrent.ForkJoinPool
 
 /**
  * Represents a delegate of TransformInvocation
@@ -49,10 +45,6 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
 
     override val temporaryDir: File = delegate.context.temporaryDir
 
-    override val reportsDir: File = File(buildDir, "reports").also { it.mkdirs() }
-
-    override val executor = ForkJoinPool(Runtime.getRuntime().availableProcessors(), ForkJoinPool.defaultForkJoinWorkerThreadFactory, null, true)
-
     override val bootClasspath = delegate.bootClasspath
 
     override val compileClasspath = delegate.compileClasspath
@@ -60,8 +52,6 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
     override val runtimeClasspath = delegate.runtimeClasspath
 
     override val artifacts = this
-
-    override val klassPool = KlassPoolImpl(runtimeClasspath)
 
     override val applicationId = delegate.applicationId
 
@@ -171,57 +161,4 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
         }
     }
 
-    internal class KlassPoolImpl(private val classpath: Collection<File>) : KlassPool {
-
-        private val classLoader = URLClassLoader(classpath.map { it.toURI().toURL() }.toTypedArray())
-
-        private val klasses = mutableMapOf<String, Klass>()
-
-        override fun get(type: String): Klass {
-            val name = normalize(type)
-            return klasses.getOrDefault(name, findClass(name))
-        }
-
-        internal fun findClass(name: String): Klass {
-            return try {
-                LoadedKlass(this, Class.forName(name, false, classLoader)).also {
-                    klasses[name] = it
-                }
-            } catch (e: Throwable) {
-                DefaultKlass(name)
-            }
-        }
-
-        override fun toString(): String {
-            return "classpath: $classpath"
-        }
-
-    }
-
-    internal class DefaultKlass(name: String) : Klass {
-
-        override val qualifiedName: String = name
-
-        override fun isAssignableFrom(type: String) = false
-
-        override fun isAssignableFrom(klass: Klass) = klass.qualifiedName == this.qualifiedName
-
-    }
-
-    internal class LoadedKlass(val pool: KlassPoolImpl, val clazz: Class<out Any>) : Klass {
-
-        override val qualifiedName: String = clazz.name
-
-        override fun isAssignableFrom(type: String) = isAssignableFrom(pool.findClass(normalize(type)))
-
-        override fun isAssignableFrom(klass: Klass) = klass is LoadedKlass && clazz.isAssignableFrom(klass.clazz)
-
-    }
-
-}
-
-private fun normalize(type: String) = if (type.contains('/')) {
-    type.replace('/', '.')
-} else {
-    type
 }
