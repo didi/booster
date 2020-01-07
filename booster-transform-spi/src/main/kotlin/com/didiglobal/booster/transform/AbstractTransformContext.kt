@@ -3,17 +3,16 @@ package com.didiglobal.booster.transform
 import java.io.File
 
 abstract class AbstractTransformContext(
-        override val applicationId: String,
-        override val bootClasspath: Collection<File>,
-        override val compileClasspath: Collection<File>,
-        override val runtimeClasspath: Collection<File>
+        final override val applicationId: String,
+        final override val bootClasspath: Collection<File>,
+        final override val compileClasspath: Collection<File>,
+        final override val runtimeClasspath: Collection<File>
 ) : TransformContext {
 
-    override val name: String
-        get() = projectDir.name
+    override val projectDir = File(System.getProperty("user.dir"))
 
-    override val projectDir: File
-        get() = File(System.getProperty("user.dir"))
+    override val name: String
+        get() = this.projectDir.name
 
     override val buildDir: File
         get() = File(projectDir, "build")
@@ -21,17 +20,13 @@ abstract class AbstractTransformContext(
     override val temporaryDir: File
         get() = File(buildDir, "temp")
 
-    override val artifacts: ArtifactManager
-        get() = object : ArtifactManager {}
+    override val artifacts = object : ArtifactManager {}
 
-    override val klassPool: KlassPool
-        get() = object : AbstractKlassPool(runtimeClasspath) {}
+    override val klassPool = object : AbstractKlassPool(runtimeClasspath) {}
 
-    override val originalApplicationId: String
-        get() = applicationId
+    override val originalApplicationId = applicationId
 
-    override val isDebuggable: Boolean
-        get() = true
+    override val isDebuggable = true
 
     override fun getProperty(name: String): String? = null
 

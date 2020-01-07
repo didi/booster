@@ -16,6 +16,7 @@ import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactTyp
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactType.JAR
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH
 import com.didiglobal.booster.kotlinx.ifNotEmpty
+import com.didiglobal.booster.transform.AbstractKlassPool
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.TransformListener
@@ -24,6 +25,7 @@ import com.didiglobal.booster.transform.util.transform
 import com.didiglobal.booster.util.search
 import java.io.File
 import java.util.ServiceLoader
+import java.util.concurrent.Executors
 
 /**
  * Represents a delegate of TransformInvocation
@@ -45,6 +47,10 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
 
     override val temporaryDir: File = delegate.context.temporaryDir
 
+    override val reportsDir: File = File(buildDir, "reports").also { it.mkdirs() }
+
+    override val executor = Executors.newWorkStealingPool()
+
     override val bootClasspath = delegate.bootClasspath
 
     override val compileClasspath = delegate.compileClasspath
@@ -52,6 +58,8 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
     override val runtimeClasspath = delegate.runtimeClasspath
 
     override val artifacts = this
+
+    override val klassPool = object: AbstractKlassPool(runtimeClasspath) {}
 
     override val applicationId = delegate.applicationId
 
