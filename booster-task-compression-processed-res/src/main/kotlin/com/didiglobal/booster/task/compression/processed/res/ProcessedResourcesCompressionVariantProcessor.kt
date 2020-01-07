@@ -142,7 +142,7 @@ internal typealias CompressionResults = CopyOnWriteArrayList<CompressionResult>
 private typealias CompressionReport = Octuple<String, Long, Long, Long, String, String, String, File>
 
 internal val NO_COMPRESS = setOf(
-        "jpg", "jpeg", "png", "gif",
+        "jpg", "jpeg", "png", "gif", "webp",
         "wav", "mp2", "mp3", "ogg", "aac",
         "mpg", "mpeg", "mid", "midi", "smf", "jet",
         "rtttl", "imy", "xmf", "mp4", "m4a",
