@@ -17,7 +17,7 @@ import java.io.File
  */
 internal open class CwebpCompressImages : CompressImages<CompressionOptions>() {
 
-    open fun compress(filter: (File) -> Boolean) {
+    protected open fun compress(filter: (File) -> Boolean) {
         supplier().parallelStream().filter(filter).map { input ->
             val output = File(input.absolutePath.substringBeforeLast('.') + ".webp")
             ActionData(input, output, listOf(cmdline.executable!!.absolutePath, "-mt", "-quiet", "-q", options.quality.toString(), "-o", output.absolutePath, input.absolutePath))
@@ -48,7 +48,7 @@ internal open class CwebpCompressImages : CompressImages<CompressionOptions>() {
     }
 
     @TaskAction
-    open fun run() {
+    fun run() {
         this.options = CompressionOptions(project.getProperty(PROPERTY_OPTION_QUALITY, 80))
         compress(File::hasNotAlpha)
     }
