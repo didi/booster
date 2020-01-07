@@ -2,6 +2,7 @@ package com.didiglobal.booster.transform
 
 import java.io.File
 import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 /**
  * Represent the transform context
@@ -24,6 +25,7 @@ interface TransformContext {
      * The build directory
      */
     val buildDir: File
+        get() = File(projectDir, "build")
 
     /**
      * The temporary directory
@@ -34,11 +36,13 @@ interface TransformContext {
      * The reports directory
      */
     val reportsDir: File
+        get() = File(buildDir, "reports").also { it.mkdirs() }
 
     /**
      * The executor service
      */
     val executor: ExecutorService
+        get() = Executors.newWorkStealingPool()
 
     /**
      * The boot classpath
@@ -64,6 +68,7 @@ interface TransformContext {
      * The class pool
      */
     val klassPool: KlassPool
+        get() = object : AbstractKlassPool(runtimeClasspath) {}
 
     /**
      * The application identifier
@@ -85,7 +90,7 @@ interface TransformContext {
      *
      * @param name the name of property
      */
-    fun hasProperty(name: String): Boolean
+    fun hasProperty(name: String) = null != getProperty(name)
 
     /**
      * Returns the value of the specified property. Generally, the property is equivalent to project property
