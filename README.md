@@ -55,7 +55,7 @@ The plugin can be added to the buildscript classpath and applied:
 
 ```groovy
 buildscript {
-    ext.booster_version = '1.0.0'
+    ext.booster_version = '1.1.0'
     repositories {
         google()
         mavenCentral()
@@ -98,7 +98,7 @@ The integration method above is just for convenience, the best practise of using
 
 ```groovy
 buildscript {
-    ext.booster_version = '1.0.0'
+    ext.booster_version = '1.1.0'
     repositories {
         google()
         mavenCentral()
@@ -152,10 +152,28 @@ Here are all the modules of Booster:
 
 ### Package Size
 
-- [booster-task-compression](./booster-task-compression) - 资源压缩
+- [booster-task-compression-cwebp](./booster-task-compression-cwebp) - 采用 cwebp 对资源进行压缩
 
   ```groovy
-  classpath "com.didiglobal.booster:booster-task-compression:$booster_version"
+  classpath "com.didiglobal.booster:booster-task-compression-pngquant:$booster_version"
+  ```
+
+- [booster-task-compression-pngquant](./booster-task-compression-pngquant) - 采用 pngquant 对资源进行压缩
+
+  ```groovy
+  classpath "com.didiglobal.booster:booster-task-compression-pngquant:$booster_version"
+  ```
+
+- [booster-task-compression-processed-res](./booster-task-compression-processed-res) - ap_ 文件压缩
+
+  ```groovy
+  classpath "com.didiglobal.booster:booster-task-compression-processed-res:$booster_version"
+  ```
+
+- [booster-task-resource-deredundancy](./booster-task-resource-deredundancy) - 去冗余资源
+
+  ```groovy
+  classpath "com.didiglobal.booster:booster-task-resource-deredundancy:$booster_version"
   ```
 
 - [booster-transform-r-inline](./booster-transform-r-inline) - 资源索引内联
