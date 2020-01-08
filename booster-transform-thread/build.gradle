@@ -5,6 +5,7 @@ dependencies {
     implementation project(':booster-android-gradle-api')
     implementation project(':booster-task-spi')
     implementation project(':booster-transform-asm')
+    implementation project(':booster-transform-util')
     compileOnly 'com.android.tools.build:gradle:3.0.0'
     testCompileOnly 'com.android.tools.build:gradle:3.0.0'
 }

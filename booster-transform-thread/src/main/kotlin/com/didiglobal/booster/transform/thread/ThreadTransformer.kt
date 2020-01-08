@@ -58,6 +58,12 @@ class ThreadTransformer : ClassTransformer {
             optimizeAsyncTask(klass)
         }
 
+        if (context.dependencies[klass.name]?.any {
+                it == HANDLER_THREAD || it == THREAD || it == TIMER || it == EXECUTORS || it == THREAD_POOL_EXECUTOR
+        } == false) {
+            return klass
+        }
+
         klass.methods?.forEach { method ->
             method.instructions?.iterator()?.asIterable()?.forEach loop@{
                 when (it.opcode) {

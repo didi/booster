@@ -3,11 +3,11 @@ package com.didiglobal.booster.transform
 import java.io.File
 import java.net.URLClassLoader
 
-abstract class AbstractKlassPool(val classpath: Collection<File>) : KlassPool {
+abstract class AbstractKlassPool(val classpath: Collection<File>, val parent: ClassLoader) : KlassPool {
 
     private val klasses = mutableMapOf<String, Klass>()
 
-    private val classLoader = URLClassLoader(classpath.map { it.toURI().toURL() }.toTypedArray())
+    private val classLoader = URLClassLoader(classpath.map { it.toURI().toURL() }.toTypedArray(), parent)
 
     override fun get(type: String): Klass {
         val name = normalize(type)
@@ -16,7 +16,7 @@ abstract class AbstractKlassPool(val classpath: Collection<File>) : KlassPool {
 
     internal fun findClass(name: String): Klass {
         return try {
-            LoadedKlass(this, Class.forName(name, false, classLoader)).also {
+            LoadedKlass(this, classLoader.loadClass(name)).also {
                 klasses[name] = it
             }
         } catch (e: Throwable) {

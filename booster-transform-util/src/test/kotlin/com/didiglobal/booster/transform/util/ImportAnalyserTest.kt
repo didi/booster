@@ -16,7 +16,7 @@ class ImportAnalyserTest {
 
     @Test
     fun analyse() {
-        ImportAnalyser(bytecode).analyse().forEach(::println)
+        ClassFileSnapshot(bytecode).imports.forEach(::println)
     }
 
     @AfterTest
