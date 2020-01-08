@@ -13,7 +13,12 @@ import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.gradle.scope
 import com.didiglobal.booster.task.spi.VariantProcessor
 import com.didiglobal.booster.util.search
+import com.google.auto.service.AutoService
 
+/**
+ * @author johnsonlee
+ */
+@AutoService(VariantProcessor::class)
 class PngquantCompressionVariantProcessor : VariantProcessor {
 
     override fun process(variant: BaseVariant) {
