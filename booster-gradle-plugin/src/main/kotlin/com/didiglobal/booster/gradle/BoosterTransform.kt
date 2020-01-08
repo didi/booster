@@ -3,18 +3,52 @@ package com.didiglobal.booster.gradle
 import com.android.build.api.transform.QualifiedContent
 import com.android.build.api.transform.Transform
 import com.android.build.api.transform.TransformInvocation
+import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.pipeline.TransformManager
 import com.android.builder.model.AndroidProject
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.touch
+import org.gradle.api.Project
+import java.net.URLClassLoader
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import java.util.jar.JarFile
 
 /**
  * Represents the transform base
  *
  * @author johnsonlee
  */
-abstract class BoosterTransform : Transform() {
+abstract class BoosterTransform(val project: Project) : Transform() {
+
+    private val android: BaseExtension = project.getAndroid()
+
+    internal val executor: ExecutorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
+
+    private lateinit var androidClassLoader: ClassLoader
+
+    init {
+        project.afterEvaluate {
+            androidClassLoader = URLClassLoader(android.bootClasspath.map { it.toURI().toURL() }.toTypedArray())
+            android.bootClasspath.filter {
+                it.extension == "jar"
+            }.parallelStream().map {
+                JarFile(it)
+            }.forEach {
+                it.entries().asSequence().filter { entry ->
+                    entry.name.substringAfterLast(".") == "class"
+                }.forEach { entry ->
+                    executor.execute {
+                        androidClassLoader.loadClass(entry.name.substringBeforeLast(".").replace('/', '.'))
+                    }
+                }
+            }
+        }
+    }
+
+    val bootClassLoader: ClassLoader
+        get() = androidClassLoader
 
     override fun getName() = "booster"
 
@@ -24,7 +58,7 @@ abstract class BoosterTransform : Transform() {
 
     final override fun transform(invocation: TransformInvocation?) {
         invocation?.let {
-            BoosterTransformInvocation(it).apply {
+            BoosterTransformInvocation(it, this).apply {
                 dumpInputs(this)
 
                 if (isIncremental) {

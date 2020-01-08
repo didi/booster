@@ -17,7 +17,7 @@ class BoosterPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         when {
             project.plugins.hasPlugin("com.android.application") || project.plugins.hasPlugin("com.android.dynamic-feature") -> project.getAndroid<AppExtension>().let { android ->
-                android.registerTransform(BoosterAppTransform())
+                android.registerTransform(BoosterAppTransform(project))
                 project.afterEvaluate {
                     ServiceLoader.load(VariantProcessor::class.java, javaClass.classLoader).toList().let { processors ->
                         android.applicationVariants.forEach { variant ->
@@ -29,7 +29,7 @@ class BoosterPlugin : Plugin<Project> {
                 }
             }
             project.plugins.hasPlugin("com.android.library") -> project.getAndroid<LibraryExtension>().let { android ->
-                android.registerTransform(BoosterLibTransform())
+                android.registerTransform(BoosterLibTransform(project))
                 project.afterEvaluate {
                     ServiceLoader.load(VariantProcessor::class.java, javaClass.classLoader).toList().let { processors ->
                         android.libraryVariants.forEach { variant ->

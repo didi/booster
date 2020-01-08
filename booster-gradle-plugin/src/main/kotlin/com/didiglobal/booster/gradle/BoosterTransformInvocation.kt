@@ -21,18 +21,18 @@ import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.TransformListener
 import com.didiglobal.booster.transform.Transformer
+import com.didiglobal.booster.transform.util.ClassFileSnapshot
 import com.didiglobal.booster.transform.util.transform
 import com.didiglobal.booster.util.search
 import java.io.File
 import java.util.ServiceLoader
-import java.util.concurrent.Executors
 
 /**
  * Represents a delegate of TransformInvocation
  *
  * @author johnsonlee
  */
-internal class BoosterTransformInvocation(private val delegate: TransformInvocation) : TransformInvocation, TransformContext, TransformListener, ArtifactManager {
+internal class BoosterTransformInvocation(private val delegate: TransformInvocation, val transform: BoosterTransform) : TransformInvocation, TransformContext, TransformListener, ArtifactManager {
 
     /*
      * Preload transformers as List to fix NoSuchElementException caused by ServiceLoader in parallel mode
@@ -49,7 +49,7 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
 
     override val reportsDir: File = File(buildDir, "reports").also { it.mkdirs() }
 
-    override val executor = Executors.newWorkStealingPool()
+    override val executor = transform.executor
 
     override val bootClasspath = delegate.bootClasspath
 
@@ -59,13 +59,15 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
 
     override val artifacts = this
 
-    override val klassPool = object: AbstractKlassPool(runtimeClasspath) {}
+    override val klassPool = object : AbstractKlassPool(compileClasspath, transform.bootClassLoader) {}
 
     override val applicationId = delegate.applicationId
 
     override val originalApplicationId = delegate.originalApplicationId
 
     override val isDebuggable = delegate.variant.buildType.isDebuggable
+
+    override val dependencies: MutableMap<String, Collection<String>> = mutableMapOf()
 
     override fun hasProperty(name: String): Boolean {
         return project.hasProperty(name)
@@ -96,16 +98,16 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
     }
 
     override fun get(type: String): Collection<File> = when (type) {
-        ArtifactManager.AAR                           -> variant.scope.getArtifactCollection(RUNTIME_CLASSPATH, ALL, AAR).artifactFiles.files
-        ArtifactManager.ALL_CLASSES                   -> variant.scope.allClasses
-        ArtifactManager.APK                           -> variant.scope.apk
-        ArtifactManager.JAR                           -> variant.scope.getArtifactCollection(RUNTIME_CLASSPATH, ALL, JAR).artifactFiles.files
-        ArtifactManager.JAVAC                         -> variant.scope.javac
-        ArtifactManager.MERGED_ASSETS                 -> variant.scope.mergedAssets
-        ArtifactManager.MERGED_RES                    -> variant.scope.mergedRes
-        ArtifactManager.MERGED_MANIFESTS              -> variant.scope.mergedManifests.search { SdkConstants.FN_ANDROID_MANIFEST_XML == it.name }
-        ArtifactManager.PROCESSED_RES                 -> variant.scope.processedRes.search { it.name.startsWith(SdkConstants.FN_RES_BASE) && it.name.endsWith(SdkConstants.EXT_RES) }
-        ArtifactManager.SYMBOL_LIST                   -> variant.scope.symbolList
+        ArtifactManager.AAR -> variant.scope.getArtifactCollection(RUNTIME_CLASSPATH, ALL, AAR).artifactFiles.files
+        ArtifactManager.ALL_CLASSES -> variant.scope.allClasses
+        ArtifactManager.APK -> variant.scope.apk
+        ArtifactManager.JAR -> variant.scope.getArtifactCollection(RUNTIME_CLASSPATH, ALL, JAR).artifactFiles.files
+        ArtifactManager.JAVAC -> variant.scope.javac
+        ArtifactManager.MERGED_ASSETS -> variant.scope.mergedAssets
+        ArtifactManager.MERGED_RES -> variant.scope.mergedRes
+        ArtifactManager.MERGED_MANIFESTS -> variant.scope.mergedManifests.search { SdkConstants.FN_ANDROID_MANIFEST_XML == it.name }
+        ArtifactManager.PROCESSED_RES -> variant.scope.processedRes.search { it.name.startsWith(SdkConstants.FN_RES_BASE) && it.name.endsWith(SdkConstants.EXT_RES) }
+        ArtifactManager.SYMBOL_LIST -> variant.scope.symbolList
         ArtifactManager.SYMBOL_LIST_WITH_PACKAGE_NAME -> variant.scope.symbolListWithPackageName
         else -> TODO("Unexpected type: $type")
     }
@@ -164,6 +166,8 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
     }
 
     private fun ByteArray.transform(invocation: BoosterTransformInvocation): ByteArray {
+        val snapshot = ClassFileSnapshot(this)
+        invocation.dependencies[name] = snapshot.imports
         return transformers.fold(this) { bytes, transformer ->
             transformer.transform(invocation, bytes)
         }
