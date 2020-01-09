@@ -3,29 +3,37 @@ package com.didiglobal.booster.transform
 import java.io.File
 import java.net.URLClassLoader
 
-abstract class AbstractKlassPool(val classpath: Collection<File>, val parent: ClassLoader) : KlassPool {
+/**
+ * Represents an abstraction of [KlassPool]
+ *
+ * @author johnsonlee
+ */
+abstract class AbstractKlassPool(private val classpath: Collection<File>, final override val parent: KlassPool? = null) : KlassPool {
 
-    private val klasses = mutableMapOf<String, Klass>()
+    private val classes = mutableMapOf<String, Klass>()
 
-    private val classLoader = URLClassLoader(classpath.map { it.toURI().toURL() }.toTypedArray(), parent)
+    protected val imports = mutableMapOf<String, Collection<String>>()
 
-    override fun get(type: String): Klass {
-        val name = normalize(type)
-        return klasses.getOrDefault(name, findClass(name))
+    override val classLoader = URLClassLoader(classpath.map { it.toURI().toURL() }.toTypedArray(), parent?.classLoader)
+
+    override operator fun get(type: String) = normalize(type).let { name ->
+        classes.getOrDefault(name, findClass(name))
     }
+
+    override fun toString() = "classpath: $classpath"
+
+    internal fun getImports(name: String): Collection<String> = this.imports[name] ?: this.parent?.let { it ->
+        if (it is AbstractKlassPool) it.getImports(name) else null
+    } ?: emptyList()
 
     internal fun findClass(name: String): Klass {
         return try {
             LoadedKlass(this, classLoader.loadClass(name)).also {
-                klasses[name] = it
+                classes[name] = it
             }
         } catch (e: Throwable) {
             DefaultKlass(name)
         }
-    }
-
-    override fun toString(): String {
-        return "classpath: $classpath"
     }
 
 }

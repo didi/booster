@@ -10,7 +10,7 @@ abstract class AbstractTransformContext(
         final override val bootClasspath: Collection<File>,
         final override val compileClasspath: Collection<File>,
         final override val runtimeClasspath: Collection<File>,
-        final val bootClassLoader: ClassLoader = URLClassLoader(bootClasspath.map { it.toURI().toURL() }.toTypedArray())
+        final val bootKlassPool: AbstractKlassPool = object : AbstractKlassPool(bootClasspath) {}
 ) : TransformContext {
 
     override val projectDir = File(System.getProperty("user.dir"))
@@ -27,13 +27,11 @@ abstract class AbstractTransformContext(
     override val temporaryDir: File
         get() = File(buildDir, "temp")
 
-    override val dependencies: Map<String, Collection<String>> = emptyMap()
-
     override val executor: ExecutorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
 
     override val artifacts = object : ArtifactManager {}
 
-    override val klassPool = object : AbstractKlassPool(runtimeClasspath, bootClassLoader) {}
+    override val klassPool = object : AbstractKlassPool(runtimeClasspath, bootKlassPool) {}
 
     override val originalApplicationId = applicationId
 

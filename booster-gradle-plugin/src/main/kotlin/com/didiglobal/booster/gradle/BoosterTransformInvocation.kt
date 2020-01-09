@@ -21,7 +21,6 @@ import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.TransformListener
 import com.didiglobal.booster.transform.Transformer
-import com.didiglobal.booster.transform.util.ClassFileSnapshot
 import com.didiglobal.booster.transform.util.transform
 import com.didiglobal.booster.util.search
 import java.io.File
@@ -59,7 +58,7 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
 
     override val artifacts = this
 
-    override val klassPool = object : AbstractKlassPool(compileClasspath, transform.bootClassLoader) {}
+    override val klassPool: AbstractKlassPool = object : AbstractKlassPool(compileClasspath, transform.bootKlassPool) {}
 
     override val applicationId = delegate.applicationId
 
@@ -67,15 +66,9 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
 
     override val isDebuggable = delegate.variant.buildType.isDebuggable
 
-    override val dependencies: MutableMap<String, Collection<String>> = mutableMapOf()
+    override fun hasProperty(name: String) = project.hasProperty(name)
 
-    override fun hasProperty(name: String): Boolean {
-        return project.hasProperty(name)
-    }
-
-    override fun getProperty(name: String): String? {
-        return project.properties[name]?.toString()
-    }
+    override fun getProperty(name: String): String? = project.properties[name]?.toString()
 
     override fun getInputs(): MutableCollection<TransformInput> = delegate.inputs
 
@@ -148,7 +141,7 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
             input.directoryInputs.parallelStream().forEach { dirInput ->
                 val base = dirInput.file.toURI()
                 dirInput.changedFiles.ifNotEmpty {
-                    it.forEach { file, status ->
+                    it.forEach { (file, status) ->
                         when (status) {
                             REMOVED -> file.delete()
                             ADDED, CHANGED -> {
@@ -166,8 +159,6 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
     }
 
     private fun ByteArray.transform(invocation: BoosterTransformInvocation): ByteArray {
-        val snapshot = ClassFileSnapshot(this)
-        invocation.dependencies[name] = snapshot.imports
         return transformers.fold(this) { bytes, transformer ->
             transformer.transform(invocation, bytes)
         }
