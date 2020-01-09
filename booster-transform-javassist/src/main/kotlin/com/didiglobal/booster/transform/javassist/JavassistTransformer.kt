@@ -41,7 +41,7 @@ class JavassistTransformer : Transformer {
                 transformer.transform(context, klass)
             }.classFile.write(DataOutputStream(output))
         }
-        output.toByteArray()!!
+        output.toByteArray()
     }
 
     override fun onPostTransform(context: TransformContext) {

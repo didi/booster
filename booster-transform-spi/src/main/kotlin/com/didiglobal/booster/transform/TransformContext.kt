@@ -81,11 +81,6 @@ interface TransformContext {
     val isDebuggable: Boolean
 
     /**
-     * The dependencies cache: class name => dependent class names
-     */
-    val dependencies: Map<String, Collection<String>>
-
-    /**
      * Check if has the specified property. Generally, the property is equivalent to project property
      *
      * @param name the name of property

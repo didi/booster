@@ -8,12 +8,11 @@ import com.android.build.gradle.internal.pipeline.TransformManager
 import com.android.builder.model.AndroidProject
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.touch
+import com.didiglobal.booster.transform.AbstractKlassPool
 import org.gradle.api.Project
-import java.net.URLClassLoader
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import java.util.jar.JarFile
 
 /**
  * Represents the transform base
@@ -26,29 +25,16 @@ abstract class BoosterTransform(val project: Project) : Transform() {
 
     internal val executor: ExecutorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
 
-    private lateinit var androidClassLoader: ClassLoader
+    private lateinit var androidKlassPool: AbstractKlassPool
 
     init {
         project.afterEvaluate {
-            androidClassLoader = URLClassLoader(android.bootClasspath.map { it.toURI().toURL() }.toTypedArray())
-            android.bootClasspath.filter {
-                it.extension == "jar"
-            }.parallelStream().map {
-                JarFile(it)
-            }.forEach {
-                it.entries().asSequence().filter { entry ->
-                    entry.name.substringAfterLast(".") == "class"
-                }.forEach { entry ->
-                    executor.execute {
-                        androidClassLoader.loadClass(entry.name.substringBeforeLast(".").replace('/', '.'))
-                    }
-                }
-            }
+            androidKlassPool = object : AbstractKlassPool(android.bootClasspath) {}
         }
     }
 
-    val bootClassLoader: ClassLoader
-        get() = androidClassLoader
+    val bootKlassPool: AbstractKlassPool
+        get() = androidKlassPool
 
     override fun getName() = "booster"
 
