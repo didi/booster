@@ -47,54 +47,11 @@ Booster provides a collection of modules for performance detection, multithreadi
 - Gradle version 4.1+
 - Android Gradle Plugin version 3.0+ (3.2.0+ is recommended)
 
-## Getting Started | 快速上手
-
-The plugin can be added to the buildscript classpath and applied:
-
-> 在 `buildscript` 的 classpath 中引入 Booster 插件，然后启用该插件：
-
-```groovy
-buildscript {
-    ext.booster_version = '1.1.1'
-    repositories {
-        google()
-        mavenCentral()
-        jcenter()
-        maven { url 'https://oss.sonatype.org/content/repositories/public' }
-    }
-    dependencies {
-        classpath "com.didiglobal.booster:booster-gradle-plugin:$booster_version"
-        classpath "com.didiglobal.booster:booster-task-all:$booster_version"
-        classpath "com.didiglobal.booster:booster-transform-all:$booster_version"
-    }
-}
-
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        jcenter()
-        maven { url 'https://oss.sonatype.org/content/repositories/public' }
-    }
-}
-
-apply plugin: 'com.android.application'
-apply plugin: 'com.didiglobal.booster'
-```
-
-Then build an optimized package by executing the *assemble* task, after the build process completed, the reports could be found at `build/reports/`.
-
-> 然后通过执行 `assemble` task 来构建一个优化过的应用包，构建完成后，在 `build/reports/` 目录下会生成相应的报告。
-
-```bash
-$ ./gradlew assembleRelease
-```
-
 ## Best Practise | 最佳实践
 
-The integration method above is just for convenience, the best practise of using Booster is integrating the specific moudle to solve the problems you have encountered as following:
+The best practise of using Booster is integrating the specific moudle to solve the problems you have encountered as following:
 
-> 上面关于集成 Booster 的方式只是为了方便，集成 Booster 的最佳方式是集成真正需要的模块来解决项目中遇到的特定问题。
+> 集成 Booster 的最佳方式是集成真正需要的模块来解决项目中遇到的特定问题。
 
 ```groovy
 buildscript {
