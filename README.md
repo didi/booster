@@ -182,6 +182,12 @@ Here are all the modules of Booster:
   classpath "com.didiglobal.booster:booster-transform-r-inline:$booster_version"
   ```
 
+- [booster-transform-databinding](./booster-transform-databinding) - DataBinding BR索引内联
+
+  ```groovy
+  classpath "com.didiglobal.booster:booster-transform-databinding:$booster_version"
+  ```
+
 ### System Bug
 
 - [booster-transform-finalizer-watchdog-daemon](./booster-transform-finalizer-watchdog-daemon) - 修复 *finalizer* 导致的 `TimeoutException`
