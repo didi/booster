@@ -6,7 +6,7 @@ import com.didiglobal.booster.kotlinx.execute
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.ifNotEmpty
 import com.didiglobal.booster.kotlinx.touch
-import com.didiglobal.booster.transform.ArtifactManager.Companion.JAVAC
+import com.didiglobal.booster.transform.ArtifactManager.Companion.ALL_CLASSES
 import com.didiglobal.booster.transform.ArtifactManager.Companion.MERGED_RES
 import com.didiglobal.booster.transform.ArtifactManager.Companion.SYMBOL_LIST
 import com.didiglobal.booster.transform.TransformContext
@@ -116,7 +116,7 @@ class RInlineTransformer : ClassTransformer {
     }
 
     private fun TransformContext.findRedundantR(): List<Pair<File, String>> {
-        return artifacts.get(JAVAC).map { classes ->
+        return artifacts.get(ALL_CLASSES).map { classes ->
             val base = classes.toURI()
 
             classes.search { r ->
