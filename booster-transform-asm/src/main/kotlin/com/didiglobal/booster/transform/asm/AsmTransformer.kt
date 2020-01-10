@@ -7,6 +7,8 @@ import com.google.auto.service.AutoService
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.tree.ClassNode
+import java.lang.management.ManagementFactory
+import java.lang.management.ThreadMXBean
 import java.util.ServiceLoader
 
 /**
@@ -16,6 +18,10 @@ import java.util.ServiceLoader
  */
 @AutoService(Transformer::class)
 class AsmTransformer : Transformer {
+
+    private val threadMxBean = ManagementFactory.getThreadMXBean()
+
+    private val durations = mutableMapOf<ClassTransformer, Long>()
 
     /*
      * Preload transformers as List to fix NoSuchElementException caused by ServiceLoader in parallel mode
@@ -29,20 +35,41 @@ class AsmTransformer : Transformer {
             transformers.fold(ClassNode().also { klass ->
                 ClassReader(bytecode).accept(klass, 0)
             }) { klass, transformer ->
-                transformer.transform(context, klass)
+                threadMxBean.sumCpuTime(transformer) {
+                    transformer.transform(context, klass)
+                }
             }.accept(writer)
         }.toByteArray()
     }
 
     override fun onPreTransform(context: TransformContext) {
-        transformers.forEach {
-            it.onPreTransform(context)
+        transformers.forEach { transformer ->
+            threadMxBean.sumCpuTime(transformer) {
+                transformer.onPreTransform(context)
+            }
         }
     }
 
     override fun onPostTransform(context: TransformContext) {
-        transformers.forEach {
-            it.onPostTransform(context)
+        transformers.forEach { transformer ->
+            threadMxBean.sumCpuTime(transformer) {
+                transformer.onPostTransform(context)
+            }
         }
+
+        val w1 = durations.keys.map {
+            it.javaClass.name.length
+        }.max() ?: 20
+        durations.forEach { (transformer, ns) ->
+            println("${transformer.javaClass.name.padEnd(w1 + 1)}: ${ns / 1000000} ms")
+        }
+    }
+
+    private fun <R> ThreadMXBean.sumCpuTime(transformer: ClassTransformer, action: () -> R): R {
+        val ct0 = currentThreadCpuTime
+        val result = action()
+        val ct1 = currentThreadCpuTime
+        durations[transformer] = durations.getOrDefault(transformer, 0) + (ct1 - ct0)
+        return result
     }
 }
