@@ -182,10 +182,10 @@ Here are all the modules of Booster:
   classpath "com.didiglobal.booster:booster-transform-r-inline:$booster_version"
   ```
 
-- [booster-transform-databinding](./booster-transform-databinding) - DataBinding BR索引内联
+- [booster-transform-br-inline](./booster-transform-br-inline) - DataBinding BR索引内联
 
   ```groovy
-  classpath "com.didiglobal.booster:booster-transform-databinding:$booster_version"
+  classpath "com.didiglobal.booster:booster-transform-br-inline:$booster_version"
   ```
 
 ### System Bug

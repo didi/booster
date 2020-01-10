@@ -1,4 +1,4 @@
-package com.didiglobal.booster.transform.databinding
+package com.didiglobal.booster.transform.br.inline
 
 import com.didiglobal.booster.kotlinx.file
 import java.io.File
