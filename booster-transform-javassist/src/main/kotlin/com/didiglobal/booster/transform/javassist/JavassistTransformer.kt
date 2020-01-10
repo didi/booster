@@ -1,5 +1,6 @@
 package com.didiglobal.booster.transform.javassist
 
+import com.didiglobal.booster.annotations.Priority
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.Transformer
 import com.google.auto.service.AutoService
@@ -19,7 +20,9 @@ class JavassistTransformer : Transformer {
     /*
      * Preload transformers as List to fix NoSuchElementException caused by ServiceLoader in parallel mode
      */
-    private val transformers = ServiceLoader.load(ClassTransformer::class.java, javaClass.classLoader).toList()
+    internal val transformers = ServiceLoader.load(ClassTransformer::class.java, javaClass.classLoader).sortedBy {
+        it.javaClass.getAnnotation(Priority::class.java)?.value ?: 0
+    }.toList()
 
     private lateinit var pool: ClassPool
 
