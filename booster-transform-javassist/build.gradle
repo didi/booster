@@ -3,6 +3,7 @@ apply from: '../gradle/booster.gradle'
 dependencies {
     kapt "com.google.auto.service:auto-service:1.0-rc4"
     compile gradleApi()
+    compile project(':booster-annotations')
     compile project(':booster-kotlinx')
     compile project(':booster-transform-spi')
     compile 'org.javassist:javassist:3.25.0-GA'
