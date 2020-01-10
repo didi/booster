@@ -37,6 +37,7 @@ class ArgumentsParser(private val signature: String, private val offset: Int = 0
             /* J */ 74 -> "long"
             /* L */ 76 -> parseQualifiedType()
             /* S */ 83 -> "short"
+            /* V */ 86 -> "void"
             /* Z */ 90 -> "boolean"
             /* [ */ 91 -> parseArrayType()
             /*EOF*/ -1 -> null
