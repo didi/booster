@@ -1,4 +1,4 @@
-package com.didiglobal.booster.transform.databinding
+package com.didiglobal.booster.transform.br.inline
 
 import com.didiglobal.booster.kotlinx.asIterable
 import com.didiglobal.booster.kotlinx.file
@@ -24,7 +24,7 @@ import java.io.PrintWriter
  * @author linjiang
  */
 @AutoService(ClassTransformer::class)
-class DataBindingTransformer : ClassTransformer {
+class BRInlineTransformer : ClassTransformer {
 
     private lateinit var symbols: SymbolList
     private lateinit var logger: PrintWriter
@@ -92,7 +92,7 @@ class DataBindingTransformer : ClassTransformer {
             }.map {
                 it as FieldInsnNode
             }.filter {
-                "I" == it.desc && it.owner.substring(it.owner.lastIndexOf('/') + 1).startsWith("BR")
+                "I" == it.desc && it.owner.substring(it.owner.lastIndexOf('/') + 1) == "BR"
             }.forEach { field ->
                 // Replace int field with constant
                 try {
@@ -108,4 +108,4 @@ class DataBindingTransformer : ClassTransformer {
 }
 
 
-private val logger_ = Logging.getLogger(DataBindingTransformer::class.java)
+private val logger_ = Logging.getLogger(BRInlineTransformer::class.java)

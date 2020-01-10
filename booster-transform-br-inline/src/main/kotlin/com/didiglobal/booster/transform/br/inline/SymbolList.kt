@@ -1,4 +1,4 @@
-package com.didiglobal.booster.transform.databinding
+package com.didiglobal.booster.transform.br.inline
 
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.tree.ClassNode
