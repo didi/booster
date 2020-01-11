@@ -49,7 +49,7 @@ class AndroidSdk {
             File(it, "android")
         }.find {
             it.exists() && it.canExecute()
-        }?.parentFile ?: File(CWD, "local.properties").let { local ->
+        }?.canonicalFile?.parentFile?.parentFile ?: File(CWD, "local.properties").let { local ->
             if (local.exists()) {
                 val props = Properties();
                 local.inputStream().use {
