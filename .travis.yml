@@ -3,18 +3,36 @@ jdk:
 - openjdk8
 before_cache:
 - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
+before_install:
+- openssl aes-256-cbc -K $encrypted_3571c34b0299_key -iv $encrypted_3571c34b0299_iv
+  -in .travis/signingkey.asc.enc -out .travis/signingkey.asc -d
 install:
-- "./gradlew assemble -x signArchives -POSSRH_USERNAME=${SONATYPE_USERNAME} -POSSRH_PASSWORD=${SONATYPE_PASSWORD}"
+- "./gradlew assemble -x signArchives"
 before_script:
-- "chmod +x gradlew"
+- chmod +x gradlew
 script:
-- "./gradlew check -POSSRH_USERNAME=${SONATYPE_USERNAME} -POSSRH_PASSWORD=${SONATYPE_PASSWORD}"
-- "./gradlew test -POSSRH_USERNAME=${SONATYPE_USERNAME} -POSSRH_PASSWORD=${SONATYPE_PASSWORD}"
-notifications:
-    webhooks:
-        - https://im-dichat.xiaojukeji.com/api/hooks/travis/a323f436-bd7e-4908-92a8-f82f7dfa7a33
-        - https://im-dichat.xiaojukeji.com/api/hooks/travis/03c5d16a-76f9-4ce0-a616-7cc67f55ea4d
+- "./gradlew check"
+- "./gradlew test"
+after_success:
+- gpg2 --keyring=$TRAVIS_BUILD_DIR/pubring.gpg --no-default-keyring --import .travis/signingkey.asc
+- gpg2 --allow-secret-key-import --keyring=$TRAVIS_BUILD_DIR/secring.gpg --no-default-keyring
+  --import .travis/signingkey.asc
+deploy:
+  provider: script
+  script: bash .travis/deploy.sh
+  on:
+    tags: true
+after_deploy:
+- "./gradlew closeAndReleaseRepository"
+- "shred -u .travis/signingkey.asc"
+env:
+  global:
+  - secure: JzBy4ZLKKyXR4VgerlEYE0zKGa2ffKG7GedO92hQ8YwBKp2tVYbyxL4HSnRogoOZA89ano6vTmwWIRf8YF4Hn1Iuug8cV62kASBQdDv6f4bzwa68idGvuwf9KA/7v6+d2R7qTN1vX+p5zT2lrivalI3v7Cei9PCpfQiRNqr+2LDKH3hOOckB4M+YOhL9u/PWS/qjjqvpQ+GkqLV3txuht/OJtzhnWKvraUWHfAlfJdkWWXBvpe9vJ7tH1Y0Cedc4Tibxb4ehHOW3GrChvnV0dKq3ERaQyjiXExw6ygprjVDhi0fyXOPi9VWgjCdsVJQNJbE2qZRgnAR7hiQn7yxP07JHSNs181o4c4IE7wR+Xf9v4iNJGEi6aTYj9uJRR5VHlUYgm3FhbA9IM7hAFXdzM/dbOtQmSP7gtWJnjR7vnumFahM1I/ZkB+qA1taYp6/jPwQw9+Xi6AN8Nlrgxk5RIUqOPo6lQgg7q376a4uURqizHPMnGHij6qrMNGdoXY0ggxOfnIiWkrgAvbDl7UeaEKJoWfwUT+/NrhH7wy53ouqtVgHXL/NQAEeS9+4AacILBoqsp2fu6p3kte7ryHk2PGOBXhvyfr0wRvz2MDIjXORfAf2t4UHjD5TZPkFi1/1YV/j0utHS03QjgYx4mKxmSJCtdBuojJ2YQylxVMAqB5E=
+  - secure: XKRPiGBQrkLfV0WTlDcU8U/giIU+EzRZySo2tsFHuMYSEUHjaUVP3RhNGKJI/rVtkV7JdJyH+29EhXou2pK1wlwASMhKEBIBNjxJJHaZnNBBEvN25KHsUeOAWruH3YvcD+wLur00o6hHuSCRxZBF1YcK/sYFUzT4fFoGOUOFdzI8pJXBKzA0/UzQKH5HGJO1wPMpzOfTty9w8o4N3eM/0wvllsDJMfRMLsugj2gmguRgSbf//AdCYawSBNg11Nax/3YFuxoT4EhOmXHanvAK+qOBCIoFHFko+aNuQuNe8ocPpKBSxnID5lX/EJO7Lsb8TGDZW3rAWNxtFg1VHVdS2F5XQUvKZLH/9djGcBziyu9DbH936yG20xaGsNCqUiSYsIXUBGopdgXvOjNNgvO8eXJGhvD+Is59MWq7uIBQv/+PFKeRSIDjbpA6/i+evJCz4WGc8fTivB4CAMxBGyFN67k3FdxmJQmavSqnlytAmtcKrbDEkp8/zUpf9JN8I2zGpqT1I2XNXl6OnKYrxfRIja9HWLbCva6wV7O0vMzZoLArBTRghZEmFsMS5nEM50Odb+Vm79xCjsTdCP2n6/LPHlaITFwgLoney93cMhpVF1sJRUlhBTOvWE5xmF6jFQ+MKTOGbFgq0U2DD5LkaGMSRuPB7ibCEFuOTAsYvG413YA=
+  - secure: Ut7HzQWtyno7H54O8a2Zi4tNbqSUxODbay84bm4q/NwJWQbXwdm8lutnuO+gmCDQBL3aYRc+7O94iAHtqzgAxnTS9T/YDNPA/+bnBa+440fxSq9qCtiMVQKsgVZA2wignI96KE2rpQVRh4SK7eObxk/JRGUsqWwPOGk6ST0ustHKnQScA9DQjYbzuez/0OVkhbebG/IF/ZZcfFqozFxn7SJGBovdsCpnxNiO8+y41e/m1DGPYFQmmfKQXJj2ydmnbLvFE7LeX5yef/KiB28Z2zenvy000hUE9vaQK03QUiIp8VC1I0e/7044EbxfiISmOXp+GhESm/lJbWjY+Kyv6afsvevaFLRDC3BFbG7Ar+TyRWcsjwATVGIwKem7UvkPZaXLUY+Jc7b8Wr9Ww2lND79t/9lnSWV6dUSRamirVLwq3Hb27zQASf9wSq7aoa1aNwK0pkxAio7l5zxH6EaACeBiD/QGhv3Y8txLvExEC8115dDEotUheqgciHafibToena4pz45yZn+t/iNfkMfZwH4CRqh8Ct8opPxgP2Y/EU3IZUlFHo9DFlQHEa71g4xZomefDmO5FC8MHC86QUtGhbysbmYl/FdoU3GmIElX8FOTPTNdeR9Av0xZUEBK7BCwDZyC560vxqSqwseQEfY9qywO9Wx19SV9ejKf1r0ggY=
+  - secure: C9Xti4PHfofnA0VWUFtFL5zbXDjvVHUn7Tsqe0yd80ds8cXkwUFPoCfiGd1SP46kxf7Iu9HuH0H73YA2O5muANZSODwelGBJVppfOy3sWEHtDzqMGvTGc0BFrgUJWfX2qu2CQBBmDJciaLmeQFv+7OKhwPFyyz0qe8rmAGxlcMs3NATIt8FqdGkFwaoIUPd25z6eTdlzRYHYQPxQTlDqCyzbvsED63LLtS4mK3WX1a5UOhTNLw+tU865rQmdVNyafBiZa7/jzgrN2PVUawhzidF0gPh76LnWmtzKjfOtbHOb7Q4GDzNhwgfz4WaePBXk262dueo3neMNbKut78jrB3djUZ44IzQsMlZq5FS3rZV3J/NQqR1hZRTuGAuB8q0ESqBwopaciHNDZ6uQIzFORQzmT7Lzol/q4kISori+Bg/g2oaqzSQQmNf3YRoMgb6OT8/meBBXtCF8c5cYPZBs2SsMrw+80nCdM46uGDiDLBkJ+ipEdcyyPBpNTLiDw4IT6OfTy8gW2giblcMqoDgFicBGJKDKicADzyc2efPMA6t6l7FNKYE3FxA+90nm2qp4ac8AmHqxrOsGAxtK4ZSxgfCciS/JGbT9r+FHKYoFI9PByUjOOTbeAAVwJPFuc896JmMcE1RNUfF3d09OluToWbdzjOO4BQWM+XXvx2TmmoE=
