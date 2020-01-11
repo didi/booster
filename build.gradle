@@ -16,12 +16,12 @@ buildscript {
 }
 
 apply plugin: 'io.codearte.nexus-staging'
-apply plugin: 'de.marcphilipp.nexus-publish'
 
 allprojects { project ->
     apply plugin: 'java'
     apply plugin: 'maven'
     apply plugin: 'signing'
+    apply plugin: 'de.marcphilipp.nexus-publish'
 
     group = 'com.didiglobal.booster'
     version = '1.2.0-SNAPSHOT'
@@ -112,6 +112,61 @@ allprojects { project ->
             events "passed", "skipped", "failed", "standardOut", "standardError"
         }
     }
+
+    nexusPublishing {
+        repositories {
+            sonatype {
+                username = OSSRH_USERNAME
+                password = OSSRH_PASSWORD
+            }
+        }
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                groupId = project.group
+                artifactId = project.name
+                version = project.version
+
+                pom {
+                    name project.name
+                    url 'https://github.com/didi/booster'
+                    description project.description ?: project.name
+
+                    scm {
+                        connection 'scm:git:git://github.com/didi/booster.git'
+                        developerConnection 'scm:git:git@github.com:didi/booster.git'
+                        url 'https://github.com/didi/booster'
+                    }
+
+                    licenses {
+                        license {
+                            name 'Apache License'
+                            url 'https://www.apache.org/licenses/LICENSE-2.0'
+                        }
+                    }
+                }
+                pom.withXml { xml ->
+                    (['git', 'log', '--format=%aN %aE'].execute() | ['sort', '-u'].execute()).with {
+                        waitForOrKill(5000)
+                        if (0 == exitValue()) {
+                            def developers = xml.asNode().appendNode('developers')
+                            text.eachLine { line ->
+                                def author = line.split('\\s+')
+                                if (author.length > 1) {
+                                    developers.appendNode('developer').with {
+                                        appendNode('id', author[0])
+                                        appendNode('email', author[1])
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 subprojects { project ->
@@ -123,17 +178,7 @@ dependencies {
 }
 
 nexusStaging {
-    packageGroup = "com.didiglobal.booster"
-    stagingProfileId = "com.didiglobal"
+    packageGroup = "com.didiglobal"
     username = OSSRH_USERNAME
     password = OSSRH_PASSWORD
-}
-
-nexusPublishing {
-    repositories {
-        sonatype {
-            username = OSSRH_USERNAME
-            password = OSSRH_PASSWORD
-        }
-    }
 }
