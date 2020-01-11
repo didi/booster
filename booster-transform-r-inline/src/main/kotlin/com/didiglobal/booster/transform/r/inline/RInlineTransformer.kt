@@ -152,8 +152,9 @@ class RInlineTransformer : ClassTransformer {
                 try {
                     method.instructions.insertBefore(field, LdcInsnNode(symbols.getInt(type, field.name)))
                     method.instructions.remove(field)
+                    logger.println(" * ${field.owner}.${field.name} => ${symbols.getInt(type, field.name)}: $name.${method.name}${method.desc}")
                 } catch (e: NullPointerException) {
-                    logger.println("Unresolvable symbol `R.$type.${field.name}` : $name.${method.name}${method.desc}")
+                    logger.println(" ! Unresolvable symbol `${field.owner}.${field.name}`: $name.${method.name}${method.desc}")
                 }
             }
 
