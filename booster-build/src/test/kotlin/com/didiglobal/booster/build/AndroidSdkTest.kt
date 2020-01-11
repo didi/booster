@@ -5,11 +5,11 @@ import kotlin.test.assertNotNull
 
 class AndroidSdkTest {
 
-    @Test
+    @Test(expected = RuntimeException::class)
     fun `test get location`() {
         val sdk = AndroidSdk.getLocation()
-        println(sdk)
         assertNotNull(sdk)
+        println("Android SDK: $sdk")
     }
 
 }
