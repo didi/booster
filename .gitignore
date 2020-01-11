@@ -44,3 +44,5 @@ _book
 *.log
 *.bak
 
+# Travis CI
+.travis/secring.gpg

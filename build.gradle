@@ -11,11 +11,12 @@ buildscript {
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.21.2"
-
+        classpath "de.marcphilipp.gradle:nexus-publish-plugin:0.4.0"
     }
 }
 
 apply plugin: 'io.codearte.nexus-staging'
+apply plugin: 'de.marcphilipp.nexus-publish'
 
 allprojects { project ->
     apply plugin: 'java'
@@ -124,4 +125,15 @@ dependencies {
 nexusStaging {
     packageGroup = "com.didiglobal.booster"
     stagingProfileId = "com.didiglobal"
+    username = OSSRH_USERNAME
+    password = OSSRH_PASSWORD
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            username = OSSRH_USERNAME
+            password = OSSRH_PASSWORD
+        }
+    }
 }

@@ -9,27 +9,22 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
 before_install:
-- openssl aes-256-cbc -K $encrypted_3571c34b0299_key -iv $encrypted_3571c34b0299_iv
-  -in .travis/signingkey.asc.enc -out .travis/signingkey.asc -d
+- openssl aes-256-cbc -K $encrypted_3571c34b0299_key -iv $encrypted_3571c34b0299_iv -in .travis/secring.gpg.enc -out .travis/secring.gpg -d
 install:
 - "./gradlew assemble -x signArchives -POSSRH_USERNAME=${OSSRH_USERNAME} -POSSRH_PASSWORD=${OSSRH_PASSWORD}"
 before_script:
 - chmod +x gradlew
 script:
-- "./gradlew check -POSSRH_USERNAME=${OSSRH_USERNAME} -POSSRH_PASSWORD=${OSSRH_PASSWORD}"
-- "./gradlew test -POSSRH_USERNAME=${OSSRH_USERNAME} -POSSRH_PASSWORD=${OSSRH_PASSWORD}"
-after_success:
-- gpg2 --keyring=$TRAVIS_BUILD_DIR/pubring.gpg --no-default-keyring --import .travis/signingkey.asc
-- gpg2 --allow-secret-key-import --keyring=$TRAVIS_BUILD_DIR/secring.gpg --no-default-keyring
-  --import .travis/signingkey.asc
+    - "./gradlew check -POSSRH_USERNAME=${OSSRH_USERNAME} -POSSRH_PASSWORD=${OSSRH_PASSWORD}"
 deploy:
+  skip_cleanup: true
   provider: script
   script: bash .travis/deploy.sh
   on:
     tags: true
 after_deploy:
 - "./gradlew closeAndReleaseRepository -POSSRH_USERNAME=${OSSRH_USERNAME} -POSSRH_PASSWORD=${OSSRH_PASSWORD}"
-- "shred -u .travis/signingkey.asc ${TRAVIS_BUILD_DIR}/secring.gpg"
+- shred -u .travis/secring.gpg
 env:
   global:
   - secure: JzBy4ZLKKyXR4VgerlEYE0zKGa2ffKG7GedO92hQ8YwBKp2tVYbyxL4HSnRogoOZA89ano6vTmwWIRf8YF4Hn1Iuug8cV62kASBQdDv6f4bzwa68idGvuwf9KA/7v6+d2R7qTN1vX+p5zT2lrivalI3v7Cei9PCpfQiRNqr+2LDKH3hOOckB4M+YOhL9u/PWS/qjjqvpQ+GkqLV3txuht/OJtzhnWKvraUWHfAlfJdkWWXBvpe9vJ7tH1Y0Cedc4Tibxb4ehHOW3GrChvnV0dKq3ERaQyjiXExw6ygprjVDhi0fyXOPi9VWgjCdsVJQNJbE2qZRgnAR7hiQn7yxP07JHSNs181o4c4IE7wR+Xf9v4iNJGEi6aTYj9uJRR5VHlUYgm3FhbA9IM7hAFXdzM/dbOtQmSP7gtWJnjR7vnumFahM1I/ZkB+qA1taYp6/jPwQw9+Xi6AN8Nlrgxk5RIUqOPo6lQgg7q376a4uURqizHPMnGHij6qrMNGdoXY0ggxOfnIiWkrgAvbDl7UeaEKJoWfwUT+/NrhH7wy53ouqtVgHXL/NQAEeS9+4AacILBoqsp2fu6p3kte7ryHk2PGOBXhvyfr0wRvz2MDIjXORfAf2t4UHjD5TZPkFi1/1YV/j0utHS03QjgYx4mKxmSJCtdBuojJ2YQylxVMAqB5E=
