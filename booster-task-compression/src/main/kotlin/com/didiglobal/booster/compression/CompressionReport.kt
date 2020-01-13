@@ -86,3 +86,7 @@ fun isPng(file: File): Boolean = file.name.endsWith(SdkConstants.DOT_PNG, true)
 
 fun isFlatPng(file: File): Boolean = file.name.endsWith(".png.flat", true)
         && (file.name.length < 11 || !file.name.regionMatches(file.name.length - 11, ".9", 0, 2, true))
+
+fun isPngExceptRaw(file: File) : Boolean = isPng(file) && file.parentFile.name != "raw"
+
+fun isFlatPngExceptRaw(file: File) : Boolean = isFlatPng(file) && !file.name.startsWith("raw_")
