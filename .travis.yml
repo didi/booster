@@ -9,7 +9,7 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
 before_install:
-- if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then openssl aes-256-cbc -K $encrypted_3571c34b0299_key -iv $encrypted_3571c34b0299_iv -in .travis/secring.gpg.enc -out .travis/secring.gpg -d; fi
+- if [ "$encrypted_3571c34b0299_key" != "" ] && [ "$encrypted_3571c34b0299_iv" != "" ]; then openssl aes-256-cbc -K $encrypted_3571c34b0299_key -iv $encrypted_3571c34b0299_iv -in .travis/secring.gpg.enc -out .travis/secring.gpg -d; fi
 install:
 - "./gradlew assemble -x signArchives -POSSRH_USERNAME=${OSSRH_USERNAME} -POSSRH_PASSWORD=${OSSRH_PASSWORD}"
 before_script:
