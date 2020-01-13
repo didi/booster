@@ -5,6 +5,7 @@ import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.api.BaseVariant
+import com.android.build.gradle.internal.tasks.databinding.DataBindingGenBaseClassesTask
 import org.gradle.api.Project
 import org.gradle.api.internal.AbstractTask
 import java.io.File
@@ -39,6 +40,26 @@ val TransformInvocation.variant: BaseVariant
 
 val TransformInvocation.bootClasspath: Collection<File>
     get() = project.getAndroid<BaseExtension>().bootClasspath
+
+val TransformInvocation.dataBindingLogPath: Collection<File>?
+    get() {
+        val task = if (project.getAndroid<BaseExtension>().dataBinding.isEnabled) {
+            project.tasks
+                    .findByName("dataBindingGenBaseClasses${context.variantName.capitalize()}")
+                    as DataBindingGenBaseClassesTask?
+        } else null
+        return task?.run {
+            val files = mutableListOf<File>()
+            classInfoBundleDir.takeIf {
+                it.exists() && it.isDirectory
+            }?.listFiles()?.forEach { files.add(it) }
+            mergedArtifactsFromDependencies.files.single().takeIf {
+                it.exists() && it.isDirectory
+            }?.listFiles()?.forEach { files.add(it) }
+
+            files
+        }
+    }
 
 /**
  * Returns the compile classpath of this transform invocation
