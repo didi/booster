@@ -23,52 +23,61 @@ class AsmTransformer : Transformer {
 
     private val durations = mutableMapOf<ClassTransformer, Long>()
 
+    internal val transformers: Collection<ClassTransformer>
+
     /*
      * Preload transformers as List to fix NoSuchElementException caused by ServiceLoader in parallel mode
      */
-    internal val transformers = ServiceLoader.load(ClassTransformer::class.java, javaClass.classLoader).sortedBy {
-        it.javaClass.getAnnotation(Priority::class.java)?.value ?: 0
-    }.toList()
+    constructor() : this(*ServiceLoader.load(ClassTransformer::class.java, AsmTransformer::class.java.classLoader).toList().toTypedArray())
+
+    /**
+     * For unit test only
+     */
+    constructor(vararg transformers: ClassTransformer) {
+        this.transformers = transformers.sortedBy {
+            it.javaClass.getAnnotation(Priority::class.java)?.value ?: 0
+        }
+    }
+
+    override fun onPreTransform(context: TransformContext) {
+        this.transformers.forEach { transformer ->
+            this.threadMxBean.sumCpuTime(transformer) {
+                transformer.onPreTransform(context)
+            }
+        }
+    }
 
     override fun transform(context: TransformContext, bytecode: ByteArray): ByteArray {
         return ClassWriter(ClassWriter.COMPUTE_MAXS).also { writer ->
-            transformers.fold(ClassNode().also { klass ->
+            this.transformers.fold(ClassNode().also { klass ->
                 ClassReader(bytecode).accept(klass, 0)
             }) { klass, transformer ->
-                threadMxBean.sumCpuTime(transformer) {
+                this.threadMxBean.sumCpuTime(transformer) {
                     transformer.transform(context, klass)
                 }
             }.accept(writer)
         }.toByteArray()
     }
 
-    override fun onPreTransform(context: TransformContext) {
-        transformers.forEach { transformer ->
-            threadMxBean.sumCpuTime(transformer) {
-                transformer.onPreTransform(context)
-            }
-        }
-    }
-
     override fun onPostTransform(context: TransformContext) {
-        transformers.forEach { transformer ->
-            threadMxBean.sumCpuTime(transformer) {
+        this.transformers.forEach { transformer ->
+            this.threadMxBean.sumCpuTime(transformer) {
                 transformer.onPostTransform(context)
             }
         }
 
-        val w1 = durations.keys.map {
+        val w1 = this.durations.keys.map {
             it.javaClass.name.length
         }.max() ?: 20
-        durations.forEach { (transformer, ns) ->
+        this.durations.forEach { (transformer, ns) ->
             println("${transformer.javaClass.name.padEnd(w1 + 1)}: ${ns / 1000000} ms")
         }
     }
 
     private fun <R> ThreadMXBean.sumCpuTime(transformer: ClassTransformer, action: () -> R): R {
-        val ct0 = currentThreadCpuTime
+        val ct0 = this.currentThreadCpuTime
         val result = action()
-        val ct1 = currentThreadCpuTime
+        val ct1 = this.currentThreadCpuTime
         durations[transformer] = durations.getOrDefault(transformer, 0) + (ct1 - ct0)
         return result
     }
