@@ -17,6 +17,7 @@ import org.objectweb.asm.tree.LdcInsnNode
 import java.io.File
 import java.io.PrintWriter
 
+internal const val BINDING_CLASS_LIST_SUFFIX = "-binding_classes.json"
 
 /**
  * Represents a class node transformer for constants shrinking
@@ -28,8 +29,17 @@ class BRInlineTransformer : ClassTransformer {
 
     private lateinit var symbols: SymbolList
     private lateinit var logger: PrintWriter
+    private lateinit var validClasses: List<String>
 
     override fun onPreTransform(context: TransformContext) {
+        val files = context.dataBindingLogPath
+                ?.filter { it.name.endsWith(BINDING_CLASS_LIST_SUFFIX) }
+        if (files.isNullOrEmpty()) {
+            return
+        }
+        this.validClasses = files.map {
+            "${it.name.substringBeforeLast(BINDING_CLASS_LIST_SUFFIX).replace('.', '/')}/BR.class"
+        }
         this.logger = context.reportsDir.file(Build.ARTIFACT).file(context.name).file("report.txt").touch().printWriter()
 
         val allBR = context.findAllBR()
@@ -78,7 +88,7 @@ class BRInlineTransformer : ClassTransformer {
         return artifacts.get(ALL_CLASSES).map { classes ->
             val base = classes.toURI()
             classes.search { r ->
-                r.name == "BR.class"
+                base.relativize(r.toURI()).path in validClasses
             }.map { r ->
                 r to base.relativize(r.toURI()).path.substringBeforeLast(".class")
             }
@@ -92,7 +102,7 @@ class BRInlineTransformer : ClassTransformer {
             }.map {
                 it as FieldInsnNode
             }.filter {
-                "I" == it.desc && it.owner.substring(it.owner.lastIndexOf('/') + 1) == "BR"
+                "I" == it.desc && "${it.owner}.class" in validClasses
             }.forEach { field ->
                 // Replace int field with constant
                 try {
