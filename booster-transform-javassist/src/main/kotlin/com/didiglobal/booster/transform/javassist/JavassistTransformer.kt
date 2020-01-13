@@ -7,6 +7,8 @@ import com.google.auto.service.AutoService
 import javassist.ClassPool
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
+import java.lang.management.ManagementFactory
+import java.lang.management.ThreadMXBean
 import java.util.ServiceLoader
 
 /**
@@ -17,40 +19,72 @@ import java.util.ServiceLoader
 @AutoService(Transformer::class)
 class JavassistTransformer : Transformer {
 
+    private val pool = ClassPool()
+
+    private val threadMxBean = ManagementFactory.getThreadMXBean()
+
+    private val durations = mutableMapOf<ClassTransformer, Long>()
+
+    internal val transformers: Collection<ClassTransformer>
+
     /*
      * Preload transformers as List to fix NoSuchElementException caused by ServiceLoader in parallel mode
      */
-    internal val transformers = ServiceLoader.load(ClassTransformer::class.java, javaClass.classLoader).sortedBy {
-        it.javaClass.getAnnotation(Priority::class.java)?.value ?: 0
-    }.toList()
+    constructor() : this(*ServiceLoader.load(ClassTransformer::class.java, JavassistTransformer::class.java.classLoader).toList().toTypedArray())
 
-    private lateinit var pool: ClassPool
-
-    override fun onPreTransform(context: TransformContext) {
-        pool = ClassPool().apply {
-            context.bootClasspath.forEach {
-                appendClassPath(it.absolutePath)
-            }
-        }
-
-        transformers.forEach {
-            it.onPreTransform(context)
+    /**
+     * For unit test only
+     */
+    constructor(vararg transformers: ClassTransformer) {
+        this.transformers = transformers.sortedBy {
+            it.javaClass.getAnnotation(Priority::class.java)?.value ?: 0
         }
     }
 
-    override fun transform(context: TransformContext, bytecode: ByteArray) = ByteArrayOutputStream().use { output ->
-        bytecode.inputStream().use { input ->
-            transformers.fold(pool.makeClass(input)) { klass, transformer ->
-                transformer.transform(context, klass)
-            }.classFile.write(DataOutputStream(output))
+    override fun onPreTransform(context: TransformContext) {
+        context.bootClasspath.forEach {
+            this.pool.appendClassPath(it.absolutePath)
         }
-        output.toByteArray()
+
+        this.transformers.forEach { transformer ->
+            this.threadMxBean.sumCpuTime(transformer) {
+                transformer.onPreTransform(context)
+            }
+        }
+    }
+
+    override fun transform(context: TransformContext, bytecode: ByteArray): ByteArray {
+        return ByteArrayOutputStream().use { output ->
+            bytecode.inputStream().use { input ->
+                this.transformers.fold(this.pool.makeClass(input)) { klass, transformer ->
+                    this.threadMxBean.sumCpuTime(transformer) {
+                        transformer.transform(context, klass)
+                    }
+                }.classFile.write(DataOutputStream(output))
+            }
+            output.toByteArray()
+        }
     }
 
     override fun onPostTransform(context: TransformContext) {
-        transformers.forEach {
+        this.transformers.forEach {
             it.onPostTransform(context)
         }
+
+        val w1 = this.durations.keys.map {
+            it.javaClass.name.length
+        }.max() ?: 20
+        this.durations.forEach { (transformer, ns) ->
+            println("${transformer.javaClass.name.padEnd(w1 + 1)}: ${ns / 1000000} ms")
+        }
+    }
+
+    private fun <R> ThreadMXBean.sumCpuTime(transformer: ClassTransformer, action: () -> R): R {
+        val ct0 = this.currentThreadCpuTime
+        val result = action()
+        val ct1 = this.currentThreadCpuTime
+        durations[transformer] = durations.getOrDefault(transformer, 0) + (ct1 - ct0)
+        return result
     }
 
 }
