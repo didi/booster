@@ -100,7 +100,7 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
         ArtifactManager.PROCESSED_RES -> variant.scope.processedRes.search { it.name.startsWith(SdkConstants.FN_RES_BASE) && it.name.endsWith(SdkConstants.EXT_RES) }
         ArtifactManager.SYMBOL_LIST -> variant.scope.symbolList
         ArtifactManager.SYMBOL_LIST_WITH_PACKAGE_NAME -> variant.scope.symbolListWithPackageName
-        ArtifactManager.DATA_BINDING_DEPENDENCY_ARTIFACTS -> variant.scope.dataBindingDependencyArtifacts.listFiles()?.toList()?:emptyList()
+        ArtifactManager.DATA_BINDING_DEPENDENCY_ARTIFACTS -> variant.scope.dataBindingDependencyArtifacts.listFiles()?.toList() ?: emptyList()
         else -> TODO("Unexpected type: $type")
     }
 
