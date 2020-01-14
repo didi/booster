@@ -73,7 +73,7 @@ class BRInlineTransformer : ClassTransformer {
     }
 
     override fun transform(context: TransformContext, klass: ClassNode): ClassNode {
-        if (disabled or symbols.isEmpty()) {
+        if (disabled || symbols.isEmpty()) {
             return klass
         }
         klass.replaceSymbolReferenceWithConstant()
