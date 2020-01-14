@@ -140,7 +140,7 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
                                 outputProvider?.let { provider ->
                                     val root = provider.getContentLocation(dirInput.name, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY)
                                     val output = File(root, base.relativize(file.toURI()).path)
-                                    file.transform(output) { bytecode ->
+                                    file.transform(output, this.executor) { bytecode ->
                                         bytecode.transform(this)
                                     }
                                 }
@@ -161,7 +161,7 @@ private fun ByteArray.transform(invocation: BoosterTransformInvocation): ByteArr
 }
 
 private fun QualifiedContent.transform(output: File, invocation: BoosterTransformInvocation) {
-    this.file.transform(output) { bytecode ->
+    this.file.transform(output, invocation.executor) { bytecode ->
         bytecode.transform(invocation)
     }
 }

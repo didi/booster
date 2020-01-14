@@ -11,7 +11,6 @@ import com.didiglobal.booster.kotlinx.Octuple
 import com.didiglobal.booster.kotlinx.Quadruple
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.touch
-import com.didiglobal.booster.task.compression.processed.res.Build
 import com.didiglobal.booster.task.spi.VariantProcessor
 import com.didiglobal.booster.transform.util.transform
 import com.didiglobal.booster.util.search

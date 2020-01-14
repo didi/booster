@@ -6,6 +6,7 @@ import com.android.build.api.transform.TransformInvocation
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.pipeline.TransformManager
 import com.android.builder.model.AndroidProject
+import com.didiglobal.booster.kotlinx.NCPU
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.transform.AbstractKlassPool
 import com.didiglobal.booster.transform.Transformer
@@ -29,7 +30,7 @@ abstract class BoosterTransform(val project: Project) : Transform() {
 
     private val android: BaseExtension = project.getAndroid()
 
-    internal val executor: ExecutorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
+    internal val executor: ExecutorService = Executors.newFixedThreadPool(NCPU)
 
     private lateinit var androidKlassPool: AbstractKlassPool
 
