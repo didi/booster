@@ -2,7 +2,9 @@ package com.didiglobal.booster.gradle
 
 import com.android.SdkConstants
 import com.android.build.api.transform.Context
+import com.android.build.api.transform.DirectoryInput
 import com.android.build.api.transform.Format
+import com.android.build.api.transform.QualifiedContent
 import com.android.build.api.transform.SecondaryInput
 import com.android.build.api.transform.Status.ADDED
 import com.android.build.api.transform.Status.CHANGED
@@ -20,11 +22,9 @@ import com.didiglobal.booster.transform.AbstractKlassPool
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.TransformListener
-import com.didiglobal.booster.transform.Transformer
 import com.didiglobal.booster.transform.util.transform
 import com.didiglobal.booster.util.search
 import java.io.File
-import java.util.ServiceLoader
 
 /**
  * Represents a delegate of TransformInvocation
@@ -32,11 +32,6 @@ import java.util.ServiceLoader
  * @author johnsonlee
  */
 internal class BoosterTransformInvocation(private val delegate: TransformInvocation, val transform: BoosterTransform) : TransformInvocation, TransformContext, TransformListener, ArtifactManager {
-
-    /*
-     * Preload transformers as List to fix NoSuchElementException caused by ServiceLoader in parallel mode
-     */
-    private val transformers = ServiceLoader.load(Transformer::class.java, javaClass.classLoader).toList()
 
     override val name: String = delegate.context.variantName
 
@@ -78,15 +73,15 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
 
     override fun isIncremental() = delegate.isIncremental
 
-    override fun getOutputProvider(): TransformOutputProvider = delegate.outputProvider
+    override fun getOutputProvider(): TransformOutputProvider? = delegate.outputProvider
 
     override fun getContext(): Context = delegate.context
 
-    override fun onPreTransform(context: TransformContext) = transformers.forEach {
+    override fun onPreTransform(context: TransformContext) = transform.transformers.forEach {
         it.onPreTransform(this)
     }
 
-    override fun onPostTransform(context: TransformContext) = transformers.forEach {
+    override fun onPostTransform(context: TransformContext) = transform.transformers.forEach {
         it.onPostTransform(this)
     }
 
@@ -106,17 +101,14 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
     }
 
     internal fun doFullTransform() {
-        this.inputs.parallelStream().forEach { input ->
-            input.directoryInputs.parallelStream().forEach {
-                project.logger.info("Transforming ${it.file}")
-                it.file.transform(outputProvider.getContentLocation(it.name, it.contentTypes, it.scopes, Format.DIRECTORY)) { bytecode ->
-                    bytecode.transform(this)
-                }
-            }
-            input.jarInputs.parallelStream().forEach {
-                project.logger.info("Transforming ${it.file}")
-                it.file.transform(outputProvider.getContentLocation(it.name, it.contentTypes, it.scopes, Format.JAR)) { bytecode ->
-                    bytecode.transform(this)
+        this.inputs.map {
+            it.jarInputs + it.directoryInputs
+        }.flatten().forEach { input ->
+            executor.execute {
+                val format = if (input is DirectoryInput) Format.DIRECTORY else Format.JAR
+                outputProvider?.let { provider ->
+                    project.logger.info("Transforming ${input.file}")
+                    input.transform(provider.getContentLocation(input.name, input.contentTypes, input.scopes, format), this)
                 }
             }
         }
@@ -129,10 +121,9 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
                 when (jarInput.status) {
                     REMOVED -> jarInput.file.delete()
                     CHANGED, ADDED -> {
-                        val root = outputProvider.getContentLocation(jarInput.name, jarInput.contentTypes, jarInput.scopes, Format.JAR)
                         project.logger.info("Transforming ${jarInput.file}")
-                        jarInput.file.transform(root) { bytecode ->
-                            bytecode.transform(this)
+                        outputProvider?.let { provider ->
+                            jarInput.transform(provider.getContentLocation(jarInput.name, jarInput.contentTypes, jarInput.scopes, Format.JAR), this)
                         }
                     }
                 }
@@ -145,10 +136,13 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
                         when (status) {
                             REMOVED -> file.delete()
                             ADDED, CHANGED -> {
-                                val root = outputProvider.getContentLocation(dirInput.name, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY)
                                 project.logger.info("Transforming $file")
-                                file.transform(File(root, base.relativize(file.toURI()).path)) { bytecode ->
-                                    bytecode.transform(this)
+                                outputProvider?.let { provider ->
+                                    val root = provider.getContentLocation(dirInput.name, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY)
+                                    val output = File(root, base.relativize(file.toURI()).path)
+                                    file.transform(output) { bytecode ->
+                                        bytecode.transform(this)
+                                    }
                                 }
                             }
                         }
@@ -158,10 +152,16 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
         }
     }
 
-    private fun ByteArray.transform(invocation: BoosterTransformInvocation): ByteArray {
-        return transformers.fold(this) { bytes, transformer ->
-            transformer.transform(invocation, bytes)
-        }
-    }
+}
 
+private fun ByteArray.transform(invocation: BoosterTransformInvocation): ByteArray {
+    return invocation.transform.transformers.fold(this) { bytes, transformer ->
+        transformer.transform(invocation, bytes)
+    }
+}
+
+private fun QualifiedContent.transform(output: File, invocation: BoosterTransformInvocation) {
+    this.file.transform(output) { bytecode ->
+        bytecode.transform(invocation)
+    }
 }

@@ -11,6 +11,14 @@ import org.gradle.api.Project
  */
 class BoosterLibTransform(project: Project) : BoosterTransform(project) {
 
-    override fun getScopes(): MutableSet<in QualifiedContent.Scope> = TransformManager.PROJECT_ONLY
+    override fun getScopes(): MutableSet<in QualifiedContent.Scope> = when {
+        transformers.isEmpty() -> super.getScopes()
+        else -> TransformManager.PROJECT_ONLY
+    }
+
+    override fun getReferencedScopes(): MutableSet<in QualifiedContent.Scope> = when {
+        transformers.isEmpty() -> TransformManager.PROJECT_ONLY
+        else -> super.getReferencedScopes()
+    }
 
 }

@@ -30,7 +30,7 @@ fun File.transform(output: File, transformer: (ByteArray) -> ByteArray = { it ->
     when {
         isDirectory -> {
             val base = this.toURI()
-            this.search().forEach {
+            this.search().parallelStream().forEach {
                 it.transform(File(output, base.relativize(it.toURI()).path), transformer)
             }
         }
