@@ -37,7 +37,7 @@ abstract class AbstractTransformContext(
 
     override val isDebuggable = true
 
-    override val dataBindingLogPath: Collection<File>? = null
+    override val isDataBindingEnabled = false
 
     override fun getProperty(name: String): String? = null
 
