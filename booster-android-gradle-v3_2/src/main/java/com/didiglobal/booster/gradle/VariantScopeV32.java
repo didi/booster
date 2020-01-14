@@ -98,8 +98,7 @@ class VariantScopeV32 {
 
     @NotNull
     static File getDataBindingDependencyArtifacts(@NotNull final VariantScope scope) {
-        return scope.getArtifacts().getFinalArtifactFiles(
-                        InternalArtifactType.DATA_BINDING_DEPENDENCY_ARTIFACTS)
+        return scope.getArtifacts().getFinalArtifactFiles(InternalArtifactType.DATA_BINDING_DEPENDENCY_ARTIFACTS)
                 .get()
                 .getSingleFile();
     }

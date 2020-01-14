@@ -31,15 +31,18 @@ class BRInlineTransformer : ClassTransformer {
     private lateinit var symbols: SymbolList
     private lateinit var logger: PrintWriter
     private lateinit var validClasses: MutableList<String>
+    private var disabled = false
 
     override fun onPreTransform(context: TransformContext) {
         if (!context.isDataBindingEnabled) {
+            disabled = true
             return
         }
         val appBR = "${context.originalApplicationId.replace('.', '/')}/BR.class"
         logger = context.reportsDir.file(Build.ARTIFACT).file(context.name).file("report.txt").touch().printWriter()
         validClasses = context.findValidClasses()
         if (validClasses.isEmpty()) {
+            disabled = true
             return
         }
         validClasses.add(appBR)
@@ -49,6 +52,7 @@ class BRInlineTransformer : ClassTransformer {
                 logger_.error(this)
                 logger.println(this)
             }
+            disabled = true
             return
         }
         symbols = SymbolList.from(allBR.filter { it.second == appBR }.map { it.first }.single())
@@ -73,7 +77,7 @@ class BRInlineTransformer : ClassTransformer {
     }
 
     override fun transform(context: TransformContext, klass: ClassNode): ClassNode {
-        if (this.symbols.isEmpty()) {
+        if (disabled) {
             return klass
         }
         klass.replaceSymbolReferenceWithConstant()
@@ -81,6 +85,9 @@ class BRInlineTransformer : ClassTransformer {
     }
 
     override fun onPostTransform(context: TransformContext) {
+        if (disabled) {
+            return
+        }
         this.logger.close()
     }
 
