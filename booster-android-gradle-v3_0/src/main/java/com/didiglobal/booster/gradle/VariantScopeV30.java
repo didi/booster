@@ -114,4 +114,12 @@ class VariantScopeV30 {
         }
     }
 
+    /**
+     * DataBindingBuilder#getBRFilePackages()
+     */
+    @NotNull
+    static File getDataBindingDependencyArtifacts(@NotNull final VariantScope scope) {
+        File file = scope.getBuildFolderForDataBindingCompiler();
+        return new File(file, "dependent-lib-artifacts");
+    }
 }

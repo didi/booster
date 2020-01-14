@@ -96,4 +96,11 @@ class VariantScopeV32 {
         return scope.getGlobalScope().getAndroidBuilder().getBuildToolInfo();
     }
 
+    @NotNull
+    static File getDataBindingDependencyArtifacts(@NotNull final VariantScope scope) {
+        return scope.getArtifacts().getFinalArtifactFiles(
+                        InternalArtifactType.DATA_BINDING_DEPENDENCY_ARTIFACTS)
+                .get()
+                .getSingleFile();
+    }
 }

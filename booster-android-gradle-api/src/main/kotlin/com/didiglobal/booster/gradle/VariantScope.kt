@@ -87,6 +87,11 @@ private val RAW_ANDROID_RESOURCES_GETTER = when {
     else -> VariantScopeV30::getRawAndroidResources
 }
 
+private val DATA_BINDING_DEPENDENCY_ARTIFACTS_GETTER = when {
+    GTE_V3_2 -> VariantScopeV32::getDataBindingDependencyArtifacts
+    else -> VariantScopeV30::getDataBindingDependencyArtifacts
+}
+
 /**
  * The output directory of APK files
  */
@@ -140,3 +145,6 @@ val VariantScope.buildTools: BuildToolInfo
 
 val VariantScope.rawAndroidResources: Collection<File>
     get() = RAW_ANDROID_RESOURCES_GETTER(this)
+
+val VariantScope.dataBindingDependencyArtifacts: File
+    get() = DATA_BINDING_DEPENDENCY_ARTIFACTS_GETTER(this)

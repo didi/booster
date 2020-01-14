@@ -19,6 +19,7 @@ interface ArtifactManager {
         const val PROCESSED_RES = "PROCESSED_RES"
         const val SYMBOL_LIST = "SYMBOL_LIST"
         const val SYMBOL_LIST_WITH_PACKAGE_NAME = "SYMBOL_LIST_WITH_PACKAGE_NAME"
+        const val DATA_BINDING_DEPENDENCY_ARTIFACTS = "DATA_BINDING_DEPENDENCY_ARTIFACTS"
     }
 
     /**
