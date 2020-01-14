@@ -85,10 +85,9 @@ class BRInlineTransformer : ClassTransformer {
     }
 
     override fun onPostTransform(context: TransformContext) {
-        if (disabled) {
-            return
+        if (this::logger.isInitialized) {
+            this.logger.close()
         }
-        this.logger.close()
     }
 
     private fun TransformContext.findValidClasses(): MutableList<String> {
