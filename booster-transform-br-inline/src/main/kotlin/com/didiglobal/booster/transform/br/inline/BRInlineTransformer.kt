@@ -34,31 +34,27 @@ class BRInlineTransformer : ClassTransformer {
     private var disabled = false
 
     override fun onPreTransform(context: TransformContext) {
-        if (!context.isDataBindingEnabled) {
-            disabled = true
-            return
-        }
         val appBR = "${context.originalApplicationId.replace('.', '/')}/BR.class"
         logger = context.reportsDir.file(Build.ARTIFACT).file(context.name).file("report.txt").touch().printWriter()
+        if (!context.isDataBindingEnabled) {
+            markAsFailed("Inline BR symbols failed: dataBinding is disabled")
+            return
+        }
         validClasses = context.findValidClasses()
         if (validClasses.isEmpty()) {
-            disabled = true
+            markAsFailed("Inline BR symbols failed: not found valid packages")
             return
         }
         validClasses.add(appBR)
         val allBR = context.findAllBR()
         if (allBR.isEmpty()) {
-            "Inline BR symbols failed: BR.class doesn't exist or blank".apply {
-                logger_.error(this)
-                logger.println(this)
-            }
-            disabled = true
+            markAsFailed("Inline BR symbols failed: BR.class doesn't exist or blank")
             return
         }
         symbols = SymbolList.from(allBR.filter { it.second == appBR }.map { it.first }.single())
 
         // Remove all BR class files
-        allBR.ifNotEmpty { pairs ->
+        allBR.also { pairs ->
             val totalSize = allBR.map { it.first.length() }.sum()
             val maxWidth = allBR.map { it.second.length }.max()?.plus(10) ?: 10
 
@@ -77,7 +73,7 @@ class BRInlineTransformer : ClassTransformer {
     }
 
     override fun transform(context: TransformContext, klass: ClassNode): ClassNode {
-        if (disabled) {
+        if (disabled or symbols.isEmpty()) {
             return klass
         }
         klass.replaceSymbolReferenceWithConstant()
@@ -85,8 +81,14 @@ class BRInlineTransformer : ClassTransformer {
     }
 
     override fun onPostTransform(context: TransformContext) {
-        if (this::logger.isInitialized) {
-            this.logger.close()
+        this.logger.close()
+    }
+
+    private fun markAsFailed(info: String) {
+        disabled = true
+        info.apply {
+            logger_.error(this)
+            logger.println(this)
         }
     }
 
