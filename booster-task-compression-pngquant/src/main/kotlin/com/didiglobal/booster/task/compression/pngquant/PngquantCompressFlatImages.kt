@@ -15,7 +15,6 @@ import com.didiglobal.booster.gradle.scope
 import com.didiglobal.booster.kotlinx.CSI_RED
 import com.didiglobal.booster.kotlinx.CSI_RESET
 import com.didiglobal.booster.kotlinx.file
-import org.gradle.api.tasks.TaskAction
 import java.io.File
 
 /**
@@ -29,7 +28,7 @@ internal open class PngquantCompressFlatImages : PngquantCompressImages() {
         val intermediates = variant.project.buildDir.file(FD_INTERMEDIATES)
         val compiledRes = intermediates.file("compiled_${FD_RES}_pngquant", variant.dirName, this.name)
         val compressedRes = intermediates.file("compressed_${FD_RES}_pngquant", variant.dirName, this.name)
-        val pngquant = cmdline.executable!!.absolutePath
+        val pngquant = tool.command.executable.canonicalPath
         val aapt2 = variant.scope.buildTools.getPath(BuildToolInfo.PathId.AAPT2)
 
         compiledRes.mkdirs()

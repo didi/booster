@@ -20,7 +20,7 @@ internal open class CwebpCompressImages : CompressImages<CompressionOptions>() {
     protected open fun compress(filter: (File) -> Boolean) {
         supplier().parallelStream().filter(filter).map { input ->
             val output = File(input.absolutePath.substringBeforeLast('.') + ".webp")
-            ActionData(input, output, listOf(cmdline.executable!!.absolutePath, "-mt", "-quiet", "-q", options.quality.toString(), "-o", output.absolutePath, input.absolutePath))
+            ActionData(input, output, listOf(tool.command.executable.canonicalPath, "-mt", "-quiet", "-q", options.quality.toString(), "-o", output.absolutePath, input.absolutePath))
         }.forEach {
             val s0 = it.input.length()
             val rc = project.exec { spec ->

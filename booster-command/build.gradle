@@ -1,0 +1,5 @@
+apply from: '../gradle/booster.gradle'
+
+dependencies {
+    compile project(":booster-kotlinx")
+}

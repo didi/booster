@@ -17,7 +17,7 @@ abstract class CompressImages<T: CompressionOptions> : DefaultTask() {
 
     lateinit var variant: BaseVariant
 
-    lateinit var cmdline: CompressionTool
+    lateinit var tool: CompressionTool
 
     lateinit var supplier: () -> Collection<File>
 
