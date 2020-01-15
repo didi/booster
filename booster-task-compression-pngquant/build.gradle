@@ -6,6 +6,7 @@ dependencies {
     implementation project(':booster-aapt2')
     implementation project(':booster-android-gradle-api')
     implementation project(':booster-annotations')
+    implementation project(':booster-command')
     implementation project(':booster-task-spi')
     implementation project(':booster-task-compression')
     compileOnly 'com.android.tools.build:gradle:3.0.0'

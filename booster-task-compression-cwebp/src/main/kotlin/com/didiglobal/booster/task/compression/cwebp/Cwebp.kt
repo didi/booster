@@ -1,37 +1,21 @@
 package com.didiglobal.booster.task.compression.cwebp
 
-import com.android.SdkConstants
 import com.android.build.gradle.api.BaseVariant
-import com.didiglobal.booster.compression.CompressionOptions
+import com.didiglobal.booster.command.CommandService
 import com.didiglobal.booster.compression.CompressionTool
 import com.didiglobal.booster.compression.SimpleCompressionTaskCreator
-import com.didiglobal.booster.gradle.getProperty
-import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.gradle.scope
 import com.didiglobal.booster.kotlinx.OS
-import com.didiglobal.booster.kotlinx.file
-import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.task.compression.cwebp.Cwebp.Companion.PROGRAM
-import java.io.File
 
 /**
  * Represents utility class for webp compression
  *
  * @author johnsonlee
  *
- * @property path The path of executable
  * @property opaque The value indicates if compression supports transparent images
  */
-class Cwebp internal constructor(path: String, val supportAlpha: Boolean) : CompressionTool(CWEBP, path) {
-
-    override fun install(location: File): Boolean {
-        location.touch().outputStream().buffered().use { output ->
-            javaClass.classLoader.getResourceAsStream(PREBUILT_LIBWEBP_EXECUTABLE)!!.buffered().use { input ->
-                input.copyTo(output)
-            }
-        }
-        return true
-    }
+class Cwebp internal constructor(val supportAlpha: Boolean) : CompressionTool(CommandService.get(CWEBP)) {
 
     override fun newCompressionTaskCreator() = SimpleCompressionTaskCreator(this) { aapt2 ->
         when (aapt2) {
@@ -50,13 +34,14 @@ class Cwebp internal constructor(path: String, val supportAlpha: Boolean) : Comp
 
         const val PROGRAM = "cwebp"
 
+        /**
+         * @see <a href="https://developer.android.com/studio/write/convert-webp">convert-webp</a>
+         */
         fun get(variant: BaseVariant): Cwebp? {
-            val binDir = variant.project.buildDir.file(SdkConstants.FD_OUTPUT).absolutePath
             val minSdkVersion = variant.scope.minSdkVersion.apiLevel
-            // https://developer.android.com/studio/write/convert-webp
             return when {
-                minSdkVersion >= 18 -> Cwebp(binDir, true)
-                minSdkVersion in 14..17 -> Cwebp(binDir, false)
+                minSdkVersion >= 18 -> Cwebp(true)
+                minSdkVersion in 14..17 -> Cwebp(false)
                 else -> null
             }
         }
@@ -65,9 +50,9 @@ class Cwebp internal constructor(path: String, val supportAlpha: Boolean) : Comp
 
 }
 
-private val CWEBP = "$PROGRAM${OS.executableSuffix}"
+internal val CWEBP = "$PROGRAM${OS.executableSuffix}"
 
-private val PREBUILT_LIBWEBP_EXECUTABLE = "libwebp/" + when {
+internal val PREBUILT_CWEBP_EXECUTABLE = "bin/" + when {
     OS.isLinux() -> "linux/" + when (OS.arch) {
         "x64", "x86_64", "amd64" -> "x64"
         else -> TODO("Unsupported architecture ${OS.arch}")

@@ -1,6 +1,5 @@
 package com.didiglobal.booster.task.compression.cwebp
 
-import org.gradle.api.tasks.TaskAction
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO

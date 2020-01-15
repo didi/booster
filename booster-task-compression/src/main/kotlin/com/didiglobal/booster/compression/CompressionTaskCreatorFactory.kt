@@ -7,7 +7,7 @@ import com.didiglobal.booster.compression.CompressionTaskCreator
  *
  * @author johnsonlee
  */
-internal interface CompressionTaskCreatorFactory {
+interface CompressionTaskCreatorFactory {
 
     fun newCompressionTaskCreator(): CompressionTaskCreator
 

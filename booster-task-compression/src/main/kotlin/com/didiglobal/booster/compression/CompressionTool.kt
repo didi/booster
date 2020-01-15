@@ -1,5 +1,6 @@
 package com.didiglobal.booster.compression
 
+import com.didiglobal.booster.command.Command
 import java.io.File
 
 /**
@@ -7,29 +8,8 @@ import java.io.File
  *
  * @author johnsonlee
  *
- * @param name The executable name
- * @param path The search path
- * @param options The compression options
+ * @param command The command for image compression
  */
-abstract class CompressionTool(val name: String, val path: String) : CompressionTaskCreatorFactory {
-
-    val executable: File?
-        get() = (path.takeIf { it.isNotBlank() && File(it, name).exists() } ?: System.getenv("PATH")).split(File.pathSeparatorChar).map {
-            File(it)
-        }.map { path ->
-            when {
-                path.isDirectory -> path.listFiles { file ->
-                    file.name == name && !file.isDirectory
-                }?.firstOrNull()
-                else -> if (path.name == name) path else null
-            }
-        }.find {
-            it != null && it.exists()
-        }
-
-    val isInstalled = executable?.exists() ?: false
-
-    open fun install(location: File): Boolean = isInstalled
-
+abstract class CompressionTool(val command: Command) : CompressionTaskCreatorFactory {
 
 }

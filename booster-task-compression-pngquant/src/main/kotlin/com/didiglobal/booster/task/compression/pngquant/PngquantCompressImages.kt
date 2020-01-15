@@ -27,7 +27,7 @@ internal open class PngquantCompressImages : CompressImages<PngquantOptions>() {
 
     protected open fun compress() {
         supplier().map {
-            ActionData(it, it, listOf(cmdline.executable!!.absolutePath, "--strip", "--skip-if-larger", "-f", "--ext", DOT_PNG, "-s", "${options.speed}", "-Q", "${options.quality}-100", it.absolutePath))
+            ActionData(it, it, listOf(tool.command.executable.canonicalPath, "--strip", "--skip-if-larger", "-f", "--ext", DOT_PNG, "-s", "${options.speed}", "-Q", "${options.quality}-100", it.absolutePath))
         }.parallelStream().forEach {
             val s0 = it.input.length()
             val rc = project.exec { spec ->
