@@ -3,12 +3,13 @@ package com.didiglobal.booster.task.compression.processed.res
 import com.android.SdkConstants
 import com.android.SdkConstants.DOT_PNG
 import com.android.build.gradle.api.BaseVariant
+import com.didiglobal.booster.compression.CompressionReport
+import com.didiglobal.booster.compression.CompressionResult
+import com.didiglobal.booster.compression.CompressionResults
 import com.didiglobal.booster.gradle.processResTask
 import com.didiglobal.booster.gradle.processedRes
 import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.gradle.scope
-import com.didiglobal.booster.kotlinx.Octuple
-import com.didiglobal.booster.kotlinx.Quadruple
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.task.spi.VariantProcessor
@@ -18,7 +19,6 @@ import com.google.auto.service.AutoService
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry
 import java.io.File
 import java.text.DecimalFormat
-import java.util.concurrent.CopyOnWriteArrayList
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
@@ -115,30 +115,6 @@ private fun BaseVariant.generateReport(results: CompressionResults) {
     }
 
 }
-
-/**
- * Compression Result
- *
- * 1. image file
- * 2. original file size
- * 3. current file size
- * 4. original file path
- */
-typealias CompressionResult = Quadruple<File, Long, Long, File>
-
-internal typealias CompressionResults = CopyOnWriteArrayList<CompressionResult>
-
-/**
- * 1. relative path
- * 2. original size
- * 3. compressed size
- * 4. reduced size
- * 5. formatted reduced size
- * 6. reduction percentage
- * 7. original size
- * 8. original path
- */
-private typealias CompressionReport = Octuple<String, Long, Long, Long, String, String, String, File>
 
 internal val NO_COMPRESS = setOf(
         "jpg", "jpeg", "png", "gif", "webp",
