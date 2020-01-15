@@ -17,6 +17,7 @@ import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactSco
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactType.AAR
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactType.JAR
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH
+import com.didiglobal.booster.kotlinx.NCPU
 import com.didiglobal.booster.kotlinx.ifNotEmpty
 import com.didiglobal.booster.transform.AbstractKlassPool
 import com.didiglobal.booster.transform.ArtifactManager
@@ -25,13 +26,15 @@ import com.didiglobal.booster.transform.TransformListener
 import com.didiglobal.booster.transform.util.transform
 import com.didiglobal.booster.util.search
 import java.io.File
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 /**
  * Represents a delegate of TransformInvocation
  *
  * @author johnsonlee
  */
-internal class BoosterTransformInvocation(private val delegate: TransformInvocation, val transform: BoosterTransform) : TransformInvocation, TransformContext, TransformListener, ArtifactManager {
+internal class BoosterTransformInvocation(private val delegate: TransformInvocation, internal val transform: BoosterTransform, override val executor: ExecutorService = Executors.newWorkStealingPool(NCPU)) : TransformInvocation, TransformContext, TransformListener, ArtifactManager {
 
     override val name: String = delegate.context.variantName
 
@@ -42,8 +45,6 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
     override val temporaryDir: File = delegate.context.temporaryDir
 
     override val reportsDir: File = File(buildDir, "reports").also { it.mkdirs() }
-
-    override val executor = transform.executor
 
     override val bootClasspath = delegate.bootClasspath
 
@@ -140,7 +141,7 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
                                 outputProvider?.let { provider ->
                                     val root = provider.getContentLocation(dirInput.name, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY)
                                     val output = File(root, base.relativize(file.toURI()).path)
-                                    file.transform(output, this.executor) { bytecode ->
+                                    file.transform(output) { bytecode ->
                                         bytecode.transform(this)
                                     }
                                 }
@@ -161,7 +162,7 @@ private fun ByteArray.transform(invocation: BoosterTransformInvocation): ByteArr
 }
 
 private fun QualifiedContent.transform(output: File, invocation: BoosterTransformInvocation) {
-    this.file.transform(output, invocation.executor) { bytecode ->
+    this.file.transform(output) { bytecode ->
         bytecode.transform(invocation)
     }
 }

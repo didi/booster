@@ -1,6 +1,5 @@
 package com.didiglobal.booster.transform.util
 
-import com.didiglobal.booster.kotlinx.NCPU
 import com.didiglobal.booster.kotlinx.redirect
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.util.search
@@ -14,8 +13,6 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 import java.util.jar.JarFile
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
@@ -28,18 +25,18 @@ private val logger = Logging.getLogger("transform")
  * @param output The output location
  * @param transformer The byte data transformer
  */
-fun File.transform(output: File, executor: ExecutorService = Executors.newFixedThreadPool(NCPU), transformer: (ByteArray) -> ByteArray = { it -> it }) {
+fun File.transform(output: File, transformer: (ByteArray) -> ByteArray = { it -> it }) {
     when {
         isDirectory -> {
             val base = this.toURI()
             this.search().parallelStream().forEach {
-                it.transform(File(output, base.relativize(it.toURI()).path), executor, transformer)
+                it.transform(File(output, base.relativize(it.toURI()).path), transformer)
             }
         }
         isFile -> {
             when (output.extension.toLowerCase()) {
                 "jar" -> JarFile(this).use {
-                    it.transform(output, ::JarArchiveEntry, executor, transformer)
+                    it.transform(output, ::JarArchiveEntry, transformer)
                 }
                 "class" -> inputStream().use {
                     logger.info("Transforming ${this.absolutePath}")
@@ -56,8 +53,8 @@ fun InputStream.transform(transformer: (ByteArray) -> ByteArray): ByteArray {
     return transformer(readBytes())
 }
 
-fun ZipFile.transform(output: File, entryFactory: (ZipEntry) -> ZipArchiveEntry = ::ZipArchiveEntry, executor: ExecutorService = Executors.newFixedThreadPool(NCPU), transformer: (ByteArray) -> ByteArray = { it -> it }) {
-    val creator = ParallelScatterZipCreator(executor)
+fun ZipFile.transform(output: File, entryFactory: (ZipEntry) -> ZipArchiveEntry = ::ZipArchiveEntry, transformer: (ByteArray) -> ByteArray = { it -> it }) {
+    val creator = ParallelScatterZipCreator()
     val entries = mutableSetOf<String>()
 
     entries().asSequence().forEach { entry ->
@@ -88,7 +85,7 @@ fun ZipFile.transform(output: File, entryFactory: (ZipEntry) -> ZipArchiveEntry 
 private const val DEFAULT_BUFFER_SIZE = 8 * 1024
 
 private fun InputStream.readBytes(estimatedSize: Int = DEFAULT_BUFFER_SIZE): ByteArray {
-    val buffer = ByteArrayOutputStream(Math.max(estimatedSize, this.available()))
+    val buffer = ByteArrayOutputStream(estimatedSize.coerceAtLeast(this.available()))
     copyTo(buffer)
     return buffer.toByteArray()
 }

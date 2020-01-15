@@ -31,7 +31,7 @@ class TransformHelper(val input: File, val output: File, val apiLevel: Int, vara
         }
 
         (jars + classes).forEach {
-            it.transform(File(output, it.name), context.executor) { bytecode ->
+            it.transform(File(output, it.name)) { bytecode ->
                 transformers.fold(bytecode) { bytes, transformer ->
                     transformer.transform(context, bytes)
                 }

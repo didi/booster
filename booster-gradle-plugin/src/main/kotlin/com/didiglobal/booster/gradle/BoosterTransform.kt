@@ -6,14 +6,11 @@ import com.android.build.api.transform.TransformInvocation
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.pipeline.TransformManager
 import com.android.builder.model.AndroidProject
-import com.didiglobal.booster.kotlinx.NCPU
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.transform.AbstractKlassPool
 import com.didiglobal.booster.transform.Transformer
 import org.gradle.api.Project
 import java.util.ServiceLoader
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 /**
@@ -29,8 +26,6 @@ abstract class BoosterTransform(val project: Project) : Transform() {
     internal val transformers = ServiceLoader.load(Transformer::class.java, javaClass.classLoader).toList()
 
     private val android: BaseExtension = project.getAndroid()
-
-    internal val executor: ExecutorService = Executors.newFixedThreadPool(NCPU)
 
     private lateinit var androidKlassPool: AbstractKlassPool
 
