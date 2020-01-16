@@ -4,7 +4,6 @@ import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
 
 class NoneCommandTest {
 
@@ -16,7 +15,6 @@ class NoneCommandTest {
         println(fake.location)
         println(fake.executable)
         fake.location.openStream().use {
-            assertNotNull(it)
             assertEquals(0, it.available())
         }
     }

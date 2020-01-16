@@ -1,5 +1,7 @@
 package com.didiglobal.booster.command
 
+import com.didiglobal.booster.kotlinx.CSI_RED
+import com.didiglobal.booster.kotlinx.CSI_RESET
 import com.didiglobal.booster.kotlinx.touch
 import java.io.File
 import java.net.URL
@@ -34,13 +36,22 @@ open class Command {
 
     open fun install(location: File): Boolean {
         if (installed) return true
-        if (!location.exists()) {
-            this.location.openStream().buffered().use { input ->
-                location.touch().outputStream().buffered().use { output ->
-                    input.copyTo(output)
+
+        if (!location.exists() || location.length() <= 0) {
+            try {
+                this.location.openStream().buffered().use { input ->
+                    location.touch().outputStream().buffered().use { output ->
+                        if (input.copyTo(output) <= 0) {
+                            println("${CSI_RED}No data available at ${this.location}${CSI_RESET}")
+                            return false
+                        }
+                    }
                 }
+            } catch (e: Exception) {
+                return false
             }
         }
+
         this.exe = location
         this.installed = true
         return true

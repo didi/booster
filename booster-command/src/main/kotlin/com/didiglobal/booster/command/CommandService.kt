@@ -16,9 +16,9 @@ class CommandService {
             it.name to it
         }.toMap()
 
-        fun get(name: String): Command = commands[name] ?: fromPath(name) ?: NoneCommand(name)
+        fun get(name: String): Command = commands[name] ?: fromPath(name)
 
-        fun fromPath(name: String): Command? = System.getenv("PATH").split(File.pathSeparatorChar).map {
+        fun fromPath(name: String): Command = System.getenv("PATH").split(File.pathSeparatorChar).map {
             File(it)
         }.map { path ->
             when {
@@ -29,9 +29,9 @@ class CommandService {
             }
         }.find {
             it != null && it.exists()
-        }?.canonicalFile?.let { exe ->
-            Command(name, exe.toURI().toURL(), exe)
-        }
+        }?.canonicalFile?.let {
+            InstalledCommand(name, it)
+        } ?: NoneCommand(name)
     }
 
 }
