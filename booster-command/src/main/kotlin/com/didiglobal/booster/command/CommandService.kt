@@ -16,10 +16,7 @@ class CommandService {
             it.name to it
         }.toMap()
 
-        @Suppress("UNCHECKED_CAST")
-        fun get(name: String): Command = commands[name]
-                ?: fromPath(name)
-                ?: throw RuntimeException("command `$name` not found")
+        fun get(name: String): Command = commands[name] ?: fromPath(name) ?: NoneCommand(name)
 
         fun fromPath(name: String): Command? = System.getenv("PATH").split(File.pathSeparatorChar).map {
             File(it)
@@ -32,8 +29,8 @@ class CommandService {
             }
         }.find {
             it != null && it.exists()
-        }?.toURI()?.toURL()?.let {
-            Command(name, it)
+        }?.canonicalFile?.let { exe ->
+            Command(name, exe.toURI().toURL(), exe)
         }
     }
 
