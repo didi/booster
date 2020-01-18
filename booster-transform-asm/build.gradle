@@ -3,15 +3,12 @@ apply from: '../gradle/booster.gradle'
 dependencies {
     kapt "com.google.auto.service:auto-service:1.0-rc4"
     kaptTest 'com.google.auto.service:auto-service:1.0-rc4'
-    compile gradleApi()
-    compile project(':booster-annotations')
-    compile project(':booster-kotlinx')
-    compile project(':booster-transform-spi')
-    compile project(':booster-transform-util')
-    compile 'org.ow2.asm:asm:7.1'
-    compile 'org.ow2.asm:asm-analysis:7.1'
-    compile 'org.ow2.asm:asm-commons:7.1'
-    compile 'org.ow2.asm:asm-tree:7.1'
-    compile 'org.ow2.asm:asm-util:7.1'
-    compile 'com.google.auto.service:auto-service:1.0-rc4'
+    api project(':booster-annotations')
+    api project(':booster-transform-util')
+    api 'org.ow2.asm:asm:7.1'
+    api 'org.ow2.asm:asm-analysis:7.1'
+    api 'org.ow2.asm:asm-commons:7.1'
+    api 'org.ow2.asm:asm-tree:7.1'
+    api 'org.ow2.asm:asm-util:7.1'
+    api 'com.google.auto.service:auto-service:1.0-rc4'
 }

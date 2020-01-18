@@ -1,10 +1,8 @@
 apply from: '../gradle/booster.gradle'
 
 dependencies {
-    compile project(':booster-android-gradle-api')
-    compile project(':booster-transform-spi')
-    compile project(':booster-build')
-    compile project(':booster-kotlinx')
-    compile 'org.apache.commons:commons-compress:1.19'
-    compile 'org.apache.bcel:bcel:6.4.1'
+    api project(':booster-android-gradle-api')
+    api project(':booster-transform-spi')
+    api project(':booster-build')
+    api 'org.apache.commons:commons-compress:1.19'
 }
