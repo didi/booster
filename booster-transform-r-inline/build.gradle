@@ -3,6 +3,5 @@ apply from: '../gradle/booster.gradle'
 dependencies {
     kapt "com.google.auto.service:auto-service:1.0-rc4"
     implementation project(':booster-aapt2')
-    implementation project(':booster-android-gradle-api')
     implementation project(':booster-transform-asm')
 }
