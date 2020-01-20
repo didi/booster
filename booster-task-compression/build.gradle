@@ -1,8 +1,8 @@
 apply from: '../gradle/booster.gradle'
 
 dependencies {
-    kapt "com.google.auto.service:auto-service:1.0-rc4"
-    api 'com.google.auto.service:auto-service:1.0-rc4'
+    kapt "com.google.auto.service:auto-service:1.0-rc6"
+    api 'com.google.auto.service:auto-service:1.0-rc6'
     api project(':booster-aapt2')
     api project(':booster-command')
     api project(':booster-task-spi')

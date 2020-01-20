@@ -1,6 +1,6 @@
 apply from: '../gradle/booster.gradle'
 
 dependencies {
-    kapt "com.google.auto.service:auto-service:1.0-rc4"
+    kapt "com.google.auto.service:auto-service:1.0-rc6"
     api project(':booster-transform-asm')
 }
