@@ -46,8 +46,8 @@ class SymbolList private constructor(builder: Builder) : Iterable<SymbolList.Sym
          *
          * @param file symbol list file
          */
-        fun from(file: File) = Builder().also { builder ->
-            if (file.exists()) {
+        fun from(file: File?) = Builder().also { builder ->
+            if (file != null && file.exists()) {
                 ClassNode().also {
                     ClassReader(file.inputStream()).accept(it, 0)
                 }.fields.forEach {
