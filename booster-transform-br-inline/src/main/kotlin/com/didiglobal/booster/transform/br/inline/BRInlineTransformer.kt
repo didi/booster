@@ -29,13 +29,15 @@ class BRInlineTransformer : ClassTransformer {
 
     private lateinit var symbols: SymbolList
     private lateinit var logger: PrintWriter
-    private lateinit var validClasses: List<String>
+    private lateinit var validClasses: Set<String>
 
     override fun onPreTransform(context: TransformContext) {
         logger = context.reportsDir.file(Build.ARTIFACT).file(context.name).file("report.txt").touch().printWriter()
         validClasses = context.findValidClasses()
         val allBR = context.findAllBR()
-        symbols = SymbolList.from(allBR.find { it.second == context.appBR }?.first)
+        symbols = allBR.find { it.second == context.appBR }?.first?.let {
+            SymbolList.from(it)
+        } ?: SymbolList.Builder().build()
         if (symbols.isEmpty()) {
             "Inline BR symbols failed: BR.class doesn't exist or blank".apply {
                 logger_.error(this)
@@ -77,15 +79,15 @@ class BRInlineTransformer : ClassTransformer {
     private val TransformContext.appBR
         get() = "${originalApplicationId.replace('.', '/')}/BR.class"
 
-    private fun TransformContext.findValidClasses(): List<String> {
+    private fun TransformContext.findValidClasses(): Set<String> {
         return if (isDataBindingEnabled) {
             artifacts.get(DATA_BINDING_DEPENDENCY_ARTIFACTS)
                     .filter { it.name.endsWith(BR_FILE_EXT) }
                     .map { "${it.name.substringBefore("-").replace('.', '/')}/BR.class" }
-                    .distinct()
                     .plus(appBR)
+                    .toSet()
         } else {
-            emptyList()
+            emptySet()
         }
     }
 
