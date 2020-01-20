@@ -112,7 +112,7 @@ Here are all the modules of Booster:
 - [booster-task-compression-cwebp](./booster-task-compression-cwebp) - 采用 cwebp 对资源进行压缩
 
   ```groovy
-  classpath "com.didiglobal.booster:booster-task-compression-pngquant:$booster_version"
+  classpath "com.didiglobal.booster:booster-task-compression-cwebp:$booster_version"
   ```
 
 - [booster-task-compression-pngquant](./booster-task-compression-pngquant) - 采用 pngquant 对资源进行压缩
