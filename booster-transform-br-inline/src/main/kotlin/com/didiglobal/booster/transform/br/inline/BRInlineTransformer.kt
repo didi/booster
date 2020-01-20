@@ -2,7 +2,6 @@ package com.didiglobal.booster.transform.br.inline
 
 import com.didiglobal.booster.kotlinx.asIterable
 import com.didiglobal.booster.kotlinx.file
-import com.didiglobal.booster.kotlinx.ifNotEmpty
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.ArtifactManager.Companion.ALL_CLASSES
 import com.didiglobal.booster.transform.ArtifactManager.Companion.DATA_BINDING_DEPENDENCY_ARTIFACTS
@@ -30,29 +29,20 @@ class BRInlineTransformer : ClassTransformer {
 
     private lateinit var symbols: SymbolList
     private lateinit var logger: PrintWriter
-    private lateinit var validClasses: MutableList<String>
-    private var disabled = false
+    private lateinit var validClasses: List<String>
 
     override fun onPreTransform(context: TransformContext) {
-        val appBR = "${context.originalApplicationId.replace('.', '/')}/BR.class"
         logger = context.reportsDir.file(Build.ARTIFACT).file(context.name).file("report.txt").touch().printWriter()
-        if (!context.isDataBindingEnabled) {
-            markAsFailed("Inline BR symbols failed: dataBinding is disabled")
-            return
-        }
         validClasses = context.findValidClasses()
-        if (validClasses.isEmpty()) {
-            markAsFailed("Inline BR symbols failed: not found valid packages")
-            return
-        }
-        validClasses.add(appBR)
         val allBR = context.findAllBR()
-        if (allBR.isEmpty()) {
-            markAsFailed("Inline BR symbols failed: BR.class doesn't exist or blank")
+        symbols = SymbolList.from(allBR.find { it.second == context.appBR }?.first)
+        if (symbols.isEmpty()) {
+            "Inline BR symbols failed: BR.class doesn't exist or blank".apply {
+                logger_.error(this)
+                logger.println(this)
+            }
             return
         }
-        symbols = SymbolList.from(allBR.filter { it.second == appBR }.map { it.first }.single())
-
         // Remove all BR class files
         allBR.also { pairs ->
             val totalSize = allBR.map { it.first.length() }.sum()
@@ -73,7 +63,7 @@ class BRInlineTransformer : ClassTransformer {
     }
 
     override fun transform(context: TransformContext, klass: ClassNode): ClassNode {
-        if (disabled || symbols.isEmpty()) {
+        if (symbols.isEmpty()) {
             return klass
         }
         klass.replaceSymbolReferenceWithConstant()
@@ -84,20 +74,19 @@ class BRInlineTransformer : ClassTransformer {
         this.logger.close()
     }
 
-    private fun markAsFailed(info: String) {
-        disabled = true
-        info.apply {
-            logger_.error(this)
-            logger.println(this)
-        }
-    }
+    private val TransformContext.appBR
+        get() = "${originalApplicationId.replace('.', '/')}/BR.class"
 
-    private fun TransformContext.findValidClasses(): MutableList<String> {
-        return artifacts.get(DATA_BINDING_DEPENDENCY_ARTIFACTS)
-                .filter { it.name.endsWith(BR_FILE_EXT) }
-                .map { "${it.name.substringBefore("-").replace('.', '/')}/BR.class" }
-                .distinct()
-                .toMutableList()
+    private fun TransformContext.findValidClasses(): List<String> {
+        return if (isDataBindingEnabled) {
+            artifacts.get(DATA_BINDING_DEPENDENCY_ARTIFACTS)
+                    .filter { it.name.endsWith(BR_FILE_EXT) }
+                    .map { "${it.name.substringBefore("-").replace('.', '/')}/BR.class" }
+                    .distinct()
+                    .plus(appBR)
+        } else {
+            emptyList()
+        }
     }
 
     private fun TransformContext.findAllBR(): List<Pair<File, String>> {
