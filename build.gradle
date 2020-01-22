@@ -110,11 +110,13 @@ allprojects { project ->
                         if (0 == exitValue()) {
                             def developers = xml.asNode().appendNode('developers')
                             text.eachLine { line ->
-                                def author = line.split('\\s+')
-                                if (author.length > 1) {
+                                def sp = line.lastIndexOf(' ')
+                                if (sp > 0) {
+                                    def id = line.substring(0, sp).trim()
+                                    def email = line.substring(sp + 1).trim()
                                     developers.appendNode('developer').with {
-                                        appendNode('id', author[0])
-                                        appendNode('email', author[1])
+                                        appendNode('id', id)
+                                        appendNode('email', email)
                                     }
                                 }
                             }
