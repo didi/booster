@@ -120,6 +120,8 @@ Here are all the modules of Booster:
   ```groovy
   classpath "com.didiglobal.booster:booster-task-compression-pngquant:$booster_version"
   ```
+  
+  > [booster-pngquant-provider](https://github.com/johnsonlee/booster-pngquant-provider) could be used for image compressing by *pngquant* without installation
 
 - [booster-task-compression-processed-res](./booster-task-compression-processed-res) - ap_ 文件压缩
 
@@ -222,7 +224,7 @@ Welcome to contribute by creating issues or sending pull requests. See [Contribu
 
 Welcome to join the community on [spectrum](https://spectrum.chat/booster).
 
-![Booster交流群](https://user-images.githubusercontent.com/2344882/72573685-78a43780-3901-11ea-826a-5abb021f1242.png)
+![Booster交流群](https://user-images.githubusercontent.com/2344882/73631511-26e70580-4694-11ea-86cc-d0f65d08f5dd.png)
 
 ## License
 
