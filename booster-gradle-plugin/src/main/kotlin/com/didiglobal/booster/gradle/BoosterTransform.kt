@@ -49,19 +49,21 @@ abstract class BoosterTransform(val project: Project) : Transform() {
     final override fun transform(invocation: TransformInvocation) {
         BoosterTransformInvocation(invocation, this).apply {
             if (isIncremental) {
-                onPreTransform(this)
+                onPreTransform()
                 doIncrementalTransform()
             } else {
                 buildDir.file(AndroidProject.FD_INTERMEDIATES, "transforms", "dexBuilder").deleteRecursively()
                 outputProvider?.deleteAll()
-                onPreTransform(this)
+                onPreTransform()
                 doFullTransform()
             }
 
-            this.onPostTransform(this)
-        }.executor.apply {
-            shutdown()
-            awaitTermination(1, TimeUnit.MINUTES)
+            executor.apply {
+                shutdown()
+                awaitTermination(1, TimeUnit.MINUTES)
+            }
+
+            onPostTransform()
         }
     }
 
