@@ -12,11 +12,7 @@ import java.net.URLStreamHandler
  *
  * @author johnsonlee
  */
-internal class NoneCommand(name: String) : Command(name, URL("cmd", "localhost", 9102, "/${name}", HANDLER), File(System.getProperty("java.io.tmpdir"), name)) {
-
-    override fun install(location: File) = false
-
-}
+internal class NoneCommand(name: String) : Command(name, URL("cmd", "localhost", 9102, "/${name}", HANDLER))
 
 private val HANDLER = object : URLStreamHandler() {
 

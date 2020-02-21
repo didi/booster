@@ -1,5 +1,7 @@
 apply from: '../gradle/booster.gradle'
 
 dependencies {
+    api gradleApi()
     api project(":booster-kotlinx")
+    api "commons-io:commons-io:2.6"
 }

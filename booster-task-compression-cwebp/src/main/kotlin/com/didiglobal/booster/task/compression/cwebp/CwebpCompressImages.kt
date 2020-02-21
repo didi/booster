@@ -1,13 +1,11 @@
 package com.didiglobal.booster.task.compression.cwebp
 
-import com.didiglobal.booster.compression.CompressionOptions
 import com.didiglobal.booster.compression.CompressionResult
 import com.didiglobal.booster.compression.task.ActionData
-import com.didiglobal.booster.compression.task.CompressImages
-import com.didiglobal.booster.gradle.getProperty
 import com.didiglobal.booster.kotlinx.CSI_RED
 import com.didiglobal.booster.kotlinx.CSI_RESET
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.CacheableTask
+import org.gradle.api.tasks.OutputFiles
 import java.io.File
 
 /**
@@ -15,12 +13,18 @@ import java.io.File
  *
  * @author johnsonlee
  */
-internal open class CwebpCompressImages : CompressImages<CompressionOptions>() {
+@CacheableTask
+internal open class CwebpCompressImages : AbstractCwebpCompressImages() {
 
-    protected open fun compress(filter: (File) -> Boolean) {
+    @get:OutputFiles
+    private val compressedImages: Collection<File>
+        get() = images
+
+    override fun compress(filter: (File) -> Boolean) {
+        val cwebp = compressor.canonicalPath
         supplier().parallelStream().filter(filter).map { input ->
             val output = File(input.absolutePath.substringBeforeLast('.') + ".webp")
-            ActionData(input, output, listOf(tool.command.executable.canonicalPath, "-mt", "-quiet", "-q", options.quality.toString(), "-o", output.absolutePath, input.absolutePath))
+            ActionData(input, output, listOf(cwebp, "-mt", "-quiet", "-q", options.quality.toString(), "-o", output.absolutePath, input.absolutePath))
         }.forEach {
             val s0 = it.input.length()
             val rc = project.exec { spec ->
@@ -45,12 +49,6 @@ internal open class CwebpCompressImages : CompressImages<CompressionOptions>() {
                 }
             }
         }
-    }
-
-    @TaskAction
-    fun run() {
-        this.options = CompressionOptions(project.getProperty(PROPERTY_OPTION_QUALITY, 80))
-        compress(File::hasNotAlpha)
     }
 
 }

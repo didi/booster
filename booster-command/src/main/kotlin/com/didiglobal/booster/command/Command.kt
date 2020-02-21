@@ -1,9 +1,6 @@
 package com.didiglobal.booster.command
 
-import com.didiglobal.booster.kotlinx.CSI_RED
-import com.didiglobal.booster.kotlinx.CSI_RESET
-import com.didiglobal.booster.kotlinx.touch
-import java.io.File
+import java.io.Serializable
 import java.net.URL
 
 /**
@@ -11,52 +8,18 @@ import java.net.URL
  *
  * @author johnsonlee
  */
-open class Command {
+open class Command(val name: String, val location: URL) : Serializable {
 
-    val name: String
-
-    val location: URL
-
-    private lateinit var exe: File
-
-    private var installed: Boolean = false
-
-    constructor(name: String, location: URL) {
-        this.name = name
-        this.location = location
+    override fun equals(other: Any?) = when {
+        this === other -> true
+        other is Command -> name == other.name && location == other.location
+        else -> false
     }
 
-    internal constructor(name: String, location: URL, exe: File) : this(name, location) {
-        this.exe = exe
-        this.installed = exe.exists()
+    override fun hashCode(): Int {
+        return arrayOf(name, location).contentHashCode()
     }
 
-    val executable: File
-        get() = exe
-
-    open fun install(location: File): Boolean {
-        if (installed) return true
-
-        if (!location.exists() || location.length() <= 0) {
-            try {
-                this.location.openStream().buffered().use { input ->
-                    location.touch().outputStream().buffered().use { output ->
-                        if (input.copyTo(output) <= 0) {
-                            println("${CSI_RED}No data available at ${this.location}${CSI_RESET}")
-                            return false
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                return false
-            }
-        }
-
-        this.exe = location
-        this.installed = true
-        return true
-    }
-
-    override fun toString() = "$name => ${if (installed) exe else location}"
+    override fun toString() = "$name:$location"
 
 }

@@ -15,6 +15,8 @@ import com.didiglobal.booster.gradle.scope
 import com.didiglobal.booster.kotlinx.CSI_RED
 import com.didiglobal.booster.kotlinx.CSI_RESET
 import com.didiglobal.booster.kotlinx.file
+import org.gradle.api.tasks.CacheableTask
+import org.gradle.api.tasks.OutputDirectory
 import java.io.File
 
 /**
@@ -22,13 +24,22 @@ import java.io.File
  *
  * @author johnsonlee
  */
-internal open class PngquantCompressFlatImages : PngquantCompressImages() {
+@CacheableTask
+internal open class PngquantCompressFlatImages : AbstractPngquantCompressImages() {
+
+    private val intermediates: File
+        get() = variant.project.buildDir.file(FD_INTERMEDIATES)
+
+    @get:OutputDirectory
+    private val compressedRes: File
+        get() = intermediates.file("compressed_${FD_RES}_pngquant", variant.dirName, this.name)
+
+    @get:OutputDirectory
+    private val compiledRes: File
+        get() = intermediates.file("compiled_${FD_RES}_pngquant", variant.dirName, this.name)
 
     override fun compress() {
-        val intermediates = variant.project.buildDir.file(FD_INTERMEDIATES)
-        val compiledRes = intermediates.file("compiled_${FD_RES}_pngquant", variant.dirName, this.name)
-        val compressedRes = intermediates.file("compressed_${FD_RES}_pngquant", variant.dirName, this.name)
-        val pngquant = tool.command.executable.canonicalPath
+        val pngquant = this.compressor.canonicalPath
         val aapt2 = variant.scope.buildTools.getPath(BuildToolInfo.PathId.AAPT2)
 
         compiledRes.mkdirs()

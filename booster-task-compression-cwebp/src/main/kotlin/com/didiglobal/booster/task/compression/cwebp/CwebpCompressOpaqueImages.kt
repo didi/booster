@@ -1,5 +1,6 @@
 package com.didiglobal.booster.task.compression.cwebp
 
+import org.gradle.api.tasks.CacheableTask
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.IIOException
@@ -10,6 +11,7 @@ import javax.imageio.ImageIO
  *
  * @author johnsonlee
  */
+@CacheableTask
 internal open class CwebpCompressOpaqueImages : CwebpCompressImages() {
 
     override fun compress(filter: (File) -> Boolean) = super.compress { true }
