@@ -36,11 +36,6 @@ interface TransformContext {
     val reportsDir: File
 
     /**
-     * The executor service
-     */
-    val executor: ExecutorService
-
-    /**
      * The boot classpath
      */
     val bootClasspath: Collection<File>

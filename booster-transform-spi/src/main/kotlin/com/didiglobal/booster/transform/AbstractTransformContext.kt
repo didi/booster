@@ -1,8 +1,6 @@
 package com.didiglobal.booster.transform
 
 import java.io.File
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 abstract class AbstractTransformContext(
         final override val applicationId: String,
@@ -25,8 +23,6 @@ abstract class AbstractTransformContext(
 
     override val temporaryDir: File
         get() = File(buildDir, "temp")
-
-    override val executor: ExecutorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
 
     override val artifacts = object : ArtifactManager {}
 

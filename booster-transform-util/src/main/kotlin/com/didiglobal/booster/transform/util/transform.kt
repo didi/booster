@@ -57,7 +57,7 @@ fun InputStream.transform(transformer: (ByteArray) -> ByteArray): ByteArray {
 }
 
 fun ZipFile.transform(output: File, entryFactory: (ZipEntry) -> ZipArchiveEntry = ::ZipArchiveEntry, transformer: (ByteArray) -> ByteArray = { it -> it }) {
-    val creator = ParallelScatterZipCreator(ThreadPoolExecutor(NCPU, NCPU, 0L, TimeUnit.MILLISECONDS, LinkedBlockingQueue<Runnable>(), Executors.defaultThreadFactory(), RejectedExecutionHandler { runnable, executor ->
+    val creator = ParallelScatterZipCreator(ThreadPoolExecutor(NCPU, NCPU, 0L, TimeUnit.MILLISECONDS, LinkedBlockingQueue<Runnable>(), Executors.defaultThreadFactory(), RejectedExecutionHandler { runnable, _ ->
         runnable.run()
     }))
     val entries = mutableSetOf<String>()
