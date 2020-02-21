@@ -30,12 +30,9 @@ import javax.xml.parsers.SAXParserFactory
 @CacheableTask
 internal open class CwebpCompressFlatImages : AbstractCwebpCompressImages() {
 
-    private val intermediates: File
-        get() = variant.project.buildDir.file(FD_INTERMEDIATES)
-
     @get:OutputDirectory
     private val compressedRes: File
-        get() = intermediates.file("compressed_${FD_RES}_cwebp", variant.dirName, this.name)
+        get() = variant.project.buildDir.file(FD_INTERMEDIATES).file("compressed_${FD_RES}_cwebp", variant.dirName, this.name)
 
     override fun compress(filter: (File) -> Boolean) {
         val cwebp = this.compressor.canonicalPath

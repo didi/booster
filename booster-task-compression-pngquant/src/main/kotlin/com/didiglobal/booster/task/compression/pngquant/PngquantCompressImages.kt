@@ -3,13 +3,10 @@ package com.didiglobal.booster.task.compression.pngquant
 import com.android.SdkConstants.DOT_PNG
 import com.didiglobal.booster.compression.CompressionResult
 import com.didiglobal.booster.compression.task.ActionData
-import com.didiglobal.booster.compression.task.CompressImages
-import com.didiglobal.booster.gradle.getProperty
 import com.didiglobal.booster.kotlinx.CSI_RED
 import com.didiglobal.booster.kotlinx.CSI_RESET
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.OutputFiles
-import org.gradle.api.tasks.TaskAction
 import java.io.File
 
 /**

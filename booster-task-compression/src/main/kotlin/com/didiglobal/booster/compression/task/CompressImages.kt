@@ -10,6 +10,8 @@ import com.didiglobal.booster.compression.CompressionTool
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import java.io.File
 
 /**
@@ -43,6 +45,7 @@ abstract class CompressImages<T : CompressionOptions> : DefaultTask() {
         get() = variant.name
 
     @get:InputFiles
+    @get:PathSensitive(PathSensitivity.RELATIVE)
     val images: Collection<File>
         get() = supplier()
 
