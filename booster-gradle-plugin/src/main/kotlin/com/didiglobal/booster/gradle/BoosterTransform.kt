@@ -41,6 +41,8 @@ abstract class BoosterTransform(val project: Project) : Transform() {
 
     override fun isIncremental() = true
 
+    override fun isCacheable() = true
+
     override fun getInputTypes(): MutableSet<QualifiedContent.ContentType> = TransformManager.CONTENT_CLASS
 
     override fun getScopes(): MutableSet<in QualifiedContent.Scope> = mutableSetOf()
