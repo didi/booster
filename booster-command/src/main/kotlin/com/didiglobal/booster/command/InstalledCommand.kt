@@ -7,8 +7,4 @@ import java.io.File
  *
  * @author johnsonlee
  */
-internal class InstalledCommand(name: String, exe: File) : Command(name, exe.toURI().toURL(), exe) {
-
-    override fun install(location: File) = true
-
-}
+internal class InstalledCommand(name: String, exe: File) : Command(name, exe.toURI().toURL())

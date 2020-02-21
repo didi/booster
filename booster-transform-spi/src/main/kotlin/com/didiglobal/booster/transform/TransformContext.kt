@@ -1,7 +1,6 @@
 package com.didiglobal.booster.transform
 
 import java.io.File
-import java.util.concurrent.ExecutorService
 
 /**
  * Represent the transform context
@@ -34,11 +33,6 @@ interface TransformContext {
      * The reports directory
      */
     val reportsDir: File
-
-    /**
-     * The executor service
-     */
-    val executor: ExecutorService
 
     /**
      * The boot classpath

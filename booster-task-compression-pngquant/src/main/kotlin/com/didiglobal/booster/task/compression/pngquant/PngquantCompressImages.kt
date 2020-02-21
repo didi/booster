@@ -3,31 +3,29 @@ package com.didiglobal.booster.task.compression.pngquant
 import com.android.SdkConstants.DOT_PNG
 import com.didiglobal.booster.compression.CompressionResult
 import com.didiglobal.booster.compression.task.ActionData
-import com.didiglobal.booster.compression.task.CompressImages
-import com.didiglobal.booster.gradle.getProperty
 import com.didiglobal.booster.kotlinx.CSI_RED
 import com.didiglobal.booster.kotlinx.CSI_RESET
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.CacheableTask
+import org.gradle.api.tasks.OutputFiles
+import java.io.File
 
 /**
  * Represents a task for image compression using pngquant
  *
  * @author johnsonlee
  */
-internal open class PngquantCompressImages : CompressImages<PngquantOptions>() {
+@CacheableTask
+internal open class PngquantCompressImages : AbstractPngquantCompressImages() {
 
-    @TaskAction
-    fun run() {
-        this.options = PngquantOptions(
-                project.getProperty(PROPERTY_OPTION_QUALITY, 80),
-                project.getProperty(PROPERTY_OPTION_SPEED, 3)
-        )
-        compress()
-    }
+    @get:OutputFiles
+    private val compressedImages: Collection<File>
+        get() = images
 
-    protected open fun compress() {
+    override fun compress() {
+        val pngquant = this.compressor.canonicalPath
+
         supplier().map {
-            ActionData(it, it, listOf(tool.command.executable.canonicalPath, "--strip", "--skip-if-larger", "-f", "--ext", DOT_PNG, "-s", "${options.speed}", "-Q", "${options.quality}-100", it.absolutePath))
+            ActionData(it, it, listOf(pngquant, "--strip", "--skip-if-larger", "-f", "--ext", DOT_PNG, "-s", "${options.speed}", "-Q", "${options.quality}-100", it.absolutePath))
         }.parallelStream().forEach {
             val s0 = it.input.length()
             val rc = project.exec { spec ->

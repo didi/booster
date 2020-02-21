@@ -22,20 +22,21 @@ import com.didiglobal.booster.kotlinx.NCPU
 import com.didiglobal.booster.transform.AbstractKlassPool
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.TransformContext
-import com.didiglobal.booster.transform.TransformListener
 import com.didiglobal.booster.transform.util.transform
 import com.didiglobal.booster.util.search
 import java.io.File
 import java.net.URI
-import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.Future
 
 /**
  * Represents a delegate of TransformInvocation
  *
  * @author johnsonlee
  */
-internal class BoosterTransformInvocation(private val delegate: TransformInvocation, internal val transform: BoosterTransform, override val executor: ExecutorService = Executors.newWorkStealingPool(NCPU)) : TransformInvocation, TransformContext, ArtifactManager {
+internal class BoosterTransformInvocation(private val delegate: TransformInvocation, internal val transform: BoosterTransform) : TransformInvocation, TransformContext, ArtifactManager {
+
+    private val executor = Executors.newWorkStealingPool(NCPU)
 
     override val name: String = delegate.context.variantName
 
@@ -98,19 +99,38 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
         else -> TODO("Unexpected type: $type")
     }
 
-    internal fun onPreTransform() = transform.transformers.forEach {
-        it.onPreTransform(this)
+    internal fun doFullTransform() = doTransform(this::transformFully)
+
+    internal fun doIncrementalTransform() = doTransform(this::transformIncrementally)
+
+    private val tasks = mutableListOf<Future<*>>()
+
+    private fun onPreTransform() {
+        transform.transformers.forEach {
+            it.onPreTransform(this)
+        }
     }
 
-    internal fun onPostTransform() = transform.transformers.forEach {
-        it.onPostTransform(this)
+    private fun onPostTransform() {
+        tasks.forEach {
+            it.get()
+        }
+        transform.transformers.forEach {
+            it.onPostTransform(this)
+        }
     }
 
-    internal fun doFullTransform() {
+    private fun doTransform(block: () -> Unit) {
+        this.onPreTransform()
+        block()
+        this.onPostTransform()
+    }
+
+    private fun transformFully() {
         this.inputs.map {
             it.jarInputs + it.directoryInputs
         }.flatten().forEach { input ->
-            executor.execute {
+            tasks += executor.submit {
                 val format = if (input is DirectoryInput) Format.DIRECTORY else Format.JAR
                 outputProvider?.let { provider ->
                     project.logger.info("Transforming ${input.file}")
@@ -120,23 +140,23 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
         }
     }
 
-    @Suppress("NON_EXHAUSTIVE_WHEN")
-    internal fun doIncrementalTransform() {
+    private fun transformIncrementally() {
         this.inputs.parallelStream().forEach { input ->
             input.jarInputs.parallelStream().filter { it.status != NOTCHANGED }.forEach { jarInput ->
-                executor.execute {
+                tasks += executor.submit {
                     doIncrementalTransform(jarInput)
                 }
             }
             input.directoryInputs.parallelStream().filter { it.changedFiles.isNotEmpty() }.forEach { dirInput ->
                 val base = dirInput.file.toURI()
-                executor.execute {
+                tasks += executor.submit {
                     doIncrementalTransform(dirInput, base)
                 }
             }
         }
     }
 
+    @Suppress("NON_EXHAUSTIVE_WHEN")
     private fun doIncrementalTransform(jarInput: JarInput) {
         when (jarInput.status) {
             REMOVED -> jarInput.file.delete()
@@ -149,6 +169,7 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
         }
     }
 
+    @Suppress("NON_EXHAUSTIVE_WHEN")
     private fun doIncrementalTransform(dirInput: DirectoryInput, base: URI) {
         dirInput.changedFiles.forEach { (file, status) ->
             when (status) {

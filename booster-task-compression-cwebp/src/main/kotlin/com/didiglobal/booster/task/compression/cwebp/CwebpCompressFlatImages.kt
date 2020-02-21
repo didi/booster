@@ -16,6 +16,8 @@ import com.didiglobal.booster.kotlinx.CSI_RED
 import com.didiglobal.booster.kotlinx.CSI_RESET
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.util.search
+import org.gradle.api.tasks.CacheableTask
+import org.gradle.api.tasks.OutputDirectory
 import java.io.File
 import java.util.stream.Collectors
 import javax.xml.parsers.SAXParserFactory
@@ -25,12 +27,15 @@ import javax.xml.parsers.SAXParserFactory
  *
  * @author johnsonlee
  */
-internal open class CwebpCompressFlatImages : CwebpCompressImages() {
+@CacheableTask
+internal open class CwebpCompressFlatImages : AbstractCwebpCompressImages() {
+
+    @get:OutputDirectory
+    private val compressedRes: File
+        get() = variant.project.buildDir.file(FD_INTERMEDIATES).file("compressed_${FD_RES}_cwebp", variant.dirName, this.name)
 
     override fun compress(filter: (File) -> Boolean) {
-        val intermediates = variant.project.buildDir.file(FD_INTERMEDIATES)
-        val compressedRes = intermediates.file("compressed_${FD_RES}_cwebp", variant.dirName, this.name)
-        val cwebp = tool.command.executable.canonicalPath
+        val cwebp = this.compressor.canonicalPath
         val aapt2 = variant.scope.buildTools.getPath(BuildToolInfo.PathId.AAPT2)
         val parser = SAXParserFactory.newInstance().newSAXParser()
         val icons = variant.scope.mergedManifests.search {
