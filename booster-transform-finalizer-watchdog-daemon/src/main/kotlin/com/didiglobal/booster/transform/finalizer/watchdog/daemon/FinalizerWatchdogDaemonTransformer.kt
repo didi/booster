@@ -9,6 +9,7 @@ import com.didiglobal.booster.transform.asm.className
 import com.didiglobal.booster.transform.asm.findAll
 import com.didiglobal.booster.util.ComponentHandler
 import com.google.auto.service.AutoService
+import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Opcodes.ACC_PROTECTED
 import org.objectweb.asm.Opcodes.ALOAD
 import org.objectweb.asm.Opcodes.ATHROW
@@ -55,8 +56,8 @@ class FinalizerWatchdogDaemonTransformer : ClassTransformer {
         }
 
         val method = klass.methods?.find {
-            "${it.name}${it.desc}" == "attachBaseContext(Landroid/content/Context;)V"
-        } ?: klass.defaultAttachBaseContext
+            "${it.name}${it.desc}" == "onCreate()V"
+        } ?: klass.defaultOnCreate
 
         method.instructions?.findAll(RETURN, ATHROW)?.forEach {
                 method.instructions?.insertBefore(it, MethodInsnNode(INVOKESTATIC, FINALIZER_WATCHDOG_DAEMON_KILLER, "kill", "()V", false))
@@ -67,16 +68,14 @@ class FinalizerWatchdogDaemonTransformer : ClassTransformer {
     }
 }
 
-private val ClassNode.defaultAttachBaseContext
-    get() = MethodNode(ACC_PROTECTED, "attachBaseContext", "(Landroid/content/Context;)V", null, null).apply {
-        instructions.insert(InsnList().apply {
+private val ClassNode.defaultOnCreate: MethodNode
+    get() = MethodNode(Opcodes.ACC_PUBLIC, "onCreate", "()V", null, null).apply {
+        maxStack = 1
+        instructions.add(InsnList().apply {
             add(VarInsnNode(ALOAD, 0))
-            add(VarInsnNode(ALOAD, 1))
             add(MethodInsnNode(INVOKESPECIAL, superName, name, desc, false))
             add(InsnNode(RETURN))
         })
-        maxStack = 1
-        methods?.add(this)
     }
 
 private const val FINALIZER_WATCHDOG_DAEMON_KILLER = "com/didiglobal/booster/instrument/FinalizerWatchdogDaemonKiller"
