@@ -12,7 +12,7 @@ public class ShadowSharedPreferences {
         if (TextUtils.isEmpty(name)) {
             name = "null";
         }
-        return BoosterSharedPreferences.getSharedPreferences(name);
+        return BoosterSharedPreferences.getSharedPreferences(context, name);
     }
 
     public static SharedPreferences getPreferences(final Activity activity, final int mode) {

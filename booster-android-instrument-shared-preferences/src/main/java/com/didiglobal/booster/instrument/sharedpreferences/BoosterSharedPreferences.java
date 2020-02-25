@@ -48,17 +48,19 @@ public final class BoosterSharedPreferences implements SharedPreferences {
         SYNC_EXECUTOR.submit(new LoadThread());
     }
 
-    public static SharedPreferences getSharedPreferences(final String name) {
+    public static SharedPreferences getSharedPreferences(final Context context, final String name) {
+        init(context);
         if (!sSharedPreferencesMap.containsKey(name)) {
             sSharedPreferencesMap.put(name, new BoosterSharedPreferences(name));
         }
         return sSharedPreferencesMap.get(name);
     }
 
-    /**
-     * This method is auto-registered when trasnforming.
-     */
-    public static void init(final Context context) {
+    private static void init(final Context context) {
+        if (sContext != null) {
+            return;
+        }
+
         if (context instanceof Application) {
             sContext = context;
         } else {

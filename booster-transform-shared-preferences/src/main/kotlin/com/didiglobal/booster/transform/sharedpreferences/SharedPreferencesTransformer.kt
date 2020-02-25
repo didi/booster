@@ -53,10 +53,6 @@ class SharedPreferencesTransformer : ClassTransformer {
             return klass
         }
 
-        if (this.applications.contains(klass.className)) {
-            initSharedPreferences(context, klass)
-        }
-
         klass.methods.forEach { method ->
             method.instructions.iterator().asIterable().filter {
                 it.opcode == INVOKEVIRTUAL
@@ -79,52 +75,16 @@ class SharedPreferencesTransformer : ClassTransformer {
         }
         return klass
     }
-
-    private fun initSharedPreferences(context: TransformContext, klass: ClassNode) {
-        val attachBaseContext = klass.methods?.find {
-            "${it.name}${it.desc}" == "attachBaseContext(Landroid/content/Context;)V"
-        } ?: klass.defaultAttachBaseContextMethod.also {
-            klass.methods.add(it)
-        }
-
-        attachBaseContext.instructions?.apply {
-            iterator().asIterable().find {
-                it.opcode == Opcodes.INVOKESPECIAL
-                        && context.klassPool.get(APPLICATION).isAssignableFrom((it as MethodInsnNode).owner)
-                        && "${it.name}${it.desc}" == "attachBaseContext(Landroid/content/Context;)V"
-            }?.let {
-                insert(it, InsnList().apply {
-                    add(VarInsnNode(Opcodes.ALOAD, 0))
-                    add(MethodInsnNode(INVOKESTATIC, BOOSTER_SHARED_PREFERENCES, "init", "(L$CONTEXT;)V", false))
-                })
-                logger.println(" + $BOOSTER_SHARED_PREFERENCES.init(L$CONTEXT;)V: ${klass.name}.${(it as MethodInsnNode).name}${it.desc} ")
-            }
-        }
-
-    }
 }
 
 private const val ACTIVITY = "android/app/Activity"
 private const val CONTEXT = "android/content/Context"
-private const val APPLICATION = "android/app/Application"
 private const val SHARED_PREFERENCES = "android/content/SharedPreferences"
 private const val SUPPORT_MULTIDEX_PACKAGE_PREFIX = "android/support/multidex/"
 private const val BOOSTER_DIRECTORY_PREFIX = "com/didiglobal/booster/instrument"
 private const val SHADOW_SHARED_PREFERENCES = "$BOOSTER_DIRECTORY_PREFIX/ShadowSharedPreferences"
-private const val BOOSTER_SHARED_PREFERENCES = "$BOOSTER_DIRECTORY_PREFIX/sharedpreferences/BoosterSharedPreferences"
 
 private val CONTEXT_GET_SHARED_PREFERENCES = MethodInsnNode(INVOKEVIRTUAL, CONTEXT, "getSharedPreferences", "(Ljava/lang/String;I)L$SHARED_PREFERENCES;")
 private val SHADOW_CONTEXT_GET_SHARED_PREFERENCES = MethodInsnNode(INVOKESTATIC, SHADOW_SHARED_PREFERENCES, "getSharedPreferences", "(L$CONTEXT;Ljava/lang/String;I)L$SHARED_PREFERENCES;")
 private val ACTIVITY_GET_PREFERENCES = MethodInsnNode(INVOKEVIRTUAL, ACTIVITY, "getPreferences", "(I)L$SHARED_PREFERENCES;")
 private val SHADOW_ACTIVITY_GET_PREFERENCES = MethodInsnNode(INVOKESTATIC, SHADOW_SHARED_PREFERENCES, "getPreferences", "(L$ACTIVITY;I)L$SHARED_PREFERENCES;")
-
-private val ClassNode.defaultAttachBaseContextMethod: MethodNode
-    get() = MethodNode(Opcodes.ACC_PROTECTED, "attachBaseContext", "(Landroid/content/Context;)V", null, null).apply {
-        maxStack = 1
-        instructions.add(InsnList().apply {
-            add(VarInsnNode(Opcodes.ALOAD, 0))
-            add(VarInsnNode(Opcodes.ALOAD, 1))
-            add(MethodInsnNode(Opcodes.INVOKESPECIAL, superName, name, desc, false))
-            add(InsnNode(RETURN))
-        })
-    }
