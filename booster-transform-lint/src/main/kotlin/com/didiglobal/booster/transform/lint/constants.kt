@@ -278,3 +278,19 @@ internal val LINT_APIS = setOf(
         "android/graphics/BitmapFactory.decodeStream(Ljava/io/InputStream;Landroid/graphics/Rect;Landroid/graphics/BitmapFactory\$Options;)Landroid/graphics/Bitmap;"
         // </editor-fold>
 ).map(Node.Companion::valueOf).toSet()
+
+internal val CLASSES_RUN_ON_MAIN_THREAD = setOf(
+        "android/view/View",
+        "android/view/ViewParent",
+        "android/view/ViewManager",
+        "android/content/DialogInterface",
+        "androidx/fragment/app/Fragment",
+        "android/support/v4/app/Fragment"
+)
+
+internal val MAIN_THREAD_ANNOTATIONS = arrayOf(
+        "Landroidx/annotation/MainThread;",
+        "Landroidx/annotation/UiThread;",
+        "Landroid/support/annotation/MainThread;",
+        "Landroid/support/annotation/UiThread;"
+)

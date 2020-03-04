@@ -8,6 +8,8 @@ import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
+import com.didiglobal.booster.transform.asm.getValue
+import com.didiglobal.booster.transform.asm.isInvisibleAnnotationPresent
 import com.didiglobal.booster.transform.lint.dot.GraphType
 import com.didiglobal.booster.transform.lint.graph.CallGraph
 import com.didiglobal.booster.transform.lint.graph.CallGraph.Node
@@ -40,12 +42,12 @@ class LintTransformer : ClassTransformer {
      */
     private lateinit var globalBuilder: CallGraph.Builder
 
-    private lateinit var ignores: Set<Wildcard>
+    private val ignores: MutableSet<Wildcard> = mutableSetOf(*DEFAULT_PROPERTY_IGNORES_DEFAULT)
 
     override fun onPreTransform(context: TransformContext) {
         this.graphBuilders.clear()
         this.globalBuilder = CallGraph.Builder()
-        this.ignores = context.getProperty(PROPERTY_IGNORES)?.split(',')?.map(Wildcard.Companion::valueOf)?.toSet() ?: DEFAULT_PROPERTY_IGNORES_DEFAULT
+        this.ignores += context.getProperty(PROPERTY_IGNORES)?.split(',')?.map(Wildcard.Companion::valueOf) ?: emptySet()
 
         val parser = SAXParserFactory.newInstance().newSAXParser()
         context.artifacts.get(ArtifactManager.MERGED_MANIFESTS).forEach { manifest ->
@@ -59,7 +61,7 @@ class LintTransformer : ClassTransformer {
                     Pair(handler.services, SERVICE_ENTRY_POINTS),
                     Pair(handler.receivers, RECEIVER_ENTRY_POINTS),
                     Pair(handler.providers, PROVIDER_ENTRY_POINTS)
-            ).forEach { components, entryPoints ->
+            ).forEach { (components, entryPoints) ->
                 components.forEach { component ->
                     entryPoints.map {
                         CallGraph.Node(component.replace('.', '/'), it.name, it.desc)
@@ -72,32 +74,35 @@ class LintTransformer : ClassTransformer {
     }
 
     override fun transform(context: TransformContext, klass: ClassNode): ClassNode {
-        if (klass.isExcluded) {
+        if (klass.isExcluded()) {
             return klass
         }
 
-        klass.methods.forEach mloop@{ method ->
-            val signature = "${klass.name}.${method.name}${method.desc}"
+        val klassDefinitelyRunOnMainThread = klass.isDefinitelyRunOnMainThread(context)
+
+        klass.methods.filter { method ->
+            this.ignores.none {
+                it.matches("${klass.name}.${method.name}${method.desc}")
+            }
+        }.forEach { method ->
             when {
-                this.ignores.any { it.matches(signature) } -> return@mloop
-                // any method signature is sensitive
-                method.isSensitive -> {
-                    globalBuilder.addEdge(CallGraph.ROOT, Node(klass.name, method.name, method.desc))
+                klassDefinitelyRunOnMainThread || method.isDefinitelyRunOnMainThread() -> {
+                    buildCallGraph(klass, method)
                 }
-                // finalizer is not reliable in Android
-                method.name == "finalize" && method.desc == "()V" && method.instructions.size() > 1 && !klass.name.startsWith("com/didiglobal/booster/instrument/") -> {
-                    graphBuilders.getOrPut(klass.name) {
-                        CallGraph.Builder().setTitle(klass.name.replace('/', '.'))
-                    }.addEdge(CallGraph.ROOT, Node(klass.name, method.name, method.desc))
+                method.isFinalizer() -> {
+                    buildCallGraph(klass, method)
+                }
+                method.isMostLikelyRunOnMainThread() -> {
+                    globalBuilder.addEdge(CallGraph.ROOT, Node(klass.name, method.name, method.desc))
                 }
             }
 
             // construct call graph by scanning INVOKE* instructions
-            method.instructions.iterator().asIterable().filterIsInstance(MethodInsnNode::class.java).forEach iloop@{ invoke ->
-                if (this.ignores.any { it.matches("${invoke.owner}.${invoke.name}${invoke.desc}") }) {
-                    return@iloop
+            method.instructions.iterator().asIterable().filterIsInstance(MethodInsnNode::class.java).filter { invoke ->
+                this.ignores.none {
+                    it.matches("${invoke.owner}.${invoke.name}${invoke.desc}")
                 }
-
+            }.forEach { invoke ->
                 val to = Node(invoke.owner, invoke.name, invoke.desc)
                 val from = Node(klass.name, method.name, method.desc)
 
@@ -111,10 +116,16 @@ class LintTransformer : ClassTransformer {
         return klass
     }
 
+    private fun buildCallGraph(klass: ClassNode, method: MethodNode) {
+        graphBuilders.getOrPut(klass.name) {
+            CallGraph.Builder().setTitle(klass.name.replace('/', '.'))
+        }.addEdge(CallGraph.ROOT, Node(klass.name, method.name, method.desc))
+    }
+
     override fun onPostTransform(context: TransformContext) {
         val graph = globalBuilder.build()
         val lints = if (context.hasProperty(PROPERTY_APIS)) {
-            val uri = URI(context.getProperty(PROPERTY_APIS))
+            val uri = URI(context.getProperty(PROPERTY_APIS)!!)
             val url = if (uri.isAbsolute) uri.toURL() else File(uri).toURI().toURL()
 
             url.openStream().bufferedReader().use {
@@ -173,19 +184,36 @@ class LintTransformer : ClassTransformer {
 
 }
 
-private fun isHit(apis: Set<Node>, target: Node, context: TransformContext) = apis.contains(target) || apis.any {
-    target.name == it.name && target.desc == it.desc && context.klassPool.get(it.type).isAssignableFrom(target.type)
+private fun isHit(apis: Set<Node>, target: Node, context: TransformContext): Boolean {
+    return apis.contains(target) || apis.any {
+        target.name == it.name && target.desc == it.desc && context.klassPool[it.type].isAssignableFrom(target.type)
+    }
 }
 
-private val ClassNode.isExcluded: Boolean
-    get() = IGNORES.any {
+private fun ClassNode.isExcluded(): Boolean {
+    return this.name.startsWith("com/didiglobal/booster/instrument/") || IGNORES.any {
         this.name.startsWith(it)
     }
+}
 
-private val MethodNode.isSensitive: Boolean
-    get() = SENSITIVES.any {
-        this.desc.contains(it, true)
-    }
+private fun MethodNode.isFinalizer() = name == "finalize" && desc == "()V" && instructions.size() > 1
+
+private fun MethodNode.isMostLikelyRunOnMainThread(): Boolean = SENSITIVES.any {
+    this.desc.contains(it, true)
+}
+
+private fun MethodNode.isSubscribeOnMainThread() = this.visibleAnnotations?.find {
+    it.desc == "Lorg/greenrobot/eventbus/Subscribe;"
+}?.getValue<Array<String>>("threadMode")?.contentEquals(arrayOf("Lorg/greenrobot/eventbus/ThreadMode;", "MAIN")) ?: false
+
+private fun MethodNode.isDefinitelyRunOnMainThread(): Boolean {
+    return isInvisibleAnnotationPresent(*MAIN_THREAD_ANNOTATIONS) || isSubscribeOnMainThread()
+}
+
+private fun ClassNode.isDefinitelyRunOnMainThread(context: TransformContext): Boolean {
+    return isInvisibleAnnotationPresent(*MAIN_THREAD_ANNOTATIONS)
+            || CLASSES_RUN_ON_MAIN_THREAD.any { context.klassPool[it].isAssignableFrom(name) }
+}
 
 private val PROPERTY_PREFIX = Build.ARTIFACT.replace('-', '.')
 
@@ -193,9 +221,9 @@ private val PROPERTY_APIS = "$PROPERTY_PREFIX.apis"
 
 private val PROPERTY_IGNORES = "$PROPERTY_PREFIX.ignores"
 
-private val DEFAULT_PROPERTY_IGNORES_DEFAULT = listOf(
+private val DEFAULT_PROPERTY_IGNORES_DEFAULT = arrayOf(
         "android/*",
         "androidx/*",
-        "com/android/*"
-).map(Wildcard.Companion::valueOf).toSet()
-
+        "com/android/*",
+        "android/util/Log.getStackTraceString*"
+).map(Wildcard.Companion::valueOf).toTypedArray()

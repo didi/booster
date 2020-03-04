@@ -6,13 +6,16 @@ import com.didiglobal.booster.transform.AbstractTransformContext
 import com.didiglobal.booster.transform.Transformer
 import com.didiglobal.booster.util.search
 import java.io.File
+import java.util.UUID
+
+private val TMPDIR = File(System.getProperty("java.io.tmpdir"))
 
 /**
  * Utility class for JAR or class file transforming
  *
  * @author johnsonlee
  */
-class TransformHelper(val input: File, val output: File, val apiLevel: Int, vararg val transformers: Transformer, val applicationId: String = output.name) {
+class TransformHelper(val input: File, vararg val transformers: Transformer, val output: File = TMPDIR, val apiLevel: Int = AndroidSdk.findPlatform(), val applicationId: String = UUID.randomUUID().toString()) {
 
     fun transform() {
         val jars = input.search { it.extension == "jar" }

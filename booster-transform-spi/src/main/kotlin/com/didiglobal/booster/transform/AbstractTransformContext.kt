@@ -5,15 +5,15 @@ import java.io.File
 abstract class AbstractTransformContext(
         final override val applicationId: String,
         final override val bootClasspath: Collection<File>,
-        final override val compileClasspath: Collection<File>,
-        final override val runtimeClasspath: Collection<File>,
+        final override val compileClasspath: Collection<File> = emptyList(),
+        final override val runtimeClasspath: Collection<File> = emptyList(),
         final val bootKlassPool: AbstractKlassPool = object : AbstractKlassPool(bootClasspath) {}
 ) : TransformContext {
 
     override val projectDir = File(System.getProperty("user.dir"))
 
     override val name: String
-        get() = this.projectDir.name
+        get() = applicationId
 
     override val buildDir: File
         get() = File(projectDir, "build")
