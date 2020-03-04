@@ -62,6 +62,7 @@ private val MERGED_RESOURCE_GETTER = when {
 
 private val PROCESSED_RES_GETTER = when {
     GTE_V3_6 -> VariantScopeV36::getProcessedRes
+    GTE_V3_5 -> VariantScopeV35::getProcessedRes
     GTE_V3_3 -> VariantScopeV33::getProcessedRes
     GTE_V3_2 -> VariantScopeV32::getProcessedRes
     else -> VariantScopeV30::getProcessedRes
@@ -69,6 +70,7 @@ private val PROCESSED_RES_GETTER = when {
 
 private val SYMBOL_LIST_GETTER = when {
     GTE_V3_6 -> VariantScopeV36::getSymbolList
+    GTE_V3_5 -> VariantScopeV35::getSymbolList
     GTE_V3_3 -> VariantScopeV33::getSymbolList
     GTE_V3_2 -> VariantScopeV32::getSymbolList
     else -> VariantScopeV30::getSymbolList
