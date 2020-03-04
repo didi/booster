@@ -1,4 +1,4 @@
-package com.didiglobal.booster.android.bugfix;
+package com.didiglobal.booster.instrument;
 
 public class CaughtRunnable implements Runnable {
 

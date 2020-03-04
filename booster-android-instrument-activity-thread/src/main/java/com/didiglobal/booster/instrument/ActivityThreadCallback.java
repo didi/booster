@@ -14,7 +14,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.didiglobal.booster.android.bugfix.Constants.TAG;
+import static com.didiglobal.booster.instrument.Constants.TAG;
+import static com.didiglobal.booster.instrument.Reflection.getFieldValue;
+import static com.didiglobal.booster.instrument.Reflection.getStaticFieldValue;
+import static com.didiglobal.booster.instrument.Reflection.invokeMethod;
+import static com.didiglobal.booster.instrument.Reflection.setFieldValue;
 
 /**
  * Callback used to catch ActivityThread exception caused by system.
@@ -33,22 +37,31 @@ class ActivityThreadCallback implements Handler.Callback {
             "androidx.",
             "dalvik.",
             "com.android.",
-            ActivityThreadCallback.class.getPackage().getName() + "."
+            "com.didiglobal.booster.instrument."
     };
 
     private final Handler mHandler;
 
-    public ActivityThreadCallback(final Handler handler) {
-        this.mHandler = handler;
+    private final Handler.Callback mDelegate;
+
+    public ActivityThreadCallback() {
+        this.mHandler = getHandler(getActivityThread());
+        this.mDelegate = getFieldValue(this.mHandler, "mCallback");
     }
 
     @Override
     public final boolean handleMessage(final Message msg) {
         try {
-            this.mHandler.handleMessage(msg);
+            if (null != mDelegate) {
+                return this.mDelegate.handleMessage(msg);
+            }
+
+            if (null != this.mHandler) {
+                this.mHandler.handleMessage(msg);
+            }
         } catch (final NullPointerException e) {
             if (hasStackTraceElement(e, ASSET_MANAGER_GET_RESOURCE_VALUE, LOADED_APK_GET_ASSETS)) {
-                abort(e);
+                return abort(e);
             }
             rethrowIfNotCausedBySystem(e);
         } catch (final SecurityException
@@ -58,17 +71,17 @@ class ActivityThreadCallback implements Handler.Callback {
             rethrowIfNotCausedBySystem(e);
         } catch (final Resources.NotFoundException e) {
             rethrowIfNotCausedBySystem(e);
-            abort(e);
+            return abort(e);
         } catch (final RuntimeException e) {
             final Throwable cause = e.getCause();
             if (((Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) && isCausedBy(cause, DeadSystemException.class))
                     || (isCausedBy(cause, NullPointerException.class) && hasStackTraceElement(e, LOADED_APK_GET_ASSETS))) {
-                abort(e);
+                return abort(e);
             }
             rethrowIfNotCausedBySystem(e);
         } catch (final Error e) {
             rethrowIfNotCausedBySystem(e);
-            abort(e);
+            return abort(e);
         }
 
         return true;
@@ -147,7 +160,7 @@ class ActivityThreadCallback implements Handler.Callback {
         return isCausedBy(t.getCause(), causes);
     }
 
-    private static void abort(final Throwable t) {
+    private static boolean abort(final Throwable t) {
         final int pid = Process.myPid();
         final String msg = "Process " + pid + " is going to be killed";
 
@@ -159,6 +172,58 @@ class ActivityThreadCallback implements Handler.Callback {
 
         Process.killProcess(pid);
         System.exit(10);
+        return true;
     }
 
+    private static Handler getHandler(final Object thread) {
+        Handler handler;
+
+        if (null == thread) {
+            return null;
+        }
+
+        if (null != (handler = getFieldValue(thread, "mH"))) {
+            return handler;
+        }
+
+        if (null != (handler = invokeMethod(thread, "getHandler"))) {
+            return handler;
+        }
+
+        try {
+            if (null != (handler = getFieldValue(thread, Class.forName("android.app.ActivityThread$H")))) {
+                return handler;
+            }
+        } catch (final ClassNotFoundException e) {
+            Log.w(TAG, "Main thread handler is inaccessible", e);
+        }
+
+        return null;
+    }
+
+    private static Object getActivityThread() {
+        Object thread = null;
+
+        try {
+            thread = android.app.ActivityThread.currentActivityThread();
+        } catch (final Throwable t1) {
+            Log.w(TAG, "ActivityThread.currentActivityThread() is inaccessible", t1);
+            try {
+                thread = getStaticFieldValue(android.app.ActivityThread.class, "sCurrentActivityThread");
+            } catch (final Throwable t2) {
+                Log.w(TAG, "ActivityThread.sCurrentActivityThread is inaccessible", t1);
+            }
+        }
+
+        if (null != thread) {
+            return thread;
+        }
+
+        Log.w(TAG, "ActivityThread instance is inaccessible");
+        return null;
+    }
+
+    boolean hook() {
+        return setFieldValue(this.mHandler, "mCallback", this);
+    }
 }

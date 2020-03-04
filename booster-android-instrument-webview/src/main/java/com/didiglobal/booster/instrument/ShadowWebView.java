@@ -5,9 +5,9 @@ import android.os.MessageQueue;
 import android.os.SystemClock;
 import android.util.Log;
 
-import static com.didiglobal.booster.android.bugfix.Constants.TAG;
-import static com.didiglobal.booster.android.bugfix.Reflection.invokeMethod;
-import static com.didiglobal.booster.android.bugfix.Reflection.invokeStaticMethod;
+import static com.didiglobal.booster.instrument.Constants.TAG;
+import static com.didiglobal.booster.instrument.Reflection.invokeMethod;
+import static com.didiglobal.booster.instrument.Reflection.invokeStaticMethod;
 
 /**
  * @author neighbWang

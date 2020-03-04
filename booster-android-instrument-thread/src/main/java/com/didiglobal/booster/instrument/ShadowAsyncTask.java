@@ -4,7 +4,7 @@ import android.util.Log;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
-import static com.didiglobal.booster.android.bugfix.Constants.TAG;
+import static com.didiglobal.booster.instrument.Constants.TAG;
 
 /**
  * @author neighbWang

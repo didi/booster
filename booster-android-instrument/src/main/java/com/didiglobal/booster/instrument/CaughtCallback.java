@@ -1,4 +1,4 @@
-package com.didiglobal.booster.android.bugfix;
+package com.didiglobal.booster.instrument;
 
 import android.os.Handler;
 import android.os.Message;
