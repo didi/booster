@@ -5,6 +5,7 @@ dependencies {
     api project(':booster-android-gradle-v3_2')
     api project(':booster-android-gradle-v3_3')
     api project(':booster-android-gradle-v3_5')
+    api project(':booster-android-gradle-v3_6')
     api project(':booster-kotlinx')
     compileOnly 'com.android.tools.build:gradle:3.3.0'
     testCompileOnly 'com.android.tools.build:gradle:3.3.0'

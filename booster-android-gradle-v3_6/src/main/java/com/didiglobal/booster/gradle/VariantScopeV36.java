@@ -1,29 +1,31 @@
 package com.didiglobal.booster.gradle;
 
 import com.android.build.api.artifact.ArtifactType;
-import com.android.build.api.artifact.BuildArtifactType;
-import com.android.build.gradle.internal.api.artifact.SourceArtifactType;
 import com.android.build.gradle.internal.scope.AnchorOutputType;
 import com.android.build.gradle.internal.scope.InternalArtifactType;
 import com.android.build.gradle.internal.scope.VariantScope;
 import com.android.sdklib.BuildToolInfo;
+import org.gradle.api.file.FileSystemLocation;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-class VariantScopeV35 {
+import static com.didiglobal.booster.gradle.ArtifactTypesV36Kt.ARTIFACT_TYPES;
+
+class VariantScopeV36 {
 
     /**
      * The merged AndroidManifest.xml
      */
     @NotNull
     static Collection<File> getMergedManifests(@NotNull final VariantScope scope) {
-        return getFinalArtifactFiles(scope, InternalArtifactType.BUNDLE_MANIFEST);
+        return getFinalArtifactFiles(scope, InternalArtifactType.BUNDLE_MANIFEST.INSTANCE);
     }
 
     /**
@@ -31,7 +33,7 @@ class VariantScopeV35 {
      */
     @NotNull
     static Collection<File> getMergedRes(@NotNull final VariantScope scope) {
-        return getFinalArtifactFiles(scope, InternalArtifactType.MERGED_RES);
+        return getFinalArtifactFiles(scope, InternalArtifactType.MERGED_RES.INSTANCE);
     }
 
     /**
@@ -39,7 +41,7 @@ class VariantScopeV35 {
      */
     @NotNull
     static Collection<File> getMergedAssets(@NotNull final VariantScope scope) {
-        return getFinalArtifactFiles(scope, InternalArtifactType.MERGED_ASSETS);
+        return getFinalArtifactFiles(scope, InternalArtifactType.MERGED_ASSETS.INSTANCE);
     }
 
     /**
@@ -47,7 +49,7 @@ class VariantScopeV35 {
      */
     @NotNull
     static Collection<File> getProcessedRes(@NotNull final VariantScope scope) {
-        return getFinalArtifactFiles(scope, InternalArtifactType.PROCESSED_RES);
+        return getFinalArtifactFiles(scope, InternalArtifactType.PROCESSED_RES.INSTANCE);
     }
 
     /**
@@ -55,42 +57,41 @@ class VariantScopeV35 {
      */
     @NotNull
     static Collection<File> getAllClasses(@NotNull final VariantScope scope) {
-        return getFinalArtifactFiles(scope, AnchorOutputType.ALL_CLASSES);
+        return getFinalArtifactFiles(scope, AnchorOutputType.ALL_CLASSES.INSTANCE);
     }
 
     @NotNull
     static Collection<File> getSymbolList(@NotNull final VariantScope scope) {
-        return getFinalArtifactFiles(scope, InternalArtifactType.SYMBOL_LIST);
+        return getFinalArtifactFiles(scope, InternalArtifactType.RUNTIME_SYMBOL_LIST.INSTANCE);
     }
 
     @NotNull
     static Collection<File> getSymbolListWithPackageName(@NotNull final VariantScope scope) {
-        return getFinalArtifactFiles(scope, InternalArtifactType.SYMBOL_LIST_WITH_PACKAGE_NAME);
+        return getFinalArtifactFiles(scope, InternalArtifactType.SYMBOL_LIST_WITH_PACKAGE_NAME.INSTANCE);
     }
 
     @NotNull
     static Collection<File> getApk(@NotNull final VariantScope scope) {
-        return getFinalArtifactFiles(scope, InternalArtifactType.APK);
+        return getFinalArtifactFiles(scope, InternalArtifactType.APK.INSTANCE);
     }
 
     @NotNull
     static Collection<File> getJavac(@NotNull final VariantScope scope) {
-        return getFinalArtifactFiles(scope, InternalArtifactType.JAVAC);
+        return getFinalArtifactFiles(scope, InternalArtifactType.JAVAC.INSTANCE);
     }
 
     @NotNull
     static Map<String, Collection<File>> getAllArtifacts(@NotNull final VariantScope scope) {
-        return Stream.of(
-                AnchorOutputType.values(),
-                BuildArtifactType.values(),
-                SourceArtifactType.values(),
-                InternalArtifactType.values()
-        ).flatMap(Arrays::stream).collect(Collectors.toMap(Enum::name, v -> getFinalArtifactFiles(scope, v)));
+        return ARTIFACT_TYPES.entrySet().stream()
+                .map(it -> new AbstractMap.SimpleEntry<>(it.getKey(), getFinalArtifactFiles(scope, it.getValue())))
+                .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
     }
 
     @NotNull
-    static Collection<File> getFinalArtifactFiles(@NotNull final VariantScope scope, @NotNull final ArtifactType type) {
-        return scope.getArtifacts().getFinalArtifactFiles(type).getFiles();
+    static Collection<File> getFinalArtifactFiles(@NotNull final VariantScope scope, @NotNull final ArtifactType<? extends FileSystemLocation> type) {
+        return Stream.of(scope.getArtifacts().getFinalProduct(type).map(FileSystemLocation::getAsFile).getOrNull())
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     @NotNull
