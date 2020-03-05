@@ -8,7 +8,6 @@ import com.google.auto.service.AutoService
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.MethodInsnNode
 import java.net.URL
-import java.util.stream.Collectors
 
 /**
  * Represents a class node transformer for type/method/field usage analysis
@@ -23,9 +22,9 @@ class UsageTransformer : ClassTransformer {
     override fun onPreTransform(context: TransformContext) {
         this.usedApis = context.getProperty<String?>(PROPERTY_USED_APIS, null)?.let { uri ->
             URL(uri).openStream().bufferedReader().use {
-                it.lines().filter(String::isNotBlank).map { line ->
+                it.readLines().filter(String::isNotBlank).map { line ->
                     line.trim()
-                }.collect(Collectors.toSet())
+                }.toSet()
             }
         } ?: emptySet()
     }
