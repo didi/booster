@@ -2,7 +2,6 @@ package com.didiglobal.booster.transform.usage
 
 import com.didiglobal.booster.kotlinx.CSI_RESET
 import com.didiglobal.booster.kotlinx.CSI_YELLOW
-import com.didiglobal.booster.kotlinx.NULL_OF_STRING
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
 import com.google.auto.service.AutoService
@@ -22,7 +21,7 @@ class UsageTransformer : ClassTransformer {
     private lateinit var usedApis: Set<String>
 
     override fun onPreTransform(context: TransformContext) {
-        this.usedApis = context.getProperty(PROPERTY_USED_APIS, NULL_OF_STRING)?.let { uri ->
+        this.usedApis = context.getProperty<String?>(PROPERTY_USED_APIS, null)?.let { uri ->
             URL(uri).openStream().bufferedReader().use {
                 it.lines().filter(String::isNotBlank).map { line ->
                     line.trim()
