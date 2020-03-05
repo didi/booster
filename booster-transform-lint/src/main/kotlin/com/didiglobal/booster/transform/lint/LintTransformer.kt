@@ -19,9 +19,7 @@ import com.google.auto.service.AutoService
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.MethodInsnNode
 import org.objectweb.asm.tree.MethodNode
-import java.io.File
-import java.net.URI
-import java.util.stream.Collectors
+import java.net.URL
 import javax.xml.parsers.SAXParserFactory
 
 /**
@@ -42,12 +40,12 @@ class LintTransformer : ClassTransformer {
      */
     private lateinit var globalBuilder: CallGraph.Builder
 
-    private val ignores: MutableSet<Wildcard> = mutableSetOf(*DEFAULT_PROPERTY_IGNORES_DEFAULT)
+    private val ignores: MutableSet<Wildcard> = mutableSetOf(*DEFAULT_IGNORES)
 
     override fun onPreTransform(context: TransformContext) {
         this.graphBuilders.clear()
         this.globalBuilder = CallGraph.Builder()
-        this.ignores += context.getProperty(PROPERTY_IGNORES)?.split(',')?.map(Wildcard.Companion::valueOf) ?: emptySet()
+        this.ignores += context.getProperty(PROPERTY_IGNORES, "").trim().split(',').map(Wildcard.Companion::valueOf)
 
         val parser = SAXParserFactory.newInstance().newSAXParser()
         context.artifacts.get(ArtifactManager.MERGED_MANIFESTS).forEach { manifest ->
@@ -124,16 +122,11 @@ class LintTransformer : ClassTransformer {
 
     override fun onPostTransform(context: TransformContext) {
         val graph = globalBuilder.build()
-        val lints = if (context.hasProperty(PROPERTY_APIS)) {
-            val uri = URI(context.getProperty(PROPERTY_APIS)!!)
-            val url = if (uri.isAbsolute) uri.toURL() else File(uri).toURI().toURL()
-
-            url.openStream().bufferedReader().use {
-                it.lines().filter(String::isNotBlank).map { line ->
-                    Node.valueOf(line.trim())
-                }.collect(Collectors.toSet())
-            }
-        } else LINT_APIS
+        val lints = URL(context.getProperty(PROPERTY_APIS, DEFAULT_APIS)).openStream().bufferedReader().use {
+            it.readLines().filter(String::isNotBlank).map { line ->
+                Node.valueOf(line.trim())
+            }.toSet()
+        }
 
         // Analyse global call graph and separate each chain to individual graph
         graph[CallGraph.ROOT].forEach { node ->
@@ -219,11 +212,12 @@ private val PROPERTY_PREFIX = Build.ARTIFACT.replace('-', '.')
 
 private val PROPERTY_APIS = "$PROPERTY_PREFIX.apis"
 
+internal val DEFAULT_APIS = LintTransformer::class.java.classLoader.getResource("lint-apis.txt")!!.toString()
+
 private val PROPERTY_IGNORES = "$PROPERTY_PREFIX.ignores"
 
-private val DEFAULT_PROPERTY_IGNORES_DEFAULT = arrayOf(
+val DEFAULT_IGNORES = arrayOf(
         "android/*",
         "androidx/*",
-        "com/android/*",
-        "android/util/Log.getStackTraceString*"
+        "com/android/*"
 ).map(Wildcard.Companion::valueOf).toTypedArray()

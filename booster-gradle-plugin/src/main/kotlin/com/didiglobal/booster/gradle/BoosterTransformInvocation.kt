@@ -68,7 +68,8 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
 
     override fun hasProperty(name: String) = project.hasProperty(name)
 
-    override fun getProperty(name: String): String? = project.properties[name]?.toString()
+    @Suppress("UNCHECKED_CAST")
+    override fun <T> getProperty(name: String, default: T): T = project.properties[name] as? T ?: default
 
     override fun getInputs(): MutableCollection<TransformInput> = delegate.inputs
 

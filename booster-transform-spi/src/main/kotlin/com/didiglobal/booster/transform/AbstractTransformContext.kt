@@ -34,8 +34,6 @@ abstract class AbstractTransformContext(
 
     override val isDataBindingEnabled = false
 
-    override fun getProperty(name: String): String? = null
-
     override fun hasProperty(name: String) = false
 
 }

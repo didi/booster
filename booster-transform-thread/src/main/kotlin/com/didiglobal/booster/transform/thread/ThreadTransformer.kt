@@ -41,7 +41,7 @@ class ThreadTransformer : ClassTransformer {
             parser.parse(manifest, handler)
             applications.addAll(handler.applications)
         }
-        this.optimizationEnabled = context.getProperty(PROPERTY_OPTIMIZATION_ENABLED)?.toBoolean() ?: DEFAULT_OPTIMIZATION_ENABLED
+        this.optimizationEnabled = context.getProperty(PROPERTY_OPTIMIZATION_ENABLED, "$DEFAULT_OPTIMIZATION_ENABLED").toBoolean()
         this.logger = context.reportsDir.file(Build.ARTIFACT).file(context.name).file("report.txt").touch().printWriter()
     }
 
