@@ -11,13 +11,17 @@ public class ActivityThreadHooker {
 
     private volatile static boolean hooked;
 
-    public static void hook() {
+    /**
+     * @param ignorePackages comma-separated list
+     */
+    public static void hook(final String ignorePackages) {
         if (hooked) {
             return;
         }
 
         try {
-            final ActivityThreadCallback callback = new ActivityThreadCallback();
+            final String pkgs = null == ignorePackages ? "" : ignorePackages.trim();
+            final ActivityThreadCallback callback = new ActivityThreadCallback(pkgs.split("\\s*,\\s*"));
             if (!(hooked = callback.hook())) {
                 Log.i(TAG, "Hook ActivityThread.mH.mCallback failed");
             }
@@ -25,7 +29,7 @@ public class ActivityThreadHooker {
             Log.w(TAG, "Hook ActivityThread.mH.mCallback failed", t);
         }
 
-        if(hooked) {
+        if (hooked) {
             Log.i(TAG, "Hook ActivityThread.mH.mCallback success!");
         }
     }

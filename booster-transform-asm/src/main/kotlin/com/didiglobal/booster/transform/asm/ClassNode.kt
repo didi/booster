@@ -1,6 +1,12 @@
 package com.didiglobal.booster.transform.asm
 
+import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
+import org.objectweb.asm.tree.InsnList
+import org.objectweb.asm.tree.InsnNode
+import org.objectweb.asm.tree.MethodInsnNode
+import org.objectweb.asm.tree.MethodNode
+import org.objectweb.asm.tree.VarInsnNode
 
 /**
  * The simple name of class
@@ -21,3 +27,29 @@ fun ClassNode.isInvisibleAnnotationPresent(vararg annotations: String) = this.in
 fun ClassNode.isVisibleAnnotationPresent(vararg annotations: String) = this.visibleAnnotations?.map {
     it.desc
 }?.any(annotations::contains) ?: false
+
+val ClassNode.defaultClinit: MethodNode
+    get() = MethodNode(Opcodes.ACC_STATIC, "<clinit>", "()V", null, null).apply {
+        maxStack = 1
+        instructions.add(InsnNode(Opcodes.RETURN))
+    }
+
+val ClassNode.defaultInit: MethodNode
+    get() = MethodNode(Opcodes.ACC_PUBLIC, "<init>", "()V", null, null).apply {
+        maxStack = 1
+        instructions.add(InsnList().apply {
+            add(VarInsnNode(Opcodes.ALOAD, 0))
+            add(MethodInsnNode(Opcodes.INVOKESPECIAL, superName, name, desc, false))
+            add(InsnNode(Opcodes.RETURN))
+        })
+    }
+
+val ClassNode.defaultOnCreate: MethodNode
+    get() = MethodNode(Opcodes.ACC_PUBLIC, "onCreate", "()V", null, null).apply {
+        instructions.add(InsnList().apply {
+            add(VarInsnNode(Opcodes.ALOAD, 0))
+            add(MethodInsnNode(Opcodes.INVOKESPECIAL, superName, name, desc, false))
+            add(InsnNode(Opcodes.RETURN))
+        })
+        maxStack = 1
+    }

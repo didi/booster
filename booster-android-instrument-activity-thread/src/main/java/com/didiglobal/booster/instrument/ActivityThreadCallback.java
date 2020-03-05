@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.WindowManager;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,14 +38,27 @@ class ActivityThreadCallback implements Handler.Callback {
             "androidx.",
             "dalvik.",
             "com.android.",
-            "com.didiglobal.booster.instrument."
     };
 
     private final Handler mHandler;
 
     private final Handler.Callback mDelegate;
 
-    public ActivityThreadCallback() {
+    private final Set<String> mIgnorePackages;
+
+    /**
+     * @param ignorePackages packages to ignore
+     */
+    public ActivityThreadCallback(final String[] ignorePackages) {
+        final Set<String> packages = new HashSet<>(Arrays.asList(SYSTEM_PACKAGE_PREFIXES));
+        for (final String pkg : ignorePackages) {
+            if (null == pkg) {
+                continue;
+            }
+            packages.add(pkg.endsWith(".") ? pkg : (pkg + "."));
+        }
+        packages.add(getClass().getPackage().getName() + ".");
+        this.mIgnorePackages = Collections.unmodifiableSet(packages);
         this.mHandler = getHandler(getActivityThread());
         this.mDelegate = getFieldValue(this.mHandler, "mCallback");
     }
@@ -61,64 +75,64 @@ class ActivityThreadCallback implements Handler.Callback {
             }
         } catch (final NullPointerException e) {
             if (hasStackTraceElement(e, ASSET_MANAGER_GET_RESOURCE_VALUE, LOADED_APK_GET_ASSETS)) {
+                // usually occurred after app upgrade installation, it seems like a system bug
                 return abort(e);
             }
-            rethrowIfNotCausedBySystem(e);
+            rethrowIfCausedByUser(e);
         } catch (final SecurityException
                 | IllegalArgumentException
                 | AndroidRuntimeException
+                | Resources.NotFoundException
                 | WindowManager.BadTokenException e) {
-            rethrowIfNotCausedBySystem(e);
-        } catch (final Resources.NotFoundException e) {
-            rethrowIfNotCausedBySystem(e);
-            return abort(e);
+            rethrowIfCausedByUser(e);
         } catch (final RuntimeException e) {
             final Throwable cause = e.getCause();
             if (((Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) && isCausedBy(cause, DeadSystemException.class))
+                    // usually occurred after app upgrade installation, it seems like a system bug
                     || (isCausedBy(cause, NullPointerException.class) && hasStackTraceElement(e, LOADED_APK_GET_ASSETS))) {
                 return abort(e);
             }
-            rethrowIfNotCausedBySystem(e);
+            rethrowIfCausedByUser(e);
         } catch (final Error e) {
-            rethrowIfNotCausedBySystem(e);
+            rethrowIfCausedByUser(e);
             return abort(e);
         }
 
         return true;
     }
 
-    private static void rethrowIfNotCausedBySystem(final RuntimeException e) {
-        if (!isCausedBySystem(e)) {
+    private void rethrowIfCausedByUser(final RuntimeException e) {
+        if (isCausedByUser(e)) {
             throw e;
         }
     }
 
-    private static void rethrowIfNotCausedBySystem(final Error e) {
-        if (!isCausedBySystem(e)) {
+    private void rethrowIfCausedByUser(final Error e) {
+        if (isCausedByUser(e)) {
             throw e;
         }
     }
 
-    private static boolean isCausedBySystem(final Throwable t) {
+    private boolean isCausedByUser(final Throwable t) {
         if (null == t) {
             return false;
         }
 
         for (Throwable cause = t; null != cause; cause = cause.getCause()) {
             for (final StackTraceElement element : cause.getStackTrace()) {
-                if (!isSystemStackTrace(element)) {
-                    return false;
+                if (isUserStackTrace(element)) {
+                    return true;
                 }
             }
         }
 
-        return true;
+        return false;
     }
 
-    private static boolean isSystemStackTrace(final StackTraceElement element) {
+    private boolean isUserStackTrace(final StackTraceElement element) {
         final String name = element.getClassName();
-        for (final String prefix : SYSTEM_PACKAGE_PREFIXES) {
-            if (name.startsWith(prefix)) {
+        for (final String prefix : this.mIgnorePackages) {
+            if (!name.startsWith(prefix)) {
                 return true;
             }
         }
@@ -224,6 +238,9 @@ class ActivityThreadCallback implements Handler.Callback {
     }
 
     boolean hook() {
+        if (null != this.mDelegate) {
+            Log.w(TAG, "ActivityThread.mH.mCallback has already been hooked by " + this.mDelegate);
+        }
         return setFieldValue(this.mHandler, "mCallback", this);
     }
 }
