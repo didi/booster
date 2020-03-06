@@ -38,7 +38,7 @@ fun File.transform(output: File, transformer: (ByteArray) -> ByteArray = { it ->
             }
         }
         isFile -> {
-            when (output.extension.toLowerCase()) {
+            when (extension.toLowerCase()) {
                 "jar" -> JarFile(this).use {
                     it.transform(output, ::JarArchiveEntry, transformer)
                 }
