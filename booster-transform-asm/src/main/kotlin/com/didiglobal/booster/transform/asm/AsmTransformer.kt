@@ -81,4 +81,15 @@ class AsmTransformer : Transformer {
         durations[transformer] = durations.getOrDefault(transformer, 0) + (ct1 - ct0)
         return result
     }
+
+    companion object {
+
+        fun transform(
+                bytecode: ByteArray,
+                transformer: (klass: ClassNode) -> ClassNode
+        ): ByteArray = ClassWriter(ClassWriter.COMPUTE_MAXS).also(transformer(ClassNode().also { klass ->
+            ClassReader(bytecode).accept(klass, 0)
+        })::accept).toByteArray()
+
+    }
 }

@@ -11,6 +11,7 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream
 import org.apache.commons.compress.parallel.InputStreamSupplier
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.concurrent.Executors
@@ -31,24 +32,21 @@ import java.util.zip.ZipInputStream
  */
 fun File.transform(output: File, transformer: (ByteArray) -> ByteArray = { it -> it }) {
     when {
-        isDirectory -> {
-            val base = this.toURI()
+        isDirectory -> this.toURI().let { base ->
             this.search().parallelStream().forEach {
                 it.transform(File(output, base.relativize(it.toURI()).path), transformer)
             }
         }
-        isFile -> {
-            when (extension.toLowerCase()) {
-                "jar" -> JarFile(this).use {
-                    it.transform(output, ::JarArchiveEntry, transformer)
-                }
-                "class" -> inputStream().use {
-                    it.transform(transformer).redirect(output)
-                }
-                else -> this.copyTo(output, true)
+        isFile -> when (extension.toLowerCase()) {
+            "jar" -> JarFile(this).use {
+                it.transform(output, ::JarArchiveEntry, transformer)
             }
+            "class" -> this.inputStream().use {
+                it.transform(transformer).redirect(output)
+            }
+            else -> this.copyTo(output, true)
         }
-        else -> TODO("Unexpected file: ${this.absolutePath}")
+        else -> throw IOException("Unexpected file: ${this.absolutePath}")
     }
 }
 
@@ -56,11 +54,15 @@ fun InputStream.transform(transformer: (ByteArray) -> ByteArray): ByteArray {
     return transformer(readBytes())
 }
 
-fun ZipFile.transform(output: File, entryFactory: (ZipEntry) -> ZipArchiveEntry = ::ZipArchiveEntry, transformer: (ByteArray) -> ByteArray = { it -> it }) {
+fun ZipFile.transform(
+        output: OutputStream,
+        entryFactory: (ZipEntry) -> ZipArchiveEntry = ::ZipArchiveEntry,
+        transformer: (ByteArray) -> ByteArray = { it -> it }
+) {
+    val entries = mutableSetOf<String>()
     val creator = ParallelScatterZipCreator(ThreadPoolExecutor(NCPU, NCPU, 0L, TimeUnit.MILLISECONDS, LinkedBlockingQueue<Runnable>(), Executors.defaultThreadFactory(), RejectedExecutionHandler { runnable, _ ->
         runnable.run()
     }))
-    val entries = mutableSetOf<String>()
 
     entries().asSequence().forEach { entry ->
         if (!entries.contains(entry.name)) {
@@ -81,12 +83,22 @@ fun ZipFile.transform(output: File, entryFactory: (ZipEntry) -> ZipArchiveEntry 
         }
     }
 
-    ZipArchiveOutputStream(output.touch()).use { it ->
-        creator.writeTo(it)
-    }
+    ZipArchiveOutputStream(output).use(creator::writeTo)
 }
 
-fun ZipInputStream.transform(output: File, entryFactory: (ZipEntry) -> ZipArchiveEntry = ::ZipArchiveEntry, transformer: (ByteArray) -> ByteArray) {
+fun ZipFile.transform(
+        output: File,
+        entryFactory: (ZipEntry) -> ZipArchiveEntry = ::ZipArchiveEntry,
+        transformer: (ByteArray) -> ByteArray = { it -> it }
+) = output.touch().outputStream().buffered().use {
+    transform(it, entryFactory, transformer)
+}
+
+fun ZipInputStream.transform(
+        output: OutputStream,
+        entryFactory: (ZipEntry) -> ZipArchiveEntry = ::ZipArchiveEntry,
+        transformer: (ByteArray) -> ByteArray
+) {
     val creator = ParallelScatterZipCreator()
     val entries = mutableSetOf<String>()
 
@@ -103,9 +115,15 @@ fun ZipInputStream.transform(output: File, entryFactory: (ZipEntry) -> ZipArchiv
         }
     }
 
-    ZipArchiveOutputStream(output.touch()).use { it ->
-        creator.writeTo(it)
-    }
+    ZipArchiveOutputStream(output).use(creator::writeTo)
+}
+
+fun ZipInputStream.transform(
+        output: File,
+        entryFactory: (ZipEntry) -> ZipArchiveEntry = ::ZipArchiveEntry,
+        transformer: (ByteArray) -> ByteArray
+) = output.touch().outputStream().buffered().use {
+    transform(it, entryFactory, transformer)
 }
 
 private const val DEFAULT_BUFFER_SIZE = 8 * 1024

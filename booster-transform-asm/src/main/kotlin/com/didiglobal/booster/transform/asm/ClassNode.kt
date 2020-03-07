@@ -20,6 +20,8 @@ val ClassNode.simpleName: String
 val ClassNode.className: String
     get() = name.replace('/', '.')
 
+fun ClassNode.isAnnotation() = 0 != (access and Opcodes.ACC_ANNOTATION)
+
 fun ClassNode.isInvisibleAnnotationPresent(vararg annotations: String) = this.invisibleAnnotations?.map {
     it.desc
 }?.any(annotations::contains) ?: false

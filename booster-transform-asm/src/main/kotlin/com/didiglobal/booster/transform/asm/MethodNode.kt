@@ -1,6 +1,5 @@
 package com.didiglobal.booster.transform.asm
 
-import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.MethodNode
 
 fun MethodNode.isInvisibleAnnotationPresent(vararg annotations: String) = this.invisibleAnnotations?.map {

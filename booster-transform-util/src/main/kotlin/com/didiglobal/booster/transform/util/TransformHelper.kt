@@ -1,10 +1,9 @@
 package com.didiglobal.booster.transform.util
 
-import com.didiglobal.booster.build.AndroidSdk
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.transform.AbstractTransformContext
+import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.Transformer
-import com.didiglobal.booster.util.search
 import java.io.File
 import java.util.UUID
 
@@ -13,19 +12,33 @@ private val TMPDIR = File(System.getProperty("java.io.tmpdir"))
 /**
  * Utility class for JAR or class file transforming
  *
+ * @param input The files to transform
+ * @param platform The specific android platform location, such as ${ANDROID_HOME}/platforms/android-28
+ * @param applicationId An identifier for transform output
+ * @param variant The variant name
  * @author johnsonlee
  */
-class TransformHelper(val input: File, vararg val transformers: Transformer, val output: File = TMPDIR, val apiLevel: Int = AndroidSdk.findPlatform(), val applicationId: String = UUID.randomUUID().toString()) {
+class TransformHelper(
+        val input: File,
+        val platform: File,
+        val applicationId: String = UUID.randomUUID().toString(),
+        val variant: String = "debug"
+) {
 
-    fun transform() {
-        val jars = input.search { it.extension == "jar" }
-        val classes = input.search { it.extension == "class" }
+    fun transform(output: File = TMPDIR, transformer: (TransformContext, ByteArray) -> ByteArray = { _, it -> it }) = transform(output, object : Transformer {
+        override fun transform(context: TransformContext, bytecode: ByteArray) = transformer(context, bytecode)
+    })
+
+    fun transform(output: File = TMPDIR, vararg transformers: Transformer) {
+        val inputs = if (this.input.isDirectory) this.input.listFiles()?.toList() ?: emptyList() else listOf(this.input)
         val context = object : AbstractTransformContext(
                 applicationId,
-                listOf(AndroidSdk.getLocation().file("platforms", "android-${apiLevel}", "android.jar")),
-                jars,
-                jars
+                variant,
+                listOf(File(platform, "android.jar")),
+                inputs,
+                inputs
         ) {
+
             override val projectDir: File = output
         }
 
@@ -33,8 +46,8 @@ class TransformHelper(val input: File, vararg val transformers: Transformer, val
             it.onPreTransform(context)
         }
 
-        (jars + classes).forEach {
-            it.transform(File(output, it.name)) { bytecode ->
+        inputs.forEach {
+            it.transform(context.buildDir.file("transforms", it.name)) { bytecode ->
                 transformers.fold(bytecode) { bytes, transformer ->
                     transformer.transform(context, bytes)
                 }
