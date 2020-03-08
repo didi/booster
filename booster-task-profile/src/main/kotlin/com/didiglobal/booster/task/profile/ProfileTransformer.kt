@@ -8,6 +8,7 @@ import com.didiglobal.booster.kotlinx.Wildcard
 import com.didiglobal.booster.kotlinx.asIterable
 import com.didiglobal.booster.kotlinx.descriptor
 import com.didiglobal.booster.kotlinx.file
+import com.didiglobal.booster.kotlinx.search
 import com.didiglobal.booster.kotlinx.separatorsToSystem
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.task.profile.dot.GraphType
@@ -21,11 +22,13 @@ import com.didiglobal.booster.transform.asm.getValue
 import com.didiglobal.booster.transform.asm.isAnnotation
 import com.didiglobal.booster.transform.asm.isInvisibleAnnotationPresent
 import com.didiglobal.booster.transform.util.ComponentHandler
-import com.didiglobal.booster.kotlinx.search
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.MethodInsnNode
 import org.objectweb.asm.tree.MethodNode
 import java.lang.reflect.Modifier
+import java.lang.reflect.Modifier.isNative
+import java.lang.reflect.Modifier.isProtected
+import java.lang.reflect.Modifier.isPublic
 import java.net.URL
 import java.util.Stack
 import java.util.concurrent.ConcurrentHashMap
@@ -85,8 +88,8 @@ class ProfileTransformer : ClassTransformer {
             it.substring(1, it.indexOf(' '))
         }?.toSet() ?: emptySet()
 
-        val visit: (Aapt2Container.Xml) -> Collection<Resources.XmlElement> = { xml ->
-            val elements = mutableListOf<Resources.XmlElement>()
+        val visit: (Aapt2Container.Xml) -> Set<String> = { xml ->
+            val elements = mutableSetOf<String>()
             val stack = Stack<Resources.XmlNode>().apply {
                 add(xml.root)
             }
@@ -94,7 +97,7 @@ class ProfileTransformer : ClassTransformer {
             while (stack.isNotEmpty()) {
                 val node = stack.pop()
                 if (node.hasElement()) {
-                    elements += node.element
+                    elements += node.element.name
                     node.element.childList.forEach {
                         stack.push(it)
                     }
@@ -107,23 +110,30 @@ class ProfileTransformer : ClassTransformer {
         this.nodesRunOnUiThread += context.artifacts.get(ArtifactManager.MERGED_RES).search {
             it.name.startsWith("layout_") && it.name.endsWith(".xml.flat")
         }.parallelStream().map { layout ->
-            BinaryParser(layout).use(BinaryParser::parseAapt2Container).entries.filterIsInstance(Aapt2Container.Xml::class.java)
+            BinaryParser(layout).use(BinaryParser::parseAapt2Container).entries.filterIsInstance(Aapt2Container.Xml::class.java) to layout
+        }.asSequence().flatMap {
+            it.first.map { xml ->
+                xml to it.second
+            }.asSequence()
         }.flatMap {
-            it.parallelStream()
-        }.map(visit).flatMap {
-            it.parallelStream()
+            visit(it.first).map { tag ->
+                tag to it.second
+            }.asSequence()
         }.filter {
-            '.' in it.name || it.name in widgets
-        }.map {
-            val clazz = Class.forName(it.name, false, context.klassPool.classLoader)
-            (clazz.declaredMethods + clazz.methods).toSet().filter { m ->
-                Modifier.isPublic(m.modifiers) || Modifier.isProtected(m.modifiers)
-            }.map { m ->
-                Node(clazz.name.replace('.', '/'), m.name, m.descriptor)
+            '.' in it.first || it.first in widgets
+        }.mapNotNull {
+            try {
+                val clazz = Class.forName(it.first, false, context.klassPool.classLoader)
+                (clazz.declaredMethods + clazz.methods).toSet().filter { m ->
+                    isPublic(m.modifiers) || isProtected(m.modifiers) || !isNative(m.modifiers)
+                }.map { m ->
+                    Node(clazz.name.replace('.', '/'), m.name, m.descriptor)
+                }
+            } catch (e: ClassNotFoundException) {
+                System.err.println("${e.localizedMessage}: ${it.second}")
+                null
             }
-        }.flatMap {
-            it.parallelStream()
-        }.asSequence()
+        }.flatten()
     }
 
     /**

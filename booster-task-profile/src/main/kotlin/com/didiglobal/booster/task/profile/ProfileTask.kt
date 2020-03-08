@@ -24,8 +24,6 @@ open class ProfileTask : AbstractTask() {
         get() = variant.name
 
     @TaskAction
-    fun profile() {
-        VariantTransformHelper(variant, supplier()).transform(project.projectDir, AsmTransformer(ProfileTransformer()))
-    }
+    fun profile() = VariantTransformHelper(variant, supplier()).transform(project.projectDir, AsmTransformer(ProfileTransformer()))
 
 }

@@ -17,13 +17,16 @@ class ProfileVariantProcessor : VariantProcessor {
         val project = variant.project
         val variantName = variant.name.capitalize()
         val lastTransform = variant.extension.transforms.last()
+        val profiles = project.tasks.findByName("profile") ?: project.tasks.create("profile")
+
         project.tasks.withType(TransformTask::class.java).find {
             it.name.endsWith(variantName) && it.transform == lastTransform
         }?.let { transform ->
-            project.tasks.create("profile${variantName}", ProfileTask::class.java) {
+            val profile = project.tasks.create("profile${variantName}", ProfileTask::class.java) {
                 it.variant = variant
                 it.supplier = { transform.outputs.files.single() }
             }.dependsOn(transform)
+            profiles.dependsOn(profile)
         }
     }
 
