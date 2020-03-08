@@ -5,8 +5,6 @@ dependencies {
     implementation project(':booster-aapt2')
     implementation project(':booster-api')
     implementation project(':booster-transform-asm')
-    implementation 'com.github.javaparser:javaparser-core:3.15.14'
-    implementation 'com.github.javaparser:javaparser-symbol-solver-core:3.15.14'
     compileOnly 'com.android.tools.build:gradle:3.0.0'
     testCompileOnly 'com.android.tools.build:gradle:3.0.0'
 }
