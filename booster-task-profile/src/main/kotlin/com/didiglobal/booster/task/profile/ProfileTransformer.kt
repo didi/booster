@@ -1,9 +1,7 @@
 package com.didiglobal.booster.task.profile
 
-import com.didiglobal.booster.aapt2.Aapt2Container
-import com.didiglobal.booster.aapt2.BinaryParser
-import com.didiglobal.booster.aapt2.Resources
-import com.didiglobal.booster.aapt2.parseAapt2Container
+import com.didiglobal.booster.aapt2.metadata
+import com.didiglobal.booster.kotlinx.NCPU
 import com.didiglobal.booster.kotlinx.Wildcard
 import com.didiglobal.booster.kotlinx.asIterable
 import com.didiglobal.booster.kotlinx.descriptor
@@ -25,16 +23,18 @@ import com.didiglobal.booster.transform.util.ComponentHandler
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.MethodInsnNode
 import org.objectweb.asm.tree.MethodNode
-import java.lang.reflect.Modifier
+import java.io.File
 import java.lang.reflect.Modifier.isNative
 import java.lang.reflect.Modifier.isProtected
 import java.lang.reflect.Modifier.isPublic
 import java.net.URL
 import java.util.Stack
+import java.util.concurrent.Callable
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArraySet
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import javax.xml.parsers.SAXParserFactory
-import kotlin.streams.asSequence
 
 /**
  * Represents a class node transformer for static analysis
@@ -42,6 +42,8 @@ import kotlin.streams.asSequence
  * @author johnsonlee
  */
 class ProfileTransformer : ClassTransformer {
+
+    val saxParser = SAXParserFactory.newInstance().newSAXParser()
 
     /**
      * The call graph of each class
@@ -88,88 +90,94 @@ class ProfileTransformer : ClassTransformer {
             it.substring(1, it.indexOf(' '))
         }?.toSet() ?: emptySet()
 
-        val visit: (Aapt2Container.Xml) -> Set<String> = { xml ->
-            val elements = mutableSetOf<String>()
-            val stack = Stack<Resources.XmlNode>().apply {
-                add(xml.root)
-            }
-
-            while (stack.isNotEmpty()) {
-                val node = stack.pop()
-                if (node.hasElement()) {
-                    elements += node.element.name
-                    node.element.childList.forEach {
-                        stack.push(it)
-                    }
-                }
-            }
-
-            elements
+        val visit: (File) -> Set<String> = { xml ->
+            val handler = LayoutHandler()
+            this.saxParser.parse(xml, handler)
+            handler.views
         }
 
-        this.nodesRunOnUiThread += context.artifacts.get(ArtifactManager.MERGED_RES).search {
-            it.name.startsWith("layout_") && it.name.endsWith(".xml.flat")
-        }.parallelStream().map { layout ->
-            BinaryParser(layout).use(BinaryParser::parseAapt2Container).entries.filterIsInstance(Aapt2Container.Xml::class.java) to layout
-        }.asSequence().flatMap {
-            it.first.map { xml ->
-                xml to it.second
-            }.asSequence()
-        }.flatMap {
-            visit(it.first).map { tag ->
-                tag to it.second
-            }.asSequence()
-        }.filter {
-            '.' in it.first || it.first in widgets
-        }.mapNotNull {
-            try {
-                val clazz = Class.forName(it.first, false, context.klassPool.classLoader)
-                (clazz.declaredMethods + clazz.methods).toSet().filter { m ->
-                    isPublic(m.modifiers) || isProtected(m.modifiers) || !isNative(m.modifiers)
-                }.map { m ->
-                    Node(clazz.name.replace('.', '/'), m.name, m.descriptor)
-                }
-            } catch (e: ClassNotFoundException) {
-                System.err.println("${e.localizedMessage}: ${it.second}")
-                null
+        val executor = Executors.newWorkStealingPool(NCPU)
+
+        try {
+            context.artifacts.get(ArtifactManager.MERGED_RES).search {
+                it.name.startsWith("layout_") && it.name.endsWith(".xml.flat")
+            }.map { flat ->
+                executor.submit(Callable<Set<Node>> {
+                    val header = flat.metadata
+                    val xml = header.sourceFile
+
+                    visit(xml).filter {
+                        '.' in it || it in widgets // ignore system widgets
+                    }.mapNotNull { tag ->
+                        try {
+                            val clazz = Class.forName(tag, false, context.klassPool.classLoader)
+                            (clazz.declaredMethods + clazz.methods).toSet().filter { m ->
+                                isPublic(m.modifiers) || isProtected(m.modifiers) || !isNative(m.modifiers)
+                            }.map { m ->
+                                Node(clazz.name.replace('.', '/'), m.name, m.descriptor)
+                            }
+                        } catch (e: ClassNotFoundException) {
+                            System.err.println("Class ${e.localizedMessage} not found in ${header.resourceName}")
+                            null
+                        } catch (e: Throwable) {
+                            null
+                        }
+                    }.flatten().toSet()
+                })
+            }.forEach { future ->
+                this.nodesRunOnUiThread + future.get()
             }
-        }.flatten()
+        } finally {
+            executor.shutdown()
+        }
+
+        executor.awaitTermination(1L, TimeUnit.HOURS)
     }
 
     /**
      * Find main thread entry point by parsing AndroidManifest.xml
      */
     private fun loadMainThreadEntryPoints(context: TransformContext) {
-        val parser = SAXParserFactory.newInstance().newSAXParser()
-        context.artifacts.get(ArtifactManager.MERGED_MANIFESTS).forEach { manifest ->
-            val handler = ComponentHandler()
-            parser.parse(manifest, handler)
+        val executor = Executors.newWorkStealingPool(NCPU)
 
-            // Attach component entry points to graph ROOT
-            mapOf(
-                    handler.applications to "android.app.Application",
-                    handler.activities to "android.app.Activity",
-                    handler.services to "android.app.Service",
-                    handler.receivers to "android.content.BroadcastReceiver",
-                    handler.providers to "android.content.ContentProvider"
-            ).map { (components, type) ->
-                val clazz = Class.forName(type, false, context.klassPool.classLoader)
-                val entryPoints = (clazz.declaredMethods + clazz.methods).toSet().filter {
-                    Modifier.isPublic(it.modifiers) || Modifier.isProtected(it.modifiers)
-                }.map {
-                    it.name to it.descriptor
-                }.toSet()
+        try {
+            context.artifacts.get(ArtifactManager.MERGED_MANIFESTS).forEach { manifest ->
+                val handler = ComponentHandler()
+                this.saxParser.parse(manifest, handler)
+                // Attach component entry points to graph ROOT
+                mapOf(
+                        handler.applications to "android.app.Application",
+                        handler.activities to "android.app.Activity",
+                        handler.services to "android.app.Service",
+                        handler.receivers to "android.content.BroadcastReceiver",
+                        handler.providers to "android.content.ContentProvider"
+                ).map { (components, type) ->
+                    executor.submit(Callable {
+                        val clazz = Class.forName(type, false, context.klassPool.classLoader)
+                        val entryPoints = (clazz.declaredMethods + clazz.methods).toSet().filter {
+                            isPublic(it.modifiers) || isProtected(it.modifiers)
+                        }.map {
+                            it.name to it.descriptor
+                        }.toSet()
 
-                components.map { component ->
-                    entryPoints.map {
-                        Node(component.replace('.', '/'), it.first, it.second)
+                        components.map { component ->
+                            entryPoints.map {
+                                Node(component.replace('.', '/'), it.first, it.second)
+                            }
+                        }.flatten()
+                    })
+                }.forEach { future ->
+                    future.get().forEach {
+                        globalBuilder.addEdge(CallGraph.ROOT, it)
+                        this.nodesRunOnMainThread += it
                     }
-                }.flatten()
-            }.flatten().forEach {
-                globalBuilder.addEdge(CallGraph.ROOT, it)
-                this.nodesRunOnMainThread += it
+                }
             }
+        } finally {
+            executor.shutdown()
         }
+
+        executor.awaitTermination(1L, TimeUnit.HOURS)
     }
 
     override fun transform(context: TransformContext, klass: ClassNode): ClassNode {
