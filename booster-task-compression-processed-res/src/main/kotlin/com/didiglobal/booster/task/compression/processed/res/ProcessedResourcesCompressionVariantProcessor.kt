@@ -11,10 +11,10 @@ import com.didiglobal.booster.gradle.processedRes
 import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.gradle.scope
 import com.didiglobal.booster.kotlinx.file
+import com.didiglobal.booster.kotlinx.search
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.task.spi.VariantProcessor
 import com.didiglobal.booster.transform.util.transform
-import com.didiglobal.booster.util.search
 import com.google.auto.service.AutoService
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry
 import java.io.File

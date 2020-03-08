@@ -1,8 +1,17 @@
 package com.didiglobal.booster.gradle
 
+import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.scope.VariantScope
 import com.android.sdklib.BuildToolInfo
 import java.io.File
+
+private val EXTENSION_GETTER = when {
+    GTE_V3_6 -> VariantScopeV36::getExtension
+    GTE_V3_5 -> VariantScopeV35::getExtension
+    GTE_V3_3 -> VariantScopeV33::getExtension
+    GTE_V3_2 -> VariantScopeV32::getExtension
+    else -> VariantScopeV30::getExtension
+}
 
 private val ALL_ARTIFACTS_GETTER = when {
     GTE_V3_6 -> VariantScopeV36::getAllArtifacts
@@ -10,6 +19,14 @@ private val ALL_ARTIFACTS_GETTER = when {
     GTE_V3_3 -> VariantScopeV33::getAllArtifacts
     GTE_V3_2 -> VariantScopeV32::getAllArtifacts
     else -> VariantScopeV30::getAllArtifacts
+}
+
+private val AAR_GETTER = when {
+    GTE_V3_6 -> VariantScopeV36::getAar
+    GTE_V3_5 -> VariantScopeV35::getAar
+    GTE_V3_3 -> VariantScopeV33::getAar
+    GTE_V3_2 -> VariantScopeV32::getAar
+    else -> VariantScopeV30::getAar
 }
 
 private val ALL_CLASSES_GETTER = when {
@@ -103,6 +120,12 @@ private val DATA_BINDING_DEPENDENCY_ARTIFACTS_GETTER = when {
     GTE_V3_2 -> VariantScopeV32::getDataBindingDependencyArtifacts
     else -> VariantScopeV30::getDataBindingDependencyArtifacts
 }
+
+val VariantScope.extension: BaseExtension
+    get() = EXTENSION_GETTER(this)
+
+val VariantScope.aar: Collection<File>
+    get() = AAR_GETTER(this)
 
 /**
  * The output directory of APK files

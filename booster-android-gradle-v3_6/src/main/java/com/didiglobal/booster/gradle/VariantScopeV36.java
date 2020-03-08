@@ -1,6 +1,7 @@
 package com.didiglobal.booster.gradle;
 
 import com.android.build.api.artifact.ArtifactType;
+import com.android.build.gradle.BaseExtension;
 import com.android.build.gradle.internal.scope.AnchorOutputType;
 import com.android.build.gradle.internal.scope.InternalArtifactType;
 import com.android.build.gradle.internal.scope.VariantScope;
@@ -19,6 +20,11 @@ import java.util.stream.Stream;
 import static com.didiglobal.booster.gradle.ArtifactTypesV36Kt.ARTIFACT_TYPES;
 
 class VariantScopeV36 {
+
+    @NotNull
+    static BaseExtension getExtension(@NotNull final VariantScope scope) {
+        return scope.getGlobalScope().getExtension();
+    }
 
     /**
      * The merged AndroidManifest.xml
@@ -68,6 +74,11 @@ class VariantScopeV36 {
     @NotNull
     static Collection<File> getSymbolListWithPackageName(@NotNull final VariantScope scope) {
         return getFinalArtifactFiles(scope, InternalArtifactType.SYMBOL_LIST_WITH_PACKAGE_NAME.INSTANCE);
+    }
+
+    @NotNull
+    static Collection<File> getAar(@NotNull final VariantScope scope) {
+        return getFinalArtifactFiles(scope, InternalArtifactType.AAR.INSTANCE);
     }
 
     @NotNull

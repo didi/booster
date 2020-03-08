@@ -2,7 +2,7 @@ package com.didiglobal.booster.task.profile
 
 import com.didiglobal.booster.build.AndroidSdk
 import com.didiglobal.booster.kotlinx.Wildcard
-import com.didiglobal.booster.util.search
+import com.didiglobal.booster.kotlinx.search
 import com.github.javaparser.JavaParser
 import com.github.javaparser.ParserConfiguration
 import com.github.javaparser.symbolsolver.JavaSymbolSolver

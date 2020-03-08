@@ -2,6 +2,7 @@ package com.didiglobal.booster.transform.util
 
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.transform.AbstractTransformContext
+import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.Transformer
 import java.io.File
@@ -14,13 +15,16 @@ private val TMPDIR = File(System.getProperty("java.io.tmpdir"))
  *
  * @param input The files to transform
  * @param platform The specific android platform location, such as ${ANDROID_HOME}/platforms/android-28
+ * @param artifacts The artifact manager
  * @param applicationId An identifier for transform output
  * @param variant The variant name
+ *
  * @author johnsonlee
  */
-class TransformHelper(
+open class TransformHelper(
         val input: File,
         val platform: File,
+        val artifacts: ArtifactManager = object : ArtifactManager {},
         val applicationId: String = UUID.randomUUID().toString(),
         val variant: String = "debug"
 ) {
@@ -30,6 +34,7 @@ class TransformHelper(
     })
 
     fun transform(output: File = TMPDIR, vararg transformers: Transformer) {
+        val self = this
         val inputs = if (this.input.isDirectory) this.input.listFiles()?.toList() ?: emptyList() else listOf(this.input)
         val context = object : AbstractTransformContext(
                 applicationId,
@@ -38,8 +43,8 @@ class TransformHelper(
                 inputs,
                 inputs
         ) {
-
-            override val projectDir: File = output
+            override val projectDir = output
+            override val artifacts = self.artifacts
         }
 
         transformers.forEach {

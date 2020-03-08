@@ -1,7 +1,5 @@
-package com.didiglobal.booster.util
+package com.didiglobal.booster.kotlinx
 
-import com.didiglobal.booster.kotlinx.asIterable
-import com.didiglobal.booster.kotlinx.execute
 import java.io.File
 import java.util.concurrent.RecursiveTask
 

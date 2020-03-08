@@ -9,7 +9,7 @@ import com.didiglobal.booster.transform.asm.ClassTransformer
 import com.didiglobal.booster.transform.asm.className
 import com.didiglobal.booster.transform.asm.defaultOnCreate
 import com.didiglobal.booster.transform.asm.findAll
-import com.didiglobal.booster.util.ComponentHandler
+import com.didiglobal.booster.transform.util.ComponentHandler
 import com.google.auto.service.AutoService
 import org.objectweb.asm.Opcodes.ATHROW
 import org.objectweb.asm.Opcodes.INVOKESTATIC

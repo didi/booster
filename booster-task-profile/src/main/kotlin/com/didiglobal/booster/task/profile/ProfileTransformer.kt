@@ -20,8 +20,8 @@ import com.didiglobal.booster.transform.asm.ClassTransformer
 import com.didiglobal.booster.transform.asm.getValue
 import com.didiglobal.booster.transform.asm.isAnnotation
 import com.didiglobal.booster.transform.asm.isInvisibleAnnotationPresent
-import com.didiglobal.booster.util.ComponentHandler
-import com.didiglobal.booster.util.search
+import com.didiglobal.booster.transform.util.ComponentHandler
+import com.didiglobal.booster.kotlinx.search
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.MethodInsnNode
 import org.objectweb.asm.tree.MethodNode

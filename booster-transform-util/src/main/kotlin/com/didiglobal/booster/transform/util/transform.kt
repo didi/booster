@@ -3,7 +3,7 @@ package com.didiglobal.booster.transform.util
 import com.didiglobal.booster.kotlinx.NCPU
 import com.didiglobal.booster.kotlinx.redirect
 import com.didiglobal.booster.kotlinx.touch
-import com.didiglobal.booster.util.search
+import com.didiglobal.booster.kotlinx.search
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry
 import org.apache.commons.compress.archivers.zip.ParallelScatterZipCreator
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry
