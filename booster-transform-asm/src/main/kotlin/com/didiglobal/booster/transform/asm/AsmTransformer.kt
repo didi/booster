@@ -86,10 +86,13 @@ class AsmTransformer : Transformer {
 
         fun transform(
                 bytecode: ByteArray,
-                transformer: (klass: ClassNode) -> ClassNode
-        ): ByteArray = ClassWriter(ClassWriter.COMPUTE_MAXS).also(transformer(ClassNode().also { klass ->
-            ClassReader(bytecode).accept(klass, 0)
-        })::accept).toByteArray()
+                transformer: (klass: ClassNode) -> Unit
+        ): ByteArray = ClassWriter(ClassWriter.COMPUTE_MAXS).also { writer ->
+            ClassNode().also { klass ->
+                ClassReader(bytecode).accept(klass, 0)
+                transformer(klass)
+            }.accept(writer)
+        }.toByteArray()
 
     }
 }

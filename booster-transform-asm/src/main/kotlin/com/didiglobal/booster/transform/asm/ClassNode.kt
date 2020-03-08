@@ -20,7 +20,17 @@ val ClassNode.simpleName: String
 val ClassNode.className: String
     get() = name.replace('/', '.')
 
-fun ClassNode.isAnnotation() = 0 != (access and Opcodes.ACC_ANNOTATION)
+val ClassNode.isAnnotation: Boolean
+    get() = 0 != (access and Opcodes.ACC_ANNOTATION)
+
+val ClassNode.isPublic: Boolean
+    get() = 0 != (access and Opcodes.ACC_PUBLIC)
+
+val ClassNode.isProtected: Boolean
+    get() = 0 != (access and Opcodes.ACC_PROTECTED)
+
+val ClassNode.isPrivate: Boolean
+    get() = 0 != (access and Opcodes.ACC_PRIVATE)
 
 fun ClassNode.isInvisibleAnnotationPresent(vararg annotations: String) = this.invisibleAnnotations?.map {
     it.desc

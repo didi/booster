@@ -1,6 +1,19 @@
 package com.didiglobal.booster.transform.asm
 
+import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.MethodNode
+
+val MethodNode.isPublic: Boolean
+    get() = 0 != (access and Opcodes.ACC_PUBLIC)
+
+val MethodNode.isProtected: Boolean
+    get() = 0 != (access and Opcodes.ACC_PROTECTED)
+
+val MethodNode.isPrivate: Boolean
+    get() = 0 != (access and Opcodes.ACC_PRIVATE)
+
+val MethodNode.isNative: Boolean
+    get() = 0 != (access and Opcodes.ACC_NATIVE)
 
 fun MethodNode.isInvisibleAnnotationPresent(vararg annotations: String) = this.invisibleAnnotations?.map {
     it.desc
