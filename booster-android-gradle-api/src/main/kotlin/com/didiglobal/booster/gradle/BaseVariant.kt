@@ -10,7 +10,7 @@ import org.gradle.api.Task
 import java.io.File
 
 val BaseVariant.extension: BaseExtension
-    get() = scope.extension as BaseExtension
+    get() = scope.extension
 
 val BaseVariant.platform: File
     get() = extension.run {
