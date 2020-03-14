@@ -158,28 +158,29 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
 
     @Suppress("NON_EXHAUSTIVE_WHEN")
     private fun doIncrementalTransform(jarInput: JarInput) {
-        val output = outputProvider.getContentLocation(jarInput.name, jarInput.contentTypes, jarInput.scopes, Format.JAR)
-        when (jarInput.status) {
-            REMOVED -> output.delete()
-            CHANGED, ADDED -> {
-                project.logger.info("Transforming ${jarInput.file}")
-                outputProvider?.let { provider ->
+        outputProvider?.let { provider ->
+            val output = provider.getContentLocation(jarInput.name, jarInput.contentTypes, jarInput.scopes, Format.JAR)
+            when (jarInput.status) {
+                REMOVED -> output.delete()
+                CHANGED, ADDED -> {
+                    project.logger.info("Transforming ${jarInput.file}")
                     jarInput.transform(output, this)
                 }
+                else -> Unit
             }
         }
     }
 
     @Suppress("NON_EXHAUSTIVE_WHEN")
     private fun doIncrementalTransform(dirInput: DirectoryInput, base: URI) {
-        val root = provider.getContentLocation(dirInput.name, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY)
-        dirInput.changedFiles.forEach { (file, status) ->
-            val output = File(root, base.relativize(file.toURI()).path)
-            when (status) {
-                REMOVED -> output.deleteRecursively()
-                ADDED, CHANGED -> {
-                    project.logger.info("Transforming $file")
-                    outputProvider?.let { provider ->
+        outputProvider?.let { provider ->
+            val root = provider.getContentLocation(dirInput.name, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY)
+            dirInput.changedFiles.forEach { (file, status) ->
+                val output = File(root, base.relativize(file.toURI()).path)
+                when (status) {
+                    REMOVED -> output.deleteRecursively()
+                    ADDED, CHANGED -> {
+                        project.logger.info("Transforming $file")
                         file.transform(output) { bytecode ->
                             bytecode.transform(this)
                         }
