@@ -16,6 +16,8 @@ import java.util.ServiceLoader
 class BoosterPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
+        project.gradle.addListener(BoosterTransformTaskExecutionListener(project))
+
         when {
             project.plugins.hasPlugin("com.android.application") || project.plugins.hasPlugin("com.android.dynamic-feature") -> project.getAndroid<AppExtension>().let { android ->
                 android.registerTransform(BoosterAppTransform(project))

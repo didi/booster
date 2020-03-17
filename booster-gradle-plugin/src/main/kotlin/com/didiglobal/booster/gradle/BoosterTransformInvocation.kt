@@ -95,7 +95,7 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
         ArtifactManager.SYMBOL_LIST -> variant.scope.symbolList
         ArtifactManager.SYMBOL_LIST_WITH_PACKAGE_NAME -> variant.scope.symbolListWithPackageName
         ArtifactManager.DATA_BINDING_DEPENDENCY_ARTIFACTS -> variant.scope.dataBindingDependencyArtifacts.listFiles()?.toList()
-                ?: emptyList()
+            ?: emptyList()
         else -> TODO("Unexpected type: $type")
     }
 
@@ -158,29 +158,37 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
 
     @Suppress("NON_EXHAUSTIVE_WHEN")
     private fun doIncrementalTransform(jarInput: JarInput) {
-        outputProvider?.let { provider ->
-            val output = provider.getContentLocation(jarInput.name, jarInput.contentTypes, jarInput.scopes, Format.JAR)
-            when (jarInput.status) {
-                REMOVED -> output.delete()
-                CHANGED, ADDED -> {
-                    project.logger.info("Transforming ${jarInput.file}")
-                    jarInput.transform(output, this)
+        when (jarInput.status) {
+            REMOVED -> jarInput.file.delete()
+            CHANGED, ADDED -> {
+                project.logger.info("Transforming ${jarInput.file}")
+                outputProvider?.let { provider ->
+                    jarInput.transform(provider.getContentLocation(jarInput.name, jarInput.contentTypes, jarInput.scopes, Format.JAR), this)
                 }
-                else -> Unit
             }
         }
     }
 
     @Suppress("NON_EXHAUSTIVE_WHEN")
     private fun doIncrementalTransform(dirInput: DirectoryInput, base: URI) {
-        outputProvider?.let { provider ->
-            val root = provider.getContentLocation(dirInput.name, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY)
-            dirInput.changedFiles.forEach { (file, status) ->
-                val output = File(root, base.relativize(file.toURI()).path)
-                when (status) {
-                    REMOVED -> output.deleteRecursively()
-                    ADDED, CHANGED -> {
-                        project.logger.info("Transforming $file")
+        dirInput.changedFiles.forEach { (file, status) ->
+            when (status) {
+                REMOVED -> {
+                    project.logger.info("Deleting $file")
+                    outputProvider?.let { provider ->
+                         provider.getContentLocation(dirInput.name, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY).parentFile.listFiles()?.asSequence()
+                            ?.filter { it.isDirectory }
+                            ?.map { File(it, dirInput.file.toURI().relativize(file.toURI()).path) }
+                            ?.filter { it.exists() }
+                            ?.forEach { it.delete() }
+                    }
+                    file.delete()
+                }
+                ADDED, CHANGED -> {
+                    project.logger.info("Transforming $file")
+                    outputProvider?.let { provider ->
+                        val root = provider.getContentLocation(dirInput.name, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY)
+                        val output = File(root, base.relativize(file.toURI()).path)
                         file.transform(output) { bytecode ->
                             bytecode.transform(this)
                         }
@@ -189,7 +197,6 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
             }
         }
     }
-
 }
 
 private fun ByteArray.transform(invocation: BoosterTransformInvocation): ByteArray {
