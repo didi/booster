@@ -227,7 +227,7 @@ Welcome to contribute by creating issues or sending pull requests. See [Contribu
 
 Welcome to join the community on [spectrum](https://spectrum.chat/booster).
 
-![Booster交流群](https://user-images.githubusercontent.com/2344882/74929197-fc2bd980-5415-11ea-859c-a33f5e350cfa.png)
+![Booster交流群](https://user-images.githubusercontent.com/2344882/76924019-10c59980-6910-11ea-863d-e424e69b1a4c.png)
 
 ## License
 
