@@ -47,7 +47,12 @@ import kotlin.streams.toList
 /**
  * @author johnsonlee
  */
-class Profiler(val providedClasspath: Collection<File>, val compileClasspath: Collection<File>, val artifacts: ArtifactManager) {
+class Profiler(
+        val providedClasspath: Collection<File>,
+        val compileClasspath: Collection<File>,
+        val artifacts: ArtifactManager,
+        val properties: Map<String, *> = emptyMap<String, Any>()
+) {
 
     private val providedClasses = providedClasspath.map(ClassSet.Companion::from).fold()
 
@@ -81,8 +86,8 @@ class Profiler(val providedClasspath: Collection<File>, val compileClasspath: Co
         UI_THREAD_ANNOTATIONS.filter(classes::contains).map(::descriptor).toSet()
     }
 
-    constructor(platform: File, compileClasspath: Collection<File>, artifacts: ArtifactManager)
-            : this(platform.bootClasspath, compileClasspath, artifacts)
+    constructor(platform: File, compileClasspath: Collection<File>, artifacts: ArtifactManager, properties: Map<String, *> = emptyMap<String, Any>())
+            : this(platform.bootClasspath, compileClasspath, artifacts, properties)
 
     fun profile(output: File) {
         this.classes.load().use {
@@ -280,10 +285,10 @@ class Profiler(val providedClasspath: Collection<File>, val compileClasspath: Co
 
     private fun dump(output: File) {
         val graph = globalBuilder.build()
-        val blacklist = URL(VALUE_BLACKLIST).openStream().bufferedReader().use {
+        val blacklist = URL(properties[PROPERTY_BLACKLIST]?.toString() ?: VALUE_BLACKLIST).openStream().bufferedReader().use {
             it.readLines().filter(String::isNotBlank).map(CallGraph.Node.Companion::valueOf).toSet()
         }
-        val whitelist = URL(VALUE_WHITELIST).openStream().bufferedReader().use {
+        val whitelist = URL(properties[PROPERTY_WHITELIST]?.toString() ?: VALUE_WHITELIST).openStream().bufferedReader().use {
             it.readLines().filter(String::isNotBlank).map(CallGraph.Node.Companion::valueOf).toSet()
         }
 

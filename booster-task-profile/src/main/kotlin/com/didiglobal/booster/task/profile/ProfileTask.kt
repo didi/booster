@@ -40,7 +40,7 @@ open class ProfileTask : AbstractTask() {
 
         val output = project.projectDir.file("build", "reports", Build.ARTIFACT, variant.dirName)
 
-        Profiler(variant.extension.bootClasspath, classpath, variant.artifacts).profile(output)
+        Profiler(variant.extension.bootClasspath, classpath, variant.artifacts, project.properties).profile(output)
     }
 
 }
