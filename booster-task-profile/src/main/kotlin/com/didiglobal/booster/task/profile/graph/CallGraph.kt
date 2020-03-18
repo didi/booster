@@ -2,6 +2,7 @@ package com.didiglobal.booster.task.profile.graph
 
 import java.io.PrintWriter
 import java.util.Objects
+import java.util.concurrent.CopyOnWriteArraySet
 
 /**
  * Represents the call graph
@@ -102,9 +103,7 @@ class CallGraph private constructor(private val edges: Map<Node, Set<Node>>, val
         fun hasEdge(from: Node, to: Node) = this.edges.containsKey(from) && this.edges[from]?.contains(to) == true
 
         fun addEdge(from: Node, to: Node) = this.also {
-            edges.getOrPut(from) {
-                mutableSetOf()
-            }.add(to)
+            edges.getOrPut(from) { CopyOnWriteArraySet() } += to
         }
 
         fun build() = CallGraph(this.edges, this.title)

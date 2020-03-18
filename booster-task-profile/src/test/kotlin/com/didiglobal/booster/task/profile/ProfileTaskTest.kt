@@ -10,8 +10,8 @@ class ProfileTaskTest {
 
     @Test
     fun `check if lint-apis exists`() {
-        assertNotNull(DEFAULT_APIS)
-        assertTrue(URL(DEFAULT_APIS).openStream().bufferedReader().use {
+        assertNotNull(VALUE_BLACKLIST)
+        assertTrue(URL(VALUE_BLACKLIST).openStream().bufferedReader().use {
             it.readLines().map(Wildcard.Companion::valueOf).toSet()
         }.isNotEmpty())
     }

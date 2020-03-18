@@ -8,14 +8,10 @@ import org.xml.sax.helpers.DefaultHandler
  */
 class LayoutHandler : DefaultHandler() {
 
-    private val _views = mutableSetOf<String>()
-
-    val views: Set<String>
-        get() = setOf(*_views.toTypedArray())
+    val views = mutableSetOf<String>()
 
     override fun startElement(uri: String, localName: String, qName: String, attributes: Attributes) {
-        _views += qName
+        views += qName
     }
-
 
 }

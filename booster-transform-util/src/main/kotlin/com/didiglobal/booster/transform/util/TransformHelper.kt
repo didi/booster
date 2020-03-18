@@ -36,12 +36,17 @@ open class TransformHelper(
     fun transform(output: File = TMPDIR, vararg transformers: Transformer) {
         val self = this
         val inputs = if (this.input.isDirectory) this.input.listFiles()?.toList() ?: emptyList() else listOf(this.input)
+        val classpath = inputs.filter {
+            it.isDirectory || it.extension.run {
+                equals("class", true) || equals("jar", true)
+            }
+        }
         val context = object : AbstractTransformContext(
                 applicationId,
                 variant,
-                listOf(File(platform, "android.jar")),
-                inputs,
-                inputs
+                listOf(platform.file("android.jar"), platform.file("optional", "org.apache.http.legacy.jar")),
+                classpath,
+                classpath
         ) {
             override val projectDir = output
             override val artifacts = self.artifacts

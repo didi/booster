@@ -2,6 +2,8 @@ package com.didiglobal.booster.task.profile
 
 import com.didiglobal.booster.task.profile.graph.CallGraph
 
+private const val DOLLAR = '$'
+
 /**
  * The following classes exclude from lint
  *
@@ -13,27 +15,10 @@ import com.didiglobal.booster.task.profile.graph.CallGraph
  * - `com.didiglobal.booster.instrument.**`
  * - `**.R`
  * - `**.R$*`
+ * - `BuildConfig`
  */
-internal val EXCLUDES = Regex("^(((android[x]?)|(com/(((google/)?android)|(google/gson)|(didiglobal/booster/instrument))))/.+)|(.+/R(\\$[a-z]+)?)$")
+internal val EXCLUDES = Regex("^(((android[x]?)|(com/(((google/)?android)|(google/gson)|(didiglobal/booster/instrument))))/.+)|(.+/((R[2]?(${DOLLAR}[a-z]+)?)|(BuildConfig)))$")
 
-/**
- * Classes annotated with @MainThread
- */
-internal val PLATFORM_CLASSES_RUN_ON_MAIN_THREAD = arrayOf(
-        "android/app/Application",
-        "android/app/Activity",
-        "android/app/Service",
-        "android/content/BroadcastReceiver",
-        "android/content/ContentProvider"
-)
-
-/**
- * Classes annotated with @UiThread
- */
-internal val PLATFORM_CLASSES_RUN_ON_UI_THREAD = arrayOf(
-        "android/view/View",
-        "android/widget/Magnifier"
-)
 
 internal val PLATFORM_METHODS_RUN_ON_UI_THREAD = arrayOf<CallGraph.Node>(
 
@@ -50,31 +35,31 @@ internal val PLATFORM_METHODS_RUN_ON_MAIN_THREAD = arrayOf(
 ).map(CallGraph.Node.Companion::valueOf).toSet()
 
 internal val MAIN_THREAD_ANNOTATIONS = arrayOf(
-        "Landroidx/annotation/MainThread;",
-        "Landroid/support/annotation/MainThread;",
-        "Landroid/annotation/MainThread;"
+        "androidx/annotation/MainThread",
+        "android/support/annotation/MainThread",
+        "android/annotation/MainThread"
 )
 
 internal val UI_THREAD_ANNOTATIONS = arrayOf(
-        "Landroidx/annotation/UiThread;",
-        "Landroid/support/annotation/UiThread;",
-        "Landroid/annotation/UiThread;"
+        "androidx/annotation/UiThread",
+        "android/support/annotation/UiThread",
+        "android/annotation/UiThread"
 )
 
 internal val WORKER_THREAD_ANNOTATIONS = arrayOf(
-        "Landroidx/annotation/WorkerThread;",
-        "Landroid/support/annotation/WorkerThread;",
-        "Landroid/annotation/WorkerThread;"
+        "androidx/annotation/WorkerThread",
+        "android/support/annotation/WorkerThread",
+        "android/annotation/WorkerThread"
 )
 
 internal val BINDER_THREAD_ANNOTATIONS = arrayOf(
-        "Landroidx/annotation/BinderThread;",
-        "Landroid/support/annotation/BinderThread;",
-        "Landroid/annotation/BinderThread;"
+        "androidx/annotation/BinderThread",
+        "android/support/annotation/BinderThread",
+        "android/annotation/BinderThread"
 )
 
 internal val ANY_THREAD_ANNOTATIONS = arrayOf(
-        "Landroidx/annotation/AnyThread;",
-        "Landroid/support/annotation/AnyThread;",
-        "Landroid/annotation/AnyThread;"
+        "androidx/annotation/AnyThread",
+        "android/support/annotation/AnyThread",
+        "android/annotation/AnyThread"
 )

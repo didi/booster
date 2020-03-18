@@ -1,0 +1,1 @@
+android/util/Log.getStackTraceString(Ljava/lang/Throwable;)Ljava/lang/String;

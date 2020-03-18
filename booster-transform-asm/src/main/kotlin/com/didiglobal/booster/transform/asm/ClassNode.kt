@@ -23,6 +23,12 @@ val ClassNode.className: String
 val ClassNode.isAnnotation: Boolean
     get() = 0 != (access and Opcodes.ACC_ANNOTATION)
 
+val ClassNode.isInterface: Boolean
+    get() = 0 != (access and Opcodes.ACC_INTERFACE)
+
+val ClassNode.isAbstract: Boolean
+    get() = 0 != (access and Opcodes.ACC_ABSTRACT)
+
 val ClassNode.isPublic: Boolean
     get() = 0 != (access and Opcodes.ACC_PUBLIC)
 
@@ -32,13 +38,21 @@ val ClassNode.isProtected: Boolean
 val ClassNode.isPrivate: Boolean
     get() = 0 != (access and Opcodes.ACC_PRIVATE)
 
-fun ClassNode.isInvisibleAnnotationPresent(vararg annotations: String) = this.invisibleAnnotations?.map {
+val ClassNode.isStatic: Boolean
+    get() = 0 != (access and Opcodes.ACC_STATIC)
+
+fun ClassNode.isInvisibleAnnotationPresent(annotations: Iterable<String>) = this.invisibleAnnotations?.map {
     it.desc
 }?.any(annotations::contains) ?: false
 
-fun ClassNode.isVisibleAnnotationPresent(vararg annotations: String) = this.visibleAnnotations?.map {
+fun ClassNode.isInvisibleAnnotationPresent(vararg annotations: String) = isInvisibleAnnotationPresent(annotations.asIterable())
+
+
+fun ClassNode.isVisibleAnnotationPresent(annotations: Iterable<String>) = this.visibleAnnotations?.map {
     it.desc
 }?.any(annotations::contains) ?: false
+
+fun ClassNode.isVisibleAnnotationPresent(vararg annotations: String) = isVisibleAnnotationPresent(annotations.asIterable())
 
 val ClassNode.defaultClinit: MethodNode
     get() = MethodNode(Opcodes.ACC_STATIC, "<clinit>", "()V", null, null).apply {
