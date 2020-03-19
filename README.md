@@ -150,12 +150,6 @@ Here are all the modules of Booster:
   classpath "com.didiglobal.booster:booster-transform-br-inline:$booster_version"
   ```
 
-- [booster-transform-verifier](./booster-transform-verifier) - Bytecode 校验
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-transform-verifier:$booster_version"
-  ```
-
 ### System Bug
 
 - [booster-transform-finalizer-watchdog-daemon](./booster-transform-finalizer-watchdog-daemon) - 修复 *finalizer* 导致的 `TimeoutException`
