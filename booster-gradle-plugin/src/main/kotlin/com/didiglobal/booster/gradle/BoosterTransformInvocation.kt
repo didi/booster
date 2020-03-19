@@ -154,7 +154,17 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
     private fun doIncrementalTransform(dirInput: DirectoryInput, base: URI) {
         dirInput.changedFiles.forEach { (file, status) ->
             when (status) {
-                REMOVED -> file.delete()
+                REMOVED -> {
+                    project.logger.info("Deleting $file")
+                    outputProvider?.let { provider ->
+                        provider.getContentLocation(dirInput.name, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY).parentFile.listFiles()?.asSequence()
+                            ?.filter { it.isDirectory }
+                            ?.map { File(it, dirInput.file.toURI().relativize(file.toURI()).path) }
+                            ?.filter { it.exists() }
+                            ?.forEach { it.delete() }
+                    }
+                    file.delete()
+                }
                 ADDED, CHANGED -> {
                     project.logger.info("Transforming $file")
                     outputProvider?.let { provider ->
@@ -168,7 +178,6 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
             }
         }
     }
-
 }
 
 private fun ByteArray.transform(invocation: BoosterTransformInvocation): ByteArray {
