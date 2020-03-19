@@ -391,7 +391,9 @@ class Analyser(
     }
 
     private fun isHit(apis: Set<CallGraph.Node>, target: CallGraph.Node) = apis.contains(target) || apis.any {
-        target.name == it.name && target.desc == it.desc && hierarchy.isInheritFrom(target.type, it.type)
+        // only match type, name and args because of covariant return type is partially allowed since JDK 1.5
+        // (overridden method can have different return type in sub-type)
+        target.name == it.name && target.args == it.args && hierarchy.isInheritFrom(target.type, it.type)
     }
 }
 

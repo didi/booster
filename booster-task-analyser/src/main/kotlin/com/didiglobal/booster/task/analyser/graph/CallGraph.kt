@@ -16,7 +16,7 @@ class CallGraph private constructor(private val edges: Map<Node, Set<Node>>, val
         /**
          * A virtual root node of call graph
          */
-        val ROOT = Node("*", "*", "*")
+        val ROOT = Node("*", "*", "*", "")
     }
 
     val nodes: Collection<Node>
@@ -41,7 +41,10 @@ class CallGraph private constructor(private val edges: Map<Node, Set<Node>>, val
         }.flatten().iterator()
     }
 
-    open class Node(val type: String, val name: String, val desc: String) {
+    open class Node internal constructor(val type: String, val name: String, val desc: String, val args: String) {
+
+        constructor(type: String, name: String, desc: String)
+                : this(type, name, desc, desc.substring(desc.indexOf('(') + 1, desc.lastIndexOf(')')))
 
         override fun equals(other: Any?) = when {
             other === this -> true

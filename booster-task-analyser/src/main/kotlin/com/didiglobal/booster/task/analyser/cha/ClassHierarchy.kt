@@ -1,5 +1,6 @@
 package com.didiglobal.booster.task.analyser.cha
 
+import com.didiglobal.booster.transform.asm.isFinal
 import com.didiglobal.booster.transform.asm.isInterface
 import org.objectweb.asm.tree.ClassNode
 import java.util.Collections
@@ -30,6 +31,7 @@ class ClassHierarchy(private val classSet: ClassSet) {
     fun isInheritFrom(child: ClassNode, parent: ClassNode) = when {
         parent.isInterface -> isInheritFromInterface(child, parent)
         child.isInterface -> parent.name == JAVA_LANG_OBJECT
+        parent.isFinal -> false
         else -> isInheritFromClass(child, parent)
     }
 
@@ -39,7 +41,7 @@ class ClassHierarchy(private val classSet: ClassSet) {
         return isInheritFrom(childClass, parentClass)
     }
 
-    fun isInheritFrom(child: String, parent: ClassNode) = this[child]?.let { childClass ->
+    fun isInheritFrom(child: String, parent: ClassNode) = (!parent.isFinal) && this[child]?.let { childClass ->
         isInheritFrom(childClass, parent)
     } ?: false
 

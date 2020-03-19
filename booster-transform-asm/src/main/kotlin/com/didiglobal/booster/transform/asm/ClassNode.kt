@@ -41,6 +41,9 @@ val ClassNode.isPrivate: Boolean
 val ClassNode.isStatic: Boolean
     get() = 0 != (access and Opcodes.ACC_STATIC)
 
+val ClassNode.isFinal: Boolean
+    get() = 0 != (access and Opcodes.ACC_FINAL)
+
 fun ClassNode.isInvisibleAnnotationPresent(annotations: Iterable<String>) = this.invisibleAnnotations?.map {
     it.desc
 }?.any(annotations::contains) ?: false
