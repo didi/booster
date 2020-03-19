@@ -55,7 +55,7 @@ The best practise of using Booster is integrating the specific moudle to solve t
 
 ```groovy
 buildscript {
-    ext.booster_version = '1.3.2'
+    ext.booster_version = '1.5.0'
     repositories {
         google()
         mavenCentral()
