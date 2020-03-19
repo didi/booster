@@ -1,6 +1,7 @@
 package com.didiglobal.booster.task.analyser.cha
 
 import com.didiglobal.booster.kotlinx.isEmpty
+import com.didiglobal.booster.kotlinx.red
 import org.objectweb.asm.tree.ClassNode
 import java.io.Closeable
 import java.io.File
@@ -25,7 +26,10 @@ interface ClassSet : Set<ClassNode>, Closeable {
         fun from(file: File): ClassSet = when {
             file.isDirectory -> DirectoryClassSet(file)
             file.extension matches ARCHIVES -> ArchivedClassSet(file)
-            else -> TODO("unsupported file: $file")
+            else -> {
+                System.err.println(red("unsupported file: $file"))
+                EmptyClassSet()
+            }
         }
 
         fun of(vararg classSets: ClassSet): ClassSet = of(classSets.asIterable())
