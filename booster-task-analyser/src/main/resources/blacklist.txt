@@ -23,7 +23,6 @@ java/io/FileInputStream.read([B)I
 java/io/FileInputStream.read([BII)I
 java/io/FileInputStream.reset()V
 java/io/FileInputStream.skip(J)J
-
 java/io/FileOutputStream.<init>(Ljava/io/File;)V
 java/io/FileOutputStream.<init>(Ljava/io/File;Z)V
 java/io/FileOutputStream.<init>(Ljava/io/FileDescriptor;)V
@@ -97,6 +96,17 @@ java/io/RandomAccessFile.writeInt(I)V
 java/io/RandomAccessFile.writeLong(J)V
 java/io/RandomAccessFile.writeShort(I)V
 java/io/RandomAccessFile.writeUTF(Ljava/lang/String;)V
+java/net/URL.openConnection()Ljava/net/URLConnection;
+java/net/URL.openConnection(Ljava/net/Proxy;)Ljava/net/URLConnection;
+java/net/URL.openStream()Ljava/io/InputStream;
+java/nio/channels/FileChannel.lock()Ljava/nio/channels/FileLock;
+java/nio/channels/FileChannel.lock(JJZ)Ljava/nio/channels/FileLock;
+java/util/concurrent/locks/Lock.lock()V
+java/util/concurrent/locks/Condition.await()V
+java/util/concurrent/locks/Condition.awaitUninterruptibly()V
+java/util/concurrent/locks/Condition.awaitNanos(J)J
+java/util/concurrent/locks/Condition.await(JLjava/util/concurrent/TimeUnit;)Z
+java/util/concurrent/locks/Condition.awaitUntil(Ljava/util/Date;)Z
 java/util/ServiceLoader.load(Ljava/lang/Class;)Ljava/util/ServiceLoader;
 java/util/ServiceLoader.load(Ljava/lang/Class;Ljava/lang/ClassLoader;)Ljava/util/ServiceLoader;
 java/util/zip/ZipFile.<init>(Ljava/lang/String;)
@@ -104,6 +114,10 @@ java/util/zip/ZipFile.getInputStream(Ljava/util/zip/ZipEntry;)
 java/util/jar/JarFile.<init>(Ljava/lang/String;)
 java/util/jar/JarFile.getInputStream(Ljava/util/jar/JarEntry;)
 android/content/Context.getSharedPreferences(Ljava/lang/String;I)Landroid/content/SharedPreferences;
+android/content/ContentResolver.openInputStream(Landroid/net/Uri;)Ljava/io/InputStream;
+android/content/ContentResolver.openOutputStream(Landroid/net/Uri;Ljava/lang/String;)Ljava/io/OutputStream;
+android/content/res/AssetFileDescriptor.createInputStream()Ljava/io/FileInputStream;
+android/content/res/AssetFileDescriptor.createOutputStream()Ljava/io/FileOutputStream;
 android/content/SharedPreferences$Editor.apply()V
 android/content/SharedPreferences$Editor.commit()B
 android/content/res/AssetManager.list(Ljava/lang/String;)[Ljava/lang/String;
