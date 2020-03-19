@@ -2,6 +2,7 @@ package com.didiglobal.booster.task.analyser.graph
 
 import java.io.PrintWriter
 import java.util.Objects
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArraySet
 
 /**
@@ -82,7 +83,7 @@ class CallGraph private constructor(private val edges: Map<Node, Set<Node>>, val
 
     class Builder {
 
-        private val edges = mutableMapOf<Node, MutableSet<Node>>()
+        private val edges = ConcurrentHashMap<Node, MutableSet<Node>>()
 
         private var title = ""
 
@@ -92,45 +93,28 @@ class CallGraph private constructor(private val edges: Map<Node, Set<Node>>, val
             this.title = title
         }
 
-        fun addEdges(vararg edges: Edge) = this.addEdges(edges.asList())
+        fun addEdge(edge: Edge) = addEdge(edge.from, edge.to)
 
-        fun addEdges(edges: Collection<Edge>) = this.apply {
-            edges.forEach {
-                addEdge(it.from, it.to)
-            }
+        fun addEdge(from: Node, to: Node) = apply {
+            edges.getOrPut(from) { CopyOnWriteArraySet() } += to
         }
 
-        fun addEdges(from: Node, to: Collection<Node>) = apply {
+        fun addEdges(from: Node, to: Iterable<Node>) = apply {
             edges.getOrPut(from) { CopyOnWriteArraySet() } += to
+        }
+
+        fun addEdges(chain: Iterable<Node>) = apply {
+            chain.zipWithNext(::Edge).forEach {
+                this.addEdge(it)
+            }
         }
 
         fun hasEdge(edge: Edge) = this.hasEdge(edge.from, edge.to)
 
         fun hasEdge(from: Node, to: Node) = this.edges.containsKey(from) && this.edges[from]?.contains(to) == true
 
-        fun addEdge(from: Node, vararg to: Node) = apply {
-            edges.getOrPut(from) { CopyOnWriteArraySet() } += to
-        }
-
         fun build() = CallGraph(this.edges, this.title)
 
     }
 
-}
-
-fun Iterable<CallGraph.Node>.toEdges(): Collection<CallGraph.Edge> {
-    val iterator = iterator()
-    if (!iterator.hasNext()) {
-        return emptyList()
-    }
-
-    val result = mutableListOf<CallGraph.Edge>()
-    var current = iterator.next()
-    while (iterator.hasNext()) {
-        val next = iterator.next()
-        result.add(CallGraph.Edge(current, next))
-        current = next
-    }
-
-    return result
 }

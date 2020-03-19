@@ -12,10 +12,10 @@ import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.kotlinx.yellow
 import com.didiglobal.booster.task.analyser.cha.ClassHierarchy
 import com.didiglobal.booster.task.analyser.cha.ClassSet
+import com.didiglobal.booster.task.analyser.cha.JAVA_LANG_OBJECT
 import com.didiglobal.booster.task.analyser.cha.fold
 import com.didiglobal.booster.task.analyser.dot.GraphType
 import com.didiglobal.booster.task.analyser.graph.CallGraph
-import com.didiglobal.booster.task.analyser.graph.toEdges
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.asm.className
 import com.didiglobal.booster.transform.asm.getValue
@@ -28,7 +28,6 @@ import com.didiglobal.booster.transform.asm.isProtected
 import com.didiglobal.booster.transform.asm.isPublic
 import com.didiglobal.booster.transform.asm.isStatic
 import com.didiglobal.booster.transform.util.ComponentHandler
-import com.intellij.psi.CommonClassNames.JAVA_LANG_OBJECT
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.MethodInsnNode
 import org.objectweb.asm.tree.MethodNode
@@ -78,6 +77,14 @@ class Analyser(
 
     private val nodesRunOnUiThread = CopyOnWriteArraySet(PLATFORM_METHODS_RUN_ON_UI_THREAD)
     private val nodesRunOnMainThread = CopyOnWriteArraySet(PLATFORM_METHODS_RUN_ON_MAIN_THREAD)
+
+    private val blacklist = URL(properties[PROPERTY_BLACKLIST]?.toString() ?: VALUE_BLACKLIST).openStream().bufferedReader().use {
+        it.readLines().filter(String::isNotBlank).map(CallGraph.Node.Companion::valueOf).toSet()
+    }
+
+    private val whitelist = URL(properties[PROPERTY_WHITELIST]?.toString() ?: VALUE_WHITELIST).openStream().bufferedReader().use {
+        it.readLines().filter(String::isNotBlank).map(CallGraph.Node.Companion::valueOf).toSet()
+    }
 
     private val mainThreadAnnotations: Set<String> by lazy {
         MAIN_THREAD_ANNOTATIONS.filter(classes::contains).map(::descriptor).toSet()
@@ -162,7 +169,7 @@ class Analyser(
         ).map {
             executor.submit(Callable<Triple<ClassNode, Collection<String>, Collection<MethodNode>>> {
                 val clazz = this.hierarchy[it.first] ?: throw ClassNotFoundException(it.first.replace('/', '.'))
-                Triple(clazz, it.second.map { it.replace('.', '/') }, clazz.methods.filter(entryPointFilter))
+                Triple(clazz, it.second.map { it.replace('.', '/') }, clazz.methods.filter(MethodNode::isEntryPoint))
             })
         }.map { future ->
             val (clazz, components, entryPoints) = future.get()
@@ -233,13 +240,12 @@ class Analyser(
                             classesRunOnUiThread[it.name] = it
                         }
 
-                        clazz.methods.filter {
-                            (it.isPublic || it.isProtected) && !it.isNative
-                        }.map { m ->
-                            CallGraph.Node(clazz.name, m.name, m.desc).also {
-                                globalBuilder.addEdge(CallGraph.ROOT, it)
-                            }
+                        val nodes = clazz.methods.filter(MethodNode::isEntryPoint).map { m ->
+                            CallGraph.Node(clazz.name, m.name, m.desc)
                         }
+
+                        globalBuilder.addEdges(CallGraph.ROOT, nodes)
+                        nodes
                     }
                 }.flatten()
             }
@@ -286,22 +292,14 @@ class Analyser(
 
     private fun dump(output: File) {
         val graph = globalBuilder.build()
-        val blacklist = URL(properties[PROPERTY_BLACKLIST]?.toString() ?: VALUE_BLACKLIST).openStream().bufferedReader().use {
-            it.readLines().filter(String::isNotBlank).map(CallGraph.Node.Companion::valueOf).toSet()
-        }
-        val whitelist = URL(properties[PROPERTY_WHITELIST]?.toString() ?: VALUE_WHITELIST).openStream().bufferedReader().use {
-            it.readLines().filter(String::isNotBlank).map(CallGraph.Node.Companion::valueOf).toSet()
-        }
 
         // Analyse global call graph and separate each chain to individual graph
         graph[CallGraph.ROOT].forEach { node ->
-            analyse(graph, node, listOf(CallGraph.ROOT, node), blacklist, whitelist) { chain ->
+            analyse(graph, node, listOf(CallGraph.ROOT, node)) { chain ->
                 val builder = graphBuilders.getOrPut(node.type) {
                     CallGraph.Builder().setTitle(node.type.replace('/', '.'))
                 }
-                chain.toEdges().forEach { edge ->
-                    builder.addEdges(edge)
-                }
+                builder.addEdges(chain)
             }
         }
 
@@ -335,10 +333,14 @@ class Analyser(
      * @param chain The call chain
      * @param blacklist The api black list
      */
-    private fun analyse(graph: CallGraph, node: CallGraph.Node, chain: List<CallGraph.Node>, blacklist: Set<CallGraph.Node>, whitelist: Set<CallGraph.Node>, action: (List<CallGraph.Node>) -> Unit) {
+    private fun analyse(graph: CallGraph, node: CallGraph.Node, chain: List<CallGraph.Node>, action: (List<CallGraph.Node>) -> Unit) {
+        if (node in whitelist) {
+            return
+        }
+
         graph[node].forEach loop@{ target ->
             // break circular invocation
-            if (chain.contains(target) || chain.intersect(blacklist).isNotEmpty()) {
+            if (chain.contains(target)) {
                 return@loop
             }
 
@@ -348,7 +350,7 @@ class Analyser(
                 return@loop
             }
 
-            analyse(graph, target, newChain, blacklist, whitelist, action)
+            analyse(graph, target, newChain, action)
         }
     }
 
@@ -413,9 +415,10 @@ internal fun MethodNode.isSubscribeOnMainThread(): Boolean {
 private val ClassNode.isInclude: Boolean
     get() = !(EXCLUDES matches name || isAnnotation || ((isInterface || isAbstract) && methods.none { !it.isAbstract }))
 
-private fun descriptor(name: String) = "L${name};"
+private val MethodNode.isEntryPoint: Boolean
+    get() = (isPublic || isProtected) && !isNative && !isStatic
 
-private val entryPointFilter = { m: MethodNode -> (m.isPublic || m.isProtected) && !m.isNative && !m.isStatic }
+private fun descriptor(name: String) = "L${name};"
 
 private const val EVENTBUS_SUBSCRIBE = "Lorg/greenrobot/eventbus/Subscribe;"
 private const val EVENTBUS_THREAD_MODE = "Lorg/greenrobot/eventbus/ThreadMode;"

@@ -45,7 +45,6 @@ enum class GraphType : CallGraphFormatter {
 internal fun CallGraph.Node.toPrettyString(): String {
     val lp = this.desc.indexOf('(')
     val rp = this.desc.lastIndexOf(')')
-    val type = this.type.substringAfterLast('/')
     val desc = ArgumentsParser(this.desc, lp + 1, rp - lp - 1).parse().joinToString(", ", "(", ")") {
         it.substringAfterLast('.')
     }
