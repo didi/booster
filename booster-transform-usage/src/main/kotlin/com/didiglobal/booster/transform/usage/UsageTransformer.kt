@@ -7,9 +7,7 @@ import com.didiglobal.booster.transform.asm.ClassTransformer
 import com.google.auto.service.AutoService
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.MethodInsnNode
-import java.io.File
-import java.net.URI
-import java.util.stream.Collectors
+import java.net.URL
 
 /**
  * Represents a class node transformer for type/method/field usage analysis
@@ -19,15 +17,25 @@ import java.util.stream.Collectors
 @AutoService(ClassTransformer::class)
 class UsageTransformer : ClassTransformer {
 
-    override fun transform(context: TransformContext, klass: ClassNode): ClassNode {
-        if (context.hasProperty(PROPERTY_USED_APIS)) {
-            val apis = context.usedApis
+    private lateinit var usedApis: Set<String>
 
+    override fun onPreTransform(context: TransformContext) {
+        this.usedApis = context.getProperty<String?>(PROPERTY_USED_APIS, null)?.let { uri ->
+            URL(uri).openStream().bufferedReader().use {
+                it.readLines().filter(String::isNotBlank).map { line ->
+                    line.trim()
+                }.toSet()
+            }
+        } ?: emptySet()
+    }
+
+    override fun transform(context: TransformContext, klass: ClassNode): ClassNode {
+        if (this.usedApis.isNotEmpty()) {
             klass.methods.forEach { method ->
                 method.instructions.iterator().asSequence().filterIsInstance(MethodInsnNode::class.java).map {
                     "${it.owner}.${it.name}${it.desc}"
                 }.filter {
-                    apis.contains(it)
+                    this.usedApis.contains(it)
                 }.forEach {
                     println("$CSI_YELLOW ! ${klass.name}.${method.name}${method.desc}: $CSI_RESET$it")
                 }
@@ -39,16 +47,6 @@ class UsageTransformer : ClassTransformer {
 
 }
 
-private val TransformContext.usedApis: Set<String>
-    get() {
-        val uri = URI(this.getProperty(PROPERTY_USED_APIS))
-        val url = if (uri.isAbsolute) uri.toURL() else File(uri).toURI().toURL()
-
-        url.openStream().bufferedReader().use {
-            return it.lines().filter(String::isNotBlank).map { line ->
-                line.trim()
-            }.collect(Collectors.toSet())
-        }
-    }
-
 private val PROPERTY_USED_APIS = "${Build.ARTIFACT.replace('-', '.')}.apis"
+
+internal val DEFAULT_USED_APIS = UsageTransformer::class.java.classLoader.getResource("used-apis.txt")!!.toString()

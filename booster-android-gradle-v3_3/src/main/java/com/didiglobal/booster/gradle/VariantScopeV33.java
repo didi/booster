@@ -1,6 +1,9 @@
 package com.didiglobal.booster.gradle;
 
 import com.android.build.api.artifact.ArtifactType;
+import com.android.build.api.artifact.BuildArtifactType;
+import com.android.build.gradle.BaseExtension;
+import com.android.build.gradle.internal.api.artifact.SourceArtifactType;
 import com.android.build.gradle.internal.scope.AnchorOutputType;
 import com.android.build.gradle.internal.scope.InternalArtifactType;
 import com.android.build.gradle.internal.scope.VariantScope;
@@ -15,6 +18,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 class VariantScopeV33 {
+
+    @NotNull
+    static BaseExtension getExtension(@NotNull final VariantScope scope) {
+        return (BaseExtension) scope.getGlobalScope().getExtension();
+    }
 
     /**
      * The merged AndroidManifest.xml
@@ -67,6 +75,11 @@ class VariantScopeV33 {
     }
 
     @NotNull
+    static Collection<File> getAar(@NotNull final VariantScope scope) {
+        return getFinalArtifactFiles(scope, InternalArtifactType.AAR);
+    }
+
+    @NotNull
     static Collection<File> getApk(@NotNull final VariantScope scope) {
         return getFinalArtifactFiles(scope, InternalArtifactType.APK);
     }
@@ -78,8 +91,12 @@ class VariantScopeV33 {
 
     @NotNull
     static Map<String, Collection<File>> getAllArtifacts(@NotNull final VariantScope scope) {
-        return Stream.concat(Arrays.stream(InternalArtifactType.values()), Arrays.stream(AnchorOutputType.values()))
-                .collect(Collectors.toMap(Enum::name, v -> getFinalArtifactFiles(scope, v)));
+        return Stream.of(
+                AnchorOutputType.values(),
+                BuildArtifactType.values(),
+                SourceArtifactType.values(),
+                InternalArtifactType.values()
+        ).flatMap(Arrays::stream).collect(Collectors.toMap(Enum::name, v -> getFinalArtifactFiles(scope, v)));
     }
 
     @NotNull

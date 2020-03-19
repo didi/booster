@@ -2,11 +2,9 @@ apply from: '../gradle/booster.gradle'
 
 dependencies {
     kapt 'com.google.auto.service:auto-service:1.0-rc6'
-    api project(':booster-android-gradle-api')
     api project(':booster-annotations')
-    api project(':booster-task-spi')
+    api project(':booster-api')
     api project(':booster-transform-util')
-    api 'com.google.auto.service:auto-service:1.0-rc6'
     compileOnly 'com.android.tools.build:gradle:3.0.0'
     testCompileOnly 'com.android.tools.build:gradle:3.0.0'
 }

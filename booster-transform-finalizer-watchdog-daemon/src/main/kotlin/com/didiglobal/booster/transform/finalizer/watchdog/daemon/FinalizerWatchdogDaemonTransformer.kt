@@ -7,10 +7,9 @@ import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
 import com.didiglobal.booster.transform.asm.className
 import com.didiglobal.booster.transform.asm.findAll
-import com.didiglobal.booster.util.ComponentHandler
+import com.didiglobal.booster.transform.util.ComponentHandler
 import com.google.auto.service.AutoService
 import org.objectweb.asm.Opcodes
-import org.objectweb.asm.Opcodes.ACC_PROTECTED
 import org.objectweb.asm.Opcodes.ALOAD
 import org.objectweb.asm.Opcodes.ATHROW
 import org.objectweb.asm.Opcodes.INVOKESPECIAL

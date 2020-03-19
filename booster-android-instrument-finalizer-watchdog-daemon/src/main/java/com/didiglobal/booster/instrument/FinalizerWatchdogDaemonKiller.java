@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.TimeoutException;
 
-import static com.didiglobal.booster.android.bugfix.Constants.TAG;
+import static com.didiglobal.booster.instrument.Constants.TAG;
 
 /**
  * Stop thread {@code FinalizerWatchdogDaemon} to prevent crash caused by {@link TimeoutException}

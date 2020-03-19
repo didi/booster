@@ -3,7 +3,7 @@ package com.didiglobal.booster.kotlinx
 import java.util.stream.Stream
 import java.util.stream.StreamSupport
 
-fun <T> Iterable<T>.isEmpty() = iterator().hasNext()
+fun <T> Iterable<T>.isEmpty() = !iterator().hasNext()
 
 inline fun <K, V> Map<K, V>.ifNotEmpty(action: (Map<K, V>) -> Unit): Map<K, V> {
     if (isNotEmpty()) {

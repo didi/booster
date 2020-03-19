@@ -20,6 +20,10 @@ abstract class AbstractKlassPool(private val classpath: Collection<File>, final 
         classes.getOrDefault(name, findClass(name))
     }
 
+    override fun close() {
+        this.classLoader.close()
+    }
+
     override fun toString() = "classpath: $classpath"
 
     internal fun getImports(name: String): Collection<String> = this.imports[name] ?: this.parent?.let { it ->

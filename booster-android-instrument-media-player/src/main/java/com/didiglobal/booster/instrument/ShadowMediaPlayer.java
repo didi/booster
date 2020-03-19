@@ -7,11 +7,9 @@ import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
-import com.didiglobal.booster.android.bugfix.CaughtCallback;
-import com.didiglobal.booster.android.bugfix.Constants;
 
-import static com.didiglobal.booster.android.bugfix.Reflection.getFieldValue;
-import static com.didiglobal.booster.android.bugfix.Reflection.setFieldValue;
+import static com.didiglobal.booster.instrument.Reflection.getFieldValue;
+import static com.didiglobal.booster.instrument.Reflection.setFieldValue;
 
 /**
  * Shadow of {@code android.media.MediaPlayer}

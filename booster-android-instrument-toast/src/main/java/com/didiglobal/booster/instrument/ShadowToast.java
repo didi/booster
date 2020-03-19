@@ -4,12 +4,10 @@ import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
-import com.didiglobal.booster.android.bugfix.CaughtCallback;
-import com.didiglobal.booster.android.bugfix.CaughtRunnable;
 
-import static com.didiglobal.booster.android.bugfix.Constants.TAG;
-import static com.didiglobal.booster.android.bugfix.Reflection.getFieldValue;
-import static com.didiglobal.booster.android.bugfix.Reflection.setFieldValue;
+import static com.didiglobal.booster.instrument.Constants.TAG;
+import static com.didiglobal.booster.instrument.Reflection.getFieldValue;
+import static com.didiglobal.booster.instrument.Reflection.setFieldValue;
 
 public class ShadowToast {
 

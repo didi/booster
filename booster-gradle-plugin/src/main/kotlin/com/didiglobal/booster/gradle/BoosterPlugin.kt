@@ -20,7 +20,7 @@ class BoosterPlugin : Plugin<Project> {
 
         when {
             project.plugins.hasPlugin("com.android.application") || project.plugins.hasPlugin("com.android.dynamic-feature") -> project.getAndroid<AppExtension>().let { android ->
-                android.registerTransform(BoosterAppTransform(project))
+                android.registerTransform(BoosterTransform(project))
                 project.afterEvaluate {
                     this.variantProcessors.let { processors ->
                         android.applicationVariants.forEach { variant ->
@@ -32,7 +32,7 @@ class BoosterPlugin : Plugin<Project> {
                 }
             }
             project.plugins.hasPlugin("com.android.library") -> project.getAndroid<LibraryExtension>().let { android ->
-                android.registerTransform(BoosterLibTransform(project))
+                android.registerTransform(BoosterTransform(project))
                 project.afterEvaluate {
                     this.variantProcessors.let { processors ->
                         android.libraryVariants.forEach { variant ->

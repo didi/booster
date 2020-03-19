@@ -1,5 +1,6 @@
 package com.didiglobal.booster.gradle;
 
+import com.android.build.gradle.BaseExtension;
 import com.android.build.gradle.internal.scope.TaskOutputHolder.AnchorOutputType;
 import com.android.build.gradle.internal.scope.TaskOutputHolder.OutputType;
 import com.android.build.gradle.internal.scope.TaskOutputHolder.TaskOutputType;
@@ -20,6 +21,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 class VariantScopeV30 {
+
+    @NotNull
+    static BaseExtension getExtension(@NotNull final VariantScope scope) {
+        return (BaseExtension) scope.getGlobalScope().getExtension();
+    }
 
     /**
      * The merged AndroidManifest.xml
@@ -69,6 +75,11 @@ class VariantScopeV30 {
     @NotNull
     static Collection<File> getSymbolListWithPackageName(@NotNull final VariantScope scope) {
         return getOutput(scope, TaskOutputType.SYMBOL_LIST_WITH_PACKAGE_NAME);
+    }
+
+    @NotNull
+    static Collection<File> getAar(@NotNull final VariantScope scope) {
+        return getOutput(scope, TaskOutputType.AAR);
     }
 
     @NotNull

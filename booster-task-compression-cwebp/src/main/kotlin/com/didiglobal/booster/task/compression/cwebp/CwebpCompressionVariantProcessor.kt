@@ -10,8 +10,8 @@ import com.didiglobal.booster.gradle.mergeResourcesTask
 import com.didiglobal.booster.gradle.mergedRes
 import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.gradle.scope
+import com.didiglobal.booster.kotlinx.search
 import com.didiglobal.booster.task.spi.VariantProcessor
-import com.didiglobal.booster.util.search
 import com.google.auto.service.AutoService
 
 /**

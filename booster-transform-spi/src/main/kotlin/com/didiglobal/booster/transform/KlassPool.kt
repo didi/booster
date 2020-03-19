@@ -1,11 +1,13 @@
 package com.didiglobal.booster.transform
 
+import java.io.Closeable
+
 /**
  * Represents a class pool
  *
  * @author johnsonlee
  */
-interface KlassPool {
+interface KlassPool : Closeable {
 
     /**
      * Returns the parent

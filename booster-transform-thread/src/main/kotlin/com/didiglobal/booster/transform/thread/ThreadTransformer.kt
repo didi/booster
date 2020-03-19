@@ -10,7 +10,7 @@ import com.didiglobal.booster.transform.asm.className
 import com.didiglobal.booster.transform.asm.find
 import com.didiglobal.booster.transform.asm.findAll
 import com.didiglobal.booster.transform.asm.isInstanceOf
-import com.didiglobal.booster.util.ComponentHandler
+import com.didiglobal.booster.transform.util.ComponentHandler
 import com.google.auto.service.AutoService
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
@@ -41,7 +41,7 @@ class ThreadTransformer : ClassTransformer {
             parser.parse(manifest, handler)
             applications.addAll(handler.applications)
         }
-        this.optimizationEnabled = context.getProperty(PROPERTY_OPTIMIZATION_ENABLED)?.toBoolean() ?: DEFAULT_OPTIMIZATION_ENABLED
+        this.optimizationEnabled = context.getProperty(PROPERTY_OPTIMIZATION_ENABLED, "$DEFAULT_OPTIMIZATION_ENABLED").toBoolean()
         this.logger = context.reportsDir.file(Build.ARTIFACT).file(context.name).file("report.txt").touch().printWriter()
     }
 

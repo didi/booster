@@ -5,7 +5,7 @@ import com.android.build.gradle.api.BaseVariant
 import com.didiglobal.booster.compression.CompressionResults
 import com.didiglobal.booster.gradle.mergedManifests
 import com.didiglobal.booster.gradle.scope
-import com.didiglobal.booster.util.search
+import com.didiglobal.booster.kotlinx.search
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import java.io.File

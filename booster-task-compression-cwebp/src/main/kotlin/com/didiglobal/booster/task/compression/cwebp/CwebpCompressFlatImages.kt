@@ -15,7 +15,7 @@ import com.didiglobal.booster.gradle.scope
 import com.didiglobal.booster.kotlinx.CSI_RED
 import com.didiglobal.booster.kotlinx.CSI_RESET
 import com.didiglobal.booster.kotlinx.file
-import com.didiglobal.booster.util.search
+import com.didiglobal.booster.kotlinx.search
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.OutputDirectory
 import java.io.File

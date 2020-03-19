@@ -7,9 +7,12 @@ import com.google.auto.service.AutoService
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.tree.ClassNode
+import java.io.File
+import java.io.InputStream
 import java.lang.management.ManagementFactory
 import java.lang.management.ThreadMXBean
 import java.util.ServiceLoader
+import java.util.jar.JarFile
 
 /**
  * Represents bytecode transformer using ASM
@@ -81,4 +84,19 @@ class AsmTransformer : Transformer {
         durations[transformer] = durations.getOrDefault(transformer, 0) + (ct1 - ct0)
         return result
     }
+
 }
+
+fun JarFile.transform(name: String, consumer: (ClassNode) -> Unit) = getJarEntry(name)?.let { entry ->
+    getInputStream(entry).use { input ->
+        consumer(input.asClassNode())
+    }
+}
+
+fun ByteArray.asClassNode() = ClassNode().also { klass ->
+    ClassReader(this).accept(klass, 0)
+}
+
+fun InputStream.asClassNode() = readBytes().asClassNode()
+
+fun File.asClassNode(): ClassNode = readBytes().asClassNode()

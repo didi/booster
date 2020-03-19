@@ -6,7 +6,6 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.api.BaseVariant
 import org.gradle.api.Project
-import org.gradle.api.internal.AbstractTask
 import java.io.File
 
 /**
@@ -15,7 +14,7 @@ import java.io.File
  * @author johnsonlee
  */
 val TransformInvocation.project: Project
-    get() = (this.context as AbstractTask).project
+    get() = context.task.project
 
 /**
  * Returns the corresponding variant of this transform invocation

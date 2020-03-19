@@ -4,7 +4,7 @@ import android.app.Application;
 import android.os.Process;
 import android.util.Log;
 
-import static com.didiglobal.booster.android.bugfix.Constants.TAG;
+import static com.didiglobal.booster.instrument.Constants.TAG;
 
 /**
  * @author neighbWang

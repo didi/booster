@@ -1,7 +1,6 @@
 package com.didiglobal.booster.build
 
 import com.didiglobal.booster.kotlinx.OS
-import com.didiglobal.booster.kotlinx.file
 import java.io.File
 import java.io.FileNotFoundException
 import java.util.Properties
@@ -22,10 +21,16 @@ class AndroidSdk {
          *
          * @param apiLevel Android API level
          */
-        fun getAndroidJar(apiLevel: Int): File {
+        fun getAndroidJar(apiLevel: Int = findPlatform()): File {
             val jar = File(getLocation(), "platforms${File.separator}android-${apiLevel}${File.separator}android.jar")
             return jar.takeIf { it.exists() } ?: throw FileNotFoundException(jar.path)
         }
+
+        fun findPlatform(): Int = File(getLocation(), "platforms").listFiles()?.filter {
+            it.name.startsWith("android-") && File(it, "android.jar").exists()
+        }?.map {
+            it.name.substringAfter("android-")
+        }?.max()?.toInt() ?: throw RuntimeException("No platform found")
 
         /**
          * Returns the Android SDK location, the search order:

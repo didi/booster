@@ -11,10 +11,15 @@ import android.util.Log;
 import android.view.WindowManager;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.didiglobal.booster.android.bugfix.Constants.TAG;
+import static com.didiglobal.booster.instrument.Constants.TAG;
+import static com.didiglobal.booster.instrument.Reflection.getFieldValue;
+import static com.didiglobal.booster.instrument.Reflection.getStaticFieldValue;
+import static com.didiglobal.booster.instrument.Reflection.invokeMethod;
+import static com.didiglobal.booster.instrument.Reflection.setFieldValue;
 
 /**
  * Callback used to catch ActivityThread exception caused by system.
@@ -33,79 +38,101 @@ class ActivityThreadCallback implements Handler.Callback {
             "androidx.",
             "dalvik.",
             "com.android.",
-            ActivityThreadCallback.class.getPackage().getName() + "."
     };
 
     private final Handler mHandler;
 
-    public ActivityThreadCallback(final Handler handler) {
-        this.mHandler = handler;
+    private final Handler.Callback mDelegate;
+
+    private final Set<String> mIgnorePackages;
+
+    /**
+     * @param ignorePackages packages to ignore
+     */
+    public ActivityThreadCallback(final String[] ignorePackages) {
+        final Set<String> packages = new HashSet<>(Arrays.asList(SYSTEM_PACKAGE_PREFIXES));
+        for (final String pkg : ignorePackages) {
+            if (null == pkg) {
+                continue;
+            }
+            packages.add(pkg.endsWith(".") ? pkg : (pkg + "."));
+        }
+        packages.add(getClass().getPackage().getName() + ".");
+        this.mIgnorePackages = Collections.unmodifiableSet(packages);
+        this.mHandler = getHandler(getActivityThread());
+        this.mDelegate = getFieldValue(this.mHandler, "mCallback");
     }
 
     @Override
     public final boolean handleMessage(final Message msg) {
         try {
-            this.mHandler.handleMessage(msg);
+            if (null != mDelegate) {
+                return this.mDelegate.handleMessage(msg);
+            }
+
+            if (null != this.mHandler) {
+                this.mHandler.handleMessage(msg);
+            }
         } catch (final NullPointerException e) {
             if (hasStackTraceElement(e, ASSET_MANAGER_GET_RESOURCE_VALUE, LOADED_APK_GET_ASSETS)) {
-                abort(e);
+                // usually occurred after app upgrade installation, it seems like a system bug
+                return abort(e);
             }
-            rethrowIfNotCausedBySystem(e);
+            rethrowIfCausedByUser(e);
         } catch (final SecurityException
                 | IllegalArgumentException
                 | AndroidRuntimeException
+                | Resources.NotFoundException
                 | WindowManager.BadTokenException e) {
-            rethrowIfNotCausedBySystem(e);
-        } catch (final Resources.NotFoundException e) {
-            rethrowIfNotCausedBySystem(e);
-            abort(e);
+            rethrowIfCausedByUser(e);
         } catch (final RuntimeException e) {
             final Throwable cause = e.getCause();
             if (((Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) && isCausedBy(cause, DeadSystemException.class))
+                    // usually occurred after app upgrade installation, it seems like a system bug
                     || (isCausedBy(cause, NullPointerException.class) && hasStackTraceElement(e, LOADED_APK_GET_ASSETS))) {
-                abort(e);
+                return abort(e);
             }
-            rethrowIfNotCausedBySystem(e);
+            rethrowIfCausedByUser(e);
         } catch (final Error e) {
-            rethrowIfNotCausedBySystem(e);
-            abort(e);
+            rethrowIfCausedByUser(e);
+            return abort(e);
         }
 
         return true;
     }
 
-    private static void rethrowIfNotCausedBySystem(final RuntimeException e) {
-        if (!isCausedBySystem(e)) {
+    private void rethrowIfCausedByUser(final RuntimeException e) {
+        if (isCausedByUser(e)) {
             throw e;
         }
     }
 
-    private static void rethrowIfNotCausedBySystem(final Error e) {
-        if (!isCausedBySystem(e)) {
+    private void rethrowIfCausedByUser(final Error e) {
+        if (isCausedByUser(e)) {
             throw e;
         }
     }
 
-    private static boolean isCausedBySystem(final Throwable t) {
+    private boolean isCausedByUser(final Throwable t) {
         if (null == t) {
             return false;
         }
 
         for (Throwable cause = t; null != cause; cause = cause.getCause()) {
             for (final StackTraceElement element : cause.getStackTrace()) {
-                if (!isSystemStackTrace(element)) {
-                    return false;
+                if (isUserStackTrace(element)) {
+                    return true;
                 }
             }
         }
 
-        return true;
+        return false;
     }
 
-    private static boolean isSystemStackTrace(final StackTraceElement element) {
+    private boolean isUserStackTrace(final StackTraceElement element) {
         final String name = element.getClassName();
-        for (final String prefix : SYSTEM_PACKAGE_PREFIXES) {
-            if (name.startsWith(prefix)) {
+        for (final String prefix : this.mIgnorePackages) {
+            if (!name.startsWith(prefix)) {
                 return true;
             }
         }
@@ -147,7 +174,7 @@ class ActivityThreadCallback implements Handler.Callback {
         return isCausedBy(t.getCause(), causes);
     }
 
-    private static void abort(final Throwable t) {
+    private static boolean abort(final Throwable t) {
         final int pid = Process.myPid();
         final String msg = "Process " + pid + " is going to be killed";
 
@@ -159,6 +186,61 @@ class ActivityThreadCallback implements Handler.Callback {
 
         Process.killProcess(pid);
         System.exit(10);
+        return true;
     }
 
+    private static Handler getHandler(final Object thread) {
+        Handler handler;
+
+        if (null == thread) {
+            return null;
+        }
+
+        if (null != (handler = getFieldValue(thread, "mH"))) {
+            return handler;
+        }
+
+        if (null != (handler = invokeMethod(thread, "getHandler"))) {
+            return handler;
+        }
+
+        try {
+            if (null != (handler = getFieldValue(thread, Class.forName("android.app.ActivityThread$H")))) {
+                return handler;
+            }
+        } catch (final ClassNotFoundException e) {
+            Log.w(TAG, "Main thread handler is inaccessible", e);
+        }
+
+        return null;
+    }
+
+    private static Object getActivityThread() {
+        Object thread = null;
+
+        try {
+            thread = android.app.ActivityThread.currentActivityThread();
+        } catch (final Throwable t1) {
+            Log.w(TAG, "ActivityThread.currentActivityThread() is inaccessible", t1);
+            try {
+                thread = getStaticFieldValue(android.app.ActivityThread.class, "sCurrentActivityThread");
+            } catch (final Throwable t2) {
+                Log.w(TAG, "ActivityThread.sCurrentActivityThread is inaccessible", t1);
+            }
+        }
+
+        if (null != thread) {
+            return thread;
+        }
+
+        Log.w(TAG, "ActivityThread instance is inaccessible");
+        return null;
+    }
+
+    boolean hook() {
+        if (null != this.mDelegate) {
+            Log.w(TAG, "ActivityThread.mH.mCallback has already been hooked by " + this.mDelegate);
+        }
+        return setFieldValue(this.mHandler, "mCallback", this);
+    }
 }

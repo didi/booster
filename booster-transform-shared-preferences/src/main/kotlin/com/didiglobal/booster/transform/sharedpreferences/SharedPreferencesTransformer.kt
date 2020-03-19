@@ -6,20 +6,13 @@ import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
-import com.didiglobal.booster.transform.asm.className
 import com.didiglobal.booster.transform.shared.preferences.Build
-import com.didiglobal.booster.util.ComponentHandler
+import com.didiglobal.booster.transform.util.ComponentHandler
 import com.google.auto.service.AutoService
-import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Opcodes.INVOKESTATIC
 import org.objectweb.asm.Opcodes.INVOKEVIRTUAL
-import org.objectweb.asm.Opcodes.RETURN
 import org.objectweb.asm.tree.ClassNode
-import org.objectweb.asm.tree.InsnList
-import org.objectweb.asm.tree.InsnNode
 import org.objectweb.asm.tree.MethodInsnNode
-import org.objectweb.asm.tree.MethodNode
-import org.objectweb.asm.tree.VarInsnNode
 import java.io.PrintWriter
 import javax.xml.parsers.SAXParserFactory
 

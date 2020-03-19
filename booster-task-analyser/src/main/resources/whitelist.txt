@@ -1,0 +1,2 @@
+timber/log/Timber$Tree.getStackTraceString(Ljava/lang/Throwable;)Ljava/lang/String;
+com/umeng/commonsdk/statistics/common/ULog.getStackTraceString(Ljava/lang/Throwable;)Ljava/lang/String;

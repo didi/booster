@@ -5,13 +5,13 @@ import com.didiglobal.booster.kotlinx.asIterable
 import com.didiglobal.booster.kotlinx.execute
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.ifNotEmpty
+import com.didiglobal.booster.kotlinx.search
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.ArtifactManager.Companion.ALL_CLASSES
 import com.didiglobal.booster.transform.ArtifactManager.Companion.MERGED_RES
 import com.didiglobal.booster.transform.ArtifactManager.Companion.SYMBOL_LIST
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
-import com.didiglobal.booster.util.search
 import com.google.auto.service.AutoService
 import org.gradle.api.logging.Logging
 import org.objectweb.asm.Opcodes.GETSTATIC
@@ -45,7 +45,7 @@ class RInlineTransformer : ClassTransformer {
         this.logger = context.reportsDir.file(Build.ARTIFACT).file(context.name).file("report.txt").touch().printWriter()
         this.symbols = SymbolList.from(context.artifacts.get(SYMBOL_LIST).single())
         this.appRStyleable = "$appPackage/$R_STYLEABLE"
-        this.ignores = context.getProperty(PROPERTY_IGNORES)?.split(',')?.map { Wildcard(it) }?.toSet() ?: emptySet()
+        this.ignores = context.getProperty(PROPERTY_IGNORES, "").trim().split(',').map(Wildcard.Companion::valueOf).toSet()
 
         if (this.symbols.isEmpty()) {
             logger_.error("Inline R symbols failed: R.txt doesn't exist or blank")

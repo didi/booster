@@ -7,7 +7,7 @@ import com.didiglobal.booster.transform.ArtifactManager.Companion.ALL_CLASSES
 import com.didiglobal.booster.transform.ArtifactManager.Companion.DATA_BINDING_DEPENDENCY_ARTIFACTS
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
-import com.didiglobal.booster.util.search
+import com.didiglobal.booster.kotlinx.search
 import com.google.auto.service.AutoService
 import org.gradle.api.logging.Logging
 import org.objectweb.asm.Opcodes.GETSTATIC

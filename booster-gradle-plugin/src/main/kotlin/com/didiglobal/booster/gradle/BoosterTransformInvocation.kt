@@ -1,6 +1,5 @@
 package com.didiglobal.booster.gradle
 
-import com.android.SdkConstants
 import com.android.build.api.transform.Context
 import com.android.build.api.transform.DirectoryInput
 import com.android.build.api.transform.Format
@@ -14,16 +13,12 @@ import com.android.build.api.transform.Status.REMOVED
 import com.android.build.api.transform.TransformInput
 import com.android.build.api.transform.TransformInvocation
 import com.android.build.api.transform.TransformOutputProvider
-import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactScope.ALL
-import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactType.AAR
-import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactType.JAR
-import com.android.build.gradle.internal.publishing.AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH
 import com.didiglobal.booster.kotlinx.NCPU
 import com.didiglobal.booster.transform.AbstractKlassPool
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.TransformContext
+import com.didiglobal.booster.transform.artifacts
 import com.didiglobal.booster.transform.util.transform
-import com.didiglobal.booster.util.search
 import java.io.File
 import java.net.URI
 import java.util.concurrent.Executors
@@ -62,13 +57,14 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
 
     override val originalApplicationId = delegate.originalApplicationId
 
-    override val isDebuggable = delegate.variant.buildType.isDebuggable
+    override val isDebuggable = variant.buildType.isDebuggable
 
     override val isDataBindingEnabled = delegate.isDataBindingEnabled
 
     override fun hasProperty(name: String) = project.hasProperty(name)
 
-    override fun getProperty(name: String): String? = project.properties[name]?.toString()
+    @Suppress("UNCHECKED_CAST")
+    override fun <T> getProperty(name: String, default: T): T = project.properties[name] as? T ?: default
 
     override fun getInputs(): MutableCollection<TransformInput> = delegate.inputs
 
@@ -82,22 +78,7 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
 
     override fun getContext(): Context = delegate.context
 
-    override fun get(type: String): Collection<File> = when (type) {
-        ArtifactManager.AAR -> variant.scope.getArtifactCollection(RUNTIME_CLASSPATH, ALL, AAR).artifactFiles.files
-        ArtifactManager.ALL_CLASSES -> variant.scope.allClasses
-        ArtifactManager.APK -> variant.scope.apk
-        ArtifactManager.JAR -> variant.scope.getArtifactCollection(RUNTIME_CLASSPATH, ALL, JAR).artifactFiles.files
-        ArtifactManager.JAVAC -> variant.scope.javac
-        ArtifactManager.MERGED_ASSETS -> variant.scope.mergedAssets
-        ArtifactManager.MERGED_RES -> variant.scope.mergedRes
-        ArtifactManager.MERGED_MANIFESTS -> variant.scope.mergedManifests.search { SdkConstants.FN_ANDROID_MANIFEST_XML == it.name }
-        ArtifactManager.PROCESSED_RES -> variant.scope.processedRes.search { it.name.startsWith(SdkConstants.FN_RES_BASE) && it.name.endsWith(SdkConstants.EXT_RES) }
-        ArtifactManager.SYMBOL_LIST -> variant.scope.symbolList
-        ArtifactManager.SYMBOL_LIST_WITH_PACKAGE_NAME -> variant.scope.symbolListWithPackageName
-        ArtifactManager.DATA_BINDING_DEPENDENCY_ARTIFACTS -> variant.scope.dataBindingDependencyArtifacts.listFiles()?.toList()
-            ?: emptyList()
-        else -> TODO("Unexpected type: $type")
-    }
+    override fun get(type: String) = variant.artifacts.get(type)
 
     internal fun doFullTransform() = doTransform(this::transformFully)
 
