@@ -17,7 +17,7 @@ inline fun <reified T> Any.getFieldValue(name: String) = getField(javaClass, nam
 
 inline fun <reified T> Any.getFieldValue(type: Class<*>) = getField(javaClass, type)?.get(this)
 
-inline fun <reified T> Any.seFieldValue(name: String, value: Any) = getField(javaClass, name)?.set(this, value)
+inline fun <reified T> Any.setFieldValue(name: String, value: Any) = getField(javaClass, name)?.set(this, value)
 
 fun Any.getField(clazz: Class<*>?, type: Class<*>): Field? = clazz?.declaredFields?.let { array ->
     return if (array.isNotEmpty()) array.asSequence().first { it.type == type } else getField(clazz.superclass, type)

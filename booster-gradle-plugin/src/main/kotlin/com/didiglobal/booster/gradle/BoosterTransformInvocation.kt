@@ -176,7 +176,7 @@ internal class BoosterTransformInvocation(private val delegate: TransformInvocat
                 REMOVED -> {
                     project.logger.info("Deleting $file")
                     outputProvider?.let { provider ->
-                         provider.getContentLocation(dirInput.name, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY).parentFile.listFiles()?.asSequence()
+                        provider.getContentLocation(dirInput.name, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY).parentFile.listFiles()?.asSequence()
                             ?.filter { it.isDirectory }
                             ?.map { File(it, dirInput.file.toURI().relativize(file.toURI()).path) }
                             ?.filter { it.exists() }
