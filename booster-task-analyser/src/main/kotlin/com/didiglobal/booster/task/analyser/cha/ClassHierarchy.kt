@@ -29,6 +29,7 @@ class ClassHierarchy(private val classSet: ClassSet) {
     val classes: Iterable<ClassNode> = classSet
 
     fun isInheritFrom(child: ClassNode, parent: ClassNode) = when {
+        child.name == parent.name -> true
         parent.isInterface -> isInheritFromInterface(child, parent)
         child.isInterface -> parent.name == JAVA_LANG_OBJECT
         parent.isFinal -> false

@@ -1,5 +1,6 @@
 package com.didiglobal.booster.task.analyser.graph
 
+import com.didiglobal.booster.transform.util.ArgumentsParser
 import java.io.PrintWriter
 import java.util.Objects
 import java.util.concurrent.ConcurrentHashMap
@@ -16,7 +17,11 @@ class CallGraph private constructor(private val edges: Map<Node, Set<Node>>, val
         /**
          * A virtual root node of call graph
          */
-        val ROOT = Node("*", "*", "*", "")
+        val ROOT = object : Node("Main", "main", "()V") {
+            override fun toPrettyString() = toString()
+            override fun hashCode() = super.hashCode() * 31 + javaClass.name.hashCode()
+            override fun equals(other: Any?) = this === other
+        }
     }
 
     val nodes: Collection<Node>
@@ -41,10 +46,12 @@ class CallGraph private constructor(private val edges: Map<Node, Set<Node>>, val
         }.flatten().iterator()
     }
 
-    open class Node internal constructor(val type: String, val name: String, val desc: String, val args: String) {
-
-        constructor(type: String, name: String, desc: String)
-                : this(type, name, desc, desc.substring(desc.indexOf('(') + 1, desc.lastIndexOf(')')))
+    open class Node internal constructor(
+            val type: String,
+            val name: String,
+            val desc: String,
+            val args: String = desc.substring(desc.indexOf('(') + 1, desc.lastIndexOf(')'))
+    ) {
 
         override fun equals(other: Any?) = when {
             other === this -> true
@@ -55,6 +62,15 @@ class CallGraph private constructor(private val edges: Map<Node, Set<Node>>, val
         override fun hashCode() = Objects.hash(type, name, desc)
 
         override fun toString() = "$type.$name$desc"
+
+        open fun toPrettyString(): String {
+            val lp = this.desc.indexOf('(')
+            val rp = this.desc.lastIndexOf(')')
+            val desc = ArgumentsParser(this.desc, lp + 1, rp - lp - 1).parse().joinToString(", ", "(", ")") {
+                it.substringAfterLast('.')
+            }
+            return "$type:$name$desc"
+        }
 
         companion object {
 
@@ -99,15 +115,15 @@ class CallGraph private constructor(private val edges: Map<Node, Set<Node>>, val
         fun addEdge(edge: Edge) = addEdge(edge.from, edge.to)
 
         fun addEdge(from: Node, to: Node) = apply {
-            edges.getOrPut(from) { CopyOnWriteArraySet() } += to
+            edges.getOrPut(from, ::CopyOnWriteArraySet) += to
         }
 
         fun addEdges(from: Node, to: Iterable<Node>) = apply {
-            edges.getOrPut(from) { CopyOnWriteArraySet() } += to
+            edges.getOrPut(from, ::CopyOnWriteArraySet) += to
         }
 
         fun addEdges(chain: Iterable<Node>) = apply {
-            chain.zipWithNext(::Edge).forEach {
+            chain.zipWithNext(CallGraph::Edge).forEach {
                 this.addEdge(it)
             }
         }

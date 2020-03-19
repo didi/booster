@@ -3,6 +3,9 @@ package com.didiglobal.booster.transform.asm
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.MethodNode
 
+val MethodNode.args: String
+    get() = desc.substring(desc.indexOf('(') + 1, desc.lastIndexOf(')'))
+
 val MethodNode.isAbstract: Boolean
     get() = 0 != (access and Opcodes.ACC_ABSTRACT)
 

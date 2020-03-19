@@ -2,19 +2,19 @@ package com.didiglobal.booster.task.analyser.dot
 
 import com.didiglobal.booster.kotlinx.RGB
 import com.didiglobal.booster.task.analyser.graph.CallGraph
-import com.didiglobal.booster.task.analyser.graph.CallGraphFormatter
+import com.didiglobal.booster.task.analyser.graph.CallGraphRenderer
 import com.didiglobal.booster.task.analyser.palette.WebSafeColorPalette
-import com.didiglobal.booster.transform.util.ArgumentsParser
 
 /**
  * Represents the graph type
  *
  * @author johnsonlee
  */
-enum class GraphType : CallGraphFormatter {
+sealed class DotGraph : CallGraphRenderer {
 
-    DIGRAPH {
-        override fun format(graph: CallGraph): CharSequence {
+    object DIGRAPH : DotGraph() {
+
+        override fun render(graph: CallGraph): CharSequence {
             return StringBuilder().apply {
                 appendln("digraph \"${graph.title}\" {")
                 appendln("    graph [bgcolor=\"transparent\",pad=\"0.555\"];")
@@ -38,15 +38,7 @@ enum class GraphType : CallGraphFormatter {
                 appendln("}")
             }
         }
+
     }
 
-}
-
-internal fun CallGraph.Node.toPrettyString(): String {
-    val lp = this.desc.indexOf('(')
-    val rp = this.desc.lastIndexOf(')')
-    val desc = ArgumentsParser(this.desc, lp + 1, rp - lp - 1).parse().joinToString(", ", "(", ")") {
-        it.substringAfterLast('.')
-    }
-    return "$type:$name$desc"
 }

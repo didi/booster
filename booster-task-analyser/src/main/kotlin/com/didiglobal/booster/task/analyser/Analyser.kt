@@ -14,9 +14,10 @@ import com.didiglobal.booster.task.analyser.cha.ClassHierarchy
 import com.didiglobal.booster.task.analyser.cha.ClassSet
 import com.didiglobal.booster.task.analyser.cha.JAVA_LANG_OBJECT
 import com.didiglobal.booster.task.analyser.cha.fold
-import com.didiglobal.booster.task.analyser.dot.GraphType
+import com.didiglobal.booster.task.analyser.dot.DotGraph
 import com.didiglobal.booster.task.analyser.graph.CallGraph
 import com.didiglobal.booster.transform.ArtifactManager
+import com.didiglobal.booster.transform.asm.args
 import com.didiglobal.booster.transform.asm.className
 import com.didiglobal.booster.transform.asm.getValue
 import com.didiglobal.booster.transform.asm.isAbstract
@@ -48,10 +49,10 @@ import kotlin.streams.toList
  * @author johnsonlee
  */
 class Analyser(
-        val providedClasspath: Collection<File>,
-        val compileClasspath: Collection<File>,
-        val artifacts: ArtifactManager,
-        val properties: Map<String, *> = emptyMap<String, Any>()
+        private val providedClasspath: Collection<File>,
+        private val compileClasspath: Collection<File>,
+        private val artifacts: ArtifactManager,
+        private val properties: Map<String, *> = emptyMap<String, Any>()
 ) {
 
     private val providedClasses = providedClasspath.map(ClassSet.Companion::from).fold()
@@ -70,7 +71,7 @@ class Analyser(
     /**
      * The call graph of each class
      */
-    private val graphBuilders = mutableMapOf<String, CallGraph.Builder>()
+    private val graphBuilders = ConcurrentHashMap<String, CallGraph.Builder>()
 
     private val classesRunOnUiThread = ConcurrentHashMap<String, ClassNode>()
     private val classesRunOnMainThread = ConcurrentHashMap<String, ClassNode>()
@@ -290,31 +291,37 @@ class Analyser(
         }
     }
 
+    /**
+     * Rendering call graph as individual dot format
+     */
     private fun dump(output: File) {
-        val graph = globalBuilder.build()
-
-        // Analyse global call graph and separate each chain to individual graph
-        graph[CallGraph.ROOT].forEach { node ->
-            analyse(graph, node, listOf(CallGraph.ROOT, node)) { chain ->
-                val builder = graphBuilders.getOrPut(node.type) {
-                    CallGraph.Builder().setTitle(node.type.replace('/', '.'))
-                }
-                builder.addEdges(chain)
-            }
-        }
-
-        // Print individual call graph into dot file
+        val global = globalBuilder.build()
         val executor = Executors.newFixedThreadPool(NCPU)
 
-        try {
-            graphBuilders.map {
-                File(output, it.key.separatorsToSystem() + ".dot") to it.value.build()
-            }.map { pair ->
-                executor.submit {
-                    println("Generating call graph ${pair.first} ...")
+        println("Generating call graphs ...")
 
-                    pair.first.touch().printWriter().use { printer ->
-                        pair.second.print(printer, GraphType.DIGRAPH::format)
+        // Analyse global call graph and separate each chain to individual graph
+        global[CallGraph.ROOT].map { node ->
+            executor.submit {
+                analyse(global, node, listOf(CallGraph.ROOT, node)) { chain ->
+                    val builder = graphBuilders.getOrPut(node.type) {
+                        CallGraph.Builder().setTitle(node.type.replace('/', '.'))
+                    }
+                    builder.addEdges(chain)
+                }
+            }
+        }.forEach {
+            it.get()
+        }
+
+        try {
+            graphBuilders.map { (name, builder) ->
+                File(output, name.separatorsToSystem() + ".dot") to builder.build()
+            }.map { (dot, graph) ->
+                executor.submit {
+                    println(dot)
+                    dot.touch().printWriter().use { printer ->
+                        graph.print(printer, DotGraph.DIGRAPH::render)
                     }
                 }
             }.forEach {
@@ -331,7 +338,6 @@ class Analyser(
      *
      * @param node The entry point
      * @param chain The call chain
-     * @param blacklist The api black list
      */
     private fun analyse(graph: CallGraph, node: CallGraph.Node, chain: List<CallGraph.Node>, action: (List<CallGraph.Node>) -> Unit) {
         if (node in whitelist) {
@@ -345,7 +351,7 @@ class Analyser(
             }
 
             val newChain = chain.plus(target)
-            if (isHit(blacklist, target)) {
+            if (target matches blacklist) {
                 action(newChain)
                 return@loop
             }
@@ -383,17 +389,15 @@ class Analyser(
             return true
         }
 
-        return nodesRunOnThread.filter {
-            it.name == this.name && it.desc == this.desc
-        }.any {
-            hierarchy.isInheritFrom(clazz, it.type)
+        return nodesRunOnThread.any {
+            it.name == this.name && it.args == this.args && hierarchy.isInheritFrom(clazz, it.type)
         }
     }
 
-    private fun isHit(apis: Set<CallGraph.Node>, target: CallGraph.Node) = apis.contains(target) || apis.any {
+    private infix fun CallGraph.Node.matches(apis: Collection<CallGraph.Node>) = apis.contains(this) || apis.any {
         // only match type, name and args because of covariant return type is partially allowed since JDK 1.5
         // (overridden method can have different return type in sub-type)
-        target.name == it.name && target.args == it.args && hierarchy.isInheritFrom(target.type, it.type)
+        this.name == it.name && this.args == it.args && hierarchy.isInheritFrom(this.type, it.type)
     }
 }
 
