@@ -86,10 +86,10 @@ Here are all the modules of Booster:
 
 ### Performance
 
-- [booster-transform-lint](./booster-transform-lint) - 性能瓶颈检测
+- [booster-task-analyser](./booster-task-analyser) - 静态分析工具
 
   ```groovy
-  classpath "com.didiglobal.booster:booster-transform-lint:$booster_version"
+  classpath "com.didiglobal.booster:booster-task-analyser:$booster_version"
   ```
 
 - [booster-transform-thread](./booster-transform-thread) - 多线程优化
