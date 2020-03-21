@@ -1,26 +1,23 @@
 package com.didiglobal.booster.gradle
 
 import com.android.build.gradle.internal.pipeline.TransformTask
-import com.didiglobal.booster.kotlinx.getField
-import com.didiglobal.booster.kotlinx.invokeMethod
+import com.didiglobal.booster.kotlinx.call
+import com.didiglobal.booster.kotlinx.get
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.execution.TaskExecutionListener
-import org.gradle.api.tasks.TaskState
+import org.gradle.api.execution.TaskExecutionAdapter
 
 /**
  * @author neighbWang
  */
-class BoosterTransformTaskExecutionListener(val project: Project) : TaskExecutionListener {
+class BoosterTransformTaskExecutionListener(private val project: Project) : TaskExecutionAdapter() {
+
     override fun beforeExecute(task: Task) {
-        task.takeIf { task.project == project && task is TransformTask }
-            ?.run {
-                getField(task.javaClass, "outputStream")?.let {
-                    invokeMethod<Void>(it.get(task), "init")
-                }
-            }
+        task.takeIf {
+            it.project == project && it is TransformTask && it.transform.scopes.isNotEmpty()
+        }?.run {
+            task["outputStream"]?.call<Unit>("init")
+        }
     }
 
-    override fun afterExecute(task: Task, stat: TaskState) {
-    }
 }

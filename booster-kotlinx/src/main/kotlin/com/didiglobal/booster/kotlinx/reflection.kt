@@ -9,51 +9,60 @@ import java.lang.reflect.Method
  * @author neighbWang
  */
 
-inline fun <reified T> Any.getStaticFieldValue(clazz: Class<*>, name: String) = getField(javaClass, name)?.get(this) as T
-
-inline fun <reified T> Any.setStaticFieldValue(clazz: Class<*>, name: String, value: Any) = getField(javaClass, name)?.set(this, value)
-
-inline fun <reified T> Any.getFieldValue(name: String) = getField(javaClass, name)?.get(this)
-
-inline fun <reified T> Any.getFieldValue(type: Class<*>) = getField(javaClass, type)?.get(this)
-
-inline fun <reified T> Any.setFieldValue(name: String, value: Any) = getField(javaClass, name)?.set(this, value)
-
-fun Any.getField(clazz: Class<*>?, type: Class<*>): Field? = clazz?.declaredFields?.let { array ->
-    return if (array.isNotEmpty()) array.asSequence().first { it.type == type } else getField(clazz.superclass, type)
+operator fun Any.get(name: String): Any? = when (this) {
+    is Class<*> -> try {
+        getField(this, name)?.apply {
+            isAccessible = true
+        }?.get(null)
+    } catch (e: NoSuchFieldException) {
+        null
+    }
+    else -> try {
+        getField(this.javaClass, name)?.apply {
+            isAccessible = true
+        }?.get(this)
+    } catch (e: NoSuchFieldException) {
+        null
+    }
 }
 
-fun getField(clazz: Class<*>?, name: String): Field? = try {
-    clazz?.getDeclaredField(name)?.apply {
-        isAccessible = true
+fun <T> Any.call(name: String, types: Array<Class<*>> = emptyArray(), args: Array<Any> = emptyArray()): T? = when (this) {
+    is Class<*> -> try {
+        getMethod(this, name, *types)?.apply {
+            isAccessible = true
+        }?.invoke(null, *args) as T
+    } catch (e: NoSuchMethodException) {
+        null
     }
+    else -> try {
+        getMethod(this.javaClass, name, *types)?.apply {
+            isAccessible = true
+        }?.invoke(this, *args) as T
+    } catch (e: NoSuchMethodException) {
+        null
+    }
+}
+
+fun <T> Any.call(name: String, vararg args: Pair<Class<*>, Any>): T? {
+    return this.call(
+            name,
+            args.map(Pair<Class<*>, Any>::first).toTypedArray(),
+            args.map(Pair<Class<*>, Any>::second).toTypedArray()
+    )
+}
+
+private fun getField(clazz: Class<*>, name: String): Field? = try {
+    clazz.getDeclaredField(name)
 } catch (e: NoSuchFieldException) {
-    getField(clazz?.superclass, name)
-}
-
-inline fun <reified T> invokeStaticMethod(clazz: Class<*>, name: String): T? = invokeStaticMethod(clazz, name, arrayOfNulls(0), arrayOfNulls(0))
-
-inline fun <reified T> invokeStaticMethod(clazz: Class<*>, name: String, types: Array<Class<*>?>, args: Array<Any?>): T? = run {
-    assert(types.size == args.size)
-    getMethod(clazz, name, types)?.apply {
-        isAccessible = true
-    }?.invoke(clazz, *args) as T
-}
-
-inline fun <reified T> invokeMethod(obj: Any, name: String): T? = invokeMethod(obj, name, arrayOfNulls(0), arrayOfNulls(0))
-
-inline fun <reified T> invokeMethod(obj: Any, name: String, types: Array<Class<*>?>, args: Array<Any?>): T? = run {
-    assert(types.size == args.size)
-    getMethod(obj.javaClass, name, types)?.apply {
-        isAccessible = true
-    }?.invoke(obj, *args) as T
-}
-
-fun getMethod(clazz: Class<*>?, name: String, types: Array<Class<*>?>): Method? = try {
-    clazz?.getDeclaredMethod(name, *types)?.apply {
-        isAccessible = true
+    clazz.superclass?.let {
+        getField(it, name)
     }
-} catch (e: NoSuchMethodException) {
-    getMethod(clazz?.superclass, name, types)
 }
 
+private fun getMethod(clazz: Class<*>, name: String, vararg args: Class<*>): Method? = try {
+    clazz.getDeclaredMethod(name, *args)
+} catch (e: NoSuchMethodException) {
+    clazz.superclass?.let {
+        getMethod(it, name, *args)
+    }
+}
