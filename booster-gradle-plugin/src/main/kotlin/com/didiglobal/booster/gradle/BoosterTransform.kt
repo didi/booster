@@ -6,8 +6,6 @@ import com.android.build.api.transform.TransformInvocation
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.pipeline.TransformManager
 import com.android.build.gradle.internal.pipeline.TransformManager.SCOPE_FULL_PROJECT
-import com.android.builder.model.AndroidProject
-import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.transform.AbstractKlassPool
 import com.didiglobal.booster.transform.Transformer
 import org.gradle.api.Project
@@ -69,7 +67,6 @@ open class BoosterTransform(val project: Project) : Transform() {
             if (isIncremental) {
                 doIncrementalTransform()
             } else {
-                buildDir.file(AndroidProject.FD_INTERMEDIATES, "transforms", "dexBuilder").deleteRecursively()
                 outputProvider?.deleteAll()
                 doFullTransform()
             }
