@@ -3,14 +3,12 @@ package com.didiglobal.booster.instrument;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.AbstractExecutorService;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.SynchronousQueue;
@@ -18,6 +16,9 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 public class ShadowExecutors {
 
@@ -30,10 +31,12 @@ public class ShadowExecutors {
      */
     private static final int MIN_POOL_SIZE = 1;
 
+    private static final int NCPU = Runtime.getRuntime().availableProcessors();
+
     /**
      * The maximum pool size
      */
-    private static final int MAX_POOL_SIZE = (Runtime.getRuntime().availableProcessors() << 1) + 1;
+    private static final int MAX_POOL_SIZE = (NCPU << 1) + 1;
 
     /**
      * The default keep alive time for idle threads
@@ -106,60 +109,44 @@ public class ShadowExecutors {
 
     // <editor-fold desc="* optimized single thread scheduled executor">
 
-    public static ScheduledExecutorService newOptimizedSingleThreadScheduledExecutor() {
-        return Executors.newSingleThreadScheduledExecutor();
-    }
-
     public static ScheduledExecutorService newOptimizedSingleThreadScheduledExecutor(final String name) {
-        return Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory(name));
-    }
-
-    public static ScheduledExecutorService newOptimizedSingleThreadScheduledExecutor(final ThreadFactory factory) {
-        return Executors.newSingleThreadScheduledExecutor(factory);
+        final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1, new NamedThreadFactory(name));
+        executor.setKeepAliveTime(DEFAULT_KEEP_ALIVE, TimeUnit.MILLISECONDS);
+        executor.allowCoreThreadTimeOut(true);
+        return executor;
     }
 
     public static ScheduledExecutorService newOptimizedSingleThreadScheduledExecutor(final ThreadFactory factory, final String name) {
-        return Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory(factory, name));
+        final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1, new NamedThreadFactory(factory, name));
+        executor.setKeepAliveTime(DEFAULT_KEEP_ALIVE, TimeUnit.MILLISECONDS);
+        executor.allowCoreThreadTimeOut(true);
+        return executor;
     }
 
     // </editor-fold>
 
     // <editor-fold desc="* optimized scheduled thread pool">
 
-    public static ScheduledExecutorService newOptimizedScheduledThreadPool(final int corePoolSize) {
-        return Executors.newScheduledThreadPool(MIN_POOL_SIZE);
-    }
-
     public static ScheduledExecutorService newOptimizedScheduledThreadPool(final int corePoolSize, final String name) {
-        return Executors.newScheduledThreadPool(MIN_POOL_SIZE, new NamedThreadFactory(name));
-    }
-
-    public static ScheduledExecutorService newOptimizedScheduledThreadPool(final int corePoolSize, final ThreadFactory factory) {
-        return Executors.newScheduledThreadPool(MIN_POOL_SIZE, factory);
+        final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(min(max(1, corePoolSize), MAX_POOL_SIZE), new NamedThreadFactory(name));
+        executor.setKeepAliveTime(DEFAULT_KEEP_ALIVE, TimeUnit.MILLISECONDS);
+        executor.allowCoreThreadTimeOut(true);
+        return executor;
     }
 
     public static ScheduledExecutorService newOptimizedScheduledThreadPool(final int corePoolSize, final ThreadFactory factory, final String name) {
-        return Executors.newScheduledThreadPool(MIN_POOL_SIZE, new NamedThreadFactory(factory, name));
+        final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(min(max(1, corePoolSize), MAX_POOL_SIZE), new NamedThreadFactory(factory, name));
+        executor.setKeepAliveTime(DEFAULT_KEEP_ALIVE, TimeUnit.MILLISECONDS);
+        executor.allowCoreThreadTimeOut(true);
+        return executor;
     }
 
     // </editor-fold>
 
     // <editor-fold desc="* optimized single thread executor">
 
-    public static ExecutorService newOptimizedSingleThreadExecutor() {
-        final ThreadPoolExecutor executor = new ThreadPoolExecutor(0, 1, DEFAULT_KEEP_ALIVE, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), Executors.defaultThreadFactory());
-        executor.allowCoreThreadTimeOut(true);
-        return new FinalizableDelegatedExecutorService(executor);
-    }
-
     public static ExecutorService newOptimizedSingleThreadExecutor(final String name) {
         final ThreadPoolExecutor executor = new ThreadPoolExecutor(0, 1, DEFAULT_KEEP_ALIVE, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), new NamedThreadFactory(name));
-        executor.allowCoreThreadTimeOut(true);
-        return new FinalizableDelegatedExecutorService(executor);
-    }
-
-    public static ExecutorService newOptimizedSingleThreadExecutor(final ThreadFactory factory) {
-        final ThreadPoolExecutor executor = new ThreadPoolExecutor(0, 1, DEFAULT_KEEP_ALIVE, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), factory);
         executor.allowCoreThreadTimeOut(true);
         return new FinalizableDelegatedExecutorService(executor);
     }
@@ -174,20 +161,8 @@ public class ShadowExecutors {
 
     //<editor-fold desc="* optimized cached thread pool">
 
-    public static ExecutorService newOptimizedCachedThreadPool() {
-        final ThreadPoolExecutor executor = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(), Executors.defaultThreadFactory());
-        executor.allowCoreThreadTimeOut(true);
-        return executor;
-    }
-
     public static ExecutorService newOptimizedCachedThreadPool(final String name) {
         final ThreadPoolExecutor executor = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(), new NamedThreadFactory(name));
-        executor.allowCoreThreadTimeOut(true);
-        return executor;
-    }
-
-    public static ExecutorService newOptimizedCachedThreadPool(final ThreadFactory factory) {
-        final ThreadPoolExecutor executor = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(), factory);
         executor.allowCoreThreadTimeOut(true);
         return executor;
     }
