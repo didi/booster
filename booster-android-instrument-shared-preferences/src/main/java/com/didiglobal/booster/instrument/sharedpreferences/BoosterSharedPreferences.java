@@ -25,7 +25,6 @@ public final class BoosterSharedPreferences implements SharedPreferences {
     private static final ExecutorService SYNC_EXECUTOR = Executors.newCachedThreadPool();
     private static final Map<String, BoosterSharedPreferences> sSharedPreferencesMap = new ConcurrentHashMap<>();
     private static final Object SENTINEL = new Object();
-    private static Context sContext;
 
     private final ExecutorService mWriteExecutor = Executors.newSingleThreadExecutor();
     private final WeakHashMap<OnSharedPreferenceChangeListener, Object> mListeners = new WeakHashMap<>();
@@ -36,8 +35,8 @@ public final class BoosterSharedPreferences implements SharedPreferences {
     private volatile boolean mLoaded = false;
     private Map<String, Object> mKeyValueMap = new ConcurrentHashMap<>();
 
-    private BoosterSharedPreferences(final String name) {
-        mManager = new SharedPreferencesManager(sContext, name);
+    private BoosterSharedPreferences(final Context context, final String name) {
+        mManager = new SharedPreferencesManager(context, name);
         startLoadFromDisk();
     }
 
@@ -49,23 +48,13 @@ public final class BoosterSharedPreferences implements SharedPreferences {
     }
 
     public static SharedPreferences getSharedPreferences(final Context context, final String name) {
-        init(context);
+        if (context == null) {
+            throw new IllegalArgumentException("Context can not be null!");
+        }
         if (!sSharedPreferencesMap.containsKey(name)) {
-            sSharedPreferencesMap.put(name, new BoosterSharedPreferences(name));
+            sSharedPreferencesMap.put(name, new BoosterSharedPreferences(context, name));
         }
         return sSharedPreferencesMap.get(name);
-    }
-
-    private static void init(final Context context) {
-        if (sContext != null) {
-            return;
-        }
-
-        if (context instanceof Application) {
-            sContext = context;
-        } else {
-            sContext = context.getApplicationContext();
-        }
     }
 
     @Override
