@@ -1,4 +1,4 @@
-package com.didiglobal.booster.task.analyser.graph
+package com.didiglobal.booster.cha.graph
 
 /**
  * Represents a call graph renderer

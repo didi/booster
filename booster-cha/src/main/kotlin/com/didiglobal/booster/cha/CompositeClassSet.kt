@@ -1,4 +1,4 @@
-package com.didiglobal.booster.task.analyser.cha
+package com.didiglobal.booster.cha
 
 import com.didiglobal.booster.kotlinx.NCPU
 import com.didiglobal.booster.kotlinx.parallelStream

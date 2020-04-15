@@ -1,7 +1,8 @@
-package com.didiglobal.booster.task.analyser.graph
+package com.didiglobal.booster.cha.graph
 
 import com.didiglobal.booster.transform.util.ArgumentsParser
 import java.io.PrintWriter
+import java.util.Collections
 import java.util.Objects
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArraySet
@@ -29,7 +30,7 @@ class CallGraph private constructor(private val edges: Map<Node, Set<Node>>, val
             listOf(it.from, it.to)
         }.flatten().toSet()
 
-    operator fun get(node: Node): Set<Node> = edges[node] ?: emptySet()
+    operator fun get(node: Node): Set<Node> = Collections.unmodifiableSet(edges[node] ?: emptySet())
 
     /**
      * Print this call graph
@@ -46,12 +47,10 @@ class CallGraph private constructor(private val edges: Map<Node, Set<Node>>, val
         }.flatten().iterator()
     }
 
-    open class Node internal constructor(
-            val type: String,
-            val name: String,
-            val desc: String,
-            val args: String = desc.substring(desc.indexOf('(') + 1, desc.lastIndexOf(')'))
-    ) {
+    open class Node internal constructor(val type: String, val name: String, val desc: String, val args: String) {
+
+        constructor(type: String, name: String, desc: String)
+                : this(type, name, desc, desc.substring(desc.indexOf('(') + 1, desc.lastIndexOf(')')))
 
         override fun equals(other: Any?) = when {
             other === this -> true

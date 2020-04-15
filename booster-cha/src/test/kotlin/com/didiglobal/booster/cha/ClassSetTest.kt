@@ -1,6 +1,6 @@
-package com.didiglobal.booster.task.analyser.cha
+package com.didiglobal.booster.cha
 
-import com.didiglobal.booster.task.analyser.Build
+import com.didiglobal.booster.cha.Build
 import com.didiglobal.booster.transform.asm.className
 import java.io.File
 import kotlin.test.Test

@@ -1,6 +1,6 @@
-package com.didiglobal.booster.task.analyser.dot
+package com.didiglobal.booster.cha.graph.dot
 
-import com.didiglobal.booster.task.analyser.graph.CallGraph
+import com.didiglobal.booster.cha.graph.CallGraph
 import kotlin.test.Test
 
 class DirectedCallGraphPrinterTest {
