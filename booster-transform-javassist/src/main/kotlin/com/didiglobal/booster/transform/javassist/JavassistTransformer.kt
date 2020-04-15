@@ -1,6 +1,7 @@
 package com.didiglobal.booster.transform.javassist
 
 import com.didiglobal.booster.annotations.Priority
+import com.didiglobal.booster.build.BoosterServiceLoader
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.Transformer
 import com.google.auto.service.AutoService
@@ -9,7 +10,6 @@ import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
 import java.lang.management.ManagementFactory
 import java.lang.management.ThreadMXBean
-import java.util.ServiceLoader
 
 /**
  * Represents bytecode transformer using Javassist
@@ -30,7 +30,7 @@ class JavassistTransformer : Transformer {
     /*
      * Preload transformers as List to fix NoSuchElementException caused by ServiceLoader in parallel mode
      */
-    constructor() : this(*ServiceLoader.load(ClassTransformer::class.java, JavassistTransformer::class.java.classLoader).toList().toTypedArray())
+    constructor() : this(*BoosterServiceLoader.load(ClassTransformer::class.java, JavassistTransformer::class.java.classLoader).toList().toTypedArray())
 
     /**
      * For unit test only

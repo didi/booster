@@ -3,10 +3,10 @@ package com.didiglobal.booster.gradle
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.LibraryExtension
 import com.didiglobal.booster.annotations.Priority
+import com.didiglobal.booster.build.BoosterServiceLoader
 import com.didiglobal.booster.task.spi.VariantProcessor
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import java.util.ServiceLoader
 
 /**
  * Represents the booster gradle plugin
@@ -47,7 +47,7 @@ class BoosterPlugin : Plugin<Project> {
     }
 
     private val variantProcessors: Collection<VariantProcessor>
-        get() = ServiceLoader.load(VariantProcessor::class.java, javaClass.classLoader).sortedBy {
+        get() = BoosterServiceLoader.load(VariantProcessor::class.java, javaClass.classLoader).sortedBy {
             it.javaClass.getAnnotation(Priority::class.java)?.value ?: 0
         }
 
