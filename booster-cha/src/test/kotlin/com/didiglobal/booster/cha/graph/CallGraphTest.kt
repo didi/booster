@@ -1,5 +1,6 @@
-package com.didiglobal.booster.task.analyser.graph
+package com.didiglobal.booster.cha.graph
 
+import com.didiglobal.booster.cha.graph.CallGraph
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

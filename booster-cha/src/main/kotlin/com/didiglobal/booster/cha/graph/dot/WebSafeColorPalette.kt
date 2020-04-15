@@ -1,4 +1,4 @@
-package com.didiglobal.booster.task.analyser.palette
+package com.didiglobal.booster.cha.graph.dot
 
 import java.util.Random
 
@@ -7,7 +7,7 @@ import java.util.Random
  *
  * @author johnsonlee
  */
-object WebSafeColorPalette {
+internal object WebSafeColorPalette {
 
     private const val N = 216
 

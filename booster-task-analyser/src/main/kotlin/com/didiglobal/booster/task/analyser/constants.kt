@@ -1,6 +1,6 @@
 package com.didiglobal.booster.task.analyser
 
-import com.didiglobal.booster.task.analyser.graph.CallGraph
+import com.didiglobal.booster.cha.graph.CallGraph
 
 private const val DOLLAR = '$'
 

@@ -1,6 +1,12 @@
 package com.didiglobal.booster.task.analyser
 
 import com.didiglobal.booster.aapt2.metadata
+import com.didiglobal.booster.cha.ClassHierarchy
+import com.didiglobal.booster.cha.ClassSet
+import com.didiglobal.booster.cha.JAVA_LANG_OBJECT
+import com.didiglobal.booster.cha.fold
+import com.didiglobal.booster.cha.graph.CallGraph
+import com.didiglobal.booster.cha.graph.dot.DotGraph
 import com.didiglobal.booster.kotlinx.NCPU
 import com.didiglobal.booster.kotlinx.asIterable
 import com.didiglobal.booster.kotlinx.file
@@ -10,12 +16,6 @@ import com.didiglobal.booster.kotlinx.search
 import com.didiglobal.booster.kotlinx.separatorsToSystem
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.kotlinx.yellow
-import com.didiglobal.booster.task.analyser.cha.ClassHierarchy
-import com.didiglobal.booster.task.analyser.cha.ClassSet
-import com.didiglobal.booster.task.analyser.cha.JAVA_LANG_OBJECT
-import com.didiglobal.booster.task.analyser.cha.fold
-import com.didiglobal.booster.task.analyser.dot.DotGraph
-import com.didiglobal.booster.task.analyser.graph.CallGraph
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.asm.args
 import com.didiglobal.booster.transform.asm.className

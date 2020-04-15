@@ -1,9 +1,8 @@
-package com.didiglobal.booster.task.analyser.dot
+package com.didiglobal.booster.cha.graph.dot
 
 import com.didiglobal.booster.kotlinx.RGB
-import com.didiglobal.booster.task.analyser.graph.CallGraph
-import com.didiglobal.booster.task.analyser.graph.CallGraphRenderer
-import com.didiglobal.booster.task.analyser.palette.WebSafeColorPalette
+import com.didiglobal.booster.cha.graph.CallGraph
+import com.didiglobal.booster.cha.graph.CallGraphRenderer
 
 /**
  * Represents the graph type
