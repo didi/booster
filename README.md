@@ -84,6 +84,34 @@ apply plugin: 'com.didiglobal.booster' // ③
 
 Here are all the modules of Booster:
 
+### Common
+
+- [booster-aapt2](./booster-aapt2) - AAPT2 相关 API
+
+  ```groovy
+  implementation "com.didiglobal.booster:booster-aapt2:$booster_version"
+  ```
+
+- [booster-api](./booster-api) - Booster 插件开发 API
+
+  this module contains both [booster-transform-spi](./booster-transform-spi) and [booster-task-spi](./booster-task-spi)
+
+  ```groovy
+  implementation "com.didiglobal.booster:booster-api:$booster_version"
+  ```
+
+- [booster-cha](./booster-cha) - Class Hierarchy Analysis API
+
+  ```groovy
+  implementation "com.didiglobal.booster:booster-cha:$booster_version"
+  ```
+
+- [booster-command](./booster-command) - SPI for external command discovery
+
+  ```groovy
+  implementation "com.didiglobal.booster:booster-command:$booster_version"
+  ```
+
 ### Performance
 
 - [booster-task-analyser](./booster-task-analyser) - 静态分析工具
