@@ -70,7 +70,12 @@ fun ZipFile.transform(
             val stream = InputStreamSupplier {
                 when (entry.name.substringAfterLast('.', "")) {
                     "class" -> getInputStream(entry).use { src ->
-                        src.transform(transformer).inputStream()
+                        try {
+                            src.transform(transformer).inputStream()
+                        } catch (e: Throwable) {
+                            System.err.println("Broken class: ${this.name}!/${entry.name}")
+                            getInputStream(entry)
+                        }
                     }
                     else -> getInputStream(entry)
                 }
