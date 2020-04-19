@@ -31,4 +31,6 @@ public abstract class Context {
 
     public abstract File getFilesDir();
 
+    public abstract String getPackageName();
+
 }

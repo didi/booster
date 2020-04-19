@@ -28,4 +28,12 @@ public class Application extends ContextWrapper {
         attachBaseContext(context);
     }
 
+    /**
+     * Returns the name of the current process.
+     * Added in API level 28
+     */
+    public static String getProcessName() {
+        throw new RuntimeException("Stub!");
+    }
+
 }

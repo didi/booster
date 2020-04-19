@@ -72,4 +72,9 @@ public class ContextWrapper extends Context {
         throw new RuntimeException("Stub!");
     }
 
+    @Override
+    public String getPackageName() {
+        throw new RuntimeException("Stub!");
+    }
+
 }
