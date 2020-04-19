@@ -93,4 +93,8 @@ public class WebView extends AbsoluteLayout implements ViewTreeObserver.OnGlobal
     public void onGlobalFocusChanged(View oldFocus, View newFocus) {
     }
 
+    public static void setDataDirectorySuffix(String suffix) {
+        throw new RuntimeException("Stub!");
+    }
+
 }
