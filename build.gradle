@@ -15,10 +15,12 @@ buildscript {
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.21.2"
         classpath "de.marcphilipp.gradle:nexus-publish-plugin:0.4.0"
         classpath "io.johnsonlee.buildprops:buildprops-gradle-plugin:1.0.0"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.10.1"
     }
 }
 
 apply plugin: 'io.codearte.nexus-staging'
+apply plugin: 'org.jetbrains.dokka'
 
 allprojects { project ->
     apply plugin: 'java'
@@ -146,4 +148,29 @@ nexusStaging {
     password = OSSRH_PASSWORD
     numberOfRetries = 50
     delayBetweenRetriesInMillis = 3000
+}
+
+dokka {
+    subProjects = [
+            'booster-aapt2',
+            'booster-android-gradle-api',
+            'booster-annotations',
+            'booster-api',
+            'booster-build',
+            'booster-cha',
+            'booster-command',
+            'booster-kotlinx',
+            'booster-task-compression',
+            'booster-task-spi',
+            'booster-transform-asm',
+            'booster-transform-javassist',
+            'booster-transform-spi',
+            'booster-transform-util'
+    ]
+    outputFormat = 'html'
+    outputDirectory = "${buildDir}/docs/dokka"
+    configuration {
+        includes = ['packages.md', 'extra.md']
+        jdkVersion = 8
+    }
 }
