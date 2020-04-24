@@ -3,7 +3,7 @@ package com.didiglobal.booster.aapt
 /**
  * @author johnsonlee
  *
- * @see https://android.googlesource.com/platform/frameworks/base/+/master/libs/androidfw/include/androidfw/ResourceTypes.h
+ * @see <a href="https://android.googlesource.com/platform/frameworks/base/+/master/libs/androidfw/include/androidfw/ResourceTypes.h">ResourceTypes.h</a>
  */
 data class Configuration(
         var size: Int = 0,
@@ -17,13 +17,13 @@ data class Configuration(
         var screenSizeDp: ScreenSize = ScreenSize(),
 
         /**
-         * The ISO-15924 short name for the script corresponding to this
-         * configuration. (eg. Hant, Latn, etc.). Interpreted in conjunction
+         * The *ISO-15924* short name for the script corresponding to this
+         * configuration. (eg. `Hant`, `Latn`, etc.). Interpreted in conjunction
          * with the locale field.
          */
         var localeScript: ByteArray = ByteArray(4),
         /**
-         * A single BCP-47 variant subtag. Will vary in length between 4 and 8
+         * A single *BCP-47* variant subtag. Will vary in length between 4 and 8
          * chars. Interpreted in conjunction with the locale field.
          */
         var localeVariant: ByteArray = ByteArray(8),
@@ -251,12 +251,12 @@ data class Configuration(
     data class Imsi(
 
             /**
-             * Mobile country code (from SIM). 0 means "any"
+             * Mobile country code (from SIM). `0` means `any`
              */
             var mcc: Short = 0,
 
             /**
-             * Mobile network code (from SIM). 0 means "any".
+             * Mobile network code (from SIM). `0` means `any`
              */
             var mnc: Short = 0
     )
@@ -266,26 +266,26 @@ data class Configuration(
              * This field can take three different forms:
              *
              *
-             * \0\0 means "any".
+             * `\0\0` means `any`.
              * Two 7 bit ascii values interpreted as ISO-639-1 language
-             * codes ('fr', 'en' etc. etc.). The high bit for both bytes is
+             * codes (`fr`, `en` etc.). The high bit for both bytes is
              * zero.
              * A single 16 bit little endian packed value representing an
              * ISO-639-2 3 letter language code. This will be of the form:
              *
-             * <pre>
+             * ```
              * { 1, t, t, t, t, t, s, s, s, s, s, f, f, f, f, f }
-             * </pre>
+             * ```
              *
-             * bit[0, 4] = first letter of the language code<br></br>
-             * bit[5, 9] = second letter of the language code<br></br>
-             * bit[10, 14] = third letter of the language code.<br></br>
-             * bit[15] = 1 always<br></br>
+             * - bit&#91;0, 4&#93; = first letter of the language code
+             * - bit&#91;5, 9&#93; = second letter of the language code
+             * - bit&#91;10, 14&#93; = third letter of the language code
+             * - bit&#91;15&#93; = 1 always
              *
              * For backwards compatibility, languages that have unambiguous two
              * letter codes are represented in that format.
              *
-             * The layout is always bigendian irrespective of the runtime
+             * The layout is always big-endian irrespective of the runtime
              * architecture.
              */
             var language: ByteArray = ByteArray(2),
@@ -293,14 +293,14 @@ data class Configuration(
             /**
              * This field can take three different forms:
              *
-             * \0\0 means "any".
+             * `\0\0` means `any`.
              * Two 7 bit ascii values interpreted as 2 letter region codes
-             * ('US', 'GB' etc.). The high bit for both bytes is zero.
+             * (`US`, `GB` etc.). The high bit for both bytes is zero.
              * An UN M.49 3 digit region code. For simplicity, these are
              * packed in the same manner as the language codes, though we should
              * need only 10 bits to represent them, instead of the 15.
              *
-             * The layout is always bigendian irrespective of the runtime
+             * The layout is always big-endian irrespective of the runtime
              * architecture.
              */
             var country: ByteArray = ByteArray(2)
