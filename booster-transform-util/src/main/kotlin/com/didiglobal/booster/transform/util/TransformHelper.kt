@@ -1,5 +1,6 @@
 package com.didiglobal.booster.transform.util
 
+import com.didiglobal.booster.build.AndroidSdk
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.transform.AbstractTransformContext
 import com.didiglobal.booster.transform.ArtifactManager
@@ -23,7 +24,7 @@ private val TMPDIR = File(System.getProperty("java.io.tmpdir"))
  */
 open class TransformHelper(
         val input: File,
-        val platform: File,
+        val platform: File = AndroidSdk.getAndroidJar().parentFile,
         val artifacts: ArtifactManager = object : ArtifactManager {},
         val applicationId: String = UUID.randomUUID().toString(),
         val variant: String = "debug"
@@ -32,6 +33,8 @@ open class TransformHelper(
     fun transform(output: File = TMPDIR, transformer: (TransformContext, ByteArray) -> ByteArray = { _, it -> it }) = transform(output, object : Transformer {
         override fun transform(context: TransformContext, bytecode: ByteArray) = transformer(context, bytecode)
     })
+
+    fun transform(transformer: (TransformContext, ByteArray) -> ByteArray = { _, it -> it }, output: File = TMPDIR) = transform(output, transformer)
 
     fun transform(output: File = TMPDIR, vararg transformers: Transformer) {
         val self = this
@@ -69,6 +72,8 @@ open class TransformHelper(
         }
 
     }
+
+    fun transform(vararg transformers: Transformer, output: File = TMPDIR) = transform(output, *transformers)
 
 }
 
