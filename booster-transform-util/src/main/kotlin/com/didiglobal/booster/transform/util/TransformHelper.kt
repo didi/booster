@@ -1,6 +1,7 @@
 package com.didiglobal.booster.transform.util
 
 import com.didiglobal.booster.build.AndroidSdk
+import com.didiglobal.booster.kotlinx.NCPU
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.transform.AbstractTransformContext
 import com.didiglobal.booster.transform.ArtifactManager
@@ -8,6 +9,8 @@ import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.Transformer
 import java.io.File
 import java.util.UUID
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 private val TMPDIR = File(System.getProperty("java.io.tmpdir"))
 
@@ -37,7 +40,6 @@ open class TransformHelper(
     fun transform(transformer: (TransformContext, ByteArray) -> ByteArray = { _, it -> it }, output: File = TMPDIR) = transform(output, transformer)
 
     fun transform(output: File = TMPDIR, vararg transformers: Transformer) {
-        val self = this
         val inputs = if (this.input.isDirectory) this.input.listFiles()?.toList() ?: emptyList() else listOf(this.input)
         val classpath = inputs.filter {
             it.isDirectory || it.extension.run {
@@ -52,25 +54,42 @@ open class TransformHelper(
                 classpath
         ) {
             override val projectDir = output
-            override val artifacts = self.artifacts
+            override val artifacts = this@TransformHelper.artifacts
         }
+        val executor = Executors.newFixedThreadPool(NCPU)
 
-        transformers.forEach {
-            it.onPreTransform(context)
-        }
-
-        inputs.forEach {
-            it.transform(context.buildDir.file("transforms", it.name)) { bytecode ->
-                transformers.fold(bytecode) { bytes, transformer ->
-                    transformer.transform(context, bytes)
+        try {
+            transformers.map {
+                executor.submit {
+                    it.onPreTransform(context)
                 }
+            }.forEach {
+                it.get()
             }
-        }
 
-        transformers.forEach {
-            it.onPostTransform(context)
-        }
+            inputs.map {
+                executor.submit {
+                    it.transform(context.buildDir.file("transforms", it.name)) { bytecode ->
+                        transformers.fold(bytecode) { bytes, transformer ->
+                            transformer.transform(context, bytes)
+                        }
+                    }
+                }
+            }.forEach {
+                it.get()
+            }
 
+            transformers.map {
+                executor.submit {
+                    it.onPostTransform(context)
+                }
+            }.forEach {
+                it.get()
+            }
+        } finally {
+            executor.shutdown()
+            executor.awaitTermination(1L, TimeUnit.HOURS)
+        }
     }
 
     fun transform(vararg transformers: Transformer, output: File = TMPDIR) = transform(output, *transformers)
