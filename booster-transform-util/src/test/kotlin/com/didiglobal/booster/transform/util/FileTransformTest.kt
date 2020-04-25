@@ -1,18 +1,15 @@
-package com.didiglobal.booster.transform
+package com.didiglobal.booster.transform.util
 
 import com.didiglobal.booster.kotlinx.file
-import com.didiglobal.booster.transform.util.Build
-import com.didiglobal.booster.transform.util.transform
 import java.io.File
 import java.nio.file.Files
-import java.util.concurrent.Executors
 import java.util.jar.JarFile
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-val PWD: String = System.getProperty("user.dir")
-val BUILD_DIR = File(PWD, "build")
+private val PWD: String = System.getProperty("user.dir")
+private val BUILD_DIR = File(PWD, "build")
 
 class FileTransformTest {
 
