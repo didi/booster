@@ -150,7 +150,7 @@ nexusStaging {
     delayBetweenRetriesInMillis = 3000
 }
 
-dokka {
+task reference(type: org.jetbrains.dokka.gradle.DokkaTask, group: 'Documentation') {
     subProjects = [
             'booster-aapt2',
             'booster-android-gradle-api',
@@ -168,9 +168,32 @@ dokka {
             'booster-transform-util'
     ]
     outputFormat = 'html'
-    outputDirectory = "${buildDir}/docs/dokka"
+    outputDirectory = "${buildDir}/reference"
     configuration {
-        includes = ['packages.md', 'extra.md']
+        perPackageOption {
+            prefix = 'com.didiglobal.booster.aapt2.legacy'
+            suppress = true
+        }
+        perPackageOption {
+            prefix = 'com.didiglobal.booster.build.BoosterServiceLoader'
+            suppress = true
+        }
+        includes = [
+            'booster-aapt2/packages-zh-CN.md',
+            'booster-android-gradle-api/packages-zh-CN.md',
+            'booster-annotations/packages-zh-CN.md',
+            'booster-api/packages-zh-CN.md',
+            'booster-build/packages-zh-CN.md',
+            'booster-cha/packages-zh-CN.md',
+            'booster-command/packages-zh-CN.md',
+            'booster-kotlinx/packages-zh-CN.md',
+            'booster-task-compression/packages-zh-CN.md',
+            'booster-task-spi/packages-zh-CN.md',
+            'booster-transform-asm/packages-zh-CN.md',
+            'booster-transform-javassist/packages-zh-CN.md',
+            'booster-transform-spi/packages-zh-CN.md',
+            'booster-transform-util/packages-zh-CN.md',
+        ]
         jdkVersion = 8
     }
 }
