@@ -19,6 +19,9 @@ buildscript {
     }
 }
 
+def OSSRH_USERNAME = project.properties['OSSRH_USERNAME'] ?: System.getenv('OSSRH_USERNAME')
+def OSSRH_PASSWORD = project.properties['OSSRH_PASSWORD'] ?: System.getenv('OSSRH_PASSWORD')
+
 apply plugin: 'io.codearte.nexus-staging'
 apply plugin: 'org.jetbrains.dokka'
 
