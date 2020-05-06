@@ -7,6 +7,7 @@ import com.android.build.gradle.internal.api.artifact.SourceArtifactType;
 import com.android.build.gradle.internal.scope.AnchorOutputType;
 import com.android.build.gradle.internal.scope.InternalArtifactType;
 import com.android.build.gradle.internal.scope.VariantScope;
+import com.android.build.gradle.tasks.ProcessAndroidResources;
 import com.android.sdklib.BuildToolInfo;
 import org.jetbrains.annotations.NotNull;
 
@@ -114,5 +115,10 @@ class VariantScopeV32 {
         return scope.getArtifacts().getFinalArtifactFiles(InternalArtifactType.DATA_BINDING_DEPENDENCY_ARTIFACTS)
                 .get()
                 .getSingleFile();
+    }
+
+    @NotNull
+    static ProcessAndroidResources getProcessResourcesTask(@NotNull final VariantScope scope) {
+        return scope.getProcessResourcesTask();
     }
 }
