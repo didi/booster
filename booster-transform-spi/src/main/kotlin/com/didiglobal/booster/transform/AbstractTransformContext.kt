@@ -8,7 +8,7 @@ abstract class AbstractTransformContext(
         final override val bootClasspath: Collection<File>,
         final override val compileClasspath: Collection<File> = emptyList(),
         final override val runtimeClasspath: Collection<File> = emptyList(),
-        final val bootKlassPool: AbstractKlassPool = object : AbstractKlassPool(bootClasspath) {}
+        val bootKlassPool: KlassPool = makeKlassPool(bootClasspath)
 ) : TransformContext {
 
     override val projectDir = File(System.getProperty("user.dir"))
@@ -34,4 +34,11 @@ abstract class AbstractTransformContext(
 
     override fun hasProperty(name: String) = false
 
+}
+
+private fun makeKlassPool(bootClasspath: Collection<File>): KlassPool {
+    return when {
+        bootClasspath.isEmpty() -> object : AbstractKlassPool(bootClasspath) {}
+        else -> object : AbstractKlassPool(bootClasspath) {}
+    }
 }

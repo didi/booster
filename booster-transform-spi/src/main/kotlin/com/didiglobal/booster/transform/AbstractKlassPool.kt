@@ -14,14 +14,17 @@ abstract class AbstractKlassPool(private val classpath: Collection<File>, final 
 
     protected val imports = mutableMapOf<String, Collection<String>>()
 
-    override val classLoader = URLClassLoader(classpath.map { it.toURI().toURL() }.toTypedArray(), parent?.classLoader)
+    override val classLoader: ClassLoader = URLClassLoader(classpath.map { it.toURI().toURL() }.toTypedArray(), parent?.classLoader)
 
     override operator fun get(type: String) = normalize(type).let { name ->
         classes.getOrDefault(name, findClass(name))
     }
 
     override fun close() {
-        this.classLoader.close()
+        val classLoader = this.classLoader
+        if (classLoader is URLClassLoader) {
+            classLoader.close()
+        }
     }
 
     override fun toString() = "classpath: $classpath"

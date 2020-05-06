@@ -49,7 +49,7 @@ open class TransformHelper(
         val context = object : AbstractTransformContext(
                 applicationId,
                 variant,
-                listOf(platform.file("android.jar"), platform.file("optional", "org.apache.http.legacy.jar")),
+                platform.resolve("android.jar").takeIf { it.exists() }?.let { listOf(it) } ?: emptyList(),
                 classpath,
                 classpath
         ) {
