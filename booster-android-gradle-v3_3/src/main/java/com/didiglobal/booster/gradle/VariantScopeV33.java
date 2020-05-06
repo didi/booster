@@ -7,7 +7,9 @@ import com.android.build.gradle.internal.api.artifact.SourceArtifactType;
 import com.android.build.gradle.internal.scope.AnchorOutputType;
 import com.android.build.gradle.internal.scope.InternalArtifactType;
 import com.android.build.gradle.internal.scope.VariantScope;
+import com.android.build.gradle.tasks.ProcessAndroidResources;
 import com.android.sdklib.BuildToolInfo;
+import org.gradle.api.tasks.TaskContainer;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -114,4 +116,9 @@ class VariantScopeV33 {
         return scope.getVariantData().getAllRawAndroidResources().getFiles();
     }
 
+    @NotNull
+    static ProcessAndroidResources getProcessResourcesTask(@NotNull final VariantScope scope) {
+        final TaskContainer tasks = scope.getGlobalScope().getProject().getTasks();
+        return (ProcessAndroidResources) tasks.getByName(scope.getTaskName("process", "Resources"));
+    }
 }

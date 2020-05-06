@@ -6,8 +6,10 @@ import com.android.build.gradle.internal.scope.TaskOutputHolder.OutputType;
 import com.android.build.gradle.internal.scope.TaskOutputHolder.TaskOutputType;
 import com.android.build.gradle.internal.scope.VariantScope;
 import com.android.build.gradle.tasks.MergeResources;
+import com.android.build.gradle.tasks.ProcessAndroidResources;
 import com.android.ide.common.res2.ResourceSet;
 import com.android.sdklib.BuildToolInfo;
+import org.gradle.api.tasks.TaskContainer;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -132,5 +134,11 @@ class VariantScopeV30 {
     static File getDataBindingDependencyArtifacts(@NotNull final VariantScope scope) {
         File file = scope.getBuildFolderForDataBindingCompiler();
         return new File(file, "dependent-lib-artifacts");
+    }
+
+    @NotNull
+    public static ProcessAndroidResources getProcessResourcesTask(@NotNull final VariantScope scope) {
+        final TaskContainer tasks = scope.getGlobalScope().getProject().getTasks();
+        return (ProcessAndroidResources) tasks.getByName(scope.getProcessResourcesTask().getName());
     }
 }
