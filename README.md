@@ -44,8 +44,9 @@ Booster provides a collection of modules for performance detection, multithreadi
 
 ## Prerequisite | 先决条件
 
-- Gradle version 4.1+
-- Android Gradle Plugin version 3.0+ (3.2.0+ is recommended)
+- JDK (`1.8` is recommended)
+- Gradle version `4.1+`
+- Android Gradle Plugin version `3.0+` (`3.0.0` - `3.5.x` is recommended)
 
 ## Best Practise | 最佳实践
 
