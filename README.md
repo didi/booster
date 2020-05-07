@@ -237,7 +237,7 @@ Here are all the modules of Booster:
 
 ## Documentation | 文档
 
-About the details, please see [Wiki](../../wiki).
+About the details, please see [Booster Inside（深入理解 Booster）](https://booster.johnsonlee.io)
 
 ## Contributing
 
