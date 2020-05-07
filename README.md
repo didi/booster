@@ -239,6 +239,10 @@ Here are all the modules of Booster:
 
 About the details, please see [Booster Inside（深入理解 Booster）](https://booster.johnsonlee.io)
 
+## API Reference
+
+About the API reference, please see [Booster API Reference](https://reference.johnsonlee.io/booster/)
+
 ## Contributing
 
 Welcome to contribute by creating issues or sending pull requests. See [Contributing Guideline](./CONTRIBUTING.md).
