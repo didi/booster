@@ -1,5 +1,5 @@
 apply from: '../gradle/booster.gradle'
 
 dependencies {
-    implementation project(':booster-transform-asm')
+    api project(':booster-transform-asm')
 }
