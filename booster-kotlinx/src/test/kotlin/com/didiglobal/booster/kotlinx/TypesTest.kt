@@ -7,17 +7,18 @@ class TypesTest {
 
     @Test
     fun `test get descriptor`() {
-        assertEquals("Z", Types.getDescriptor(Boolean::class.java))
-        assertEquals("B", Types.getDescriptor(Byte::class.java))
-        assertEquals("C", Types.getDescriptor(Char::class.java))
-        assertEquals("S", Types.getDescriptor(Short::class.java))
-        assertEquals("I", Types.getDescriptor(Int::class.java))
-        assertEquals("F", Types.getDescriptor(Float::class.java))
-        assertEquals("J", Types.getDescriptor(Long::class.java))
-        assertEquals("D", Types.getDescriptor(Double::class.java))
-        assertEquals("Ljava/lang/String;", Types.getDescriptor(String::class.java))
-        assertEquals("[Ljava/lang/Boolean;", Types.getDescriptor(Array<Boolean>::class.java))
-        assertEquals("[[Ljava/lang/Boolean;", Types.getDescriptor(Array<Array<Boolean>>::class.java))
+        assertEquals("Z", Boolean::class.javaPrimitiveType!!.descriptor)
+        assertEquals("B", Byte::class.javaPrimitiveType!!.descriptor)
+        assertEquals("C", Char::class.javaPrimitiveType!!.descriptor)
+        assertEquals("S", Short::class.javaPrimitiveType!!.descriptor)
+        assertEquals("I", Int::class.javaPrimitiveType!!.descriptor)
+        assertEquals("F", Float::class.javaPrimitiveType!!.descriptor)
+        assertEquals("J", Long::class.javaPrimitiveType!!.descriptor)
+        assertEquals("D", Double::class.javaPrimitiveType!!.descriptor)
+        assertEquals("V", Void.TYPE.descriptor)
+        assertEquals("Ljava/lang/String;", String::class.java.descriptor)
+        assertEquals("[Ljava/lang/Boolean;", Array<Boolean>::class.java.descriptor)
+        assertEquals("[[Ljava/lang/Boolean;", Array<Array<Boolean>>::class.java.descriptor)
     }
 
 }
