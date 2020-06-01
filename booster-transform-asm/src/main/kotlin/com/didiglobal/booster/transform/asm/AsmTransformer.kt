@@ -1,7 +1,6 @@
 package com.didiglobal.booster.transform.asm
 
 import com.didiglobal.booster.annotations.Priority
-import com.didiglobal.booster.build.BoosterServiceLoader
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.Transformer
 import com.google.auto.service.AutoService
@@ -12,6 +11,7 @@ import java.io.File
 import java.io.InputStream
 import java.lang.management.ManagementFactory
 import java.lang.management.ThreadMXBean
+import java.util.ServiceLoader
 import java.util.jar.JarFile
 
 /**
@@ -31,12 +31,17 @@ class AsmTransformer : Transformer {
     /*
      * Preload transformers as List to fix NoSuchElementException caused by ServiceLoader in parallel mode
      */
-    constructor() : this(*BoosterServiceLoader.load(ClassTransformer::class.java, AsmTransformer::class.java.classLoader).toList().toTypedArray())
+    constructor() : this(ServiceLoader.load(ClassTransformer::class.java, AsmTransformer::class.java.classLoader))
 
     /**
-     * For unit test only
+     * Initialize [AsmTransformer] with [transformers]
      */
-    constructor(vararg transformers: ClassTransformer) {
+    constructor(vararg transformers: ClassTransformer) : this(transformers.toList())
+
+    /**
+     * Initialize [AsmTransformer] with [transformers]
+     */
+    constructor(transformers: Iterable<ClassTransformer>) {
         this.transformers = transformers.sortedBy {
             it.javaClass.getAnnotation(Priority::class.java)?.value ?: 0
         }
