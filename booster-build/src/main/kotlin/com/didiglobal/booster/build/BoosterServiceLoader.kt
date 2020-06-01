@@ -1,5 +1,6 @@
 package com.didiglobal.booster.build
 
+import com.didiglobal.booster.annotations.Priority
 import java.util.ServiceLoader
 
 /**
@@ -14,6 +15,8 @@ class BoosterServiceLoader {
                 ServiceLoader.load(service, classLoader)
         ).flatten().distinctBy {
             it.javaClass
+        }.sortedBy {
+            it.javaClass.getAnnotation(Priority::class.java)?.value ?: 0
         }
 
     }
