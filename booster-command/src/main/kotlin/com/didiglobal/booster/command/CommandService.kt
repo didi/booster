@@ -1,7 +1,7 @@
 package com.didiglobal.booster.command
 
-import com.didiglobal.booster.build.BoosterServiceLoader
 import java.io.File
+import java.util.ServiceLoader
 
 /**
  * Represents a command service
@@ -10,7 +10,7 @@ class CommandService {
 
     companion object {
 
-        private val commands = BoosterServiceLoader.load(CommandProvider::class.java, Command::class.java.classLoader).map {
+        private val commands = ServiceLoader.load(CommandProvider::class.java, CommandService::class.java.classLoader).map {
             it.get()
         }.flatten().map {
             it.name to it
