@@ -2,4 +2,5 @@ apply from: '../gradle/booster.gradle'
 
 dependencies {
     api project(":booster-kotlinx")
+    api project(":booster-annotations")
 }
