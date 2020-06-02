@@ -23,9 +23,10 @@ class CwebpCompressionVariantProcessor : VariantProcessor {
     override fun process(variant: BaseVariant) {
         val results = CompressionResults()
         val filter = if (variant.project.aapt2Enabled) ::isFlatPngExceptRaw else ::isPngExceptRaw
+        val upstream = variant.project.tasks.findByName("remove${variant.name.capitalize()}RedundantResources") ?: variant.mergeResourcesTask
         Cwebp.get(variant)?.newCompressionTaskCreator()?.createCompressionTask(variant, results, "resources", {
             variant.scope.mergedRes.search(filter)
-        }, variant.mergeResourcesTask)?.doLast {
+        }, upstream)?.doLast {
             results.generateReport(variant, Build.ARTIFACT)
         }
     }

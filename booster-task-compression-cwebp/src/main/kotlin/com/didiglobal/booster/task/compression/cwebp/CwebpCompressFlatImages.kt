@@ -58,7 +58,7 @@ internal open class CwebpCompressFlatImages : AbstractCwebpCompressImages() {
             }
         }
 
-        supplier().parallelStream().map {
+        images.parallelStream().map {
             it to it.metadata
         }.filter {
             isNotLauncherIcon(it.first, it.second)
