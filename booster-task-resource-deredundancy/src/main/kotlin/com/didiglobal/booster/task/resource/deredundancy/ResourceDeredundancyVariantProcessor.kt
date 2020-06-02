@@ -1,6 +1,7 @@
 package com.didiglobal.booster.task.resource.deredundancy
 
 import com.android.build.gradle.api.BaseVariant
+import com.didiglobal.booster.annotations.Priority
 import com.didiglobal.booster.compression.CompressionResults
 import com.didiglobal.booster.compression.generateReport
 import com.didiglobal.booster.compression.isFlatPng
@@ -21,6 +22,7 @@ import com.google.auto.service.AutoService
  *
  * @author johnsonlee
  */
+@Priority(-1)
 @AutoService(VariantProcessor::class)
 class ResourceDeredundancyVariantProcessor : VariantProcessor {
 

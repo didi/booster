@@ -26,13 +26,13 @@ class PngquantCompressionVariantProcessor : VariantProcessor {
     override fun process(variant: BaseVariant) {
         val results = CompressionResults()
         val filter = if (variant.project.aapt2Enabled) ::isFlatPngExceptRaw else ::isPngExceptRaw
-        val cmps = variant.project.tasks.withType(CompressImages::class.java).filter {
+        val compress = variant.project.tasks.withType(CompressImages::class.java).filter {
             it.variant.name == variant.name
         }
-        val deps = (cmps + variant.mergeResourcesTask).toTypedArray()
+        val upstream = variant.project.tasks.findByName("remove${variant.name.capitalize()}RedundantResources") ?: variant.mergeResourcesTask
         Pngquant.get(variant)?.newCompressionTaskCreator()?.createCompressionTask(variant, results, "resources", {
             variant.scope.mergedRes.search(filter)
-        }, *deps)?.doLast {
+        }, *(compress + upstream).toTypedArray())?.doLast {
             results.generateReport(variant, Build.ARTIFACT)
         }
 

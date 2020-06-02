@@ -46,7 +46,7 @@ internal open class PngquantCompressFlatImages : AbstractPngquantCompressImages(
         compressedRes.file(FD_RES_MIPMAP).mkdirs()
         compressedRes.file(FD_RES_DRAWABLE).mkdirs()
 
-        supplier().parallelStream().map {
+        images.parallelStream().map {
             it to it.metadata
         }.map {
             val output = compressedRes.file("${it.second.resourcePath.substringBeforeLast('.')}$DOT_PNG")

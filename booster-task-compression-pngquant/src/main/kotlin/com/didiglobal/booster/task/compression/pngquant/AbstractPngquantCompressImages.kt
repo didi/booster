@@ -6,6 +6,7 @@ import org.gradle.api.tasks.TaskAction
 
 /**
  * Represents an abstraction of pngquant compression task
+ *
  * @author johnsonlee
  */
 abstract class AbstractPngquantCompressImages: CompressImages<PngquantOptions>() {

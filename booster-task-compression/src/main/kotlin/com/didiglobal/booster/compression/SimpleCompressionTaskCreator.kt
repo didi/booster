@@ -23,17 +23,13 @@ class SimpleCompressionTaskCreator(private val tool: CompressionTool, private va
     override fun createCompressionTask(variant: BaseVariant, results: CompressionResults, name: String, supplier: () -> Collection<File>, vararg deps: Task): CompressImages<out CompressionOptions> {
         val aapt2 = variant.project.aapt2Enabled
         val install = getCommandInstaller(variant)
-        val inputs = mutableListOf<File>()
 
         return variant.project.tasks.create("compress${variant.name.capitalize()}${name.capitalize()}With${tool.command.name.substringBefore('.').capitalize()}", getCompressionTaskClass(aapt2).java) { task ->
             task.tool = tool
             task.variant = variant
             task.results = results
             task.supplier = {
-                if (inputs.isEmpty()) {
-                    inputs += supplier.invoke().filter { it.length() > 0 }.sortedBy { it }
-                }
-                inputs
+                supplier.invoke().filter { it.length() > 0 }.sortedBy { it }
             }
         }.apply {
             dependsOn(install, deps)
