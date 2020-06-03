@@ -29,10 +29,9 @@ class PngquantCompressionVariantProcessor : VariantProcessor {
         val compress = variant.project.tasks.withType(CompressImages::class.java).filter {
             it.variant.name == variant.name
         }
-        val upstream = variant.project.tasks.findByName("remove${variant.name.capitalize()}RedundantResources") ?: variant.mergeResourcesTask
         Pngquant.get(variant)?.newCompressionTaskCreator()?.createCompressionTask(variant, results, "resources", {
             variant.scope.mergedRes.search(filter)
-        }, *(compress + upstream).toTypedArray())?.doLast {
+        }, *(compress + variant.mergeResourcesTask).toTypedArray())?.doLast {
             results.generateReport(variant, Build.ARTIFACT)
         }
 
