@@ -21,7 +21,7 @@ val BaseVariant.extension: BaseExtension
  */
 val BaseVariant.platform: File
     get() = extension.run {
-        sdkDirectory.resolve("platforms").resolve(compileSdkVersion)
+        sdkDirectory.resolve("platforms").resolve(compileSdkVersion!!)
     }
 
 /**
@@ -107,8 +107,4 @@ val BaseVariant.mergeResourcesTask: Task
  * The `processRes` task associates with this variant
  */
 val BaseVariant.processResTask: ProcessAndroidResources
-    get() = when {
-        GTE_V3_3 -> VariantScopeV33.getProcessResourcesTask(scope)
-        GTE_V3_2 -> VariantScopeV32.getProcessResourcesTask(scope)
-        else -> VariantScopeV30.getProcessResourcesTask(scope)
-    }
+    get() = project.tasks.withType(ProcessAndroidResources::class.java).findByName("process${name.capitalize()}Resources")!!

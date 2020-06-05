@@ -4,6 +4,6 @@ dependencies {
     kapt "com.google.auto.service:auto-service:1.0-rc6"
     implementation 'com.google.auto.service:auto-service:1.0-rc6'
     implementation project(':booster-api')
-    compileOnly 'com.android.tools.build:gradle:3.0.0'
-    testCompileOnly 'com.android.tools.build:gradle:3.0.0'
+    compileOnly 'com.android.tools.build:gradle:4.0.0'
+    testCompileOnly 'com.android.tools.build:gradle:4.0.0'
 }

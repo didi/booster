@@ -8,9 +8,15 @@ public final class ConfigurationOuterClass {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistryLite registry) {
   }
+
+  public static void registerAllExtensions(
+      com.google.protobuf.ExtensionRegistry registry) {
+    registerAllExtensions(
+        (com.google.protobuf.ExtensionRegistryLite) registry);
+  }
   public interface ConfigurationOrBuilder extends
       // @@protoc_insertion_point(interface_extends:aapt.pb.Configuration)
-      com.google.protobuf.MessageLiteOrBuilder {
+      com.google.protobuf.MessageOrBuilder {
 
     /**
      * <pre>
@@ -18,6 +24,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>uint32 mcc = 1;</code>
+     * @return The mcc.
      */
     int getMcc();
 
@@ -27,6 +34,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>uint32 mnc = 2;</code>
+     * @return The mnc.
      */
     int getMnc();
 
@@ -36,6 +44,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>string locale = 3;</code>
+     * @return The locale.
      */
     java.lang.String getLocale();
     /**
@@ -44,6 +53,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>string locale = 3;</code>
+     * @return The bytes for locale.
      */
     com.google.protobuf.ByteString
         getLocaleBytes();
@@ -54,6 +64,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.LayoutDirection layout_direction = 4;</code>
+     * @return The enum numeric value on the wire for layoutDirection.
      */
     int getLayoutDirectionValue();
     /**
@@ -62,6 +73,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.LayoutDirection layout_direction = 4;</code>
+     * @return The layoutDirection.
      */
     com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.LayoutDirection getLayoutDirection();
 
@@ -71,6 +83,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>uint32 screen_width = 5;</code>
+     * @return The screenWidth.
      */
     int getScreenWidth();
 
@@ -80,6 +93,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>uint32 screen_height = 6;</code>
+     * @return The screenHeight.
      */
     int getScreenHeight();
 
@@ -89,6 +103,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>uint32 screen_width_dp = 7;</code>
+     * @return The screenWidthDp.
      */
     int getScreenWidthDp();
 
@@ -98,6 +113,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>uint32 screen_height_dp = 8;</code>
+     * @return The screenHeightDp.
      */
     int getScreenHeightDp();
 
@@ -107,6 +123,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>uint32 smallest_screen_width_dp = 9;</code>
+     * @return The smallestScreenWidthDp.
      */
     int getSmallestScreenWidthDp();
 
@@ -116,6 +133,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.ScreenLayoutSize screen_layout_size = 10;</code>
+     * @return The enum numeric value on the wire for screenLayoutSize.
      */
     int getScreenLayoutSizeValue();
     /**
@@ -124,6 +142,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.ScreenLayoutSize screen_layout_size = 10;</code>
+     * @return The screenLayoutSize.
      */
     com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutSize getScreenLayoutSize();
 
@@ -133,6 +152,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.ScreenLayoutLong screen_layout_long = 11;</code>
+     * @return The enum numeric value on the wire for screenLayoutLong.
      */
     int getScreenLayoutLongValue();
     /**
@@ -141,6 +161,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.ScreenLayoutLong screen_layout_long = 11;</code>
+     * @return The screenLayoutLong.
      */
     com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutLong getScreenLayoutLong();
 
@@ -150,6 +171,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.ScreenRound screen_round = 12;</code>
+     * @return The enum numeric value on the wire for screenRound.
      */
     int getScreenRoundValue();
     /**
@@ -158,6 +180,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.ScreenRound screen_round = 12;</code>
+     * @return The screenRound.
      */
     com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenRound getScreenRound();
 
@@ -167,6 +190,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.WideColorGamut wide_color_gamut = 13;</code>
+     * @return The enum numeric value on the wire for wideColorGamut.
      */
     int getWideColorGamutValue();
     /**
@@ -175,6 +199,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.WideColorGamut wide_color_gamut = 13;</code>
+     * @return The wideColorGamut.
      */
     com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.WideColorGamut getWideColorGamut();
 
@@ -184,6 +209,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.Hdr hdr = 14;</code>
+     * @return The enum numeric value on the wire for hdr.
      */
     int getHdrValue();
     /**
@@ -192,6 +218,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.Hdr hdr = 14;</code>
+     * @return The hdr.
      */
     com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Hdr getHdr();
 
@@ -201,6 +228,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.Orientation orientation = 15;</code>
+     * @return The enum numeric value on the wire for orientation.
      */
     int getOrientationValue();
     /**
@@ -209,6 +237,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.Orientation orientation = 15;</code>
+     * @return The orientation.
      */
     com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Orientation getOrientation();
 
@@ -218,6 +247,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.UiModeType ui_mode_type = 16;</code>
+     * @return The enum numeric value on the wire for uiModeType.
      */
     int getUiModeTypeValue();
     /**
@@ -226,6 +256,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.UiModeType ui_mode_type = 16;</code>
+     * @return The uiModeType.
      */
     com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeType getUiModeType();
 
@@ -235,6 +266,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.UiModeNight ui_mode_night = 17;</code>
+     * @return The enum numeric value on the wire for uiModeNight.
      */
     int getUiModeNightValue();
     /**
@@ -243,6 +275,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.UiModeNight ui_mode_night = 17;</code>
+     * @return The uiModeNight.
      */
     com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeNight getUiModeNight();
 
@@ -252,6 +285,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>uint32 density = 18;</code>
+     * @return The density.
      */
     int getDensity();
 
@@ -261,6 +295,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.Touchscreen touchscreen = 19;</code>
+     * @return The enum numeric value on the wire for touchscreen.
      */
     int getTouchscreenValue();
     /**
@@ -269,6 +304,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.Touchscreen touchscreen = 19;</code>
+     * @return The touchscreen.
      */
     com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Touchscreen getTouchscreen();
 
@@ -279,6 +315,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.KeysHidden keys_hidden = 20;</code>
+     * @return The enum numeric value on the wire for keysHidden.
      */
     int getKeysHiddenValue();
     /**
@@ -288,6 +325,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.KeysHidden keys_hidden = 20;</code>
+     * @return The keysHidden.
      */
     com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.KeysHidden getKeysHidden();
 
@@ -297,6 +335,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.Keyboard keyboard = 21;</code>
+     * @return The enum numeric value on the wire for keyboard.
      */
     int getKeyboardValue();
     /**
@@ -305,6 +344,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.Keyboard keyboard = 21;</code>
+     * @return The keyboard.
      */
     com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Keyboard getKeyboard();
 
@@ -314,6 +354,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.NavHidden nav_hidden = 22;</code>
+     * @return The enum numeric value on the wire for navHidden.
      */
     int getNavHiddenValue();
     /**
@@ -322,6 +363,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.NavHidden nav_hidden = 22;</code>
+     * @return The navHidden.
      */
     com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.NavHidden getNavHidden();
 
@@ -332,6 +374,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.Navigation navigation = 23;</code>
+     * @return The enum numeric value on the wire for navigation.
      */
     int getNavigationValue();
     /**
@@ -341,6 +384,7 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.Navigation navigation = 23;</code>
+     * @return The navigation.
      */
     com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Navigation getNavigation();
 
@@ -350,15 +394,18 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>uint32 sdk_version = 24;</code>
+     * @return The sdkVersion.
      */
     int getSdkVersion();
 
     /**
      * <code>string product = 25;</code>
+     * @return The product.
      */
     java.lang.String getProduct();
     /**
      * <code>string product = 25;</code>
+     * @return The bytes for product.
      */
     com.google.protobuf.ByteString
         getProductBytes();
@@ -371,20 +418,242 @@ public final class ConfigurationOuterClass {
    *
    * Protobuf type {@code aapt.pb.Configuration}
    */
-  public  static final class Configuration extends
-      com.google.protobuf.GeneratedMessageLite<
-          Configuration, Configuration.Builder> implements
+  public static final class Configuration extends
+      com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:aapt.pb.Configuration)
       ConfigurationOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use Configuration.newBuilder() to construct.
+    private Configuration(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
     private Configuration() {
       locale_ = "";
+      layoutDirection_ = 0;
+      screenLayoutSize_ = 0;
+      screenLayoutLong_ = 0;
+      screenRound_ = 0;
+      wideColorGamut_ = 0;
+      hdr_ = 0;
+      orientation_ = 0;
+      uiModeType_ = 0;
+      uiModeNight_ = 0;
+      touchscreen_ = 0;
+      keysHidden_ = 0;
+      keyboard_ = 0;
+      navHidden_ = 0;
+      navigation_ = 0;
       product_ = "";
     }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new Configuration();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Configuration(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              mcc_ = input.readUInt32();
+              break;
+            }
+            case 16: {
+
+              mnc_ = input.readUInt32();
+              break;
+            }
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              locale_ = s;
+              break;
+            }
+            case 32: {
+              int rawValue = input.readEnum();
+
+              layoutDirection_ = rawValue;
+              break;
+            }
+            case 40: {
+
+              screenWidth_ = input.readUInt32();
+              break;
+            }
+            case 48: {
+
+              screenHeight_ = input.readUInt32();
+              break;
+            }
+            case 56: {
+
+              screenWidthDp_ = input.readUInt32();
+              break;
+            }
+            case 64: {
+
+              screenHeightDp_ = input.readUInt32();
+              break;
+            }
+            case 72: {
+
+              smallestScreenWidthDp_ = input.readUInt32();
+              break;
+            }
+            case 80: {
+              int rawValue = input.readEnum();
+
+              screenLayoutSize_ = rawValue;
+              break;
+            }
+            case 88: {
+              int rawValue = input.readEnum();
+
+              screenLayoutLong_ = rawValue;
+              break;
+            }
+            case 96: {
+              int rawValue = input.readEnum();
+
+              screenRound_ = rawValue;
+              break;
+            }
+            case 104: {
+              int rawValue = input.readEnum();
+
+              wideColorGamut_ = rawValue;
+              break;
+            }
+            case 112: {
+              int rawValue = input.readEnum();
+
+              hdr_ = rawValue;
+              break;
+            }
+            case 120: {
+              int rawValue = input.readEnum();
+
+              orientation_ = rawValue;
+              break;
+            }
+            case 128: {
+              int rawValue = input.readEnum();
+
+              uiModeType_ = rawValue;
+              break;
+            }
+            case 136: {
+              int rawValue = input.readEnum();
+
+              uiModeNight_ = rawValue;
+              break;
+            }
+            case 144: {
+
+              density_ = input.readUInt32();
+              break;
+            }
+            case 152: {
+              int rawValue = input.readEnum();
+
+              touchscreen_ = rawValue;
+              break;
+            }
+            case 160: {
+              int rawValue = input.readEnum();
+
+              keysHidden_ = rawValue;
+              break;
+            }
+            case 168: {
+              int rawValue = input.readEnum();
+
+              keyboard_ = rawValue;
+              break;
+            }
+            case 176: {
+              int rawValue = input.readEnum();
+
+              navHidden_ = rawValue;
+              break;
+            }
+            case 184: {
+              int rawValue = input.readEnum();
+
+              navigation_ = rawValue;
+              break;
+            }
+            case 192: {
+
+              sdkVersion_ = input.readUInt32();
+              break;
+            }
+            case 202: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              product_ = s;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.didiglobal.booster.aapt2.ConfigurationOuterClass.internal_static_aapt_pb_Configuration_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.didiglobal.booster.aapt2.ConfigurationOuterClass.internal_static_aapt_pb_Configuration_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.class, com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Builder.class);
+    }
+
     /**
      * Protobuf enum {@code aapt.pb.Configuration.LayoutDirection}
      */
     public enum LayoutDirection
-        implements com.google.protobuf.Internal.EnumLite {
+        implements com.google.protobuf.ProtocolMessageEnum {
       /**
        * <code>LAYOUT_DIRECTION_UNSET = 0;</code>
        */
@@ -423,6 +692,8 @@ public final class ConfigurationOuterClass {
       }
 
       /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
@@ -430,6 +701,10 @@ public final class ConfigurationOuterClass {
         return forNumber(value);
       }
 
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
       public static LayoutDirection forNumber(int value) {
         switch (value) {
           case 0: return LAYOUT_DIRECTION_UNSET;
@@ -451,6 +726,37 @@ public final class ConfigurationOuterClass {
               }
             };
 
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalStateException(
+              "Can't get the descriptor of an unrecognized enum value.");
+        }
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.getDescriptor().getEnumTypes().get(0);
+      }
+
+      private static final LayoutDirection[] VALUES = values();
+
+      public static LayoutDirection valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
       private final int value;
 
       private LayoutDirection(int value) {
@@ -464,7 +770,7 @@ public final class ConfigurationOuterClass {
      * Protobuf enum {@code aapt.pb.Configuration.ScreenLayoutSize}
      */
     public enum ScreenLayoutSize
-        implements com.google.protobuf.Internal.EnumLite {
+        implements com.google.protobuf.ProtocolMessageEnum {
       /**
        * <code>SCREEN_LAYOUT_SIZE_UNSET = 0;</code>
        */
@@ -519,6 +825,8 @@ public final class ConfigurationOuterClass {
       }
 
       /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
@@ -526,6 +834,10 @@ public final class ConfigurationOuterClass {
         return forNumber(value);
       }
 
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
       public static ScreenLayoutSize forNumber(int value) {
         switch (value) {
           case 0: return SCREEN_LAYOUT_SIZE_UNSET;
@@ -549,6 +861,37 @@ public final class ConfigurationOuterClass {
               }
             };
 
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalStateException(
+              "Can't get the descriptor of an unrecognized enum value.");
+        }
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.getDescriptor().getEnumTypes().get(1);
+      }
+
+      private static final ScreenLayoutSize[] VALUES = values();
+
+      public static ScreenLayoutSize valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
       private final int value;
 
       private ScreenLayoutSize(int value) {
@@ -562,7 +905,7 @@ public final class ConfigurationOuterClass {
      * Protobuf enum {@code aapt.pb.Configuration.ScreenLayoutLong}
      */
     public enum ScreenLayoutLong
-        implements com.google.protobuf.Internal.EnumLite {
+        implements com.google.protobuf.ProtocolMessageEnum {
       /**
        * <code>SCREEN_LAYOUT_LONG_UNSET = 0;</code>
        */
@@ -601,6 +944,8 @@ public final class ConfigurationOuterClass {
       }
 
       /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
@@ -608,6 +953,10 @@ public final class ConfigurationOuterClass {
         return forNumber(value);
       }
 
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
       public static ScreenLayoutLong forNumber(int value) {
         switch (value) {
           case 0: return SCREEN_LAYOUT_LONG_UNSET;
@@ -629,6 +978,37 @@ public final class ConfigurationOuterClass {
               }
             };
 
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalStateException(
+              "Can't get the descriptor of an unrecognized enum value.");
+        }
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.getDescriptor().getEnumTypes().get(2);
+      }
+
+      private static final ScreenLayoutLong[] VALUES = values();
+
+      public static ScreenLayoutLong valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
       private final int value;
 
       private ScreenLayoutLong(int value) {
@@ -642,7 +1022,7 @@ public final class ConfigurationOuterClass {
      * Protobuf enum {@code aapt.pb.Configuration.ScreenRound}
      */
     public enum ScreenRound
-        implements com.google.protobuf.Internal.EnumLite {
+        implements com.google.protobuf.ProtocolMessageEnum {
       /**
        * <code>SCREEN_ROUND_UNSET = 0;</code>
        */
@@ -681,6 +1061,8 @@ public final class ConfigurationOuterClass {
       }
 
       /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
@@ -688,6 +1070,10 @@ public final class ConfigurationOuterClass {
         return forNumber(value);
       }
 
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
       public static ScreenRound forNumber(int value) {
         switch (value) {
           case 0: return SCREEN_ROUND_UNSET;
@@ -709,6 +1095,37 @@ public final class ConfigurationOuterClass {
               }
             };
 
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalStateException(
+              "Can't get the descriptor of an unrecognized enum value.");
+        }
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.getDescriptor().getEnumTypes().get(3);
+      }
+
+      private static final ScreenRound[] VALUES = values();
+
+      public static ScreenRound valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
       private final int value;
 
       private ScreenRound(int value) {
@@ -722,7 +1139,7 @@ public final class ConfigurationOuterClass {
      * Protobuf enum {@code aapt.pb.Configuration.WideColorGamut}
      */
     public enum WideColorGamut
-        implements com.google.protobuf.Internal.EnumLite {
+        implements com.google.protobuf.ProtocolMessageEnum {
       /**
        * <code>WIDE_COLOR_GAMUT_UNSET = 0;</code>
        */
@@ -761,6 +1178,8 @@ public final class ConfigurationOuterClass {
       }
 
       /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
@@ -768,6 +1187,10 @@ public final class ConfigurationOuterClass {
         return forNumber(value);
       }
 
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
       public static WideColorGamut forNumber(int value) {
         switch (value) {
           case 0: return WIDE_COLOR_GAMUT_UNSET;
@@ -789,6 +1212,37 @@ public final class ConfigurationOuterClass {
               }
             };
 
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalStateException(
+              "Can't get the descriptor of an unrecognized enum value.");
+        }
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.getDescriptor().getEnumTypes().get(4);
+      }
+
+      private static final WideColorGamut[] VALUES = values();
+
+      public static WideColorGamut valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
       private final int value;
 
       private WideColorGamut(int value) {
@@ -802,7 +1256,7 @@ public final class ConfigurationOuterClass {
      * Protobuf enum {@code aapt.pb.Configuration.Hdr}
      */
     public enum Hdr
-        implements com.google.protobuf.Internal.EnumLite {
+        implements com.google.protobuf.ProtocolMessageEnum {
       /**
        * <code>HDR_UNSET = 0;</code>
        */
@@ -841,6 +1295,8 @@ public final class ConfigurationOuterClass {
       }
 
       /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
@@ -848,6 +1304,10 @@ public final class ConfigurationOuterClass {
         return forNumber(value);
       }
 
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
       public static Hdr forNumber(int value) {
         switch (value) {
           case 0: return HDR_UNSET;
@@ -869,6 +1329,37 @@ public final class ConfigurationOuterClass {
               }
             };
 
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalStateException(
+              "Can't get the descriptor of an unrecognized enum value.");
+        }
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.getDescriptor().getEnumTypes().get(5);
+      }
+
+      private static final Hdr[] VALUES = values();
+
+      public static Hdr valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
       private final int value;
 
       private Hdr(int value) {
@@ -882,7 +1373,7 @@ public final class ConfigurationOuterClass {
      * Protobuf enum {@code aapt.pb.Configuration.Orientation}
      */
     public enum Orientation
-        implements com.google.protobuf.Internal.EnumLite {
+        implements com.google.protobuf.ProtocolMessageEnum {
       /**
        * <code>ORIENTATION_UNSET = 0;</code>
        */
@@ -929,6 +1420,8 @@ public final class ConfigurationOuterClass {
       }
 
       /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
@@ -936,6 +1429,10 @@ public final class ConfigurationOuterClass {
         return forNumber(value);
       }
 
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
       public static Orientation forNumber(int value) {
         switch (value) {
           case 0: return ORIENTATION_UNSET;
@@ -958,6 +1455,37 @@ public final class ConfigurationOuterClass {
               }
             };
 
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalStateException(
+              "Can't get the descriptor of an unrecognized enum value.");
+        }
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.getDescriptor().getEnumTypes().get(6);
+      }
+
+      private static final Orientation[] VALUES = values();
+
+      public static Orientation valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
       private final int value;
 
       private Orientation(int value) {
@@ -971,7 +1499,7 @@ public final class ConfigurationOuterClass {
      * Protobuf enum {@code aapt.pb.Configuration.UiModeType}
      */
     public enum UiModeType
-        implements com.google.protobuf.Internal.EnumLite {
+        implements com.google.protobuf.ProtocolMessageEnum {
       /**
        * <code>UI_MODE_TYPE_UNSET = 0;</code>
        */
@@ -1050,6 +1578,8 @@ public final class ConfigurationOuterClass {
       }
 
       /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
@@ -1057,6 +1587,10 @@ public final class ConfigurationOuterClass {
         return forNumber(value);
       }
 
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
       public static UiModeType forNumber(int value) {
         switch (value) {
           case 0: return UI_MODE_TYPE_UNSET;
@@ -1083,6 +1617,37 @@ public final class ConfigurationOuterClass {
               }
             };
 
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalStateException(
+              "Can't get the descriptor of an unrecognized enum value.");
+        }
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.getDescriptor().getEnumTypes().get(7);
+      }
+
+      private static final UiModeType[] VALUES = values();
+
+      public static UiModeType valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
       private final int value;
 
       private UiModeType(int value) {
@@ -1096,7 +1661,7 @@ public final class ConfigurationOuterClass {
      * Protobuf enum {@code aapt.pb.Configuration.UiModeNight}
      */
     public enum UiModeNight
-        implements com.google.protobuf.Internal.EnumLite {
+        implements com.google.protobuf.ProtocolMessageEnum {
       /**
        * <code>UI_MODE_NIGHT_UNSET = 0;</code>
        */
@@ -1135,6 +1700,8 @@ public final class ConfigurationOuterClass {
       }
 
       /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
@@ -1142,6 +1709,10 @@ public final class ConfigurationOuterClass {
         return forNumber(value);
       }
 
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
       public static UiModeNight forNumber(int value) {
         switch (value) {
           case 0: return UI_MODE_NIGHT_UNSET;
@@ -1163,6 +1734,37 @@ public final class ConfigurationOuterClass {
               }
             };
 
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalStateException(
+              "Can't get the descriptor of an unrecognized enum value.");
+        }
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.getDescriptor().getEnumTypes().get(8);
+      }
+
+      private static final UiModeNight[] VALUES = values();
+
+      public static UiModeNight valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
       private final int value;
 
       private UiModeNight(int value) {
@@ -1176,7 +1778,7 @@ public final class ConfigurationOuterClass {
      * Protobuf enum {@code aapt.pb.Configuration.Touchscreen}
      */
     public enum Touchscreen
-        implements com.google.protobuf.Internal.EnumLite {
+        implements com.google.protobuf.ProtocolMessageEnum {
       /**
        * <code>TOUCHSCREEN_UNSET = 0;</code>
        */
@@ -1223,6 +1825,8 @@ public final class ConfigurationOuterClass {
       }
 
       /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
@@ -1230,6 +1834,10 @@ public final class ConfigurationOuterClass {
         return forNumber(value);
       }
 
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
       public static Touchscreen forNumber(int value) {
         switch (value) {
           case 0: return TOUCHSCREEN_UNSET;
@@ -1252,6 +1860,37 @@ public final class ConfigurationOuterClass {
               }
             };
 
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalStateException(
+              "Can't get the descriptor of an unrecognized enum value.");
+        }
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.getDescriptor().getEnumTypes().get(9);
+      }
+
+      private static final Touchscreen[] VALUES = values();
+
+      public static Touchscreen valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
       private final int value;
 
       private Touchscreen(int value) {
@@ -1265,7 +1904,7 @@ public final class ConfigurationOuterClass {
      * Protobuf enum {@code aapt.pb.Configuration.KeysHidden}
      */
     public enum KeysHidden
-        implements com.google.protobuf.Internal.EnumLite {
+        implements com.google.protobuf.ProtocolMessageEnum {
       /**
        * <code>KEYS_HIDDEN_UNSET = 0;</code>
        */
@@ -1312,6 +1951,8 @@ public final class ConfigurationOuterClass {
       }
 
       /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
@@ -1319,6 +1960,10 @@ public final class ConfigurationOuterClass {
         return forNumber(value);
       }
 
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
       public static KeysHidden forNumber(int value) {
         switch (value) {
           case 0: return KEYS_HIDDEN_UNSET;
@@ -1341,6 +1986,37 @@ public final class ConfigurationOuterClass {
               }
             };
 
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalStateException(
+              "Can't get the descriptor of an unrecognized enum value.");
+        }
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.getDescriptor().getEnumTypes().get(10);
+      }
+
+      private static final KeysHidden[] VALUES = values();
+
+      public static KeysHidden valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
       private final int value;
 
       private KeysHidden(int value) {
@@ -1354,7 +2030,7 @@ public final class ConfigurationOuterClass {
      * Protobuf enum {@code aapt.pb.Configuration.Keyboard}
      */
     public enum Keyboard
-        implements com.google.protobuf.Internal.EnumLite {
+        implements com.google.protobuf.ProtocolMessageEnum {
       /**
        * <code>KEYBOARD_UNSET = 0;</code>
        */
@@ -1401,6 +2077,8 @@ public final class ConfigurationOuterClass {
       }
 
       /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
@@ -1408,6 +2086,10 @@ public final class ConfigurationOuterClass {
         return forNumber(value);
       }
 
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
       public static Keyboard forNumber(int value) {
         switch (value) {
           case 0: return KEYBOARD_UNSET;
@@ -1430,6 +2112,37 @@ public final class ConfigurationOuterClass {
               }
             };
 
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalStateException(
+              "Can't get the descriptor of an unrecognized enum value.");
+        }
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.getDescriptor().getEnumTypes().get(11);
+      }
+
+      private static final Keyboard[] VALUES = values();
+
+      public static Keyboard valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
       private final int value;
 
       private Keyboard(int value) {
@@ -1443,7 +2156,7 @@ public final class ConfigurationOuterClass {
      * Protobuf enum {@code aapt.pb.Configuration.NavHidden}
      */
     public enum NavHidden
-        implements com.google.protobuf.Internal.EnumLite {
+        implements com.google.protobuf.ProtocolMessageEnum {
       /**
        * <code>NAV_HIDDEN_UNSET = 0;</code>
        */
@@ -1482,6 +2195,8 @@ public final class ConfigurationOuterClass {
       }
 
       /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
@@ -1489,6 +2204,10 @@ public final class ConfigurationOuterClass {
         return forNumber(value);
       }
 
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
       public static NavHidden forNumber(int value) {
         switch (value) {
           case 0: return NAV_HIDDEN_UNSET;
@@ -1510,6 +2229,37 @@ public final class ConfigurationOuterClass {
               }
             };
 
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalStateException(
+              "Can't get the descriptor of an unrecognized enum value.");
+        }
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.getDescriptor().getEnumTypes().get(12);
+      }
+
+      private static final NavHidden[] VALUES = values();
+
+      public static NavHidden valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
       private final int value;
 
       private NavHidden(int value) {
@@ -1523,7 +2273,7 @@ public final class ConfigurationOuterClass {
      * Protobuf enum {@code aapt.pb.Configuration.Navigation}
      */
     public enum Navigation
-        implements com.google.protobuf.Internal.EnumLite {
+        implements com.google.protobuf.ProtocolMessageEnum {
       /**
        * <code>NAVIGATION_UNSET = 0;</code>
        */
@@ -1578,6 +2328,8 @@ public final class ConfigurationOuterClass {
       }
 
       /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
@@ -1585,6 +2337,10 @@ public final class ConfigurationOuterClass {
         return forNumber(value);
       }
 
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
       public static Navigation forNumber(int value) {
         switch (value) {
           case 0: return NAVIGATION_UNSET;
@@ -1608,6 +2364,37 @@ public final class ConfigurationOuterClass {
               }
             };
 
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalStateException(
+              "Can't get the descriptor of an unrecognized enum value.");
+        }
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.getDescriptor().getEnumTypes().get(13);
+      }
+
+      private static final Navigation[] VALUES = values();
+
+      public static Navigation valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
       private final int value;
 
       private Navigation(int value) {
@@ -1625,31 +2412,11 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>uint32 mcc = 1;</code>
+     * @return The mcc.
      */
+    @java.lang.Override
     public int getMcc() {
       return mcc_;
-    }
-    /**
-     * <pre>
-     * Mobile country code.
-     * </pre>
-     *
-     * <code>uint32 mcc = 1;</code>
-     */
-    private void setMcc(int value) {
-      
-      mcc_ = value;
-    }
-    /**
-     * <pre>
-     * Mobile country code.
-     * </pre>
-     *
-     * <code>uint32 mcc = 1;</code>
-     */
-    private void clearMcc() {
-      
-      mcc_ = 0;
     }
 
     public static final int MNC_FIELD_NUMBER = 2;
@@ -1660,44 +2427,35 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>uint32 mnc = 2;</code>
+     * @return The mnc.
      */
+    @java.lang.Override
     public int getMnc() {
       return mnc_;
     }
-    /**
-     * <pre>
-     * Mobile network code.
-     * </pre>
-     *
-     * <code>uint32 mnc = 2;</code>
-     */
-    private void setMnc(int value) {
-      
-      mnc_ = value;
-    }
-    /**
-     * <pre>
-     * Mobile network code.
-     * </pre>
-     *
-     * <code>uint32 mnc = 2;</code>
-     */
-    private void clearMnc() {
-      
-      mnc_ = 0;
-    }
 
     public static final int LOCALE_FIELD_NUMBER = 3;
-    private java.lang.String locale_;
+    private volatile java.lang.Object locale_;
     /**
      * <pre>
      * BCP-47 locale tag.
      * </pre>
      *
      * <code>string locale = 3;</code>
+     * @return The locale.
      */
+    @java.lang.Override
     public java.lang.String getLocale() {
-      return locale_;
+      java.lang.Object ref = locale_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        locale_ = s;
+        return s;
+      }
     }
     /**
      * <pre>
@@ -1705,52 +2463,21 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>string locale = 3;</code>
+     * @return The bytes for locale.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getLocaleBytes() {
-      return com.google.protobuf.ByteString.copyFromUtf8(locale_);
-    }
-    /**
-     * <pre>
-     * BCP-47 locale tag.
-     * </pre>
-     *
-     * <code>string locale = 3;</code>
-     */
-    private void setLocale(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      locale_ = value;
-    }
-    /**
-     * <pre>
-     * BCP-47 locale tag.
-     * </pre>
-     *
-     * <code>string locale = 3;</code>
-     */
-    private void clearLocale() {
-      
-      locale_ = getDefaultInstance().getLocale();
-    }
-    /**
-     * <pre>
-     * BCP-47 locale tag.
-     * </pre>
-     *
-     * <code>string locale = 3;</code>
-     */
-    private void setLocaleBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      locale_ = value.toStringUtf8();
+      java.lang.Object ref = locale_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        locale_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int LAYOUT_DIRECTION_FIELD_NUMBER = 4;
@@ -1761,8 +2488,9 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.LayoutDirection layout_direction = 4;</code>
+     * @return The enum numeric value on the wire for layoutDirection.
      */
-    public int getLayoutDirectionValue() {
+    @java.lang.Override public int getLayoutDirectionValue() {
       return layoutDirection_;
     }
     /**
@@ -1771,45 +2499,12 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.LayoutDirection layout_direction = 4;</code>
+     * @return The layoutDirection.
      */
-    public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.LayoutDirection getLayoutDirection() {
-      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.LayoutDirection result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.LayoutDirection.forNumber(layoutDirection_);
+    @java.lang.Override public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.LayoutDirection getLayoutDirection() {
+      @SuppressWarnings("deprecation")
+      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.LayoutDirection result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.LayoutDirection.valueOf(layoutDirection_);
       return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.LayoutDirection.UNRECOGNIZED : result;
-    }
-    /**
-     * <pre>
-     * Left-to-right, right-to-left...
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.LayoutDirection layout_direction = 4;</code>
-     */
-    private void setLayoutDirectionValue(int value) {
-        layoutDirection_ = value;
-    }
-    /**
-     * <pre>
-     * Left-to-right, right-to-left...
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.LayoutDirection layout_direction = 4;</code>
-     */
-    private void setLayoutDirection(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.LayoutDirection value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      
-      layoutDirection_ = value.getNumber();
-    }
-    /**
-     * <pre>
-     * Left-to-right, right-to-left...
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.LayoutDirection layout_direction = 4;</code>
-     */
-    private void clearLayoutDirection() {
-      
-      layoutDirection_ = 0;
     }
 
     public static final int SCREEN_WIDTH_FIELD_NUMBER = 5;
@@ -1820,31 +2515,11 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>uint32 screen_width = 5;</code>
+     * @return The screenWidth.
      */
+    @java.lang.Override
     public int getScreenWidth() {
       return screenWidth_;
-    }
-    /**
-     * <pre>
-     * Screen width in pixels. Prefer screen_width_dp.
-     * </pre>
-     *
-     * <code>uint32 screen_width = 5;</code>
-     */
-    private void setScreenWidth(int value) {
-      
-      screenWidth_ = value;
-    }
-    /**
-     * <pre>
-     * Screen width in pixels. Prefer screen_width_dp.
-     * </pre>
-     *
-     * <code>uint32 screen_width = 5;</code>
-     */
-    private void clearScreenWidth() {
-      
-      screenWidth_ = 0;
     }
 
     public static final int SCREEN_HEIGHT_FIELD_NUMBER = 6;
@@ -1855,31 +2530,11 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>uint32 screen_height = 6;</code>
+     * @return The screenHeight.
      */
+    @java.lang.Override
     public int getScreenHeight() {
       return screenHeight_;
-    }
-    /**
-     * <pre>
-     * Screen height in pixels. Prefer screen_height_dp.
-     * </pre>
-     *
-     * <code>uint32 screen_height = 6;</code>
-     */
-    private void setScreenHeight(int value) {
-      
-      screenHeight_ = value;
-    }
-    /**
-     * <pre>
-     * Screen height in pixels. Prefer screen_height_dp.
-     * </pre>
-     *
-     * <code>uint32 screen_height = 6;</code>
-     */
-    private void clearScreenHeight() {
-      
-      screenHeight_ = 0;
     }
 
     public static final int SCREEN_WIDTH_DP_FIELD_NUMBER = 7;
@@ -1890,31 +2545,11 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>uint32 screen_width_dp = 7;</code>
+     * @return The screenWidthDp.
      */
+    @java.lang.Override
     public int getScreenWidthDp() {
       return screenWidthDp_;
-    }
-    /**
-     * <pre>
-     * Screen width in density independent pixels (dp).
-     * </pre>
-     *
-     * <code>uint32 screen_width_dp = 7;</code>
-     */
-    private void setScreenWidthDp(int value) {
-      
-      screenWidthDp_ = value;
-    }
-    /**
-     * <pre>
-     * Screen width in density independent pixels (dp).
-     * </pre>
-     *
-     * <code>uint32 screen_width_dp = 7;</code>
-     */
-    private void clearScreenWidthDp() {
-      
-      screenWidthDp_ = 0;
     }
 
     public static final int SCREEN_HEIGHT_DP_FIELD_NUMBER = 8;
@@ -1925,31 +2560,11 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>uint32 screen_height_dp = 8;</code>
+     * @return The screenHeightDp.
      */
+    @java.lang.Override
     public int getScreenHeightDp() {
       return screenHeightDp_;
-    }
-    /**
-     * <pre>
-     * Screen height in density independent pixels (dp).
-     * </pre>
-     *
-     * <code>uint32 screen_height_dp = 8;</code>
-     */
-    private void setScreenHeightDp(int value) {
-      
-      screenHeightDp_ = value;
-    }
-    /**
-     * <pre>
-     * Screen height in density independent pixels (dp).
-     * </pre>
-     *
-     * <code>uint32 screen_height_dp = 8;</code>
-     */
-    private void clearScreenHeightDp() {
-      
-      screenHeightDp_ = 0;
     }
 
     public static final int SMALLEST_SCREEN_WIDTH_DP_FIELD_NUMBER = 9;
@@ -1960,31 +2575,11 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>uint32 smallest_screen_width_dp = 9;</code>
+     * @return The smallestScreenWidthDp.
      */
+    @java.lang.Override
     public int getSmallestScreenWidthDp() {
       return smallestScreenWidthDp_;
-    }
-    /**
-     * <pre>
-     * The smallest screen dimension, regardless of orientation, in dp.
-     * </pre>
-     *
-     * <code>uint32 smallest_screen_width_dp = 9;</code>
-     */
-    private void setSmallestScreenWidthDp(int value) {
-      
-      smallestScreenWidthDp_ = value;
-    }
-    /**
-     * <pre>
-     * The smallest screen dimension, regardless of orientation, in dp.
-     * </pre>
-     *
-     * <code>uint32 smallest_screen_width_dp = 9;</code>
-     */
-    private void clearSmallestScreenWidthDp() {
-      
-      smallestScreenWidthDp_ = 0;
     }
 
     public static final int SCREEN_LAYOUT_SIZE_FIELD_NUMBER = 10;
@@ -1995,8 +2590,9 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.ScreenLayoutSize screen_layout_size = 10;</code>
+     * @return The enum numeric value on the wire for screenLayoutSize.
      */
-    public int getScreenLayoutSizeValue() {
+    @java.lang.Override public int getScreenLayoutSizeValue() {
       return screenLayoutSize_;
     }
     /**
@@ -2005,45 +2601,12 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.ScreenLayoutSize screen_layout_size = 10;</code>
+     * @return The screenLayoutSize.
      */
-    public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutSize getScreenLayoutSize() {
-      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutSize result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutSize.forNumber(screenLayoutSize_);
+    @java.lang.Override public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutSize getScreenLayoutSize() {
+      @SuppressWarnings("deprecation")
+      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutSize result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutSize.valueOf(screenLayoutSize_);
       return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutSize.UNRECOGNIZED : result;
-    }
-    /**
-     * <pre>
-     * Whether the device screen is classified as small, normal, large, xlarge.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.ScreenLayoutSize screen_layout_size = 10;</code>
-     */
-    private void setScreenLayoutSizeValue(int value) {
-        screenLayoutSize_ = value;
-    }
-    /**
-     * <pre>
-     * Whether the device screen is classified as small, normal, large, xlarge.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.ScreenLayoutSize screen_layout_size = 10;</code>
-     */
-    private void setScreenLayoutSize(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutSize value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      
-      screenLayoutSize_ = value.getNumber();
-    }
-    /**
-     * <pre>
-     * Whether the device screen is classified as small, normal, large, xlarge.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.ScreenLayoutSize screen_layout_size = 10;</code>
-     */
-    private void clearScreenLayoutSize() {
-      
-      screenLayoutSize_ = 0;
     }
 
     public static final int SCREEN_LAYOUT_LONG_FIELD_NUMBER = 11;
@@ -2054,8 +2617,9 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.ScreenLayoutLong screen_layout_long = 11;</code>
+     * @return The enum numeric value on the wire for screenLayoutLong.
      */
-    public int getScreenLayoutLongValue() {
+    @java.lang.Override public int getScreenLayoutLongValue() {
       return screenLayoutLong_;
     }
     /**
@@ -2064,45 +2628,12 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.ScreenLayoutLong screen_layout_long = 11;</code>
+     * @return The screenLayoutLong.
      */
-    public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutLong getScreenLayoutLong() {
-      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutLong result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutLong.forNumber(screenLayoutLong_);
+    @java.lang.Override public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutLong getScreenLayoutLong() {
+      @SuppressWarnings("deprecation")
+      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutLong result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutLong.valueOf(screenLayoutLong_);
       return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutLong.UNRECOGNIZED : result;
-    }
-    /**
-     * <pre>
-     * Whether the device screen is long.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.ScreenLayoutLong screen_layout_long = 11;</code>
-     */
-    private void setScreenLayoutLongValue(int value) {
-        screenLayoutLong_ = value;
-    }
-    /**
-     * <pre>
-     * Whether the device screen is long.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.ScreenLayoutLong screen_layout_long = 11;</code>
-     */
-    private void setScreenLayoutLong(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutLong value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      
-      screenLayoutLong_ = value.getNumber();
-    }
-    /**
-     * <pre>
-     * Whether the device screen is long.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.ScreenLayoutLong screen_layout_long = 11;</code>
-     */
-    private void clearScreenLayoutLong() {
-      
-      screenLayoutLong_ = 0;
     }
 
     public static final int SCREEN_ROUND_FIELD_NUMBER = 12;
@@ -2113,8 +2644,9 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.ScreenRound screen_round = 12;</code>
+     * @return The enum numeric value on the wire for screenRound.
      */
-    public int getScreenRoundValue() {
+    @java.lang.Override public int getScreenRoundValue() {
       return screenRound_;
     }
     /**
@@ -2123,45 +2655,12 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.ScreenRound screen_round = 12;</code>
+     * @return The screenRound.
      */
-    public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenRound getScreenRound() {
-      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenRound result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenRound.forNumber(screenRound_);
+    @java.lang.Override public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenRound getScreenRound() {
+      @SuppressWarnings("deprecation")
+      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenRound result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenRound.valueOf(screenRound_);
       return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenRound.UNRECOGNIZED : result;
-    }
-    /**
-     * <pre>
-     * Whether the screen is round (Android Wear).
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.ScreenRound screen_round = 12;</code>
-     */
-    private void setScreenRoundValue(int value) {
-        screenRound_ = value;
-    }
-    /**
-     * <pre>
-     * Whether the screen is round (Android Wear).
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.ScreenRound screen_round = 12;</code>
-     */
-    private void setScreenRound(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenRound value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      
-      screenRound_ = value.getNumber();
-    }
-    /**
-     * <pre>
-     * Whether the screen is round (Android Wear).
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.ScreenRound screen_round = 12;</code>
-     */
-    private void clearScreenRound() {
-      
-      screenRound_ = 0;
     }
 
     public static final int WIDE_COLOR_GAMUT_FIELD_NUMBER = 13;
@@ -2172,8 +2671,9 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.WideColorGamut wide_color_gamut = 13;</code>
+     * @return The enum numeric value on the wire for wideColorGamut.
      */
-    public int getWideColorGamutValue() {
+    @java.lang.Override public int getWideColorGamutValue() {
       return wideColorGamut_;
     }
     /**
@@ -2182,45 +2682,12 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.WideColorGamut wide_color_gamut = 13;</code>
+     * @return The wideColorGamut.
      */
-    public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.WideColorGamut getWideColorGamut() {
-      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.WideColorGamut result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.WideColorGamut.forNumber(wideColorGamut_);
+    @java.lang.Override public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.WideColorGamut getWideColorGamut() {
+      @SuppressWarnings("deprecation")
+      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.WideColorGamut result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.WideColorGamut.valueOf(wideColorGamut_);
       return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.WideColorGamut.UNRECOGNIZED : result;
-    }
-    /**
-     * <pre>
-     * Whether the screen supports wide color gamut.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.WideColorGamut wide_color_gamut = 13;</code>
-     */
-    private void setWideColorGamutValue(int value) {
-        wideColorGamut_ = value;
-    }
-    /**
-     * <pre>
-     * Whether the screen supports wide color gamut.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.WideColorGamut wide_color_gamut = 13;</code>
-     */
-    private void setWideColorGamut(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.WideColorGamut value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      
-      wideColorGamut_ = value.getNumber();
-    }
-    /**
-     * <pre>
-     * Whether the screen supports wide color gamut.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.WideColorGamut wide_color_gamut = 13;</code>
-     */
-    private void clearWideColorGamut() {
-      
-      wideColorGamut_ = 0;
     }
 
     public static final int HDR_FIELD_NUMBER = 14;
@@ -2231,8 +2698,9 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.Hdr hdr = 14;</code>
+     * @return The enum numeric value on the wire for hdr.
      */
-    public int getHdrValue() {
+    @java.lang.Override public int getHdrValue() {
       return hdr_;
     }
     /**
@@ -2241,45 +2709,12 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.Hdr hdr = 14;</code>
+     * @return The hdr.
      */
-    public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Hdr getHdr() {
-      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Hdr result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Hdr.forNumber(hdr_);
+    @java.lang.Override public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Hdr getHdr() {
+      @SuppressWarnings("deprecation")
+      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Hdr result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Hdr.valueOf(hdr_);
       return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Hdr.UNRECOGNIZED : result;
-    }
-    /**
-     * <pre>
-     * Whether the screen has high dynamic range.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.Hdr hdr = 14;</code>
-     */
-    private void setHdrValue(int value) {
-        hdr_ = value;
-    }
-    /**
-     * <pre>
-     * Whether the screen has high dynamic range.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.Hdr hdr = 14;</code>
-     */
-    private void setHdr(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Hdr value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      
-      hdr_ = value.getNumber();
-    }
-    /**
-     * <pre>
-     * Whether the screen has high dynamic range.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.Hdr hdr = 14;</code>
-     */
-    private void clearHdr() {
-      
-      hdr_ = 0;
     }
 
     public static final int ORIENTATION_FIELD_NUMBER = 15;
@@ -2290,8 +2725,9 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.Orientation orientation = 15;</code>
+     * @return The enum numeric value on the wire for orientation.
      */
-    public int getOrientationValue() {
+    @java.lang.Override public int getOrientationValue() {
       return orientation_;
     }
     /**
@@ -2300,45 +2736,12 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.Orientation orientation = 15;</code>
+     * @return The orientation.
      */
-    public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Orientation getOrientation() {
-      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Orientation result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Orientation.forNumber(orientation_);
+    @java.lang.Override public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Orientation getOrientation() {
+      @SuppressWarnings("deprecation")
+      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Orientation result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Orientation.valueOf(orientation_);
       return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Orientation.UNRECOGNIZED : result;
-    }
-    /**
-     * <pre>
-     * Which orientation the device is in (portrait, landscape).
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.Orientation orientation = 15;</code>
-     */
-    private void setOrientationValue(int value) {
-        orientation_ = value;
-    }
-    /**
-     * <pre>
-     * Which orientation the device is in (portrait, landscape).
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.Orientation orientation = 15;</code>
-     */
-    private void setOrientation(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Orientation value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      
-      orientation_ = value.getNumber();
-    }
-    /**
-     * <pre>
-     * Which orientation the device is in (portrait, landscape).
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.Orientation orientation = 15;</code>
-     */
-    private void clearOrientation() {
-      
-      orientation_ = 0;
     }
 
     public static final int UI_MODE_TYPE_FIELD_NUMBER = 16;
@@ -2349,8 +2752,9 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.UiModeType ui_mode_type = 16;</code>
+     * @return The enum numeric value on the wire for uiModeType.
      */
-    public int getUiModeTypeValue() {
+    @java.lang.Override public int getUiModeTypeValue() {
       return uiModeType_;
     }
     /**
@@ -2359,45 +2763,12 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.UiModeType ui_mode_type = 16;</code>
+     * @return The uiModeType.
      */
-    public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeType getUiModeType() {
-      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeType result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeType.forNumber(uiModeType_);
+    @java.lang.Override public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeType getUiModeType() {
+      @SuppressWarnings("deprecation")
+      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeType result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeType.valueOf(uiModeType_);
       return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeType.UNRECOGNIZED : result;
-    }
-    /**
-     * <pre>
-     * Which type of UI mode the device is in (television, car, etc.).
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.UiModeType ui_mode_type = 16;</code>
-     */
-    private void setUiModeTypeValue(int value) {
-        uiModeType_ = value;
-    }
-    /**
-     * <pre>
-     * Which type of UI mode the device is in (television, car, etc.).
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.UiModeType ui_mode_type = 16;</code>
-     */
-    private void setUiModeType(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeType value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      
-      uiModeType_ = value.getNumber();
-    }
-    /**
-     * <pre>
-     * Which type of UI mode the device is in (television, car, etc.).
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.UiModeType ui_mode_type = 16;</code>
-     */
-    private void clearUiModeType() {
-      
-      uiModeType_ = 0;
     }
 
     public static final int UI_MODE_NIGHT_FIELD_NUMBER = 17;
@@ -2408,8 +2779,9 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.UiModeNight ui_mode_night = 17;</code>
+     * @return The enum numeric value on the wire for uiModeNight.
      */
-    public int getUiModeNightValue() {
+    @java.lang.Override public int getUiModeNightValue() {
       return uiModeNight_;
     }
     /**
@@ -2418,45 +2790,12 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.UiModeNight ui_mode_night = 17;</code>
+     * @return The uiModeNight.
      */
-    public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeNight getUiModeNight() {
-      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeNight result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeNight.forNumber(uiModeNight_);
+    @java.lang.Override public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeNight getUiModeNight() {
+      @SuppressWarnings("deprecation")
+      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeNight result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeNight.valueOf(uiModeNight_);
       return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeNight.UNRECOGNIZED : result;
-    }
-    /**
-     * <pre>
-     * Whether the device is in night mode.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.UiModeNight ui_mode_night = 17;</code>
-     */
-    private void setUiModeNightValue(int value) {
-        uiModeNight_ = value;
-    }
-    /**
-     * <pre>
-     * Whether the device is in night mode.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.UiModeNight ui_mode_night = 17;</code>
-     */
-    private void setUiModeNight(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeNight value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      
-      uiModeNight_ = value.getNumber();
-    }
-    /**
-     * <pre>
-     * Whether the device is in night mode.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.UiModeNight ui_mode_night = 17;</code>
-     */
-    private void clearUiModeNight() {
-      
-      uiModeNight_ = 0;
     }
 
     public static final int DENSITY_FIELD_NUMBER = 18;
@@ -2467,31 +2806,11 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>uint32 density = 18;</code>
+     * @return The density.
      */
+    @java.lang.Override
     public int getDensity() {
       return density_;
-    }
-    /**
-     * <pre>
-     * The device's screen density in dots-per-inch (dpi).
-     * </pre>
-     *
-     * <code>uint32 density = 18;</code>
-     */
-    private void setDensity(int value) {
-      
-      density_ = value;
-    }
-    /**
-     * <pre>
-     * The device's screen density in dots-per-inch (dpi).
-     * </pre>
-     *
-     * <code>uint32 density = 18;</code>
-     */
-    private void clearDensity() {
-      
-      density_ = 0;
     }
 
     public static final int TOUCHSCREEN_FIELD_NUMBER = 19;
@@ -2502,8 +2821,9 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.Touchscreen touchscreen = 19;</code>
+     * @return The enum numeric value on the wire for touchscreen.
      */
-    public int getTouchscreenValue() {
+    @java.lang.Override public int getTouchscreenValue() {
       return touchscreen_;
     }
     /**
@@ -2512,45 +2832,12 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.Touchscreen touchscreen = 19;</code>
+     * @return The touchscreen.
      */
-    public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Touchscreen getTouchscreen() {
-      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Touchscreen result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Touchscreen.forNumber(touchscreen_);
+    @java.lang.Override public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Touchscreen getTouchscreen() {
+      @SuppressWarnings("deprecation")
+      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Touchscreen result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Touchscreen.valueOf(touchscreen_);
       return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Touchscreen.UNRECOGNIZED : result;
-    }
-    /**
-     * <pre>
-     * Whether a touchscreen exists, supports a stylus, or finger.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.Touchscreen touchscreen = 19;</code>
-     */
-    private void setTouchscreenValue(int value) {
-        touchscreen_ = value;
-    }
-    /**
-     * <pre>
-     * Whether a touchscreen exists, supports a stylus, or finger.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.Touchscreen touchscreen = 19;</code>
-     */
-    private void setTouchscreen(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Touchscreen value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      
-      touchscreen_ = value.getNumber();
-    }
-    /**
-     * <pre>
-     * Whether a touchscreen exists, supports a stylus, or finger.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.Touchscreen touchscreen = 19;</code>
-     */
-    private void clearTouchscreen() {
-      
-      touchscreen_ = 0;
     }
 
     public static final int KEYS_HIDDEN_FIELD_NUMBER = 20;
@@ -2562,8 +2849,9 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.KeysHidden keys_hidden = 20;</code>
+     * @return The enum numeric value on the wire for keysHidden.
      */
-    public int getKeysHiddenValue() {
+    @java.lang.Override public int getKeysHiddenValue() {
       return keysHidden_;
     }
     /**
@@ -2573,48 +2861,12 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.KeysHidden keys_hidden = 20;</code>
+     * @return The keysHidden.
      */
-    public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.KeysHidden getKeysHidden() {
-      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.KeysHidden result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.KeysHidden.forNumber(keysHidden_);
+    @java.lang.Override public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.KeysHidden getKeysHidden() {
+      @SuppressWarnings("deprecation")
+      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.KeysHidden result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.KeysHidden.valueOf(keysHidden_);
       return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.KeysHidden.UNRECOGNIZED : result;
-    }
-    /**
-     * <pre>
-     * Whether the keyboard hardware keys are currently hidden, exposed, or
-     * if the keyboard is a software keyboard.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.KeysHidden keys_hidden = 20;</code>
-     */
-    private void setKeysHiddenValue(int value) {
-        keysHidden_ = value;
-    }
-    /**
-     * <pre>
-     * Whether the keyboard hardware keys are currently hidden, exposed, or
-     * if the keyboard is a software keyboard.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.KeysHidden keys_hidden = 20;</code>
-     */
-    private void setKeysHidden(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.KeysHidden value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      
-      keysHidden_ = value.getNumber();
-    }
-    /**
-     * <pre>
-     * Whether the keyboard hardware keys are currently hidden, exposed, or
-     * if the keyboard is a software keyboard.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.KeysHidden keys_hidden = 20;</code>
-     */
-    private void clearKeysHidden() {
-      
-      keysHidden_ = 0;
     }
 
     public static final int KEYBOARD_FIELD_NUMBER = 21;
@@ -2625,8 +2877,9 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.Keyboard keyboard = 21;</code>
+     * @return The enum numeric value on the wire for keyboard.
      */
-    public int getKeyboardValue() {
+    @java.lang.Override public int getKeyboardValue() {
       return keyboard_;
     }
     /**
@@ -2635,45 +2888,12 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.Keyboard keyboard = 21;</code>
+     * @return The keyboard.
      */
-    public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Keyboard getKeyboard() {
-      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Keyboard result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Keyboard.forNumber(keyboard_);
+    @java.lang.Override public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Keyboard getKeyboard() {
+      @SuppressWarnings("deprecation")
+      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Keyboard result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Keyboard.valueOf(keyboard_);
       return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Keyboard.UNRECOGNIZED : result;
-    }
-    /**
-     * <pre>
-     * The type of keyboard present (none, QWERTY, 12-key).
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.Keyboard keyboard = 21;</code>
-     */
-    private void setKeyboardValue(int value) {
-        keyboard_ = value;
-    }
-    /**
-     * <pre>
-     * The type of keyboard present (none, QWERTY, 12-key).
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.Keyboard keyboard = 21;</code>
-     */
-    private void setKeyboard(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Keyboard value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      
-      keyboard_ = value.getNumber();
-    }
-    /**
-     * <pre>
-     * The type of keyboard present (none, QWERTY, 12-key).
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.Keyboard keyboard = 21;</code>
-     */
-    private void clearKeyboard() {
-      
-      keyboard_ = 0;
     }
 
     public static final int NAV_HIDDEN_FIELD_NUMBER = 22;
@@ -2684,8 +2904,9 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.NavHidden nav_hidden = 22;</code>
+     * @return The enum numeric value on the wire for navHidden.
      */
-    public int getNavHiddenValue() {
+    @java.lang.Override public int getNavHiddenValue() {
       return navHidden_;
     }
     /**
@@ -2694,45 +2915,12 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.NavHidden nav_hidden = 22;</code>
+     * @return The navHidden.
      */
-    public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.NavHidden getNavHidden() {
-      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.NavHidden result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.NavHidden.forNumber(navHidden_);
+    @java.lang.Override public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.NavHidden getNavHidden() {
+      @SuppressWarnings("deprecation")
+      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.NavHidden result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.NavHidden.valueOf(navHidden_);
       return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.NavHidden.UNRECOGNIZED : result;
-    }
-    /**
-     * <pre>
-     * Whether the navigation is exposed or hidden.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.NavHidden nav_hidden = 22;</code>
-     */
-    private void setNavHiddenValue(int value) {
-        navHidden_ = value;
-    }
-    /**
-     * <pre>
-     * Whether the navigation is exposed or hidden.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.NavHidden nav_hidden = 22;</code>
-     */
-    private void setNavHidden(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.NavHidden value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      
-      navHidden_ = value.getNumber();
-    }
-    /**
-     * <pre>
-     * Whether the navigation is exposed or hidden.
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.NavHidden nav_hidden = 22;</code>
-     */
-    private void clearNavHidden() {
-      
-      navHidden_ = 0;
     }
 
     public static final int NAVIGATION_FIELD_NUMBER = 23;
@@ -2744,8 +2932,9 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.Navigation navigation = 23;</code>
+     * @return The enum numeric value on the wire for navigation.
      */
-    public int getNavigationValue() {
+    @java.lang.Override public int getNavigationValue() {
       return navigation_;
     }
     /**
@@ -2755,48 +2944,12 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>.aapt.pb.Configuration.Navigation navigation = 23;</code>
+     * @return The navigation.
      */
-    public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Navigation getNavigation() {
-      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Navigation result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Navigation.forNumber(navigation_);
+    @java.lang.Override public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Navigation getNavigation() {
+      @SuppressWarnings("deprecation")
+      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Navigation result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Navigation.valueOf(navigation_);
       return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Navigation.UNRECOGNIZED : result;
-    }
-    /**
-     * <pre>
-     * The type of navigation present on the device
-     * (trackball, wheel, dpad, etc.).
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.Navigation navigation = 23;</code>
-     */
-    private void setNavigationValue(int value) {
-        navigation_ = value;
-    }
-    /**
-     * <pre>
-     * The type of navigation present on the device
-     * (trackball, wheel, dpad, etc.).
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.Navigation navigation = 23;</code>
-     */
-    private void setNavigation(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Navigation value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      
-      navigation_ = value.getNumber();
-    }
-    /**
-     * <pre>
-     * The type of navigation present on the device
-     * (trackball, wheel, dpad, etc.).
-     * </pre>
-     *
-     * <code>.aapt.pb.Configuration.Navigation navigation = 23;</code>
-     */
-    private void clearNavigation() {
-      
-      navigation_ = 0;
     }
 
     public static final int SDK_VERSION_FIELD_NUMBER = 24;
@@ -2807,79 +2960,63 @@ public final class ConfigurationOuterClass {
      * </pre>
      *
      * <code>uint32 sdk_version = 24;</code>
+     * @return The sdkVersion.
      */
+    @java.lang.Override
     public int getSdkVersion() {
       return sdkVersion_;
     }
-    /**
-     * <pre>
-     * The minimum SDK version of the device.
-     * </pre>
-     *
-     * <code>uint32 sdk_version = 24;</code>
-     */
-    private void setSdkVersion(int value) {
-      
-      sdkVersion_ = value;
-    }
-    /**
-     * <pre>
-     * The minimum SDK version of the device.
-     * </pre>
-     *
-     * <code>uint32 sdk_version = 24;</code>
-     */
-    private void clearSdkVersion() {
-      
-      sdkVersion_ = 0;
-    }
 
     public static final int PRODUCT_FIELD_NUMBER = 25;
-    private java.lang.String product_;
+    private volatile java.lang.Object product_;
     /**
      * <code>string product = 25;</code>
+     * @return The product.
      */
+    @java.lang.Override
     public java.lang.String getProduct() {
-      return product_;
+      java.lang.Object ref = product_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        product_ = s;
+        return s;
+      }
     }
     /**
      * <code>string product = 25;</code>
+     * @return The bytes for product.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getProductBytes() {
-      return com.google.protobuf.ByteString.copyFromUtf8(product_);
-    }
-    /**
-     * <code>string product = 25;</code>
-     */
-    private void setProduct(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      product_ = value;
-    }
-    /**
-     * <code>string product = 25;</code>
-     */
-    private void clearProduct() {
-      
-      product_ = getDefaultInstance().getProduct();
-    }
-    /**
-     * <code>string product = 25;</code>
-     */
-    private void setProductBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      product_ = value.toStringUtf8();
+      java.lang.Object ref = product_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        product_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (mcc_ != 0) {
@@ -2888,8 +3025,8 @@ public final class ConfigurationOuterClass {
       if (mnc_ != 0) {
         output.writeUInt32(2, mnc_);
       }
-      if (!locale_.isEmpty()) {
-        output.writeString(3, getLocale());
+      if (!getLocaleBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, locale_);
       }
       if (layoutDirection_ != com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.LayoutDirection.LAYOUT_DIRECTION_UNSET.getNumber()) {
         output.writeEnum(4, layoutDirection_);
@@ -2954,14 +3091,15 @@ public final class ConfigurationOuterClass {
       if (sdkVersion_ != 0) {
         output.writeUInt32(24, sdkVersion_);
       }
-      if (!product_.isEmpty()) {
-        output.writeString(25, getProduct());
+      if (!getProductBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 25, product_);
       }
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
@@ -2973,9 +3111,8 @@ public final class ConfigurationOuterClass {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(2, mnc_);
       }
-      if (!locale_.isEmpty()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(3, getLocale());
+      if (!getLocaleBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, locale_);
       }
       if (layoutDirection_ != com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.LayoutDirection.LAYOUT_DIRECTION_UNSET.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
@@ -3061,96 +3198,216 @@ public final class ConfigurationOuterClass {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(24, sdkVersion_);
       }
-      if (!product_.isEmpty()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(25, getProduct());
+      if (!getProductBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(25, product_);
       }
       size += unknownFields.getSerializedSize();
-      memoizedSerializedSize = size;
+      memoizedSize = size;
       return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration)) {
+        return super.equals(obj);
+      }
+      com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration other = (com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration) obj;
+
+      if (getMcc()
+          != other.getMcc()) return false;
+      if (getMnc()
+          != other.getMnc()) return false;
+      if (!getLocale()
+          .equals(other.getLocale())) return false;
+      if (layoutDirection_ != other.layoutDirection_) return false;
+      if (getScreenWidth()
+          != other.getScreenWidth()) return false;
+      if (getScreenHeight()
+          != other.getScreenHeight()) return false;
+      if (getScreenWidthDp()
+          != other.getScreenWidthDp()) return false;
+      if (getScreenHeightDp()
+          != other.getScreenHeightDp()) return false;
+      if (getSmallestScreenWidthDp()
+          != other.getSmallestScreenWidthDp()) return false;
+      if (screenLayoutSize_ != other.screenLayoutSize_) return false;
+      if (screenLayoutLong_ != other.screenLayoutLong_) return false;
+      if (screenRound_ != other.screenRound_) return false;
+      if (wideColorGamut_ != other.wideColorGamut_) return false;
+      if (hdr_ != other.hdr_) return false;
+      if (orientation_ != other.orientation_) return false;
+      if (uiModeType_ != other.uiModeType_) return false;
+      if (uiModeNight_ != other.uiModeNight_) return false;
+      if (getDensity()
+          != other.getDensity()) return false;
+      if (touchscreen_ != other.touchscreen_) return false;
+      if (keysHidden_ != other.keysHidden_) return false;
+      if (keyboard_ != other.keyboard_) return false;
+      if (navHidden_ != other.navHidden_) return false;
+      if (navigation_ != other.navigation_) return false;
+      if (getSdkVersion()
+          != other.getSdkVersion()) return false;
+      if (!getProduct()
+          .equals(other.getProduct())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + MCC_FIELD_NUMBER;
+      hash = (53 * hash) + getMcc();
+      hash = (37 * hash) + MNC_FIELD_NUMBER;
+      hash = (53 * hash) + getMnc();
+      hash = (37 * hash) + LOCALE_FIELD_NUMBER;
+      hash = (53 * hash) + getLocale().hashCode();
+      hash = (37 * hash) + LAYOUT_DIRECTION_FIELD_NUMBER;
+      hash = (53 * hash) + layoutDirection_;
+      hash = (37 * hash) + SCREEN_WIDTH_FIELD_NUMBER;
+      hash = (53 * hash) + getScreenWidth();
+      hash = (37 * hash) + SCREEN_HEIGHT_FIELD_NUMBER;
+      hash = (53 * hash) + getScreenHeight();
+      hash = (37 * hash) + SCREEN_WIDTH_DP_FIELD_NUMBER;
+      hash = (53 * hash) + getScreenWidthDp();
+      hash = (37 * hash) + SCREEN_HEIGHT_DP_FIELD_NUMBER;
+      hash = (53 * hash) + getScreenHeightDp();
+      hash = (37 * hash) + SMALLEST_SCREEN_WIDTH_DP_FIELD_NUMBER;
+      hash = (53 * hash) + getSmallestScreenWidthDp();
+      hash = (37 * hash) + SCREEN_LAYOUT_SIZE_FIELD_NUMBER;
+      hash = (53 * hash) + screenLayoutSize_;
+      hash = (37 * hash) + SCREEN_LAYOUT_LONG_FIELD_NUMBER;
+      hash = (53 * hash) + screenLayoutLong_;
+      hash = (37 * hash) + SCREEN_ROUND_FIELD_NUMBER;
+      hash = (53 * hash) + screenRound_;
+      hash = (37 * hash) + WIDE_COLOR_GAMUT_FIELD_NUMBER;
+      hash = (53 * hash) + wideColorGamut_;
+      hash = (37 * hash) + HDR_FIELD_NUMBER;
+      hash = (53 * hash) + hdr_;
+      hash = (37 * hash) + ORIENTATION_FIELD_NUMBER;
+      hash = (53 * hash) + orientation_;
+      hash = (37 * hash) + UI_MODE_TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + uiModeType_;
+      hash = (37 * hash) + UI_MODE_NIGHT_FIELD_NUMBER;
+      hash = (53 * hash) + uiModeNight_;
+      hash = (37 * hash) + DENSITY_FIELD_NUMBER;
+      hash = (53 * hash) + getDensity();
+      hash = (37 * hash) + TOUCHSCREEN_FIELD_NUMBER;
+      hash = (53 * hash) + touchscreen_;
+      hash = (37 * hash) + KEYS_HIDDEN_FIELD_NUMBER;
+      hash = (53 * hash) + keysHidden_;
+      hash = (37 * hash) + KEYBOARD_FIELD_NUMBER;
+      hash = (53 * hash) + keyboard_;
+      hash = (37 * hash) + NAV_HIDDEN_FIELD_NUMBER;
+      hash = (53 * hash) + navHidden_;
+      hash = (37 * hash) + NAVIGATION_FIELD_NUMBER;
+      hash = (53 * hash) + navigation_;
+      hash = (37 * hash) + SDK_VERSION_FIELD_NUMBER;
+      hash = (53 * hash) + getSdkVersion();
+      hash = (37 * hash) + PRODUCT_FIELD_NUMBER;
+      hash = (53 * hash) + getProduct().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
     }
 
     public static com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, data);
+      return PARSER.parseFrom(data);
     }
     public static com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, data, extensionRegistry);
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, data);
+      return PARSER.parseFrom(data);
     }
     public static com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, data, extensionRegistry);
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, data);
+      return PARSER.parseFrom(data);
     }
     public static com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, data, extensionRegistry);
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return parseDelimitedFrom(DEFAULT_INSTANCE, input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return parseDelimitedFrom(DEFAULT_INSTANCE, input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
     public static Builder newBuilder(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
 
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     /**
      * <pre>
      * A description of the requirements a device must have in order for a
@@ -3160,25 +3417,307 @@ public final class ConfigurationOuterClass {
      * Protobuf type {@code aapt.pb.Configuration}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageLite.Builder<
-          com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration, Builder> implements
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:aapt.pb.Configuration)
         com.didiglobal.booster.aapt2.ConfigurationOuterClass.ConfigurationOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.didiglobal.booster.aapt2.ConfigurationOuterClass.internal_static_aapt_pb_Configuration_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.didiglobal.booster.aapt2.ConfigurationOuterClass.internal_static_aapt_pb_Configuration_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.class, com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Builder.class);
+      }
+
       // Construct using com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.newBuilder()
       private Builder() {
-        super(DEFAULT_INSTANCE);
+        maybeForceBuilderInitialization();
       }
 
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        mcc_ = 0;
 
+        mnc_ = 0;
+
+        locale_ = "";
+
+        layoutDirection_ = 0;
+
+        screenWidth_ = 0;
+
+        screenHeight_ = 0;
+
+        screenWidthDp_ = 0;
+
+        screenHeightDp_ = 0;
+
+        smallestScreenWidthDp_ = 0;
+
+        screenLayoutSize_ = 0;
+
+        screenLayoutLong_ = 0;
+
+        screenRound_ = 0;
+
+        wideColorGamut_ = 0;
+
+        hdr_ = 0;
+
+        orientation_ = 0;
+
+        uiModeType_ = 0;
+
+        uiModeNight_ = 0;
+
+        density_ = 0;
+
+        touchscreen_ = 0;
+
+        keysHidden_ = 0;
+
+        keyboard_ = 0;
+
+        navHidden_ = 0;
+
+        navigation_ = 0;
+
+        sdkVersion_ = 0;
+
+        product_ = "";
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.didiglobal.booster.aapt2.ConfigurationOuterClass.internal_static_aapt_pb_Configuration_descriptor;
+      }
+
+      @java.lang.Override
+      public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration getDefaultInstanceForType() {
+        return com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration build() {
+        com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration buildPartial() {
+        com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration result = new com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration(this);
+        result.mcc_ = mcc_;
+        result.mnc_ = mnc_;
+        result.locale_ = locale_;
+        result.layoutDirection_ = layoutDirection_;
+        result.screenWidth_ = screenWidth_;
+        result.screenHeight_ = screenHeight_;
+        result.screenWidthDp_ = screenWidthDp_;
+        result.screenHeightDp_ = screenHeightDp_;
+        result.smallestScreenWidthDp_ = smallestScreenWidthDp_;
+        result.screenLayoutSize_ = screenLayoutSize_;
+        result.screenLayoutLong_ = screenLayoutLong_;
+        result.screenRound_ = screenRound_;
+        result.wideColorGamut_ = wideColorGamut_;
+        result.hdr_ = hdr_;
+        result.orientation_ = orientation_;
+        result.uiModeType_ = uiModeType_;
+        result.uiModeNight_ = uiModeNight_;
+        result.density_ = density_;
+        result.touchscreen_ = touchscreen_;
+        result.keysHidden_ = keysHidden_;
+        result.keyboard_ = keyboard_;
+        result.navHidden_ = navHidden_;
+        result.navigation_ = navigation_;
+        result.sdkVersion_ = sdkVersion_;
+        result.product_ = product_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration) {
+          return mergeFrom((com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration other) {
+        if (other == com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.getDefaultInstance()) return this;
+        if (other.getMcc() != 0) {
+          setMcc(other.getMcc());
+        }
+        if (other.getMnc() != 0) {
+          setMnc(other.getMnc());
+        }
+        if (!other.getLocale().isEmpty()) {
+          locale_ = other.locale_;
+          onChanged();
+        }
+        if (other.layoutDirection_ != 0) {
+          setLayoutDirectionValue(other.getLayoutDirectionValue());
+        }
+        if (other.getScreenWidth() != 0) {
+          setScreenWidth(other.getScreenWidth());
+        }
+        if (other.getScreenHeight() != 0) {
+          setScreenHeight(other.getScreenHeight());
+        }
+        if (other.getScreenWidthDp() != 0) {
+          setScreenWidthDp(other.getScreenWidthDp());
+        }
+        if (other.getScreenHeightDp() != 0) {
+          setScreenHeightDp(other.getScreenHeightDp());
+        }
+        if (other.getSmallestScreenWidthDp() != 0) {
+          setSmallestScreenWidthDp(other.getSmallestScreenWidthDp());
+        }
+        if (other.screenLayoutSize_ != 0) {
+          setScreenLayoutSizeValue(other.getScreenLayoutSizeValue());
+        }
+        if (other.screenLayoutLong_ != 0) {
+          setScreenLayoutLongValue(other.getScreenLayoutLongValue());
+        }
+        if (other.screenRound_ != 0) {
+          setScreenRoundValue(other.getScreenRoundValue());
+        }
+        if (other.wideColorGamut_ != 0) {
+          setWideColorGamutValue(other.getWideColorGamutValue());
+        }
+        if (other.hdr_ != 0) {
+          setHdrValue(other.getHdrValue());
+        }
+        if (other.orientation_ != 0) {
+          setOrientationValue(other.getOrientationValue());
+        }
+        if (other.uiModeType_ != 0) {
+          setUiModeTypeValue(other.getUiModeTypeValue());
+        }
+        if (other.uiModeNight_ != 0) {
+          setUiModeNightValue(other.getUiModeNightValue());
+        }
+        if (other.getDensity() != 0) {
+          setDensity(other.getDensity());
+        }
+        if (other.touchscreen_ != 0) {
+          setTouchscreenValue(other.getTouchscreenValue());
+        }
+        if (other.keysHidden_ != 0) {
+          setKeysHiddenValue(other.getKeysHiddenValue());
+        }
+        if (other.keyboard_ != 0) {
+          setKeyboardValue(other.getKeyboardValue());
+        }
+        if (other.navHidden_ != 0) {
+          setNavHiddenValue(other.getNavHiddenValue());
+        }
+        if (other.navigation_ != 0) {
+          setNavigationValue(other.getNavigationValue());
+        }
+        if (other.getSdkVersion() != 0) {
+          setSdkVersion(other.getSdkVersion());
+        }
+        if (!other.getProduct().isEmpty()) {
+          product_ = other.product_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int mcc_ ;
       /**
        * <pre>
        * Mobile country code.
        * </pre>
        *
        * <code>uint32 mcc = 1;</code>
+       * @return The mcc.
        */
+      @java.lang.Override
       public int getMcc() {
-        return instance.getMcc();
+        return mcc_;
       }
       /**
        * <pre>
@@ -3186,10 +3725,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>uint32 mcc = 1;</code>
+       * @param value The mcc to set.
+       * @return This builder for chaining.
        */
       public Builder setMcc(int value) {
-        copyOnWrite();
-        instance.setMcc(value);
+        
+        mcc_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -3198,22 +3740,27 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>uint32 mcc = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearMcc() {
-        copyOnWrite();
-        instance.clearMcc();
+        
+        mcc_ = 0;
+        onChanged();
         return this;
       }
 
+      private int mnc_ ;
       /**
        * <pre>
        * Mobile network code.
        * </pre>
        *
        * <code>uint32 mnc = 2;</code>
+       * @return The mnc.
        */
+      @java.lang.Override
       public int getMnc() {
-        return instance.getMnc();
+        return mnc_;
       }
       /**
        * <pre>
@@ -3221,10 +3768,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>uint32 mnc = 2;</code>
+       * @param value The mnc to set.
+       * @return This builder for chaining.
        */
       public Builder setMnc(int value) {
-        copyOnWrite();
-        instance.setMnc(value);
+        
+        mnc_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -3233,22 +3783,35 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>uint32 mnc = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearMnc() {
-        copyOnWrite();
-        instance.clearMnc();
+        
+        mnc_ = 0;
+        onChanged();
         return this;
       }
 
+      private java.lang.Object locale_ = "";
       /**
        * <pre>
        * BCP-47 locale tag.
        * </pre>
        *
        * <code>string locale = 3;</code>
+       * @return The locale.
        */
       public java.lang.String getLocale() {
-        return instance.getLocale();
+        java.lang.Object ref = locale_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          locale_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
@@ -3256,10 +3819,20 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>string locale = 3;</code>
+       * @return The bytes for locale.
        */
       public com.google.protobuf.ByteString
           getLocaleBytes() {
-        return instance.getLocaleBytes();
+        java.lang.Object ref = locale_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          locale_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
       }
       /**
        * <pre>
@@ -3267,11 +3840,17 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>string locale = 3;</code>
+       * @param value The locale to set.
+       * @return This builder for chaining.
        */
       public Builder setLocale(
           java.lang.String value) {
-        copyOnWrite();
-        instance.setLocale(value);
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        locale_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -3280,10 +3859,12 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>string locale = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearLocale() {
-        copyOnWrite();
-        instance.clearLocale();
+        
+        locale_ = getDefaultInstance().getLocale();
+        onChanged();
         return this;
       }
       /**
@@ -3292,23 +3873,32 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>string locale = 3;</code>
+       * @param value The bytes for locale to set.
+       * @return This builder for chaining.
        */
       public Builder setLocaleBytes(
           com.google.protobuf.ByteString value) {
-        copyOnWrite();
-        instance.setLocaleBytes(value);
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        locale_ = value;
+        onChanged();
         return this;
       }
 
+      private int layoutDirection_ = 0;
       /**
        * <pre>
        * Left-to-right, right-to-left...
        * </pre>
        *
        * <code>.aapt.pb.Configuration.LayoutDirection layout_direction = 4;</code>
+       * @return The enum numeric value on the wire for layoutDirection.
        */
-      public int getLayoutDirectionValue() {
-        return instance.getLayoutDirectionValue();
+      @java.lang.Override public int getLayoutDirectionValue() {
+        return layoutDirection_;
       }
       /**
        * <pre>
@@ -3316,10 +3906,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.LayoutDirection layout_direction = 4;</code>
+       * @param value The enum numeric value on the wire for layoutDirection to set.
+       * @return This builder for chaining.
        */
       public Builder setLayoutDirectionValue(int value) {
-        copyOnWrite();
-        instance.setLayoutDirectionValue(value);
+        
+        layoutDirection_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -3328,9 +3921,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.LayoutDirection layout_direction = 4;</code>
+       * @return The layoutDirection.
        */
+      @java.lang.Override
       public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.LayoutDirection getLayoutDirection() {
-        return instance.getLayoutDirection();
+        @SuppressWarnings("deprecation")
+        com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.LayoutDirection result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.LayoutDirection.valueOf(layoutDirection_);
+        return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.LayoutDirection.UNRECOGNIZED : result;
       }
       /**
        * <pre>
@@ -3338,10 +3935,16 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.LayoutDirection layout_direction = 4;</code>
+       * @param value The layoutDirection to set.
+       * @return This builder for chaining.
        */
       public Builder setLayoutDirection(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.LayoutDirection value) {
-        copyOnWrite();
-        instance.setLayoutDirection(value);
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        layoutDirection_ = value.getNumber();
+        onChanged();
         return this;
       }
       /**
@@ -3350,22 +3953,27 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.LayoutDirection layout_direction = 4;</code>
+       * @return This builder for chaining.
        */
       public Builder clearLayoutDirection() {
-        copyOnWrite();
-        instance.clearLayoutDirection();
+        
+        layoutDirection_ = 0;
+        onChanged();
         return this;
       }
 
+      private int screenWidth_ ;
       /**
        * <pre>
        * Screen width in pixels. Prefer screen_width_dp.
        * </pre>
        *
        * <code>uint32 screen_width = 5;</code>
+       * @return The screenWidth.
        */
+      @java.lang.Override
       public int getScreenWidth() {
-        return instance.getScreenWidth();
+        return screenWidth_;
       }
       /**
        * <pre>
@@ -3373,10 +3981,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>uint32 screen_width = 5;</code>
+       * @param value The screenWidth to set.
+       * @return This builder for chaining.
        */
       public Builder setScreenWidth(int value) {
-        copyOnWrite();
-        instance.setScreenWidth(value);
+        
+        screenWidth_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -3385,22 +3996,27 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>uint32 screen_width = 5;</code>
+       * @return This builder for chaining.
        */
       public Builder clearScreenWidth() {
-        copyOnWrite();
-        instance.clearScreenWidth();
+        
+        screenWidth_ = 0;
+        onChanged();
         return this;
       }
 
+      private int screenHeight_ ;
       /**
        * <pre>
        * Screen height in pixels. Prefer screen_height_dp.
        * </pre>
        *
        * <code>uint32 screen_height = 6;</code>
+       * @return The screenHeight.
        */
+      @java.lang.Override
       public int getScreenHeight() {
-        return instance.getScreenHeight();
+        return screenHeight_;
       }
       /**
        * <pre>
@@ -3408,10 +4024,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>uint32 screen_height = 6;</code>
+       * @param value The screenHeight to set.
+       * @return This builder for chaining.
        */
       public Builder setScreenHeight(int value) {
-        copyOnWrite();
-        instance.setScreenHeight(value);
+        
+        screenHeight_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -3420,22 +4039,27 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>uint32 screen_height = 6;</code>
+       * @return This builder for chaining.
        */
       public Builder clearScreenHeight() {
-        copyOnWrite();
-        instance.clearScreenHeight();
+        
+        screenHeight_ = 0;
+        onChanged();
         return this;
       }
 
+      private int screenWidthDp_ ;
       /**
        * <pre>
        * Screen width in density independent pixels (dp).
        * </pre>
        *
        * <code>uint32 screen_width_dp = 7;</code>
+       * @return The screenWidthDp.
        */
+      @java.lang.Override
       public int getScreenWidthDp() {
-        return instance.getScreenWidthDp();
+        return screenWidthDp_;
       }
       /**
        * <pre>
@@ -3443,10 +4067,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>uint32 screen_width_dp = 7;</code>
+       * @param value The screenWidthDp to set.
+       * @return This builder for chaining.
        */
       public Builder setScreenWidthDp(int value) {
-        copyOnWrite();
-        instance.setScreenWidthDp(value);
+        
+        screenWidthDp_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -3455,22 +4082,27 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>uint32 screen_width_dp = 7;</code>
+       * @return This builder for chaining.
        */
       public Builder clearScreenWidthDp() {
-        copyOnWrite();
-        instance.clearScreenWidthDp();
+        
+        screenWidthDp_ = 0;
+        onChanged();
         return this;
       }
 
+      private int screenHeightDp_ ;
       /**
        * <pre>
        * Screen height in density independent pixels (dp).
        * </pre>
        *
        * <code>uint32 screen_height_dp = 8;</code>
+       * @return The screenHeightDp.
        */
+      @java.lang.Override
       public int getScreenHeightDp() {
-        return instance.getScreenHeightDp();
+        return screenHeightDp_;
       }
       /**
        * <pre>
@@ -3478,10 +4110,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>uint32 screen_height_dp = 8;</code>
+       * @param value The screenHeightDp to set.
+       * @return This builder for chaining.
        */
       public Builder setScreenHeightDp(int value) {
-        copyOnWrite();
-        instance.setScreenHeightDp(value);
+        
+        screenHeightDp_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -3490,22 +4125,27 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>uint32 screen_height_dp = 8;</code>
+       * @return This builder for chaining.
        */
       public Builder clearScreenHeightDp() {
-        copyOnWrite();
-        instance.clearScreenHeightDp();
+        
+        screenHeightDp_ = 0;
+        onChanged();
         return this;
       }
 
+      private int smallestScreenWidthDp_ ;
       /**
        * <pre>
        * The smallest screen dimension, regardless of orientation, in dp.
        * </pre>
        *
        * <code>uint32 smallest_screen_width_dp = 9;</code>
+       * @return The smallestScreenWidthDp.
        */
+      @java.lang.Override
       public int getSmallestScreenWidthDp() {
-        return instance.getSmallestScreenWidthDp();
+        return smallestScreenWidthDp_;
       }
       /**
        * <pre>
@@ -3513,10 +4153,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>uint32 smallest_screen_width_dp = 9;</code>
+       * @param value The smallestScreenWidthDp to set.
+       * @return This builder for chaining.
        */
       public Builder setSmallestScreenWidthDp(int value) {
-        copyOnWrite();
-        instance.setSmallestScreenWidthDp(value);
+        
+        smallestScreenWidthDp_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -3525,22 +4168,26 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>uint32 smallest_screen_width_dp = 9;</code>
+       * @return This builder for chaining.
        */
       public Builder clearSmallestScreenWidthDp() {
-        copyOnWrite();
-        instance.clearSmallestScreenWidthDp();
+        
+        smallestScreenWidthDp_ = 0;
+        onChanged();
         return this;
       }
 
+      private int screenLayoutSize_ = 0;
       /**
        * <pre>
        * Whether the device screen is classified as small, normal, large, xlarge.
        * </pre>
        *
        * <code>.aapt.pb.Configuration.ScreenLayoutSize screen_layout_size = 10;</code>
+       * @return The enum numeric value on the wire for screenLayoutSize.
        */
-      public int getScreenLayoutSizeValue() {
-        return instance.getScreenLayoutSizeValue();
+      @java.lang.Override public int getScreenLayoutSizeValue() {
+        return screenLayoutSize_;
       }
       /**
        * <pre>
@@ -3548,10 +4195,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.ScreenLayoutSize screen_layout_size = 10;</code>
+       * @param value The enum numeric value on the wire for screenLayoutSize to set.
+       * @return This builder for chaining.
        */
       public Builder setScreenLayoutSizeValue(int value) {
-        copyOnWrite();
-        instance.setScreenLayoutSizeValue(value);
+        
+        screenLayoutSize_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -3560,9 +4210,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.ScreenLayoutSize screen_layout_size = 10;</code>
+       * @return The screenLayoutSize.
        */
+      @java.lang.Override
       public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutSize getScreenLayoutSize() {
-        return instance.getScreenLayoutSize();
+        @SuppressWarnings("deprecation")
+        com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutSize result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutSize.valueOf(screenLayoutSize_);
+        return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutSize.UNRECOGNIZED : result;
       }
       /**
        * <pre>
@@ -3570,10 +4224,16 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.ScreenLayoutSize screen_layout_size = 10;</code>
+       * @param value The screenLayoutSize to set.
+       * @return This builder for chaining.
        */
       public Builder setScreenLayoutSize(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutSize value) {
-        copyOnWrite();
-        instance.setScreenLayoutSize(value);
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        screenLayoutSize_ = value.getNumber();
+        onChanged();
         return this;
       }
       /**
@@ -3582,22 +4242,26 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.ScreenLayoutSize screen_layout_size = 10;</code>
+       * @return This builder for chaining.
        */
       public Builder clearScreenLayoutSize() {
-        copyOnWrite();
-        instance.clearScreenLayoutSize();
+        
+        screenLayoutSize_ = 0;
+        onChanged();
         return this;
       }
 
+      private int screenLayoutLong_ = 0;
       /**
        * <pre>
        * Whether the device screen is long.
        * </pre>
        *
        * <code>.aapt.pb.Configuration.ScreenLayoutLong screen_layout_long = 11;</code>
+       * @return The enum numeric value on the wire for screenLayoutLong.
        */
-      public int getScreenLayoutLongValue() {
-        return instance.getScreenLayoutLongValue();
+      @java.lang.Override public int getScreenLayoutLongValue() {
+        return screenLayoutLong_;
       }
       /**
        * <pre>
@@ -3605,10 +4269,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.ScreenLayoutLong screen_layout_long = 11;</code>
+       * @param value The enum numeric value on the wire for screenLayoutLong to set.
+       * @return This builder for chaining.
        */
       public Builder setScreenLayoutLongValue(int value) {
-        copyOnWrite();
-        instance.setScreenLayoutLongValue(value);
+        
+        screenLayoutLong_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -3617,9 +4284,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.ScreenLayoutLong screen_layout_long = 11;</code>
+       * @return The screenLayoutLong.
        */
+      @java.lang.Override
       public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutLong getScreenLayoutLong() {
-        return instance.getScreenLayoutLong();
+        @SuppressWarnings("deprecation")
+        com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutLong result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutLong.valueOf(screenLayoutLong_);
+        return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutLong.UNRECOGNIZED : result;
       }
       /**
        * <pre>
@@ -3627,10 +4298,16 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.ScreenLayoutLong screen_layout_long = 11;</code>
+       * @param value The screenLayoutLong to set.
+       * @return This builder for chaining.
        */
       public Builder setScreenLayoutLong(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenLayoutLong value) {
-        copyOnWrite();
-        instance.setScreenLayoutLong(value);
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        screenLayoutLong_ = value.getNumber();
+        onChanged();
         return this;
       }
       /**
@@ -3639,22 +4316,26 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.ScreenLayoutLong screen_layout_long = 11;</code>
+       * @return This builder for chaining.
        */
       public Builder clearScreenLayoutLong() {
-        copyOnWrite();
-        instance.clearScreenLayoutLong();
+        
+        screenLayoutLong_ = 0;
+        onChanged();
         return this;
       }
 
+      private int screenRound_ = 0;
       /**
        * <pre>
        * Whether the screen is round (Android Wear).
        * </pre>
        *
        * <code>.aapt.pb.Configuration.ScreenRound screen_round = 12;</code>
+       * @return The enum numeric value on the wire for screenRound.
        */
-      public int getScreenRoundValue() {
-        return instance.getScreenRoundValue();
+      @java.lang.Override public int getScreenRoundValue() {
+        return screenRound_;
       }
       /**
        * <pre>
@@ -3662,10 +4343,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.ScreenRound screen_round = 12;</code>
+       * @param value The enum numeric value on the wire for screenRound to set.
+       * @return This builder for chaining.
        */
       public Builder setScreenRoundValue(int value) {
-        copyOnWrite();
-        instance.setScreenRoundValue(value);
+        
+        screenRound_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -3674,9 +4358,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.ScreenRound screen_round = 12;</code>
+       * @return The screenRound.
        */
+      @java.lang.Override
       public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenRound getScreenRound() {
-        return instance.getScreenRound();
+        @SuppressWarnings("deprecation")
+        com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenRound result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenRound.valueOf(screenRound_);
+        return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenRound.UNRECOGNIZED : result;
       }
       /**
        * <pre>
@@ -3684,10 +4372,16 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.ScreenRound screen_round = 12;</code>
+       * @param value The screenRound to set.
+       * @return This builder for chaining.
        */
       public Builder setScreenRound(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.ScreenRound value) {
-        copyOnWrite();
-        instance.setScreenRound(value);
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        screenRound_ = value.getNumber();
+        onChanged();
         return this;
       }
       /**
@@ -3696,22 +4390,26 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.ScreenRound screen_round = 12;</code>
+       * @return This builder for chaining.
        */
       public Builder clearScreenRound() {
-        copyOnWrite();
-        instance.clearScreenRound();
+        
+        screenRound_ = 0;
+        onChanged();
         return this;
       }
 
+      private int wideColorGamut_ = 0;
       /**
        * <pre>
        * Whether the screen supports wide color gamut.
        * </pre>
        *
        * <code>.aapt.pb.Configuration.WideColorGamut wide_color_gamut = 13;</code>
+       * @return The enum numeric value on the wire for wideColorGamut.
        */
-      public int getWideColorGamutValue() {
-        return instance.getWideColorGamutValue();
+      @java.lang.Override public int getWideColorGamutValue() {
+        return wideColorGamut_;
       }
       /**
        * <pre>
@@ -3719,10 +4417,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.WideColorGamut wide_color_gamut = 13;</code>
+       * @param value The enum numeric value on the wire for wideColorGamut to set.
+       * @return This builder for chaining.
        */
       public Builder setWideColorGamutValue(int value) {
-        copyOnWrite();
-        instance.setWideColorGamutValue(value);
+        
+        wideColorGamut_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -3731,9 +4432,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.WideColorGamut wide_color_gamut = 13;</code>
+       * @return The wideColorGamut.
        */
+      @java.lang.Override
       public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.WideColorGamut getWideColorGamut() {
-        return instance.getWideColorGamut();
+        @SuppressWarnings("deprecation")
+        com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.WideColorGamut result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.WideColorGamut.valueOf(wideColorGamut_);
+        return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.WideColorGamut.UNRECOGNIZED : result;
       }
       /**
        * <pre>
@@ -3741,10 +4446,16 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.WideColorGamut wide_color_gamut = 13;</code>
+       * @param value The wideColorGamut to set.
+       * @return This builder for chaining.
        */
       public Builder setWideColorGamut(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.WideColorGamut value) {
-        copyOnWrite();
-        instance.setWideColorGamut(value);
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        wideColorGamut_ = value.getNumber();
+        onChanged();
         return this;
       }
       /**
@@ -3753,22 +4464,26 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.WideColorGamut wide_color_gamut = 13;</code>
+       * @return This builder for chaining.
        */
       public Builder clearWideColorGamut() {
-        copyOnWrite();
-        instance.clearWideColorGamut();
+        
+        wideColorGamut_ = 0;
+        onChanged();
         return this;
       }
 
+      private int hdr_ = 0;
       /**
        * <pre>
        * Whether the screen has high dynamic range.
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Hdr hdr = 14;</code>
+       * @return The enum numeric value on the wire for hdr.
        */
-      public int getHdrValue() {
-        return instance.getHdrValue();
+      @java.lang.Override public int getHdrValue() {
+        return hdr_;
       }
       /**
        * <pre>
@@ -3776,10 +4491,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Hdr hdr = 14;</code>
+       * @param value The enum numeric value on the wire for hdr to set.
+       * @return This builder for chaining.
        */
       public Builder setHdrValue(int value) {
-        copyOnWrite();
-        instance.setHdrValue(value);
+        
+        hdr_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -3788,9 +4506,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Hdr hdr = 14;</code>
+       * @return The hdr.
        */
+      @java.lang.Override
       public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Hdr getHdr() {
-        return instance.getHdr();
+        @SuppressWarnings("deprecation")
+        com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Hdr result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Hdr.valueOf(hdr_);
+        return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Hdr.UNRECOGNIZED : result;
       }
       /**
        * <pre>
@@ -3798,10 +4520,16 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Hdr hdr = 14;</code>
+       * @param value The hdr to set.
+       * @return This builder for chaining.
        */
       public Builder setHdr(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Hdr value) {
-        copyOnWrite();
-        instance.setHdr(value);
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        hdr_ = value.getNumber();
+        onChanged();
         return this;
       }
       /**
@@ -3810,22 +4538,26 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Hdr hdr = 14;</code>
+       * @return This builder for chaining.
        */
       public Builder clearHdr() {
-        copyOnWrite();
-        instance.clearHdr();
+        
+        hdr_ = 0;
+        onChanged();
         return this;
       }
 
+      private int orientation_ = 0;
       /**
        * <pre>
        * Which orientation the device is in (portrait, landscape).
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Orientation orientation = 15;</code>
+       * @return The enum numeric value on the wire for orientation.
        */
-      public int getOrientationValue() {
-        return instance.getOrientationValue();
+      @java.lang.Override public int getOrientationValue() {
+        return orientation_;
       }
       /**
        * <pre>
@@ -3833,10 +4565,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Orientation orientation = 15;</code>
+       * @param value The enum numeric value on the wire for orientation to set.
+       * @return This builder for chaining.
        */
       public Builder setOrientationValue(int value) {
-        copyOnWrite();
-        instance.setOrientationValue(value);
+        
+        orientation_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -3845,9 +4580,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Orientation orientation = 15;</code>
+       * @return The orientation.
        */
+      @java.lang.Override
       public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Orientation getOrientation() {
-        return instance.getOrientation();
+        @SuppressWarnings("deprecation")
+        com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Orientation result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Orientation.valueOf(orientation_);
+        return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Orientation.UNRECOGNIZED : result;
       }
       /**
        * <pre>
@@ -3855,10 +4594,16 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Orientation orientation = 15;</code>
+       * @param value The orientation to set.
+       * @return This builder for chaining.
        */
       public Builder setOrientation(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Orientation value) {
-        copyOnWrite();
-        instance.setOrientation(value);
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        orientation_ = value.getNumber();
+        onChanged();
         return this;
       }
       /**
@@ -3867,22 +4612,26 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Orientation orientation = 15;</code>
+       * @return This builder for chaining.
        */
       public Builder clearOrientation() {
-        copyOnWrite();
-        instance.clearOrientation();
+        
+        orientation_ = 0;
+        onChanged();
         return this;
       }
 
+      private int uiModeType_ = 0;
       /**
        * <pre>
        * Which type of UI mode the device is in (television, car, etc.).
        * </pre>
        *
        * <code>.aapt.pb.Configuration.UiModeType ui_mode_type = 16;</code>
+       * @return The enum numeric value on the wire for uiModeType.
        */
-      public int getUiModeTypeValue() {
-        return instance.getUiModeTypeValue();
+      @java.lang.Override public int getUiModeTypeValue() {
+        return uiModeType_;
       }
       /**
        * <pre>
@@ -3890,10 +4639,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.UiModeType ui_mode_type = 16;</code>
+       * @param value The enum numeric value on the wire for uiModeType to set.
+       * @return This builder for chaining.
        */
       public Builder setUiModeTypeValue(int value) {
-        copyOnWrite();
-        instance.setUiModeTypeValue(value);
+        
+        uiModeType_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -3902,9 +4654,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.UiModeType ui_mode_type = 16;</code>
+       * @return The uiModeType.
        */
+      @java.lang.Override
       public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeType getUiModeType() {
-        return instance.getUiModeType();
+        @SuppressWarnings("deprecation")
+        com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeType result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeType.valueOf(uiModeType_);
+        return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeType.UNRECOGNIZED : result;
       }
       /**
        * <pre>
@@ -3912,10 +4668,16 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.UiModeType ui_mode_type = 16;</code>
+       * @param value The uiModeType to set.
+       * @return This builder for chaining.
        */
       public Builder setUiModeType(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeType value) {
-        copyOnWrite();
-        instance.setUiModeType(value);
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        uiModeType_ = value.getNumber();
+        onChanged();
         return this;
       }
       /**
@@ -3924,22 +4686,26 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.UiModeType ui_mode_type = 16;</code>
+       * @return This builder for chaining.
        */
       public Builder clearUiModeType() {
-        copyOnWrite();
-        instance.clearUiModeType();
+        
+        uiModeType_ = 0;
+        onChanged();
         return this;
       }
 
+      private int uiModeNight_ = 0;
       /**
        * <pre>
        * Whether the device is in night mode.
        * </pre>
        *
        * <code>.aapt.pb.Configuration.UiModeNight ui_mode_night = 17;</code>
+       * @return The enum numeric value on the wire for uiModeNight.
        */
-      public int getUiModeNightValue() {
-        return instance.getUiModeNightValue();
+      @java.lang.Override public int getUiModeNightValue() {
+        return uiModeNight_;
       }
       /**
        * <pre>
@@ -3947,10 +4713,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.UiModeNight ui_mode_night = 17;</code>
+       * @param value The enum numeric value on the wire for uiModeNight to set.
+       * @return This builder for chaining.
        */
       public Builder setUiModeNightValue(int value) {
-        copyOnWrite();
-        instance.setUiModeNightValue(value);
+        
+        uiModeNight_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -3959,9 +4728,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.UiModeNight ui_mode_night = 17;</code>
+       * @return The uiModeNight.
        */
+      @java.lang.Override
       public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeNight getUiModeNight() {
-        return instance.getUiModeNight();
+        @SuppressWarnings("deprecation")
+        com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeNight result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeNight.valueOf(uiModeNight_);
+        return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeNight.UNRECOGNIZED : result;
       }
       /**
        * <pre>
@@ -3969,10 +4742,16 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.UiModeNight ui_mode_night = 17;</code>
+       * @param value The uiModeNight to set.
+       * @return This builder for chaining.
        */
       public Builder setUiModeNight(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.UiModeNight value) {
-        copyOnWrite();
-        instance.setUiModeNight(value);
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        uiModeNight_ = value.getNumber();
+        onChanged();
         return this;
       }
       /**
@@ -3981,22 +4760,27 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.UiModeNight ui_mode_night = 17;</code>
+       * @return This builder for chaining.
        */
       public Builder clearUiModeNight() {
-        copyOnWrite();
-        instance.clearUiModeNight();
+        
+        uiModeNight_ = 0;
+        onChanged();
         return this;
       }
 
+      private int density_ ;
       /**
        * <pre>
        * The device's screen density in dots-per-inch (dpi).
        * </pre>
        *
        * <code>uint32 density = 18;</code>
+       * @return The density.
        */
+      @java.lang.Override
       public int getDensity() {
-        return instance.getDensity();
+        return density_;
       }
       /**
        * <pre>
@@ -4004,10 +4788,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>uint32 density = 18;</code>
+       * @param value The density to set.
+       * @return This builder for chaining.
        */
       public Builder setDensity(int value) {
-        copyOnWrite();
-        instance.setDensity(value);
+        
+        density_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -4016,22 +4803,26 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>uint32 density = 18;</code>
+       * @return This builder for chaining.
        */
       public Builder clearDensity() {
-        copyOnWrite();
-        instance.clearDensity();
+        
+        density_ = 0;
+        onChanged();
         return this;
       }
 
+      private int touchscreen_ = 0;
       /**
        * <pre>
        * Whether a touchscreen exists, supports a stylus, or finger.
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Touchscreen touchscreen = 19;</code>
+       * @return The enum numeric value on the wire for touchscreen.
        */
-      public int getTouchscreenValue() {
-        return instance.getTouchscreenValue();
+      @java.lang.Override public int getTouchscreenValue() {
+        return touchscreen_;
       }
       /**
        * <pre>
@@ -4039,10 +4830,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Touchscreen touchscreen = 19;</code>
+       * @param value The enum numeric value on the wire for touchscreen to set.
+       * @return This builder for chaining.
        */
       public Builder setTouchscreenValue(int value) {
-        copyOnWrite();
-        instance.setTouchscreenValue(value);
+        
+        touchscreen_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -4051,9 +4845,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Touchscreen touchscreen = 19;</code>
+       * @return The touchscreen.
        */
+      @java.lang.Override
       public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Touchscreen getTouchscreen() {
-        return instance.getTouchscreen();
+        @SuppressWarnings("deprecation")
+        com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Touchscreen result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Touchscreen.valueOf(touchscreen_);
+        return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Touchscreen.UNRECOGNIZED : result;
       }
       /**
        * <pre>
@@ -4061,10 +4859,16 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Touchscreen touchscreen = 19;</code>
+       * @param value The touchscreen to set.
+       * @return This builder for chaining.
        */
       public Builder setTouchscreen(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Touchscreen value) {
-        copyOnWrite();
-        instance.setTouchscreen(value);
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        touchscreen_ = value.getNumber();
+        onChanged();
         return this;
       }
       /**
@@ -4073,13 +4877,16 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Touchscreen touchscreen = 19;</code>
+       * @return This builder for chaining.
        */
       public Builder clearTouchscreen() {
-        copyOnWrite();
-        instance.clearTouchscreen();
+        
+        touchscreen_ = 0;
+        onChanged();
         return this;
       }
 
+      private int keysHidden_ = 0;
       /**
        * <pre>
        * Whether the keyboard hardware keys are currently hidden, exposed, or
@@ -4087,9 +4894,10 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.KeysHidden keys_hidden = 20;</code>
+       * @return The enum numeric value on the wire for keysHidden.
        */
-      public int getKeysHiddenValue() {
-        return instance.getKeysHiddenValue();
+      @java.lang.Override public int getKeysHiddenValue() {
+        return keysHidden_;
       }
       /**
        * <pre>
@@ -4098,10 +4906,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.KeysHidden keys_hidden = 20;</code>
+       * @param value The enum numeric value on the wire for keysHidden to set.
+       * @return This builder for chaining.
        */
       public Builder setKeysHiddenValue(int value) {
-        copyOnWrite();
-        instance.setKeysHiddenValue(value);
+        
+        keysHidden_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -4111,9 +4922,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.KeysHidden keys_hidden = 20;</code>
+       * @return The keysHidden.
        */
+      @java.lang.Override
       public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.KeysHidden getKeysHidden() {
-        return instance.getKeysHidden();
+        @SuppressWarnings("deprecation")
+        com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.KeysHidden result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.KeysHidden.valueOf(keysHidden_);
+        return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.KeysHidden.UNRECOGNIZED : result;
       }
       /**
        * <pre>
@@ -4122,10 +4937,16 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.KeysHidden keys_hidden = 20;</code>
+       * @param value The keysHidden to set.
+       * @return This builder for chaining.
        */
       public Builder setKeysHidden(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.KeysHidden value) {
-        copyOnWrite();
-        instance.setKeysHidden(value);
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        keysHidden_ = value.getNumber();
+        onChanged();
         return this;
       }
       /**
@@ -4135,22 +4956,26 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.KeysHidden keys_hidden = 20;</code>
+       * @return This builder for chaining.
        */
       public Builder clearKeysHidden() {
-        copyOnWrite();
-        instance.clearKeysHidden();
+        
+        keysHidden_ = 0;
+        onChanged();
         return this;
       }
 
+      private int keyboard_ = 0;
       /**
        * <pre>
        * The type of keyboard present (none, QWERTY, 12-key).
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Keyboard keyboard = 21;</code>
+       * @return The enum numeric value on the wire for keyboard.
        */
-      public int getKeyboardValue() {
-        return instance.getKeyboardValue();
+      @java.lang.Override public int getKeyboardValue() {
+        return keyboard_;
       }
       /**
        * <pre>
@@ -4158,10 +4983,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Keyboard keyboard = 21;</code>
+       * @param value The enum numeric value on the wire for keyboard to set.
+       * @return This builder for chaining.
        */
       public Builder setKeyboardValue(int value) {
-        copyOnWrite();
-        instance.setKeyboardValue(value);
+        
+        keyboard_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -4170,9 +4998,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Keyboard keyboard = 21;</code>
+       * @return The keyboard.
        */
+      @java.lang.Override
       public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Keyboard getKeyboard() {
-        return instance.getKeyboard();
+        @SuppressWarnings("deprecation")
+        com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Keyboard result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Keyboard.valueOf(keyboard_);
+        return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Keyboard.UNRECOGNIZED : result;
       }
       /**
        * <pre>
@@ -4180,10 +5012,16 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Keyboard keyboard = 21;</code>
+       * @param value The keyboard to set.
+       * @return This builder for chaining.
        */
       public Builder setKeyboard(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Keyboard value) {
-        copyOnWrite();
-        instance.setKeyboard(value);
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        keyboard_ = value.getNumber();
+        onChanged();
         return this;
       }
       /**
@@ -4192,22 +5030,26 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Keyboard keyboard = 21;</code>
+       * @return This builder for chaining.
        */
       public Builder clearKeyboard() {
-        copyOnWrite();
-        instance.clearKeyboard();
+        
+        keyboard_ = 0;
+        onChanged();
         return this;
       }
 
+      private int navHidden_ = 0;
       /**
        * <pre>
        * Whether the navigation is exposed or hidden.
        * </pre>
        *
        * <code>.aapt.pb.Configuration.NavHidden nav_hidden = 22;</code>
+       * @return The enum numeric value on the wire for navHidden.
        */
-      public int getNavHiddenValue() {
-        return instance.getNavHiddenValue();
+      @java.lang.Override public int getNavHiddenValue() {
+        return navHidden_;
       }
       /**
        * <pre>
@@ -4215,10 +5057,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.NavHidden nav_hidden = 22;</code>
+       * @param value The enum numeric value on the wire for navHidden to set.
+       * @return This builder for chaining.
        */
       public Builder setNavHiddenValue(int value) {
-        copyOnWrite();
-        instance.setNavHiddenValue(value);
+        
+        navHidden_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -4227,9 +5072,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.NavHidden nav_hidden = 22;</code>
+       * @return The navHidden.
        */
+      @java.lang.Override
       public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.NavHidden getNavHidden() {
-        return instance.getNavHidden();
+        @SuppressWarnings("deprecation")
+        com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.NavHidden result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.NavHidden.valueOf(navHidden_);
+        return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.NavHidden.UNRECOGNIZED : result;
       }
       /**
        * <pre>
@@ -4237,10 +5086,16 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.NavHidden nav_hidden = 22;</code>
+       * @param value The navHidden to set.
+       * @return This builder for chaining.
        */
       public Builder setNavHidden(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.NavHidden value) {
-        copyOnWrite();
-        instance.setNavHidden(value);
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        navHidden_ = value.getNumber();
+        onChanged();
         return this;
       }
       /**
@@ -4249,13 +5104,16 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.NavHidden nav_hidden = 22;</code>
+       * @return This builder for chaining.
        */
       public Builder clearNavHidden() {
-        copyOnWrite();
-        instance.clearNavHidden();
+        
+        navHidden_ = 0;
+        onChanged();
         return this;
       }
 
+      private int navigation_ = 0;
       /**
        * <pre>
        * The type of navigation present on the device
@@ -4263,9 +5121,10 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Navigation navigation = 23;</code>
+       * @return The enum numeric value on the wire for navigation.
        */
-      public int getNavigationValue() {
-        return instance.getNavigationValue();
+      @java.lang.Override public int getNavigationValue() {
+        return navigation_;
       }
       /**
        * <pre>
@@ -4274,10 +5133,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Navigation navigation = 23;</code>
+       * @param value The enum numeric value on the wire for navigation to set.
+       * @return This builder for chaining.
        */
       public Builder setNavigationValue(int value) {
-        copyOnWrite();
-        instance.setNavigationValue(value);
+        
+        navigation_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -4287,9 +5149,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Navigation navigation = 23;</code>
+       * @return The navigation.
        */
+      @java.lang.Override
       public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Navigation getNavigation() {
-        return instance.getNavigation();
+        @SuppressWarnings("deprecation")
+        com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Navigation result = com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Navigation.valueOf(navigation_);
+        return result == null ? com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Navigation.UNRECOGNIZED : result;
       }
       /**
        * <pre>
@@ -4298,10 +5164,16 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Navigation navigation = 23;</code>
+       * @param value The navigation to set.
+       * @return This builder for chaining.
        */
       public Builder setNavigation(com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.Navigation value) {
-        copyOnWrite();
-        instance.setNavigation(value);
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        navigation_ = value.getNumber();
+        onChanged();
         return this;
       }
       /**
@@ -4311,22 +5183,27 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>.aapt.pb.Configuration.Navigation navigation = 23;</code>
+       * @return This builder for chaining.
        */
       public Builder clearNavigation() {
-        copyOnWrite();
-        instance.clearNavigation();
+        
+        navigation_ = 0;
+        onChanged();
         return this;
       }
 
+      private int sdkVersion_ ;
       /**
        * <pre>
        * The minimum SDK version of the device.
        * </pre>
        *
        * <code>uint32 sdk_version = 24;</code>
+       * @return The sdkVersion.
        */
+      @java.lang.Override
       public int getSdkVersion() {
-        return instance.getSdkVersion();
+        return sdkVersion_;
       }
       /**
        * <pre>
@@ -4334,10 +5211,13 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>uint32 sdk_version = 24;</code>
+       * @param value The sdkVersion to set.
+       * @return This builder for chaining.
        */
       public Builder setSdkVersion(int value) {
-        copyOnWrite();
-        instance.setSdkVersion(value);
+        
+        sdkVersion_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -4346,325 +5226,237 @@ public final class ConfigurationOuterClass {
        * </pre>
        *
        * <code>uint32 sdk_version = 24;</code>
+       * @return This builder for chaining.
        */
       public Builder clearSdkVersion() {
-        copyOnWrite();
-        instance.clearSdkVersion();
+        
+        sdkVersion_ = 0;
+        onChanged();
         return this;
       }
 
+      private java.lang.Object product_ = "";
       /**
        * <code>string product = 25;</code>
+       * @return The product.
        */
       public java.lang.String getProduct() {
-        return instance.getProduct();
+        java.lang.Object ref = product_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          product_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <code>string product = 25;</code>
+       * @return The bytes for product.
        */
       public com.google.protobuf.ByteString
           getProductBytes() {
-        return instance.getProductBytes();
+        java.lang.Object ref = product_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          product_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
       }
       /**
        * <code>string product = 25;</code>
+       * @param value The product to set.
+       * @return This builder for chaining.
        */
       public Builder setProduct(
           java.lang.String value) {
-        copyOnWrite();
-        instance.setProduct(value);
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        product_ = value;
+        onChanged();
         return this;
       }
       /**
        * <code>string product = 25;</code>
+       * @return This builder for chaining.
        */
       public Builder clearProduct() {
-        copyOnWrite();
-        instance.clearProduct();
+        
+        product_ = getDefaultInstance().getProduct();
+        onChanged();
         return this;
       }
       /**
        * <code>string product = 25;</code>
+       * @param value The bytes for product to set.
+       * @return This builder for chaining.
        */
       public Builder setProductBytes(
           com.google.protobuf.ByteString value) {
-        copyOnWrite();
-        instance.setProductBytes(value);
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        product_ = value;
+        onChanged();
         return this;
       }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
 
       // @@protoc_insertion_point(builder_scope:aapt.pb.Configuration)
     }
-    @java.lang.SuppressWarnings({"unchecked", "fallthrough"})
-    protected final java.lang.Object dynamicMethod(
-        com.google.protobuf.GeneratedMessageLite.MethodToInvoke method,
-        java.lang.Object arg0, java.lang.Object arg1) {
-      switch (method) {
-        case NEW_MUTABLE_INSTANCE: {
-          return new com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration();
-        }
-        case IS_INITIALIZED: {
-          return DEFAULT_INSTANCE;
-        }
-        case MAKE_IMMUTABLE: {
-          return null;
-        }
-        case NEW_BUILDER: {
-          return new Builder();
-        }
-        case VISIT: {
-          Visitor visitor = (Visitor) arg0;
-          com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration other = (com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration) arg1;
-          mcc_ = visitor.visitInt(mcc_ != 0, mcc_,
-              other.mcc_ != 0, other.mcc_);
-          mnc_ = visitor.visitInt(mnc_ != 0, mnc_,
-              other.mnc_ != 0, other.mnc_);
-          locale_ = visitor.visitString(!locale_.isEmpty(), locale_,
-              !other.locale_.isEmpty(), other.locale_);
-          layoutDirection_ = visitor.visitInt(layoutDirection_ != 0, layoutDirection_,    other.layoutDirection_ != 0, other.layoutDirection_);
-          screenWidth_ = visitor.visitInt(screenWidth_ != 0, screenWidth_,
-              other.screenWidth_ != 0, other.screenWidth_);
-          screenHeight_ = visitor.visitInt(screenHeight_ != 0, screenHeight_,
-              other.screenHeight_ != 0, other.screenHeight_);
-          screenWidthDp_ = visitor.visitInt(screenWidthDp_ != 0, screenWidthDp_,
-              other.screenWidthDp_ != 0, other.screenWidthDp_);
-          screenHeightDp_ = visitor.visitInt(screenHeightDp_ != 0, screenHeightDp_,
-              other.screenHeightDp_ != 0, other.screenHeightDp_);
-          smallestScreenWidthDp_ = visitor.visitInt(smallestScreenWidthDp_ != 0, smallestScreenWidthDp_,
-              other.smallestScreenWidthDp_ != 0, other.smallestScreenWidthDp_);
-          screenLayoutSize_ = visitor.visitInt(screenLayoutSize_ != 0, screenLayoutSize_,    other.screenLayoutSize_ != 0, other.screenLayoutSize_);
-          screenLayoutLong_ = visitor.visitInt(screenLayoutLong_ != 0, screenLayoutLong_,    other.screenLayoutLong_ != 0, other.screenLayoutLong_);
-          screenRound_ = visitor.visitInt(screenRound_ != 0, screenRound_,    other.screenRound_ != 0, other.screenRound_);
-          wideColorGamut_ = visitor.visitInt(wideColorGamut_ != 0, wideColorGamut_,    other.wideColorGamut_ != 0, other.wideColorGamut_);
-          hdr_ = visitor.visitInt(hdr_ != 0, hdr_,    other.hdr_ != 0, other.hdr_);
-          orientation_ = visitor.visitInt(orientation_ != 0, orientation_,    other.orientation_ != 0, other.orientation_);
-          uiModeType_ = visitor.visitInt(uiModeType_ != 0, uiModeType_,    other.uiModeType_ != 0, other.uiModeType_);
-          uiModeNight_ = visitor.visitInt(uiModeNight_ != 0, uiModeNight_,    other.uiModeNight_ != 0, other.uiModeNight_);
-          density_ = visitor.visitInt(density_ != 0, density_,
-              other.density_ != 0, other.density_);
-          touchscreen_ = visitor.visitInt(touchscreen_ != 0, touchscreen_,    other.touchscreen_ != 0, other.touchscreen_);
-          keysHidden_ = visitor.visitInt(keysHidden_ != 0, keysHidden_,    other.keysHidden_ != 0, other.keysHidden_);
-          keyboard_ = visitor.visitInt(keyboard_ != 0, keyboard_,    other.keyboard_ != 0, other.keyboard_);
-          navHidden_ = visitor.visitInt(navHidden_ != 0, navHidden_,    other.navHidden_ != 0, other.navHidden_);
-          navigation_ = visitor.visitInt(navigation_ != 0, navigation_,    other.navigation_ != 0, other.navigation_);
-          sdkVersion_ = visitor.visitInt(sdkVersion_ != 0, sdkVersion_,
-              other.sdkVersion_ != 0, other.sdkVersion_);
-          product_ = visitor.visitString(!product_.isEmpty(), product_,
-              !other.product_.isEmpty(), other.product_);
-          if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
-              .INSTANCE) {
-          }
-          return this;
-        }
-        case MERGE_FROM_STREAM: {
-          com.google.protobuf.CodedInputStream input =
-              (com.google.protobuf.CodedInputStream) arg0;
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry =
-              (com.google.protobuf.ExtensionRegistryLite) arg1;
-          try {
-            boolean done = false;
-            while (!done) {
-              int tag = input.readTag();
-              switch (tag) {
-                case 0:
-                  done = true;
-                  break;
-                default: {
-                  if (!parseUnknownField(tag, input)) {
-                    done = true;
-                  }
-                  break;
-                }
-                case 8: {
-
-                  mcc_ = input.readUInt32();
-                  break;
-                }
-                case 16: {
-
-                  mnc_ = input.readUInt32();
-                  break;
-                }
-                case 26: {
-                  java.lang.String s = input.readStringRequireUtf8();
-
-                  locale_ = s;
-                  break;
-                }
-                case 32: {
-                  int rawValue = input.readEnum();
-
-                  layoutDirection_ = rawValue;
-                  break;
-                }
-                case 40: {
-
-                  screenWidth_ = input.readUInt32();
-                  break;
-                }
-                case 48: {
-
-                  screenHeight_ = input.readUInt32();
-                  break;
-                }
-                case 56: {
-
-                  screenWidthDp_ = input.readUInt32();
-                  break;
-                }
-                case 64: {
-
-                  screenHeightDp_ = input.readUInt32();
-                  break;
-                }
-                case 72: {
-
-                  smallestScreenWidthDp_ = input.readUInt32();
-                  break;
-                }
-                case 80: {
-                  int rawValue = input.readEnum();
-
-                  screenLayoutSize_ = rawValue;
-                  break;
-                }
-                case 88: {
-                  int rawValue = input.readEnum();
-
-                  screenLayoutLong_ = rawValue;
-                  break;
-                }
-                case 96: {
-                  int rawValue = input.readEnum();
-
-                  screenRound_ = rawValue;
-                  break;
-                }
-                case 104: {
-                  int rawValue = input.readEnum();
-
-                  wideColorGamut_ = rawValue;
-                  break;
-                }
-                case 112: {
-                  int rawValue = input.readEnum();
-
-                  hdr_ = rawValue;
-                  break;
-                }
-                case 120: {
-                  int rawValue = input.readEnum();
-
-                  orientation_ = rawValue;
-                  break;
-                }
-                case 128: {
-                  int rawValue = input.readEnum();
-
-                  uiModeType_ = rawValue;
-                  break;
-                }
-                case 136: {
-                  int rawValue = input.readEnum();
-
-                  uiModeNight_ = rawValue;
-                  break;
-                }
-                case 144: {
-
-                  density_ = input.readUInt32();
-                  break;
-                }
-                case 152: {
-                  int rawValue = input.readEnum();
-
-                  touchscreen_ = rawValue;
-                  break;
-                }
-                case 160: {
-                  int rawValue = input.readEnum();
-
-                  keysHidden_ = rawValue;
-                  break;
-                }
-                case 168: {
-                  int rawValue = input.readEnum();
-
-                  keyboard_ = rawValue;
-                  break;
-                }
-                case 176: {
-                  int rawValue = input.readEnum();
-
-                  navHidden_ = rawValue;
-                  break;
-                }
-                case 184: {
-                  int rawValue = input.readEnum();
-
-                  navigation_ = rawValue;
-                  break;
-                }
-                case 192: {
-
-                  sdkVersion_ = input.readUInt32();
-                  break;
-                }
-                case 202: {
-                  java.lang.String s = input.readStringRequireUtf8();
-
-                  product_ = s;
-                  break;
-                }
-              }
-            }
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            throw new RuntimeException(e.setUnfinishedMessage(this));
-          } catch (java.io.IOException e) {
-            throw new RuntimeException(
-                new com.google.protobuf.InvalidProtocolBufferException(
-                    e.getMessage()).setUnfinishedMessage(this));
-          } finally {
-          }
-        }
-        // fall through
-        case GET_DEFAULT_INSTANCE: {
-          return DEFAULT_INSTANCE;
-        }
-        case GET_PARSER: {
-          if (PARSER == null) {    synchronized (com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration.class) {
-              if (PARSER == null) {
-                PARSER = new DefaultInstanceBasedParser(DEFAULT_INSTANCE);
-              }
-            }
-          }
-          return PARSER;
-        }
-      }
-      throw new UnsupportedOperationException();
-    }
-
 
     // @@protoc_insertion_point(class_scope:aapt.pb.Configuration)
     private static final com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new Configuration();
-      DEFAULT_INSTANCE.makeImmutable();
+      DEFAULT_INSTANCE = new com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration();
     }
 
     public static com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static volatile com.google.protobuf.Parser<Configuration> PARSER;
+    private static final com.google.protobuf.Parser<Configuration>
+        PARSER = new com.google.protobuf.AbstractParser<Configuration>() {
+      @java.lang.Override
+      public Configuration parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Configuration(input, extensionRegistry);
+      }
+    };
 
     public static com.google.protobuf.Parser<Configuration> parser() {
-      return DEFAULT_INSTANCE.getParserForType();
+      return PARSER;
     }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Configuration> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.didiglobal.booster.aapt2.ConfigurationOuterClass.Configuration getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
   }
 
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_aapt_pb_Configuration_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_aapt_pb_Configuration_fieldAccessorTable;
 
+  public static com.google.protobuf.Descriptors.FileDescriptor
+      getDescriptor() {
+    return descriptor;
+  }
+  private static  com.google.protobuf.Descriptors.FileDescriptor
+      descriptor;
   static {
+    java.lang.String[] descriptorData = {
+      "\n\023Configuration.proto\022\007aapt.pb\"\331\024\n\rConfi" +
+      "guration\022\013\n\003mcc\030\001 \001(\r\022\013\n\003mnc\030\002 \001(\r\022\016\n\006lo" +
+      "cale\030\003 \001(\t\022@\n\020layout_direction\030\004 \001(\0162&.a" +
+      "apt.pb.Configuration.LayoutDirection\022\024\n\014" +
+      "screen_width\030\005 \001(\r\022\025\n\rscreen_height\030\006 \001(" +
+      "\r\022\027\n\017screen_width_dp\030\007 \001(\r\022\030\n\020screen_hei" +
+      "ght_dp\030\010 \001(\r\022 \n\030smallest_screen_width_dp" +
+      "\030\t \001(\r\022C\n\022screen_layout_size\030\n \001(\0162\'.aap" +
+      "t.pb.Configuration.ScreenLayoutSize\022C\n\022s" +
+      "creen_layout_long\030\013 \001(\0162\'.aapt.pb.Config" +
+      "uration.ScreenLayoutLong\0228\n\014screen_round" +
+      "\030\014 \001(\0162\".aapt.pb.Configuration.ScreenRou" +
+      "nd\022?\n\020wide_color_gamut\030\r \001(\0162%.aapt.pb.C" +
+      "onfiguration.WideColorGamut\022\'\n\003hdr\030\016 \001(\016" +
+      "2\032.aapt.pb.Configuration.Hdr\0227\n\013orientat" +
+      "ion\030\017 \001(\0162\".aapt.pb.Configuration.Orient" +
+      "ation\0227\n\014ui_mode_type\030\020 \001(\0162!.aapt.pb.Co" +
+      "nfiguration.UiModeType\0229\n\rui_mode_night\030" +
+      "\021 \001(\0162\".aapt.pb.Configuration.UiModeNigh" +
+      "t\022\017\n\007density\030\022 \001(\r\0227\n\013touchscreen\030\023 \001(\0162" +
+      "\".aapt.pb.Configuration.Touchscreen\0226\n\013k" +
+      "eys_hidden\030\024 \001(\0162!.aapt.pb.Configuration" +
+      ".KeysHidden\0221\n\010keyboard\030\025 \001(\0162\037.aapt.pb." +
+      "Configuration.Keyboard\0224\n\nnav_hidden\030\026 \001" +
+      "(\0162 .aapt.pb.Configuration.NavHidden\0225\n\n" +
+      "navigation\030\027 \001(\0162!.aapt.pb.Configuration" +
+      ".Navigation\022\023\n\013sdk_version\030\030 \001(\r\022\017\n\007prod" +
+      "uct\030\031 \001(\t\"a\n\017LayoutDirection\022\032\n\026LAYOUT_D" +
+      "IRECTION_UNSET\020\000\022\030\n\024LAYOUT_DIRECTION_LTR" +
+      "\020\001\022\030\n\024LAYOUT_DIRECTION_RTL\020\002\"\252\001\n\020ScreenL" +
+      "ayoutSize\022\034\n\030SCREEN_LAYOUT_SIZE_UNSET\020\000\022" +
+      "\034\n\030SCREEN_LAYOUT_SIZE_SMALL\020\001\022\035\n\031SCREEN_" +
+      "LAYOUT_SIZE_NORMAL\020\002\022\034\n\030SCREEN_LAYOUT_SI" +
+      "ZE_LARGE\020\003\022\035\n\031SCREEN_LAYOUT_SIZE_XLARGE\020" +
+      "\004\"m\n\020ScreenLayoutLong\022\034\n\030SCREEN_LAYOUT_L" +
+      "ONG_UNSET\020\000\022\033\n\027SCREEN_LAYOUT_LONG_LONG\020\001" +
+      "\022\036\n\032SCREEN_LAYOUT_LONG_NOTLONG\020\002\"X\n\013Scre" +
+      "enRound\022\026\n\022SCREEN_ROUND_UNSET\020\000\022\026\n\022SCREE" +
+      "N_ROUND_ROUND\020\001\022\031\n\025SCREEN_ROUND_NOTROUND" +
+      "\020\002\"h\n\016WideColorGamut\022\032\n\026WIDE_COLOR_GAMUT" +
+      "_UNSET\020\000\022\033\n\027WIDE_COLOR_GAMUT_WIDECG\020\001\022\035\n" +
+      "\031WIDE_COLOR_GAMUT_NOWIDECG\020\002\"3\n\003Hdr\022\r\n\tH" +
+      "DR_UNSET\020\000\022\016\n\nHDR_HIGHDR\020\001\022\r\n\tHDR_LOWDR\020" +
+      "\002\"h\n\013Orientation\022\025\n\021ORIENTATION_UNSET\020\000\022" +
+      "\024\n\020ORIENTATION_PORT\020\001\022\024\n\020ORIENTATION_LAN" +
+      "D\020\002\022\026\n\022ORIENTATION_SQUARE\020\003\"\327\001\n\nUiModeTy" +
+      "pe\022\026\n\022UI_MODE_TYPE_UNSET\020\000\022\027\n\023UI_MODE_TY" +
+      "PE_NORMAL\020\001\022\025\n\021UI_MODE_TYPE_DESK\020\002\022\024\n\020UI" +
+      "_MODE_TYPE_CAR\020\003\022\033\n\027UI_MODE_TYPE_TELEVIS" +
+      "ION\020\004\022\032\n\026UI_MODE_TYPE_APPLIANCE\020\005\022\026\n\022UI_" +
+      "MODE_TYPE_WATCH\020\006\022\032\n\026UI_MODE_TYPE_VRHEAD" +
+      "SET\020\007\"[\n\013UiModeNight\022\027\n\023UI_MODE_NIGHT_UN" +
+      "SET\020\000\022\027\n\023UI_MODE_NIGHT_NIGHT\020\001\022\032\n\026UI_MOD" +
+      "E_NIGHT_NOTNIGHT\020\002\"m\n\013Touchscreen\022\025\n\021TOU" +
+      "CHSCREEN_UNSET\020\000\022\027\n\023TOUCHSCREEN_NOTOUCH\020" +
+      "\001\022\026\n\022TOUCHSCREEN_STYLUS\020\002\022\026\n\022TOUCHSCREEN" +
+      "_FINGER\020\003\"v\n\nKeysHidden\022\025\n\021KEYS_HIDDEN_U" +
+      "NSET\020\000\022\033\n\027KEYS_HIDDEN_KEYSEXPOSED\020\001\022\032\n\026K" +
+      "EYS_HIDDEN_KEYSHIDDEN\020\002\022\030\n\024KEYS_HIDDEN_K" +
+      "EYSSOFT\020\003\"`\n\010Keyboard\022\022\n\016KEYBOARD_UNSET\020" +
+      "\000\022\023\n\017KEYBOARD_NOKEYS\020\001\022\023\n\017KEYBOARD_QWERT" +
+      "Y\020\002\022\026\n\022KEYBOARD_TWELVEKEY\020\003\"V\n\tNavHidden" +
+      "\022\024\n\020NAV_HIDDEN_UNSET\020\000\022\031\n\025NAV_HIDDEN_NAV" +
+      "EXPOSED\020\001\022\030\n\024NAV_HIDDEN_NAVHIDDEN\020\002\"}\n\nN" +
+      "avigation\022\024\n\020NAVIGATION_UNSET\020\000\022\024\n\020NAVIG" +
+      "ATION_NONAV\020\001\022\023\n\017NAVIGATION_DPAD\020\002\022\030\n\024NA" +
+      "VIGATION_TRACKBALL\020\003\022\024\n\020NAVIGATION_WHEEL" +
+      "\020\004B \n\034com.didiglobal.booster.aapt2H\003b\006pr" +
+      "oto3"
+    };
+    descriptor = com.google.protobuf.Descriptors.FileDescriptor
+      .internalBuildGeneratedFileFrom(descriptorData,
+        new com.google.protobuf.Descriptors.FileDescriptor[] {
+        });
+    internal_static_aapt_pb_Configuration_descriptor =
+      getDescriptor().getMessageTypes().get(0);
+    internal_static_aapt_pb_Configuration_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_aapt_pb_Configuration_descriptor,
+        new java.lang.String[] { "Mcc", "Mnc", "Locale", "LayoutDirection", "ScreenWidth", "ScreenHeight", "ScreenWidthDp", "ScreenHeightDp", "SmallestScreenWidthDp", "ScreenLayoutSize", "ScreenLayoutLong", "ScreenRound", "WideColorGamut", "Hdr", "Orientation", "UiModeType", "UiModeNight", "Density", "Touchscreen", "KeysHidden", "Keyboard", "NavHidden", "Navigation", "SdkVersion", "Product", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

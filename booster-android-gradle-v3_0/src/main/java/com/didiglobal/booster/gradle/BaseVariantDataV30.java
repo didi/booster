@@ -33,4 +33,7 @@ class BaseVariantDataV30 {
         return variantData.getType().getAnalyticsVariantType();
     }
 
+    static String getOriginalApplicationId(final BaseVariantData variantData) {
+        return variantData.getVariantConfiguration().getOriginalApplicationId();
+    }
 }
