@@ -21,7 +21,7 @@ val BaseVariant.extension: BaseExtension
  */
 val BaseVariant.platform: File
     get() = extension.run {
-        sdkDirectory.resolve("platforms").resolve(compileSdkVersion)
+        sdkDirectory.resolve("platforms").resolve(compileSdkVersion!!)
     }
 
 /**
