@@ -6,6 +6,6 @@ dependencies {
     implementation project(':booster-api')
     implementation project(':booster-cha')
     implementation project(':booster-transform-asm')
-    compileOnly 'com.android.tools.build:gradle:3.0.0'
-    testCompileOnly 'com.android.tools.build:gradle:3.0.0'
+    compileOnly 'com.android.tools.build:gradle:4.0.0'
+    testCompileOnly 'com.android.tools.build:gradle:4.0.0'
 }

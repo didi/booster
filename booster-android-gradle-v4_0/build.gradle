@@ -1,6 +1,7 @@
 apply from: '../gradle/booster.gradle'
 
 dependencies {
-    api 'com.google.protobuf:protobuf-java:3.10.0'
+    api gradleApi()
+    compileOnly 'com.android.tools.build:gradle:4.0.0'
     testCompile 'com.android.tools.build:gradle:4.0.0'
 }
