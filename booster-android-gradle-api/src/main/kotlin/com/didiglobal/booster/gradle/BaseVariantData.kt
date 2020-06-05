@@ -36,3 +36,9 @@ fun BaseVariantData.getAnalyticsVariantType() = when {
     GTE_V3_2 -> BaseVariantDataV32.getAnalyticsVariantType(this)
     else -> BaseVariantDataV30.getAnalyticsVariantType(this)
 }
+
+fun BaseVariantData.getOriginalApplicationId() = when {
+    GTE_V4_X -> BaseVariantDataV40.getOriginalApplicationId(this)
+    else -> BaseVariantDataV30.getOriginalApplicationId(this)
+}
+

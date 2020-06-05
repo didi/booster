@@ -66,10 +66,10 @@ val TransformInvocation.runtimeClasspath: Collection<File>
  * Returns the application id
  */
 val TransformInvocation.applicationId: String
-    get() = variant.variantData.applicationId
+    get() = variant.applicationId
 
 /**
  * Returns the original application ID before any overrides from flavors
  */
 val TransformInvocation.originalApplicationId: String
-    get() = variant.variantData.variantConfiguration.originalApplicationId
+    get() = variant.variantData.getOriginalApplicationId()

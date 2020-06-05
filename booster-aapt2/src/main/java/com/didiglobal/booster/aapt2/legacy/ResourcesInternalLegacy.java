@@ -8,21 +8,30 @@ public final class ResourcesInternalLegacy {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistryLite registry) {
   }
+
+  public static void registerAllExtensions(
+      com.google.protobuf.ExtensionRegistry registry) {
+    registerAllExtensions(
+        (com.google.protobuf.ExtensionRegistryLite) registry);
+  }
   public interface ConfigDescriptionOrBuilder extends
       // @@protoc_insertion_point(interface_extends:aapt.pb.internal.ConfigDescription)
-      com.google.protobuf.MessageLiteOrBuilder {
+      com.google.protobuf.MessageOrBuilder {
 
     /**
      * <code>bytes data = 1;</code>
+     * @return The data.
      */
     com.google.protobuf.ByteString getData();
 
     /**
      * <code>string product = 2;</code>
+     * @return The product.
      */
     java.lang.String getProduct();
     /**
      * <code>string product = 2;</code>
+     * @return The bytes for product.
      */
     com.google.protobuf.ByteString
         getProductBytes();
@@ -36,100 +45,168 @@ public final class ResourcesInternalLegacy {
    *
    * Protobuf type {@code aapt.pb.internal.ConfigDescription}
    */
-  public  static final class ConfigDescription extends
-      com.google.protobuf.GeneratedMessageLite<
-          ConfigDescription, ConfigDescription.Builder> implements
+  public static final class ConfigDescription extends
+      com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:aapt.pb.internal.ConfigDescription)
       ConfigDescriptionOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ConfigDescription.newBuilder() to construct.
+    private ConfigDescription(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
     private ConfigDescription() {
       data_ = com.google.protobuf.ByteString.EMPTY;
       product_ = "";
     }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ConfigDescription();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ConfigDescription(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+
+              data_ = input.readBytes();
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              product_ = s;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.internal_static_aapt_pb_internal_ConfigDescription_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.internal_static_aapt_pb_internal_ConfigDescription_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.class, com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.Builder.class);
+    }
+
     public static final int DATA_FIELD_NUMBER = 1;
     private com.google.protobuf.ByteString data_;
     /**
      * <code>bytes data = 1;</code>
+     * @return The data.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString getData() {
       return data_;
     }
-    /**
-     * <code>bytes data = 1;</code>
-     */
-    private void setData(com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      data_ = value;
-    }
-    /**
-     * <code>bytes data = 1;</code>
-     */
-    private void clearData() {
-      
-      data_ = getDefaultInstance().getData();
-    }
 
     public static final int PRODUCT_FIELD_NUMBER = 2;
-    private java.lang.String product_;
+    private volatile java.lang.Object product_;
     /**
      * <code>string product = 2;</code>
+     * @return The product.
      */
+    @java.lang.Override
     public java.lang.String getProduct() {
-      return product_;
+      java.lang.Object ref = product_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        product_ = s;
+        return s;
+      }
     }
     /**
      * <code>string product = 2;</code>
+     * @return The bytes for product.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getProductBytes() {
-      return com.google.protobuf.ByteString.copyFromUtf8(product_);
-    }
-    /**
-     * <code>string product = 2;</code>
-     */
-    private void setProduct(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      product_ = value;
-    }
-    /**
-     * <code>string product = 2;</code>
-     */
-    private void clearProduct() {
-      
-      product_ = getDefaultInstance().getProduct();
-    }
-    /**
-     * <code>string product = 2;</code>
-     */
-    private void setProductBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      product_ = value.toStringUtf8();
+      java.lang.Object ref = product_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        product_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (!data_.isEmpty()) {
         output.writeBytes(1, data_);
       }
-      if (!product_.isEmpty()) {
-        output.writeString(2, getProduct());
+      if (!getProductBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, product_);
       }
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
@@ -137,96 +214,138 @@ public final class ResourcesInternalLegacy {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(1, data_);
       }
-      if (!product_.isEmpty()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(2, getProduct());
+      if (!getProductBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, product_);
       }
       size += unknownFields.getSerializedSize();
-      memoizedSerializedSize = size;
+      memoizedSize = size;
       return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription)) {
+        return super.equals(obj);
+      }
+      com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription other = (com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription) obj;
+
+      if (!getData()
+          .equals(other.getData())) return false;
+      if (!getProduct()
+          .equals(other.getProduct())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + DATA_FIELD_NUMBER;
+      hash = (53 * hash) + getData().hashCode();
+      hash = (37 * hash) + PRODUCT_FIELD_NUMBER;
+      hash = (53 * hash) + getProduct().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
     }
 
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, data);
+      return PARSER.parseFrom(data);
     }
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, data, extensionRegistry);
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, data);
+      return PARSER.parseFrom(data);
     }
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, data, extensionRegistry);
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, data);
+      return PARSER.parseFrom(data);
     }
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, data, extensionRegistry);
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return parseDelimitedFrom(DEFAULT_INSTANCE, input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return parseDelimitedFrom(DEFAULT_INSTANCE, input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
     public static Builder newBuilder(com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
 
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     /**
      * <pre>
      * A configuration description that wraps the binary form of the C++ class
@@ -237,190 +356,321 @@ public final class ResourcesInternalLegacy {
      * Protobuf type {@code aapt.pb.internal.ConfigDescription}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageLite.Builder<
-          com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription, Builder> implements
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:aapt.pb.internal.ConfigDescription)
         com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescriptionOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.internal_static_aapt_pb_internal_ConfigDescription_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.internal_static_aapt_pb_internal_ConfigDescription_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.class, com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.Builder.class);
+      }
+
       // Construct using com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.newBuilder()
       private Builder() {
-        super(DEFAULT_INSTANCE);
+        maybeForceBuilderInitialization();
       }
 
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        data_ = com.google.protobuf.ByteString.EMPTY;
 
+        product_ = "";
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.internal_static_aapt_pb_internal_ConfigDescription_descriptor;
+      }
+
+      @java.lang.Override
+      public com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription getDefaultInstanceForType() {
+        return com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription build() {
+        com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription buildPartial() {
+        com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription result = new com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription(this);
+        result.data_ = data_;
+        result.product_ = product_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription) {
+          return mergeFrom((com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription other) {
+        if (other == com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.getDefaultInstance()) return this;
+        if (other.getData() != com.google.protobuf.ByteString.EMPTY) {
+          setData(other.getData());
+        }
+        if (!other.getProduct().isEmpty()) {
+          product_ = other.product_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
       /**
        * <code>bytes data = 1;</code>
+       * @return The data.
        */
+      @java.lang.Override
       public com.google.protobuf.ByteString getData() {
-        return instance.getData();
+        return data_;
       }
       /**
        * <code>bytes data = 1;</code>
+       * @param value The data to set.
+       * @return This builder for chaining.
        */
       public Builder setData(com.google.protobuf.ByteString value) {
-        copyOnWrite();
-        instance.setData(value);
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        data_ = value;
+        onChanged();
         return this;
       }
       /**
        * <code>bytes data = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearData() {
-        copyOnWrite();
-        instance.clearData();
+        
+        data_ = getDefaultInstance().getData();
+        onChanged();
         return this;
       }
 
+      private java.lang.Object product_ = "";
       /**
        * <code>string product = 2;</code>
+       * @return The product.
        */
       public java.lang.String getProduct() {
-        return instance.getProduct();
+        java.lang.Object ref = product_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          product_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <code>string product = 2;</code>
+       * @return The bytes for product.
        */
       public com.google.protobuf.ByteString
           getProductBytes() {
-        return instance.getProductBytes();
+        java.lang.Object ref = product_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          product_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
       }
       /**
        * <code>string product = 2;</code>
+       * @param value The product to set.
+       * @return This builder for chaining.
        */
       public Builder setProduct(
           java.lang.String value) {
-        copyOnWrite();
-        instance.setProduct(value);
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        product_ = value;
+        onChanged();
         return this;
       }
       /**
        * <code>string product = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearProduct() {
-        copyOnWrite();
-        instance.clearProduct();
+        
+        product_ = getDefaultInstance().getProduct();
+        onChanged();
         return this;
       }
       /**
        * <code>string product = 2;</code>
+       * @param value The bytes for product to set.
+       * @return This builder for chaining.
        */
       public Builder setProductBytes(
           com.google.protobuf.ByteString value) {
-        copyOnWrite();
-        instance.setProductBytes(value);
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        product_ = value;
+        onChanged();
         return this;
       }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
 
       // @@protoc_insertion_point(builder_scope:aapt.pb.internal.ConfigDescription)
     }
-    @java.lang.SuppressWarnings({"unchecked", "fallthrough"})
-    protected final java.lang.Object dynamicMethod(
-        com.google.protobuf.GeneratedMessageLite.MethodToInvoke method,
-        java.lang.Object arg0, java.lang.Object arg1) {
-      switch (method) {
-        case NEW_MUTABLE_INSTANCE: {
-          return new com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription();
-        }
-        case IS_INITIALIZED: {
-          return DEFAULT_INSTANCE;
-        }
-        case MAKE_IMMUTABLE: {
-          return null;
-        }
-        case NEW_BUILDER: {
-          return new Builder();
-        }
-        case VISIT: {
-          Visitor visitor = (Visitor) arg0;
-          com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription other = (com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription) arg1;
-          data_ = visitor.visitByteString(data_ != com.google.protobuf.ByteString.EMPTY, data_,
-              other.data_ != com.google.protobuf.ByteString.EMPTY, other.data_);
-          product_ = visitor.visitString(!product_.isEmpty(), product_,
-              !other.product_.isEmpty(), other.product_);
-          if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
-              .INSTANCE) {
-          }
-          return this;
-        }
-        case MERGE_FROM_STREAM: {
-          com.google.protobuf.CodedInputStream input =
-              (com.google.protobuf.CodedInputStream) arg0;
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry =
-              (com.google.protobuf.ExtensionRegistryLite) arg1;
-          try {
-            boolean done = false;
-            while (!done) {
-              int tag = input.readTag();
-              switch (tag) {
-                case 0:
-                  done = true;
-                  break;
-                default: {
-                  if (!parseUnknownField(tag, input)) {
-                    done = true;
-                  }
-                  break;
-                }
-                case 10: {
-
-                  data_ = input.readBytes();
-                  break;
-                }
-                case 18: {
-                  java.lang.String s = input.readStringRequireUtf8();
-
-                  product_ = s;
-                  break;
-                }
-              }
-            }
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            throw new RuntimeException(e.setUnfinishedMessage(this));
-          } catch (java.io.IOException e) {
-            throw new RuntimeException(
-                new com.google.protobuf.InvalidProtocolBufferException(
-                    e.getMessage()).setUnfinishedMessage(this));
-          } finally {
-          }
-        }
-        // fall through
-        case GET_DEFAULT_INSTANCE: {
-          return DEFAULT_INSTANCE;
-        }
-        case GET_PARSER: {
-          if (PARSER == null) {    synchronized (com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.class) {
-              if (PARSER == null) {
-                PARSER = new DefaultInstanceBasedParser(DEFAULT_INSTANCE);
-              }
-            }
-          }
-          return PARSER;
-        }
-      }
-      throw new UnsupportedOperationException();
-    }
-
 
     // @@protoc_insertion_point(class_scope:aapt.pb.internal.ConfigDescription)
     private static final com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new ConfigDescription();
-      DEFAULT_INSTANCE.makeImmutable();
+      DEFAULT_INSTANCE = new com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription();
     }
 
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static volatile com.google.protobuf.Parser<ConfigDescription> PARSER;
+    private static final com.google.protobuf.Parser<ConfigDescription>
+        PARSER = new com.google.protobuf.AbstractParser<ConfigDescription>() {
+      @java.lang.Override
+      public ConfigDescription parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ConfigDescription(input, extensionRegistry);
+      }
+    };
 
     public static com.google.protobuf.Parser<ConfigDescription> parser() {
-      return DEFAULT_INSTANCE.getParserForType();
+      return PARSER;
     }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ConfigDescription> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
   }
 
   public interface CompiledFileLegacyOrBuilder extends
       // @@protoc_insertion_point(interface_extends:aapt.pb.internal.CompiledFileLegacy)
-      com.google.protobuf.MessageLiteOrBuilder {
+      com.google.protobuf.MessageOrBuilder {
 
     /**
      * <pre>
@@ -428,6 +678,7 @@ public final class ResourcesInternalLegacy {
      * </pre>
      *
      * <code>string resource_name = 1;</code>
+     * @return The resourceName.
      */
     java.lang.String getResourceName();
     /**
@@ -436,6 +687,7 @@ public final class ResourcesInternalLegacy {
      * </pre>
      *
      * <code>string resource_name = 1;</code>
+     * @return The bytes for resourceName.
      */
     com.google.protobuf.ByteString
         getResourceNameBytes();
@@ -446,6 +698,7 @@ public final class ResourcesInternalLegacy {
      * </pre>
      *
      * <code>.aapt.pb.internal.ConfigDescription config = 2;</code>
+     * @return Whether the config field is set.
      */
     boolean hasConfig();
     /**
@@ -454,8 +707,17 @@ public final class ResourcesInternalLegacy {
      * </pre>
      *
      * <code>.aapt.pb.internal.ConfigDescription config = 2;</code>
+     * @return The config.
      */
     com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription getConfig();
+    /**
+     * <pre>
+     * The configuration for which the resource is defined.
+     * </pre>
+     *
+     * <code>.aapt.pb.internal.ConfigDescription config = 2;</code>
+     */
+    com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescriptionOrBuilder getConfigOrBuilder();
 
     /**
      * <pre>
@@ -464,6 +726,7 @@ public final class ResourcesInternalLegacy {
      * </pre>
      *
      * <code>string source_path = 3;</code>
+     * @return The sourcePath.
      */
     java.lang.String getSourcePath();
     /**
@@ -473,52 +736,10 @@ public final class ResourcesInternalLegacy {
      * </pre>
      *
      * <code>string source_path = 3;</code>
+     * @return The bytes for sourcePath.
      */
     com.google.protobuf.ByteString
         getSourcePathBytes();
-
-    /**
-     * <pre>
-     * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-     * </pre>
-     *
-     * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-     */
-    java.util.List<com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol> 
-        getExportedSymbolList();
-    /**
-     * <pre>
-     * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-     * </pre>
-     *
-     * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-     */
-    com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol getExportedSymbol(int index);
-    /**
-     * <pre>
-     * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-     * </pre>
-     *
-     * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-     */
-    int getExportedSymbolCount();
-
-    /**
-     * <pre>
-     * If this is a compiled XML file, this is the root node.
-     * </pre>
-     *
-     * <code>.aapt.pb.XmlNode xml_root = 5;</code>
-     */
-    boolean hasXmlRoot();
-    /**
-     * <pre>
-     * If this is a compiled XML file, this is the root node.
-     * </pre>
-     *
-     * <code>.aapt.pb.XmlNode xml_root = 5;</code>
-     */
-    com.didiglobal.booster.aapt2.Resources.XmlNode getXmlRoot();
   }
   /**
    * <pre>
@@ -528,19 +749,110 @@ public final class ResourcesInternalLegacy {
    *
    * Protobuf type {@code aapt.pb.internal.CompiledFileLegacy}
    */
-  public  static final class CompiledFileLegacy extends
-      com.google.protobuf.GeneratedMessageLite<
-          CompiledFileLegacy, CompiledFileLegacy.Builder> implements
+  public static final class CompiledFileLegacy extends
+      com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:aapt.pb.internal.CompiledFileLegacy)
       CompiledFileLegacyOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use CompiledFileLegacy.newBuilder() to construct.
+    private CompiledFileLegacy(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
     private CompiledFileLegacy() {
       resourceName_ = "";
       sourcePath_ = "";
-      exportedSymbol_ = emptyProtobufList();
     }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new CompiledFileLegacy();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private CompiledFileLegacy(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              resourceName_ = s;
+              break;
+            }
+            case 18: {
+              com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.Builder subBuilder = null;
+              if (config_ != null) {
+                subBuilder = config_.toBuilder();
+              }
+              config_ = input.readMessage(com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(config_);
+                config_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              sourcePath_ = s;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.internal_static_aapt_pb_internal_CompiledFileLegacy_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.internal_static_aapt_pb_internal_CompiledFileLegacy_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.class, com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Builder.class);
+    }
+
     public interface SymbolOrBuilder extends
         // @@protoc_insertion_point(interface_extends:aapt.pb.internal.CompiledFileLegacy.Symbol)
-        com.google.protobuf.MessageLiteOrBuilder {
+        com.google.protobuf.MessageOrBuilder {
 
       /**
        * <pre>
@@ -548,6 +860,7 @@ public final class ResourcesInternalLegacy {
        * </pre>
        *
        * <code>string resource_name = 1;</code>
+       * @return The resourceName.
        */
       java.lang.String getResourceName();
       /**
@@ -556,6 +869,7 @@ public final class ResourcesInternalLegacy {
        * </pre>
        *
        * <code>string resource_name = 1;</code>
+       * @return The bytes for resourceName.
        */
       com.google.protobuf.ByteString
           getResourceNameBytes();
@@ -566,6 +880,7 @@ public final class ResourcesInternalLegacy {
        * </pre>
        *
        * <code>.aapt.pb.SourcePosition source = 2;</code>
+       * @return Whether the source field is set.
        */
       boolean hasSource();
       /**
@@ -574,31 +889,137 @@ public final class ResourcesInternalLegacy {
        * </pre>
        *
        * <code>.aapt.pb.SourcePosition source = 2;</code>
+       * @return The source.
        */
       com.didiglobal.booster.aapt2.Resources.SourcePosition getSource();
+      /**
+       * <pre>
+       * The position in the file at which this symbol is defined. For debug use.
+       * </pre>
+       *
+       * <code>.aapt.pb.SourcePosition source = 2;</code>
+       */
+      com.didiglobal.booster.aapt2.Resources.SourcePositionOrBuilder getSourceOrBuilder();
     }
     /**
      * Protobuf type {@code aapt.pb.internal.CompiledFileLegacy.Symbol}
      */
-    public  static final class Symbol extends
-        com.google.protobuf.GeneratedMessageLite<
-            Symbol, Symbol.Builder> implements
+    public static final class Symbol extends
+        com.google.protobuf.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:aapt.pb.internal.CompiledFileLegacy.Symbol)
         SymbolOrBuilder {
+    private static final long serialVersionUID = 0L;
+      // Use Symbol.newBuilder() to construct.
+      private Symbol(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        super(builder);
+      }
       private Symbol() {
         resourceName_ = "";
       }
+
+      @java.lang.Override
+      @SuppressWarnings({"unused"})
+      protected java.lang.Object newInstance(
+          UnusedPrivateParameter unused) {
+        return new Symbol();
+      }
+
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+      getUnknownFields() {
+        return this.unknownFields;
+      }
+      private Symbol(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        this();
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                resourceName_ = s;
+                break;
+              }
+              case 18: {
+                com.didiglobal.booster.aapt2.Resources.SourcePosition.Builder subBuilder = null;
+                if (source_ != null) {
+                  subBuilder = source_.toBuilder();
+                }
+                source_ = input.readMessage(com.didiglobal.booster.aapt2.Resources.SourcePosition.parser(), extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(source_);
+                  source_ = subBuilder.buildPartial();
+                }
+
+                break;
+              }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e).setUnfinishedMessage(this);
+        } finally {
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.internal_static_aapt_pb_internal_CompiledFileLegacy_Symbol_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.internal_static_aapt_pb_internal_CompiledFileLegacy_Symbol_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol.class, com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol.Builder.class);
+      }
+
       public static final int RESOURCE_NAME_FIELD_NUMBER = 1;
-      private java.lang.String resourceName_;
+      private volatile java.lang.Object resourceName_;
       /**
        * <pre>
        * The name of the symbol (in the form package:type/name).
        * </pre>
        *
        * <code>string resource_name = 1;</code>
+       * @return The resourceName.
        */
+      @java.lang.Override
       public java.lang.String getResourceName() {
-        return resourceName_;
+        java.lang.Object ref = resourceName_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          resourceName_ = s;
+          return s;
+        }
       }
       /**
        * <pre>
@@ -606,52 +1027,21 @@ public final class ResourcesInternalLegacy {
        * </pre>
        *
        * <code>string resource_name = 1;</code>
+       * @return The bytes for resourceName.
        */
+      @java.lang.Override
       public com.google.protobuf.ByteString
           getResourceNameBytes() {
-        return com.google.protobuf.ByteString.copyFromUtf8(resourceName_);
-      }
-      /**
-       * <pre>
-       * The name of the symbol (in the form package:type/name).
-       * </pre>
-       *
-       * <code>string resource_name = 1;</code>
-       */
-      private void setResourceName(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        resourceName_ = value;
-      }
-      /**
-       * <pre>
-       * The name of the symbol (in the form package:type/name).
-       * </pre>
-       *
-       * <code>string resource_name = 1;</code>
-       */
-      private void clearResourceName() {
-        
-        resourceName_ = getDefaultInstance().getResourceName();
-      }
-      /**
-       * <pre>
-       * The name of the symbol (in the form package:type/name).
-       * </pre>
-       *
-       * <code>string resource_name = 1;</code>
-       */
-      private void setResourceNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        resourceName_ = value.toStringUtf8();
+        java.lang.Object ref = resourceName_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          resourceName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
       }
 
       public static final int SOURCE_FIELD_NUMBER = 2;
@@ -662,7 +1052,9 @@ public final class ResourcesInternalLegacy {
        * </pre>
        *
        * <code>.aapt.pb.SourcePosition source = 2;</code>
+       * @return Whether the source field is set.
        */
+      @java.lang.Override
       public boolean hasSource() {
         return source_ != null;
       }
@@ -672,7 +1064,9 @@ public final class ResourcesInternalLegacy {
        * </pre>
        *
        * <code>.aapt.pb.SourcePosition source = 2;</code>
+       * @return The source.
        */
+      @java.lang.Override
       public com.didiglobal.booster.aapt2.Resources.SourcePosition getSource() {
         return source_ == null ? com.didiglobal.booster.aapt2.Resources.SourcePosition.getDefaultInstance() : source_;
       }
@@ -683,57 +1077,27 @@ public final class ResourcesInternalLegacy {
        *
        * <code>.aapt.pb.SourcePosition source = 2;</code>
        */
-      private void setSource(com.didiglobal.booster.aapt2.Resources.SourcePosition value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        source_ = value;
-        
-        }
-      /**
-       * <pre>
-       * The position in the file at which this symbol is defined. For debug use.
-       * </pre>
-       *
-       * <code>.aapt.pb.SourcePosition source = 2;</code>
-       */
-      private void setSource(
-          com.didiglobal.booster.aapt2.Resources.SourcePosition.Builder builderForValue) {
-        source_ = builderForValue.build();
-        
-      }
-      /**
-       * <pre>
-       * The position in the file at which this symbol is defined. For debug use.
-       * </pre>
-       *
-       * <code>.aapt.pb.SourcePosition source = 2;</code>
-       */
-      private void mergeSource(com.didiglobal.booster.aapt2.Resources.SourcePosition value) {
-        if (source_ != null &&
-            source_ != com.didiglobal.booster.aapt2.Resources.SourcePosition.getDefaultInstance()) {
-          source_ =
-            com.didiglobal.booster.aapt2.Resources.SourcePosition.newBuilder(source_).mergeFrom(value).buildPartial();
-        } else {
-          source_ = value;
-        }
-        
-      }
-      /**
-       * <pre>
-       * The position in the file at which this symbol is defined. For debug use.
-       * </pre>
-       *
-       * <code>.aapt.pb.SourcePosition source = 2;</code>
-       */
-      private void clearSource() {  source_ = null;
-        
+      @java.lang.Override
+      public com.didiglobal.booster.aapt2.Resources.SourcePositionOrBuilder getSourceOrBuilder() {
+        return getSource();
       }
 
+      private byte memoizedIsInitialized = -1;
+      @java.lang.Override
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (!resourceName_.isEmpty()) {
-          output.writeString(1, getResourceName());
+        if (!getResourceNameBytes().isEmpty()) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 1, resourceName_);
         }
         if (source_ != null) {
           output.writeMessage(2, getSource());
@@ -741,128 +1105,335 @@ public final class ResourcesInternalLegacy {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
-        int size = memoizedSerializedSize;
+        int size = memoizedSize;
         if (size != -1) return size;
 
         size = 0;
-        if (!resourceName_.isEmpty()) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeStringSize(1, getResourceName());
+        if (!getResourceNameBytes().isEmpty()) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, resourceName_);
         }
         if (source_ != null) {
           size += com.google.protobuf.CodedOutputStream
             .computeMessageSize(2, getSource());
         }
         size += unknownFields.getSerializedSize();
-        memoizedSerializedSize = size;
+        memoizedSize = size;
         return size;
+      }
+
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol)) {
+          return super.equals(obj);
+        }
+        com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol other = (com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol) obj;
+
+        if (!getResourceName()
+            .equals(other.getResourceName())) return false;
+        if (hasSource() != other.hasSource()) return false;
+        if (hasSource()) {
+          if (!getSource()
+              .equals(other.getSource())) return false;
+        }
+        if (!unknownFields.equals(other.unknownFields)) return false;
+        return true;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + RESOURCE_NAME_FIELD_NUMBER;
+        hash = (53 * hash) + getResourceName().hashCode();
+        if (hasSource()) {
+          hash = (37 * hash) + SOURCE_FIELD_NUMBER;
+          hash = (53 * hash) + getSource().hashCode();
+        }
+        hash = (29 * hash) + unknownFields.hashCode();
+        memoizedHashCode = hash;
+        return hash;
       }
 
       public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol parseFrom(
           java.nio.ByteBuffer data)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return com.google.protobuf.GeneratedMessageLite.parseFrom(
-            DEFAULT_INSTANCE, data);
+        return PARSER.parseFrom(data);
       }
       public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol parseFrom(
           java.nio.ByteBuffer data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return com.google.protobuf.GeneratedMessageLite.parseFrom(
-            DEFAULT_INSTANCE, data, extensionRegistry);
+        return PARSER.parseFrom(data, extensionRegistry);
       }
       public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return com.google.protobuf.GeneratedMessageLite.parseFrom(
-            DEFAULT_INSTANCE, data);
+        return PARSER.parseFrom(data);
       }
       public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return com.google.protobuf.GeneratedMessageLite.parseFrom(
-            DEFAULT_INSTANCE, data, extensionRegistry);
+        return PARSER.parseFrom(data, extensionRegistry);
       }
       public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return com.google.protobuf.GeneratedMessageLite.parseFrom(
-            DEFAULT_INSTANCE, data);
+        return PARSER.parseFrom(data);
       }
       public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return com.google.protobuf.GeneratedMessageLite.parseFrom(
-            DEFAULT_INSTANCE, data, extensionRegistry);
+        return PARSER.parseFrom(data, extensionRegistry);
       }
       public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol parseFrom(java.io.InputStream input)
           throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageLite.parseFrom(
-            DEFAULT_INSTANCE, input);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
       }
       public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageLite.parseFrom(
-            DEFAULT_INSTANCE, input, extensionRegistry);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
       }
       public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
-        return parseDelimitedFrom(DEFAULT_INSTANCE, input);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
       }
       public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        return parseDelimitedFrom(DEFAULT_INSTANCE, input, extensionRegistry);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
       }
       public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageLite.parseFrom(
-            DEFAULT_INSTANCE, input);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
       }
       public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageLite.parseFrom(
-            DEFAULT_INSTANCE, input, extensionRegistry);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
+      public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
       }
       public static Builder newBuilder(com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
+      public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+            ? new Builder() : new Builder().mergeFrom(this);
+      }
 
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
       /**
        * Protobuf type {@code aapt.pb.internal.CompiledFileLegacy.Symbol}
        */
       public static final class Builder extends
-          com.google.protobuf.GeneratedMessageLite.Builder<
-            com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol, Builder> implements
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
           // @@protoc_insertion_point(builder_implements:aapt.pb.internal.CompiledFileLegacy.Symbol)
           com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.SymbolOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.internal_static_aapt_pb_internal_CompiledFileLegacy_Symbol_descriptor;
+        }
+
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.internal_static_aapt_pb_internal_CompiledFileLegacy_Symbol_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol.class, com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol.Builder.class);
+        }
+
         // Construct using com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol.newBuilder()
         private Builder() {
-          super(DEFAULT_INSTANCE);
+          maybeForceBuilderInitialization();
         }
 
+        private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessageV3
+                  .alwaysUseFieldBuilders) {
+          }
+        }
+        @java.lang.Override
+        public Builder clear() {
+          super.clear();
+          resourceName_ = "";
 
+          if (sourceBuilder_ == null) {
+            source_ = null;
+          } else {
+            source_ = null;
+            sourceBuilder_ = null;
+          }
+          return this;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.internal_static_aapt_pb_internal_CompiledFileLegacy_Symbol_descriptor;
+        }
+
+        @java.lang.Override
+        public com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol getDefaultInstanceForType() {
+          return com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol.getDefaultInstance();
+        }
+
+        @java.lang.Override
+        public com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol build() {
+          com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        @java.lang.Override
+        public com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol buildPartial() {
+          com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol result = new com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol(this);
+          result.resourceName_ = resourceName_;
+          if (sourceBuilder_ == null) {
+            result.source_ = source_;
+          } else {
+            result.source_ = sourceBuilder_.build();
+          }
+          onBuilt();
+          return result;
+        }
+
+        @java.lang.Override
+        public Builder clone() {
+          return super.clone();
+        }
+        @java.lang.Override
+        public Builder setField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.setField(field, value);
+        }
+        @java.lang.Override
+        public Builder clearField(
+            com.google.protobuf.Descriptors.FieldDescriptor field) {
+          return super.clearField(field);
+        }
+        @java.lang.Override
+        public Builder clearOneof(
+            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          return super.clearOneof(oneof);
+        }
+        @java.lang.Override
+        public Builder setRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            int index, java.lang.Object value) {
+          return super.setRepeatedField(field, index, value);
+        }
+        @java.lang.Override
+        public Builder addRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.addRepeatedField(field, value);
+        }
+        @java.lang.Override
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol) {
+            return mergeFrom((com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol other) {
+          if (other == com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol.getDefaultInstance()) return this;
+          if (!other.getResourceName().isEmpty()) {
+            resourceName_ = other.resourceName_;
+            onChanged();
+          }
+          if (other.hasSource()) {
+            mergeSource(other.getSource());
+          }
+          this.mergeUnknownFields(other.unknownFields);
+          onChanged();
+          return this;
+        }
+
+        @java.lang.Override
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        @java.lang.Override
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol) e.getUnfinishedMessage();
+            throw e.unwrapIOException();
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+
+        private java.lang.Object resourceName_ = "";
         /**
          * <pre>
          * The name of the symbol (in the form package:type/name).
          * </pre>
          *
          * <code>string resource_name = 1;</code>
+         * @return The resourceName.
          */
         public java.lang.String getResourceName() {
-          return instance.getResourceName();
+          java.lang.Object ref = resourceName_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            resourceName_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
         }
         /**
          * <pre>
@@ -870,10 +1441,20 @@ public final class ResourcesInternalLegacy {
          * </pre>
          *
          * <code>string resource_name = 1;</code>
+         * @return The bytes for resourceName.
          */
         public com.google.protobuf.ByteString
             getResourceNameBytes() {
-          return instance.getResourceNameBytes();
+          java.lang.Object ref = resourceName_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            resourceName_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
         }
         /**
          * <pre>
@@ -881,11 +1462,17 @@ public final class ResourcesInternalLegacy {
          * </pre>
          *
          * <code>string resource_name = 1;</code>
+         * @param value The resourceName to set.
+         * @return This builder for chaining.
          */
         public Builder setResourceName(
             java.lang.String value) {
-          copyOnWrite();
-          instance.setResourceName(value);
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          resourceName_ = value;
+          onChanged();
           return this;
         }
         /**
@@ -894,10 +1481,12 @@ public final class ResourcesInternalLegacy {
          * </pre>
          *
          * <code>string resource_name = 1;</code>
+         * @return This builder for chaining.
          */
         public Builder clearResourceName() {
-          copyOnWrite();
-          instance.clearResourceName();
+          
+          resourceName_ = getDefaultInstance().getResourceName();
+          onChanged();
           return this;
         }
         /**
@@ -906,23 +1495,34 @@ public final class ResourcesInternalLegacy {
          * </pre>
          *
          * <code>string resource_name = 1;</code>
+         * @param value The bytes for resourceName to set.
+         * @return This builder for chaining.
          */
         public Builder setResourceNameBytes(
             com.google.protobuf.ByteString value) {
-          copyOnWrite();
-          instance.setResourceNameBytes(value);
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          
+          resourceName_ = value;
+          onChanged();
           return this;
         }
 
+        private com.didiglobal.booster.aapt2.Resources.SourcePosition source_;
+        private com.google.protobuf.SingleFieldBuilderV3<
+            com.didiglobal.booster.aapt2.Resources.SourcePosition, com.didiglobal.booster.aapt2.Resources.SourcePosition.Builder, com.didiglobal.booster.aapt2.Resources.SourcePositionOrBuilder> sourceBuilder_;
         /**
          * <pre>
          * The position in the file at which this symbol is defined. For debug use.
          * </pre>
          *
          * <code>.aapt.pb.SourcePosition source = 2;</code>
+         * @return Whether the source field is set.
          */
         public boolean hasSource() {
-          return instance.hasSource();
+          return sourceBuilder_ != null || source_ != null;
         }
         /**
          * <pre>
@@ -930,9 +1530,14 @@ public final class ResourcesInternalLegacy {
          * </pre>
          *
          * <code>.aapt.pb.SourcePosition source = 2;</code>
+         * @return The source.
          */
         public com.didiglobal.booster.aapt2.Resources.SourcePosition getSource() {
-          return instance.getSource();
+          if (sourceBuilder_ == null) {
+            return source_ == null ? com.didiglobal.booster.aapt2.Resources.SourcePosition.getDefaultInstance() : source_;
+          } else {
+            return sourceBuilder_.getMessage();
+          }
         }
         /**
          * <pre>
@@ -942,10 +1547,18 @@ public final class ResourcesInternalLegacy {
          * <code>.aapt.pb.SourcePosition source = 2;</code>
          */
         public Builder setSource(com.didiglobal.booster.aapt2.Resources.SourcePosition value) {
-          copyOnWrite();
-          instance.setSource(value);
-          return this;
+          if (sourceBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            source_ = value;
+            onChanged();
+          } else {
+            sourceBuilder_.setMessage(value);
           }
+
+          return this;
+        }
         /**
          * <pre>
          * The position in the file at which this symbol is defined. For debug use.
@@ -955,8 +1568,13 @@ public final class ResourcesInternalLegacy {
          */
         public Builder setSource(
             com.didiglobal.booster.aapt2.Resources.SourcePosition.Builder builderForValue) {
-          copyOnWrite();
-          instance.setSource(builderForValue);
+          if (sourceBuilder_ == null) {
+            source_ = builderForValue.build();
+            onChanged();
+          } else {
+            sourceBuilder_.setMessage(builderForValue.build());
+          }
+
           return this;
         }
         /**
@@ -967,8 +1585,18 @@ public final class ResourcesInternalLegacy {
          * <code>.aapt.pb.SourcePosition source = 2;</code>
          */
         public Builder mergeSource(com.didiglobal.booster.aapt2.Resources.SourcePosition value) {
-          copyOnWrite();
-          instance.mergeSource(value);
+          if (sourceBuilder_ == null) {
+            if (source_ != null) {
+              source_ =
+                com.didiglobal.booster.aapt2.Resources.SourcePosition.newBuilder(source_).mergeFrom(value).buildPartial();
+            } else {
+              source_ = value;
+            }
+            onChanged();
+          } else {
+            sourceBuilder_.mergeFrom(value);
+          }
+
           return this;
         }
         /**
@@ -978,138 +1606,139 @@ public final class ResourcesInternalLegacy {
          *
          * <code>.aapt.pb.SourcePosition source = 2;</code>
          */
-        public Builder clearSource() {  copyOnWrite();
-          instance.clearSource();
+        public Builder clearSource() {
+          if (sourceBuilder_ == null) {
+            source_ = null;
+            onChanged();
+          } else {
+            source_ = null;
+            sourceBuilder_ = null;
+          }
+
           return this;
         }
+        /**
+         * <pre>
+         * The position in the file at which this symbol is defined. For debug use.
+         * </pre>
+         *
+         * <code>.aapt.pb.SourcePosition source = 2;</code>
+         */
+        public com.didiglobal.booster.aapt2.Resources.SourcePosition.Builder getSourceBuilder() {
+          
+          onChanged();
+          return getSourceFieldBuilder().getBuilder();
+        }
+        /**
+         * <pre>
+         * The position in the file at which this symbol is defined. For debug use.
+         * </pre>
+         *
+         * <code>.aapt.pb.SourcePosition source = 2;</code>
+         */
+        public com.didiglobal.booster.aapt2.Resources.SourcePositionOrBuilder getSourceOrBuilder() {
+          if (sourceBuilder_ != null) {
+            return sourceBuilder_.getMessageOrBuilder();
+          } else {
+            return source_ == null ?
+                com.didiglobal.booster.aapt2.Resources.SourcePosition.getDefaultInstance() : source_;
+          }
+        }
+        /**
+         * <pre>
+         * The position in the file at which this symbol is defined. For debug use.
+         * </pre>
+         *
+         * <code>.aapt.pb.SourcePosition source = 2;</code>
+         */
+        private com.google.protobuf.SingleFieldBuilderV3<
+            com.didiglobal.booster.aapt2.Resources.SourcePosition, com.didiglobal.booster.aapt2.Resources.SourcePosition.Builder, com.didiglobal.booster.aapt2.Resources.SourcePositionOrBuilder> 
+            getSourceFieldBuilder() {
+          if (sourceBuilder_ == null) {
+            sourceBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+                com.didiglobal.booster.aapt2.Resources.SourcePosition, com.didiglobal.booster.aapt2.Resources.SourcePosition.Builder, com.didiglobal.booster.aapt2.Resources.SourcePositionOrBuilder>(
+                    getSource(),
+                    getParentForChildren(),
+                    isClean());
+            source_ = null;
+          }
+          return sourceBuilder_;
+        }
+        @java.lang.Override
+        public final Builder setUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.setUnknownFields(unknownFields);
+        }
+
+        @java.lang.Override
+        public final Builder mergeUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.mergeUnknownFields(unknownFields);
+        }
+
 
         // @@protoc_insertion_point(builder_scope:aapt.pb.internal.CompiledFileLegacy.Symbol)
       }
-      @java.lang.SuppressWarnings({"unchecked", "fallthrough"})
-      protected final java.lang.Object dynamicMethod(
-          com.google.protobuf.GeneratedMessageLite.MethodToInvoke method,
-          java.lang.Object arg0, java.lang.Object arg1) {
-        switch (method) {
-          case NEW_MUTABLE_INSTANCE: {
-            return new com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol();
-          }
-          case IS_INITIALIZED: {
-            return DEFAULT_INSTANCE;
-          }
-          case MAKE_IMMUTABLE: {
-            return null;
-          }
-          case NEW_BUILDER: {
-            return new Builder();
-          }
-          case VISIT: {
-            Visitor visitor = (Visitor) arg0;
-            com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol other = (com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol) arg1;
-            resourceName_ = visitor.visitString(!resourceName_.isEmpty(), resourceName_,
-                !other.resourceName_.isEmpty(), other.resourceName_);
-            source_ = visitor.visitMessage(source_, other.source_);
-            if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
-                .INSTANCE) {
-            }
-            return this;
-          }
-          case MERGE_FROM_STREAM: {
-            com.google.protobuf.CodedInputStream input =
-                (com.google.protobuf.CodedInputStream) arg0;
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry =
-                (com.google.protobuf.ExtensionRegistryLite) arg1;
-            try {
-              boolean done = false;
-              while (!done) {
-                int tag = input.readTag();
-                switch (tag) {
-                  case 0:
-                    done = true;
-                    break;
-                  default: {
-                    if (!parseUnknownField(tag, input)) {
-                      done = true;
-                    }
-                    break;
-                  }
-                  case 10: {
-                    java.lang.String s = input.readStringRequireUtf8();
-
-                    resourceName_ = s;
-                    break;
-                  }
-                  case 18: {
-                    com.didiglobal.booster.aapt2.Resources.SourcePosition.Builder subBuilder = null;
-                    if (source_ != null) {
-                      subBuilder = source_.toBuilder();
-                    }
-                    source_ = input.readMessage(com.didiglobal.booster.aapt2.Resources.SourcePosition.parser(), extensionRegistry);
-                    if (subBuilder != null) {
-                      subBuilder.mergeFrom(source_);
-                      source_ = subBuilder.buildPartial();
-                    }
-
-                    break;
-                  }
-                }
-              }
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-              throw new RuntimeException(e.setUnfinishedMessage(this));
-            } catch (java.io.IOException e) {
-              throw new RuntimeException(
-                  new com.google.protobuf.InvalidProtocolBufferException(
-                      e.getMessage()).setUnfinishedMessage(this));
-            } finally {
-            }
-          }
-          // fall through
-          case GET_DEFAULT_INSTANCE: {
-            return DEFAULT_INSTANCE;
-          }
-          case GET_PARSER: {
-            if (PARSER == null) {    synchronized (com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol.class) {
-                if (PARSER == null) {
-                  PARSER = new DefaultInstanceBasedParser(DEFAULT_INSTANCE);
-                }
-              }
-            }
-            return PARSER;
-          }
-        }
-        throw new UnsupportedOperationException();
-      }
-
 
       // @@protoc_insertion_point(class_scope:aapt.pb.internal.CompiledFileLegacy.Symbol)
       private static final com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol DEFAULT_INSTANCE;
       static {
-        DEFAULT_INSTANCE = new Symbol();
-        DEFAULT_INSTANCE.makeImmutable();
+        DEFAULT_INSTANCE = new com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol();
       }
 
       public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol getDefaultInstance() {
         return DEFAULT_INSTANCE;
       }
 
-      private static volatile com.google.protobuf.Parser<Symbol> PARSER;
+      private static final com.google.protobuf.Parser<Symbol>
+          PARSER = new com.google.protobuf.AbstractParser<Symbol>() {
+        @java.lang.Override
+        public Symbol parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new Symbol(input, extensionRegistry);
+        }
+      };
 
       public static com.google.protobuf.Parser<Symbol> parser() {
-        return DEFAULT_INSTANCE.getParserForType();
+        return PARSER;
       }
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<Symbol> getParserForType() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+      }
+
     }
 
-    private int bitField0_;
     public static final int RESOURCE_NAME_FIELD_NUMBER = 1;
-    private java.lang.String resourceName_;
+    private volatile java.lang.Object resourceName_;
     /**
      * <pre>
      * The name of the resource (in the form package:type/name).
      * </pre>
      *
      * <code>string resource_name = 1;</code>
+     * @return The resourceName.
      */
+    @java.lang.Override
     public java.lang.String getResourceName() {
-      return resourceName_;
+      java.lang.Object ref = resourceName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        resourceName_ = s;
+        return s;
+      }
     }
     /**
      * <pre>
@@ -1117,52 +1746,21 @@ public final class ResourcesInternalLegacy {
      * </pre>
      *
      * <code>string resource_name = 1;</code>
+     * @return The bytes for resourceName.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getResourceNameBytes() {
-      return com.google.protobuf.ByteString.copyFromUtf8(resourceName_);
-    }
-    /**
-     * <pre>
-     * The name of the resource (in the form package:type/name).
-     * </pre>
-     *
-     * <code>string resource_name = 1;</code>
-     */
-    private void setResourceName(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      resourceName_ = value;
-    }
-    /**
-     * <pre>
-     * The name of the resource (in the form package:type/name).
-     * </pre>
-     *
-     * <code>string resource_name = 1;</code>
-     */
-    private void clearResourceName() {
-      
-      resourceName_ = getDefaultInstance().getResourceName();
-    }
-    /**
-     * <pre>
-     * The name of the resource (in the form package:type/name).
-     * </pre>
-     *
-     * <code>string resource_name = 1;</code>
-     */
-    private void setResourceNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      resourceName_ = value.toStringUtf8();
+      java.lang.Object ref = resourceName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        resourceName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int CONFIG_FIELD_NUMBER = 2;
@@ -1173,7 +1771,9 @@ public final class ResourcesInternalLegacy {
      * </pre>
      *
      * <code>.aapt.pb.internal.ConfigDescription config = 2;</code>
+     * @return Whether the config field is set.
      */
+    @java.lang.Override
     public boolean hasConfig() {
       return config_ != null;
     }
@@ -1183,7 +1783,9 @@ public final class ResourcesInternalLegacy {
      * </pre>
      *
      * <code>.aapt.pb.internal.ConfigDescription config = 2;</code>
+     * @return The config.
      */
+    @java.lang.Override
     public com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription getConfig() {
       return config_ == null ? com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.getDefaultInstance() : config_;
     }
@@ -1194,55 +1796,13 @@ public final class ResourcesInternalLegacy {
      *
      * <code>.aapt.pb.internal.ConfigDescription config = 2;</code>
      */
-    private void setConfig(com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      config_ = value;
-      
-      }
-    /**
-     * <pre>
-     * The configuration for which the resource is defined.
-     * </pre>
-     *
-     * <code>.aapt.pb.internal.ConfigDescription config = 2;</code>
-     */
-    private void setConfig(
-        com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.Builder builderForValue) {
-      config_ = builderForValue.build();
-      
-    }
-    /**
-     * <pre>
-     * The configuration for which the resource is defined.
-     * </pre>
-     *
-     * <code>.aapt.pb.internal.ConfigDescription config = 2;</code>
-     */
-    private void mergeConfig(com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription value) {
-      if (config_ != null &&
-          config_ != com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.getDefaultInstance()) {
-        config_ =
-          com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.newBuilder(config_).mergeFrom(value).buildPartial();
-      } else {
-        config_ = value;
-      }
-      
-    }
-    /**
-     * <pre>
-     * The configuration for which the resource is defined.
-     * </pre>
-     *
-     * <code>.aapt.pb.internal.ConfigDescription config = 2;</code>
-     */
-    private void clearConfig() {  config_ = null;
-      
+    @java.lang.Override
+    public com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescriptionOrBuilder getConfigOrBuilder() {
+      return getConfig();
     }
 
     public static final int SOURCE_PATH_FIELD_NUMBER = 3;
-    private java.lang.String sourcePath_;
+    private volatile java.lang.Object sourcePath_;
     /**
      * <pre>
      * The filesystem path to where the source file originated.
@@ -1250,9 +1810,20 @@ public final class ResourcesInternalLegacy {
      * </pre>
      *
      * <code>string source_path = 3;</code>
+     * @return The sourcePath.
      */
+    @java.lang.Override
     public java.lang.String getSourcePath() {
-      return sourcePath_;
+      java.lang.Object ref = sourcePath_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        sourcePath_ = s;
+        return s;
+      }
     }
     /**
      * <pre>
@@ -1261,440 +1832,203 @@ public final class ResourcesInternalLegacy {
      * </pre>
      *
      * <code>string source_path = 3;</code>
+     * @return The bytes for sourcePath.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
         getSourcePathBytes() {
-      return com.google.protobuf.ByteString.copyFromUtf8(sourcePath_);
-    }
-    /**
-     * <pre>
-     * The filesystem path to where the source file originated.
-     * Mainly used to display helpful error messages.
-     * </pre>
-     *
-     * <code>string source_path = 3;</code>
-     */
-    private void setSourcePath(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      sourcePath_ = value;
-    }
-    /**
-     * <pre>
-     * The filesystem path to where the source file originated.
-     * Mainly used to display helpful error messages.
-     * </pre>
-     *
-     * <code>string source_path = 3;</code>
-     */
-    private void clearSourcePath() {
-      
-      sourcePath_ = getDefaultInstance().getSourcePath();
-    }
-    /**
-     * <pre>
-     * The filesystem path to where the source file originated.
-     * Mainly used to display helpful error messages.
-     * </pre>
-     *
-     * <code>string source_path = 3;</code>
-     */
-    private void setSourcePathBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      sourcePath_ = value.toStringUtf8();
-    }
-
-    public static final int EXPORTED_SYMBOL_FIELD_NUMBER = 4;
-    private com.google.protobuf.Internal.ProtobufList<com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol> exportedSymbol_;
-    /**
-     * <pre>
-     * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-     * </pre>
-     *
-     * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-     */
-    public java.util.List<com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol> getExportedSymbolList() {
-      return exportedSymbol_;
-    }
-    /**
-     * <pre>
-     * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-     * </pre>
-     *
-     * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-     */
-    public java.util.List<? extends com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.SymbolOrBuilder> 
-        getExportedSymbolOrBuilderList() {
-      return exportedSymbol_;
-    }
-    /**
-     * <pre>
-     * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-     * </pre>
-     *
-     * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-     */
-    public int getExportedSymbolCount() {
-      return exportedSymbol_.size();
-    }
-    /**
-     * <pre>
-     * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-     * </pre>
-     *
-     * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-     */
-    public com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol getExportedSymbol(int index) {
-      return exportedSymbol_.get(index);
-    }
-    /**
-     * <pre>
-     * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-     * </pre>
-     *
-     * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-     */
-    public com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.SymbolOrBuilder getExportedSymbolOrBuilder(
-        int index) {
-      return exportedSymbol_.get(index);
-    }
-    private void ensureExportedSymbolIsMutable() {
-      if (!exportedSymbol_.isModifiable()) {
-        exportedSymbol_ =
-            com.google.protobuf.GeneratedMessageLite.mutableCopy(exportedSymbol_);
-       }
-    }
-
-    /**
-     * <pre>
-     * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-     * </pre>
-     *
-     * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-     */
-    private void setExportedSymbol(
-        int index, com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      ensureExportedSymbolIsMutable();
-      exportedSymbol_.set(index, value);
-    }
-    /**
-     * <pre>
-     * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-     * </pre>
-     *
-     * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-     */
-    private void setExportedSymbol(
-        int index, com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol.Builder builderForValue) {
-      ensureExportedSymbolIsMutable();
-      exportedSymbol_.set(index, builderForValue.build());
-    }
-    /**
-     * <pre>
-     * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-     * </pre>
-     *
-     * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-     */
-    private void addExportedSymbol(com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      ensureExportedSymbolIsMutable();
-      exportedSymbol_.add(value);
-    }
-    /**
-     * <pre>
-     * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-     * </pre>
-     *
-     * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-     */
-    private void addExportedSymbol(
-        int index, com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      ensureExportedSymbolIsMutable();
-      exportedSymbol_.add(index, value);
-    }
-    /**
-     * <pre>
-     * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-     * </pre>
-     *
-     * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-     */
-    private void addExportedSymbol(
-        com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol.Builder builderForValue) {
-      ensureExportedSymbolIsMutable();
-      exportedSymbol_.add(builderForValue.build());
-    }
-    /**
-     * <pre>
-     * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-     * </pre>
-     *
-     * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-     */
-    private void addExportedSymbol(
-        int index, com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol.Builder builderForValue) {
-      ensureExportedSymbolIsMutable();
-      exportedSymbol_.add(index, builderForValue.build());
-    }
-    /**
-     * <pre>
-     * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-     * </pre>
-     *
-     * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-     */
-    private void addAllExportedSymbol(
-        java.lang.Iterable<? extends com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol> values) {
-      ensureExportedSymbolIsMutable();
-      com.google.protobuf.AbstractMessageLite.addAll(
-          values, exportedSymbol_);
-    }
-    /**
-     * <pre>
-     * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-     * </pre>
-     *
-     * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-     */
-    private void clearExportedSymbol() {
-      exportedSymbol_ = emptyProtobufList();
-    }
-    /**
-     * <pre>
-     * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-     * </pre>
-     *
-     * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-     */
-    private void removeExportedSymbol(int index) {
-      ensureExportedSymbolIsMutable();
-      exportedSymbol_.remove(index);
-    }
-
-    public static final int XML_ROOT_FIELD_NUMBER = 5;
-    private com.didiglobal.booster.aapt2.Resources.XmlNode xmlRoot_;
-    /**
-     * <pre>
-     * If this is a compiled XML file, this is the root node.
-     * </pre>
-     *
-     * <code>.aapt.pb.XmlNode xml_root = 5;</code>
-     */
-    public boolean hasXmlRoot() {
-      return xmlRoot_ != null;
-    }
-    /**
-     * <pre>
-     * If this is a compiled XML file, this is the root node.
-     * </pre>
-     *
-     * <code>.aapt.pb.XmlNode xml_root = 5;</code>
-     */
-    public com.didiglobal.booster.aapt2.Resources.XmlNode getXmlRoot() {
-      return xmlRoot_ == null ? com.didiglobal.booster.aapt2.Resources.XmlNode.getDefaultInstance() : xmlRoot_;
-    }
-    /**
-     * <pre>
-     * If this is a compiled XML file, this is the root node.
-     * </pre>
-     *
-     * <code>.aapt.pb.XmlNode xml_root = 5;</code>
-     */
-    private void setXmlRoot(com.didiglobal.booster.aapt2.Resources.XmlNode value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      xmlRoot_ = value;
-      
-      }
-    /**
-     * <pre>
-     * If this is a compiled XML file, this is the root node.
-     * </pre>
-     *
-     * <code>.aapt.pb.XmlNode xml_root = 5;</code>
-     */
-    private void setXmlRoot(
-        com.didiglobal.booster.aapt2.Resources.XmlNode.Builder builderForValue) {
-      xmlRoot_ = builderForValue.build();
-      
-    }
-    /**
-     * <pre>
-     * If this is a compiled XML file, this is the root node.
-     * </pre>
-     *
-     * <code>.aapt.pb.XmlNode xml_root = 5;</code>
-     */
-    private void mergeXmlRoot(com.didiglobal.booster.aapt2.Resources.XmlNode value) {
-      if (xmlRoot_ != null &&
-          xmlRoot_ != com.didiglobal.booster.aapt2.Resources.XmlNode.getDefaultInstance()) {
-        xmlRoot_ =
-          com.didiglobal.booster.aapt2.Resources.XmlNode.newBuilder(xmlRoot_).mergeFrom(value).buildPartial();
+      java.lang.Object ref = sourcePath_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        sourcePath_ = b;
+        return b;
       } else {
-        xmlRoot_ = value;
+        return (com.google.protobuf.ByteString) ref;
       }
-      
-    }
-    /**
-     * <pre>
-     * If this is a compiled XML file, this is the root node.
-     * </pre>
-     *
-     * <code>.aapt.pb.XmlNode xml_root = 5;</code>
-     */
-    private void clearXmlRoot() {  xmlRoot_ = null;
-      
     }
 
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!resourceName_.isEmpty()) {
-        output.writeString(1, getResourceName());
+      if (!getResourceNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, resourceName_);
       }
       if (config_ != null) {
         output.writeMessage(2, getConfig());
       }
-      if (!sourcePath_.isEmpty()) {
-        output.writeString(3, getSourcePath());
-      }
-      for (int i = 0; i < exportedSymbol_.size(); i++) {
-        output.writeMessage(4, exportedSymbol_.get(i));
-      }
-      if (xmlRoot_ != null) {
-        output.writeMessage(5, getXmlRoot());
+      if (!getSourcePathBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, sourcePath_);
       }
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
-      if (!resourceName_.isEmpty()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(1, getResourceName());
+      if (!getResourceNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, resourceName_);
       }
       if (config_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, getConfig());
       }
-      if (!sourcePath_.isEmpty()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(3, getSourcePath());
-      }
-      for (int i = 0; i < exportedSymbol_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, exportedSymbol_.get(i));
-      }
-      if (xmlRoot_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, getXmlRoot());
+      if (!getSourcePathBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, sourcePath_);
       }
       size += unknownFields.getSerializedSize();
-      memoizedSerializedSize = size;
+      memoizedSize = size;
       return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy)) {
+        return super.equals(obj);
+      }
+      com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy other = (com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy) obj;
+
+      if (!getResourceName()
+          .equals(other.getResourceName())) return false;
+      if (hasConfig() != other.hasConfig()) return false;
+      if (hasConfig()) {
+        if (!getConfig()
+            .equals(other.getConfig())) return false;
+      }
+      if (!getSourcePath()
+          .equals(other.getSourcePath())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + RESOURCE_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getResourceName().hashCode();
+      if (hasConfig()) {
+        hash = (37 * hash) + CONFIG_FIELD_NUMBER;
+        hash = (53 * hash) + getConfig().hashCode();
+      }
+      hash = (37 * hash) + SOURCE_PATH_FIELD_NUMBER;
+      hash = (53 * hash) + getSourcePath().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
     }
 
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, data);
+      return PARSER.parseFrom(data);
     }
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, data, extensionRegistry);
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, data);
+      return PARSER.parseFrom(data);
     }
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, data, extensionRegistry);
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, data);
+      return PARSER.parseFrom(data);
     }
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, data, extensionRegistry);
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return parseDelimitedFrom(DEFAULT_INSTANCE, input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return parseDelimitedFrom(DEFAULT_INSTANCE, input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-          DEFAULT_INSTANCE, input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
     public static Builder newBuilder(com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
 
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     /**
      * <pre>
      * The top level message representing an external resource file (layout XML, PNG, etc).
@@ -1704,25 +2038,191 @@ public final class ResourcesInternalLegacy {
      * Protobuf type {@code aapt.pb.internal.CompiledFileLegacy}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageLite.Builder<
-          com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy, Builder> implements
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:aapt.pb.internal.CompiledFileLegacy)
         com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacyOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.internal_static_aapt_pb_internal_CompiledFileLegacy_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.internal_static_aapt_pb_internal_CompiledFileLegacy_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.class, com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Builder.class);
+      }
+
       // Construct using com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.newBuilder()
       private Builder() {
-        super(DEFAULT_INSTANCE);
+        maybeForceBuilderInitialization();
       }
 
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        resourceName_ = "";
 
+        if (configBuilder_ == null) {
+          config_ = null;
+        } else {
+          config_ = null;
+          configBuilder_ = null;
+        }
+        sourcePath_ = "";
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.internal_static_aapt_pb_internal_CompiledFileLegacy_descriptor;
+      }
+
+      @java.lang.Override
+      public com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy getDefaultInstanceForType() {
+        return com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy build() {
+        com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy buildPartial() {
+        com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy result = new com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy(this);
+        result.resourceName_ = resourceName_;
+        if (configBuilder_ == null) {
+          result.config_ = config_;
+        } else {
+          result.config_ = configBuilder_.build();
+        }
+        result.sourcePath_ = sourcePath_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy) {
+          return mergeFrom((com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy other) {
+        if (other == com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.getDefaultInstance()) return this;
+        if (!other.getResourceName().isEmpty()) {
+          resourceName_ = other.resourceName_;
+          onChanged();
+        }
+        if (other.hasConfig()) {
+          mergeConfig(other.getConfig());
+        }
+        if (!other.getSourcePath().isEmpty()) {
+          sourcePath_ = other.sourcePath_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object resourceName_ = "";
       /**
        * <pre>
        * The name of the resource (in the form package:type/name).
        * </pre>
        *
        * <code>string resource_name = 1;</code>
+       * @return The resourceName.
        */
       public java.lang.String getResourceName() {
-        return instance.getResourceName();
+        java.lang.Object ref = resourceName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          resourceName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
@@ -1730,10 +2230,20 @@ public final class ResourcesInternalLegacy {
        * </pre>
        *
        * <code>string resource_name = 1;</code>
+       * @return The bytes for resourceName.
        */
       public com.google.protobuf.ByteString
           getResourceNameBytes() {
-        return instance.getResourceNameBytes();
+        java.lang.Object ref = resourceName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          resourceName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
       }
       /**
        * <pre>
@@ -1741,11 +2251,17 @@ public final class ResourcesInternalLegacy {
        * </pre>
        *
        * <code>string resource_name = 1;</code>
+       * @param value The resourceName to set.
+       * @return This builder for chaining.
        */
       public Builder setResourceName(
           java.lang.String value) {
-        copyOnWrite();
-        instance.setResourceName(value);
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        resourceName_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -1754,10 +2270,12 @@ public final class ResourcesInternalLegacy {
        * </pre>
        *
        * <code>string resource_name = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearResourceName() {
-        copyOnWrite();
-        instance.clearResourceName();
+        
+        resourceName_ = getDefaultInstance().getResourceName();
+        onChanged();
         return this;
       }
       /**
@@ -1766,23 +2284,34 @@ public final class ResourcesInternalLegacy {
        * </pre>
        *
        * <code>string resource_name = 1;</code>
+       * @param value The bytes for resourceName to set.
+       * @return This builder for chaining.
        */
       public Builder setResourceNameBytes(
           com.google.protobuf.ByteString value) {
-        copyOnWrite();
-        instance.setResourceNameBytes(value);
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        resourceName_ = value;
+        onChanged();
         return this;
       }
 
+      private com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription config_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription, com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.Builder, com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescriptionOrBuilder> configBuilder_;
       /**
        * <pre>
        * The configuration for which the resource is defined.
        * </pre>
        *
        * <code>.aapt.pb.internal.ConfigDescription config = 2;</code>
+       * @return Whether the config field is set.
        */
       public boolean hasConfig() {
-        return instance.hasConfig();
+        return configBuilder_ != null || config_ != null;
       }
       /**
        * <pre>
@@ -1790,9 +2319,14 @@ public final class ResourcesInternalLegacy {
        * </pre>
        *
        * <code>.aapt.pb.internal.ConfigDescription config = 2;</code>
+       * @return The config.
        */
       public com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription getConfig() {
-        return instance.getConfig();
+        if (configBuilder_ == null) {
+          return config_ == null ? com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.getDefaultInstance() : config_;
+        } else {
+          return configBuilder_.getMessage();
+        }
       }
       /**
        * <pre>
@@ -1802,10 +2336,18 @@ public final class ResourcesInternalLegacy {
        * <code>.aapt.pb.internal.ConfigDescription config = 2;</code>
        */
       public Builder setConfig(com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription value) {
-        copyOnWrite();
-        instance.setConfig(value);
-        return this;
+        if (configBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          config_ = value;
+          onChanged();
+        } else {
+          configBuilder_.setMessage(value);
         }
+
+        return this;
+      }
       /**
        * <pre>
        * The configuration for which the resource is defined.
@@ -1815,8 +2357,13 @@ public final class ResourcesInternalLegacy {
        */
       public Builder setConfig(
           com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.Builder builderForValue) {
-        copyOnWrite();
-        instance.setConfig(builderForValue);
+        if (configBuilder_ == null) {
+          config_ = builderForValue.build();
+          onChanged();
+        } else {
+          configBuilder_.setMessage(builderForValue.build());
+        }
+
         return this;
       }
       /**
@@ -1827,8 +2374,18 @@ public final class ResourcesInternalLegacy {
        * <code>.aapt.pb.internal.ConfigDescription config = 2;</code>
        */
       public Builder mergeConfig(com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription value) {
-        copyOnWrite();
-        instance.mergeConfig(value);
+        if (configBuilder_ == null) {
+          if (config_ != null) {
+            config_ =
+              com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.newBuilder(config_).mergeFrom(value).buildPartial();
+          } else {
+            config_ = value;
+          }
+          onChanged();
+        } else {
+          configBuilder_.mergeFrom(value);
+        }
+
         return this;
       }
       /**
@@ -1838,11 +2395,66 @@ public final class ResourcesInternalLegacy {
        *
        * <code>.aapt.pb.internal.ConfigDescription config = 2;</code>
        */
-      public Builder clearConfig() {  copyOnWrite();
-        instance.clearConfig();
+      public Builder clearConfig() {
+        if (configBuilder_ == null) {
+          config_ = null;
+          onChanged();
+        } else {
+          config_ = null;
+          configBuilder_ = null;
+        }
+
         return this;
       }
+      /**
+       * <pre>
+       * The configuration for which the resource is defined.
+       * </pre>
+       *
+       * <code>.aapt.pb.internal.ConfigDescription config = 2;</code>
+       */
+      public com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.Builder getConfigBuilder() {
+        
+        onChanged();
+        return getConfigFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * The configuration for which the resource is defined.
+       * </pre>
+       *
+       * <code>.aapt.pb.internal.ConfigDescription config = 2;</code>
+       */
+      public com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescriptionOrBuilder getConfigOrBuilder() {
+        if (configBuilder_ != null) {
+          return configBuilder_.getMessageOrBuilder();
+        } else {
+          return config_ == null ?
+              com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.getDefaultInstance() : config_;
+        }
+      }
+      /**
+       * <pre>
+       * The configuration for which the resource is defined.
+       * </pre>
+       *
+       * <code>.aapt.pb.internal.ConfigDescription config = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription, com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.Builder, com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescriptionOrBuilder> 
+          getConfigFieldBuilder() {
+        if (configBuilder_ == null) {
+          configBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription, com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.Builder, com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescriptionOrBuilder>(
+                  getConfig(),
+                  getParentForChildren(),
+                  isClean());
+          config_ = null;
+        }
+        return configBuilder_;
+      }
 
+      private java.lang.Object sourcePath_ = "";
       /**
        * <pre>
        * The filesystem path to where the source file originated.
@@ -1850,9 +2462,19 @@ public final class ResourcesInternalLegacy {
        * </pre>
        *
        * <code>string source_path = 3;</code>
+       * @return The sourcePath.
        */
       public java.lang.String getSourcePath() {
-        return instance.getSourcePath();
+        java.lang.Object ref = sourcePath_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          sourcePath_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
@@ -1861,10 +2483,20 @@ public final class ResourcesInternalLegacy {
        * </pre>
        *
        * <code>string source_path = 3;</code>
+       * @return The bytes for sourcePath.
        */
       public com.google.protobuf.ByteString
           getSourcePathBytes() {
-        return instance.getSourcePathBytes();
+        java.lang.Object ref = sourcePath_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          sourcePath_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
       }
       /**
        * <pre>
@@ -1873,11 +2505,17 @@ public final class ResourcesInternalLegacy {
        * </pre>
        *
        * <code>string source_path = 3;</code>
+       * @param value The sourcePath to set.
+       * @return This builder for chaining.
        */
       public Builder setSourcePath(
           java.lang.String value) {
-        copyOnWrite();
-        instance.setSourcePath(value);
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        sourcePath_ = value;
+        onChanged();
         return this;
       }
       /**
@@ -1887,10 +2525,12 @@ public final class ResourcesInternalLegacy {
        * </pre>
        *
        * <code>string source_path = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearSourcePath() {
-        copyOnWrite();
-        instance.clearSourcePath();
+        
+        sourcePath_ = getDefaultInstance().getSourcePath();
+        onChanged();
         return this;
       }
       /**
@@ -1900,379 +2540,132 @@ public final class ResourcesInternalLegacy {
        * </pre>
        *
        * <code>string source_path = 3;</code>
+       * @param value The bytes for sourcePath to set.
+       * @return This builder for chaining.
        */
       public Builder setSourcePathBytes(
           com.google.protobuf.ByteString value) {
-        copyOnWrite();
-        instance.setSourcePathBytes(value);
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        sourcePath_ = value;
+        onChanged();
         return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
       }
 
-      /**
-       * <pre>
-       * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-       * </pre>
-       *
-       * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-       */
-      public java.util.List<com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol> getExportedSymbolList() {
-        return java.util.Collections.unmodifiableList(
-            instance.getExportedSymbolList());
-      }
-      /**
-       * <pre>
-       * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-       * </pre>
-       *
-       * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-       */
-      public int getExportedSymbolCount() {
-        return instance.getExportedSymbolCount();
-      }/**
-       * <pre>
-       * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-       * </pre>
-       *
-       * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-       */
-      public com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol getExportedSymbol(int index) {
-        return instance.getExportedSymbol(index);
-      }
-      /**
-       * <pre>
-       * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-       * </pre>
-       *
-       * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-       */
-      public Builder setExportedSymbol(
-          int index, com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol value) {
-        copyOnWrite();
-        instance.setExportedSymbol(index, value);
-        return this;
-      }
-      /**
-       * <pre>
-       * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-       * </pre>
-       *
-       * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-       */
-      public Builder setExportedSymbol(
-          int index, com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol.Builder builderForValue) {
-        copyOnWrite();
-        instance.setExportedSymbol(index, builderForValue);
-        return this;
-      }
-      /**
-       * <pre>
-       * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-       * </pre>
-       *
-       * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-       */
-      public Builder addExportedSymbol(com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol value) {
-        copyOnWrite();
-        instance.addExportedSymbol(value);
-        return this;
-      }
-      /**
-       * <pre>
-       * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-       * </pre>
-       *
-       * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-       */
-      public Builder addExportedSymbol(
-          int index, com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol value) {
-        copyOnWrite();
-        instance.addExportedSymbol(index, value);
-        return this;
-      }
-      /**
-       * <pre>
-       * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-       * </pre>
-       *
-       * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-       */
-      public Builder addExportedSymbol(
-          com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol.Builder builderForValue) {
-        copyOnWrite();
-        instance.addExportedSymbol(builderForValue);
-        return this;
-      }
-      /**
-       * <pre>
-       * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-       * </pre>
-       *
-       * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-       */
-      public Builder addExportedSymbol(
-          int index, com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol.Builder builderForValue) {
-        copyOnWrite();
-        instance.addExportedSymbol(index, builderForValue);
-        return this;
-      }
-      /**
-       * <pre>
-       * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-       * </pre>
-       *
-       * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-       */
-      public Builder addAllExportedSymbol(
-          java.lang.Iterable<? extends com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol> values) {
-        copyOnWrite();
-        instance.addAllExportedSymbol(values);
-        return this;
-      }
-      /**
-       * <pre>
-       * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-       * </pre>
-       *
-       * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-       */
-      public Builder clearExportedSymbol() {
-        copyOnWrite();
-        instance.clearExportedSymbol();
-        return this;
-      }
-      /**
-       * <pre>
-       * Any symbols this file auto-generates/exports (eg. &#64;+id/foo in an XML file).
-       * </pre>
-       *
-       * <code>repeated .aapt.pb.internal.CompiledFileLegacy.Symbol exported_symbol = 4;</code>
-       */
-      public Builder removeExportedSymbol(int index) {
-        copyOnWrite();
-        instance.removeExportedSymbol(index);
-        return this;
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
       }
 
-      /**
-       * <pre>
-       * If this is a compiled XML file, this is the root node.
-       * </pre>
-       *
-       * <code>.aapt.pb.XmlNode xml_root = 5;</code>
-       */
-      public boolean hasXmlRoot() {
-        return instance.hasXmlRoot();
-      }
-      /**
-       * <pre>
-       * If this is a compiled XML file, this is the root node.
-       * </pre>
-       *
-       * <code>.aapt.pb.XmlNode xml_root = 5;</code>
-       */
-      public com.didiglobal.booster.aapt2.Resources.XmlNode getXmlRoot() {
-        return instance.getXmlRoot();
-      }
-      /**
-       * <pre>
-       * If this is a compiled XML file, this is the root node.
-       * </pre>
-       *
-       * <code>.aapt.pb.XmlNode xml_root = 5;</code>
-       */
-      public Builder setXmlRoot(com.didiglobal.booster.aapt2.Resources.XmlNode value) {
-        copyOnWrite();
-        instance.setXmlRoot(value);
-        return this;
-        }
-      /**
-       * <pre>
-       * If this is a compiled XML file, this is the root node.
-       * </pre>
-       *
-       * <code>.aapt.pb.XmlNode xml_root = 5;</code>
-       */
-      public Builder setXmlRoot(
-          com.didiglobal.booster.aapt2.Resources.XmlNode.Builder builderForValue) {
-        copyOnWrite();
-        instance.setXmlRoot(builderForValue);
-        return this;
-      }
-      /**
-       * <pre>
-       * If this is a compiled XML file, this is the root node.
-       * </pre>
-       *
-       * <code>.aapt.pb.XmlNode xml_root = 5;</code>
-       */
-      public Builder mergeXmlRoot(com.didiglobal.booster.aapt2.Resources.XmlNode value) {
-        copyOnWrite();
-        instance.mergeXmlRoot(value);
-        return this;
-      }
-      /**
-       * <pre>
-       * If this is a compiled XML file, this is the root node.
-       * </pre>
-       *
-       * <code>.aapt.pb.XmlNode xml_root = 5;</code>
-       */
-      public Builder clearXmlRoot() {  copyOnWrite();
-        instance.clearXmlRoot();
-        return this;
-      }
 
       // @@protoc_insertion_point(builder_scope:aapt.pb.internal.CompiledFileLegacy)
     }
-    @java.lang.SuppressWarnings({"unchecked", "fallthrough"})
-    protected final java.lang.Object dynamicMethod(
-        com.google.protobuf.GeneratedMessageLite.MethodToInvoke method,
-        java.lang.Object arg0, java.lang.Object arg1) {
-      switch (method) {
-        case NEW_MUTABLE_INSTANCE: {
-          return new com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy();
-        }
-        case IS_INITIALIZED: {
-          return DEFAULT_INSTANCE;
-        }
-        case MAKE_IMMUTABLE: {
-          exportedSymbol_.makeImmutable();
-          return null;
-        }
-        case NEW_BUILDER: {
-          return new Builder();
-        }
-        case VISIT: {
-          Visitor visitor = (Visitor) arg0;
-          com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy other = (com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy) arg1;
-          resourceName_ = visitor.visitString(!resourceName_.isEmpty(), resourceName_,
-              !other.resourceName_.isEmpty(), other.resourceName_);
-          config_ = visitor.visitMessage(config_, other.config_);
-          sourcePath_ = visitor.visitString(!sourcePath_.isEmpty(), sourcePath_,
-              !other.sourcePath_.isEmpty(), other.sourcePath_);
-          exportedSymbol_= visitor.visitList(exportedSymbol_, other.exportedSymbol_);
-          xmlRoot_ = visitor.visitMessage(xmlRoot_, other.xmlRoot_);
-          if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
-              .INSTANCE) {
-            bitField0_ |= other.bitField0_;
-          }
-          return this;
-        }
-        case MERGE_FROM_STREAM: {
-          com.google.protobuf.CodedInputStream input =
-              (com.google.protobuf.CodedInputStream) arg0;
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry =
-              (com.google.protobuf.ExtensionRegistryLite) arg1;
-          try {
-            boolean done = false;
-            while (!done) {
-              int tag = input.readTag();
-              switch (tag) {
-                case 0:
-                  done = true;
-                  break;
-                default: {
-                  if (!parseUnknownField(tag, input)) {
-                    done = true;
-                  }
-                  break;
-                }
-                case 10: {
-                  java.lang.String s = input.readStringRequireUtf8();
-
-                  resourceName_ = s;
-                  break;
-                }
-                case 18: {
-                  com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.Builder subBuilder = null;
-                  if (config_ != null) {
-                    subBuilder = config_.toBuilder();
-                  }
-                  config_ = input.readMessage(com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.ConfigDescription.parser(), extensionRegistry);
-                  if (subBuilder != null) {
-                    subBuilder.mergeFrom(config_);
-                    config_ = subBuilder.buildPartial();
-                  }
-
-                  break;
-                }
-                case 26: {
-                  java.lang.String s = input.readStringRequireUtf8();
-
-                  sourcePath_ = s;
-                  break;
-                }
-                case 34: {
-                  if (!exportedSymbol_.isModifiable()) {
-                    exportedSymbol_ =
-                        com.google.protobuf.GeneratedMessageLite.mutableCopy(exportedSymbol_);
-                  }
-                  exportedSymbol_.add(
-                      input.readMessage(com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.Symbol.parser(), extensionRegistry));
-                  break;
-                }
-                case 42: {
-                  com.didiglobal.booster.aapt2.Resources.XmlNode.Builder subBuilder = null;
-                  if (xmlRoot_ != null) {
-                    subBuilder = xmlRoot_.toBuilder();
-                  }
-                  xmlRoot_ = input.readMessage(com.didiglobal.booster.aapt2.Resources.XmlNode.parser(), extensionRegistry);
-                  if (subBuilder != null) {
-                    subBuilder.mergeFrom(xmlRoot_);
-                    xmlRoot_ = subBuilder.buildPartial();
-                  }
-
-                  break;
-                }
-              }
-            }
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            throw new RuntimeException(e.setUnfinishedMessage(this));
-          } catch (java.io.IOException e) {
-            throw new RuntimeException(
-                new com.google.protobuf.InvalidProtocolBufferException(
-                    e.getMessage()).setUnfinishedMessage(this));
-          } finally {
-          }
-        }
-        // fall through
-        case GET_DEFAULT_INSTANCE: {
-          return DEFAULT_INSTANCE;
-        }
-        case GET_PARSER: {
-          if (PARSER == null) {    synchronized (com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy.class) {
-              if (PARSER == null) {
-                PARSER = new DefaultInstanceBasedParser(DEFAULT_INSTANCE);
-              }
-            }
-          }
-          return PARSER;
-        }
-      }
-      throw new UnsupportedOperationException();
-    }
-
 
     // @@protoc_insertion_point(class_scope:aapt.pb.internal.CompiledFileLegacy)
     private static final com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new CompiledFileLegacy();
-      DEFAULT_INSTANCE.makeImmutable();
+      DEFAULT_INSTANCE = new com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy();
     }
 
     public static com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static volatile com.google.protobuf.Parser<CompiledFileLegacy> PARSER;
+    private static final com.google.protobuf.Parser<CompiledFileLegacy>
+        PARSER = new com.google.protobuf.AbstractParser<CompiledFileLegacy>() {
+      @java.lang.Override
+      public CompiledFileLegacy parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new CompiledFileLegacy(input, extensionRegistry);
+      }
+    };
 
     public static com.google.protobuf.Parser<CompiledFileLegacy> parser() {
-      return DEFAULT_INSTANCE.getParserForType();
+      return PARSER;
     }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<CompiledFileLegacy> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy.CompiledFileLegacy getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
   }
 
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_aapt_pb_internal_ConfigDescription_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_aapt_pb_internal_ConfigDescription_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_aapt_pb_internal_CompiledFileLegacy_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_aapt_pb_internal_CompiledFileLegacy_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_aapt_pb_internal_CompiledFileLegacy_Symbol_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_aapt_pb_internal_CompiledFileLegacy_Symbol_fieldAccessorTable;
 
+  public static com.google.protobuf.Descriptors.FileDescriptor
+      getDescriptor() {
+    return descriptor;
+  }
+  private static  com.google.protobuf.Descriptors.FileDescriptor
+      descriptor;
   static {
+    java.lang.String[] descriptorData = {
+      "\n\035ResourcesInternalLegacy.proto\022\020aapt.pb" +
+      ".internal\032\017Resources.proto\"2\n\021ConfigDesc" +
+      "ription\022\014\n\004data\030\001 \001(\014\022\017\n\007product\030\002 \001(\t\"\277" +
+      "\001\n\022CompiledFileLegacy\022\025\n\rresource_name\030\001" +
+      " \001(\t\0223\n\006config\030\002 \001(\0132#.aapt.pb.internal." +
+      "ConfigDescription\022\023\n\013source_path\030\003 \001(\t\032H" +
+      "\n\006Symbol\022\025\n\rresource_name\030\001 \001(\t\022\'\n\006sourc" +
+      "e\030\002 \001(\0132\027.aapt.pb.SourcePositionB\'\n#com." +
+      "didiglobal.booster.aapt2.legacyH\003b\006proto" +
+      "3"
+    };
+    descriptor = com.google.protobuf.Descriptors.FileDescriptor
+      .internalBuildGeneratedFileFrom(descriptorData,
+        new com.google.protobuf.Descriptors.FileDescriptor[] {
+          com.didiglobal.booster.aapt2.Resources.getDescriptor(),
+        });
+    internal_static_aapt_pb_internal_ConfigDescription_descriptor =
+      getDescriptor().getMessageTypes().get(0);
+    internal_static_aapt_pb_internal_ConfigDescription_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_aapt_pb_internal_ConfigDescription_descriptor,
+        new java.lang.String[] { "Data", "Product", });
+    internal_static_aapt_pb_internal_CompiledFileLegacy_descriptor =
+      getDescriptor().getMessageTypes().get(1);
+    internal_static_aapt_pb_internal_CompiledFileLegacy_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_aapt_pb_internal_CompiledFileLegacy_descriptor,
+        new java.lang.String[] { "ResourceName", "Config", "SourcePath", });
+    internal_static_aapt_pb_internal_CompiledFileLegacy_Symbol_descriptor =
+      internal_static_aapt_pb_internal_CompiledFileLegacy_descriptor.getNestedTypes().get(0);
+    internal_static_aapt_pb_internal_CompiledFileLegacy_Symbol_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_aapt_pb_internal_CompiledFileLegacy_Symbol_descriptor,
+        new java.lang.String[] { "ResourceName", "Source", });
+    com.didiglobal.booster.aapt2.Resources.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -5,26 +5,28 @@ import com.didiglobal.booster.kotlinx.asIterable
 import com.didiglobal.booster.kotlinx.execute
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.ifNotEmpty
-import com.didiglobal.booster.kotlinx.search
 import com.didiglobal.booster.kotlinx.touch
-import com.didiglobal.booster.transform.ArtifactManager.Companion.ALL_CLASSES
 import com.didiglobal.booster.transform.ArtifactManager.Companion.MERGED_RES
 import com.didiglobal.booster.transform.ArtifactManager.Companion.SYMBOL_LIST
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
 import com.google.auto.service.AutoService
 import org.gradle.api.logging.Logging
+import org.objectweb.asm.ClassWriter
+import org.objectweb.asm.ClassWriter.COMPUTE_MAXS
 import org.objectweb.asm.Opcodes.GETSTATIC
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldInsnNode
-import org.objectweb.asm.tree.FieldNode
 import org.objectweb.asm.tree.LdcInsnNode
 import java.io.File
 import java.io.PrintWriter
+import java.util.concurrent.ConcurrentHashMap
+import java.util.regex.Pattern
 
 internal const val R_STYLEABLE = "R\$styleable"
 internal const val ANDROID_R = "android/R$"
 internal const val COM_ANDROID_INTERNAL_R = "com/android/internal/R$"
+internal const val R_REGEX = ".*/R\\\$.*|.*/R\\.*"
 
 /**
  * Represents a class node transformer for constants shrinking
@@ -39,6 +41,9 @@ class RInlineTransformer : ClassTransformer {
     private lateinit var symbols: SymbolList
     private lateinit var ignores: Set<Wildcard>
     private lateinit var logger: PrintWriter
+    private val removedR by lazy {
+        ConcurrentHashMap<String, Int>()
+    }
 
     override fun onPreTransform(context: TransformContext) {
         this.appPackage = context.originalApplicationId.replace('.', '/')
@@ -77,33 +82,17 @@ class RInlineTransformer : ClassTransformer {
             logger.println()
         }
 
-        // Remove redundant R class files
-        val redundant = context.findRedundantR()
-        redundant.ifNotEmpty { pairs ->
-            val totalSize = redundant.map { it.first.length() }.sum()
-            val maxWidth = redundant.map { it.second.length }.max()?.plus(10) ?: 10
-
-            logger.println("Delete files:")
-
-            pairs.forEach {
-                if (it.first.delete()) {
-                    logger.println(" - `${it.second}`")
-                }
-            }
-
-            logger.println("-".repeat(maxWidth))
-            logger.println("Total: $totalSize bytes")
-            logger.println()
-        }
     }
 
     override fun transform(context: TransformContext, klass: ClassNode): ClassNode {
         if (this.symbols.isEmpty()) {
             return klass
         }
-
         if (this.ignores.any { it.matches(klass.name) }) {
             logger.println("Ignore `${klass.name}`")
+        } else if (Pattern.matches(R_REGEX, klass.name) && klass.name != appRStyleable) {
+            klass.fields.clear()
+            removedR[klass.name] = klass.bytes()
         } else {
             klass.replaceSymbolReferenceWithConstant()
         }
@@ -111,23 +100,22 @@ class RInlineTransformer : ClassTransformer {
         return klass
     }
 
+    private fun ClassNode.bytes() = ClassWriter(COMPUTE_MAXS).also {
+        accept(it)
+    }.toByteArray().size
+
     override fun onPostTransform(context: TransformContext) {
-        this.logger.close()
-    }
-
-    private fun TransformContext.findRedundantR(): List<Pair<File, String>> {
-        return artifacts.get(ALL_CLASSES).map { classes ->
-            val base = classes.toURI()
-
-            classes.search { r ->
-                r.name.startsWith("R") && r.name.endsWith(".class") && (r.name[1] == '$' || r.name.length == 7)
-            }.map { r ->
-                r to base.relativize(r.toURI()).path.substringBeforeLast(".class")
+        val totalSize = removedR.map { it.value }.sum()
+        val maxWidth = removedR.map { it.key.length }.max()?.plus(10) ?: 10
+        this.logger.run {
+            println("Delete files:")
+            removedR.toSortedMap().forEach {
+                println(" - `${it.key}`")
             }
-        }.flatten().filter {
-            it.second != appRStyleable // keep application's R$styleable.class
-        }.filter { pair ->
-            !ignores.any { it.matches(pair.second) }
+            println("-".repeat(maxWidth))
+            println("Total: $totalSize bytes")
+            println()
+            close()
         }
     }
 
@@ -165,11 +153,6 @@ class RInlineTransformer : ClassTransformer {
         }
     }
 
-}
-
-private fun FieldNode.valueAsString() = when {
-    value is String -> "\"$value\""
-    else -> value.toString()
 }
 
 /**
