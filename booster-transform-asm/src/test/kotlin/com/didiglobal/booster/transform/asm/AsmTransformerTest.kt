@@ -10,7 +10,7 @@ class AsmTransformerTest {
     fun checkTransformerOrder() {
         val transformer = AsmTransformer()
         val origin = transformer.transformers
-        val sorted = ArrayList(origin).sortedBy {
+        val sorted = origin.toList().sortedBy {
             it.javaClass.getAnnotation(Priority::class.java)?.value ?: 0
         }
         assertEquals(sorted, origin)

@@ -25,25 +25,19 @@ class JavassistTransformer : Transformer {
 
     private val durations = mutableMapOf<ClassTransformer, Long>()
 
-    internal val transformers: Collection<ClassTransformer>
+    private val classLoader: ClassLoader
 
-    /*
-     * Preload transformers as List to fix NoSuchElementException caused by ServiceLoader in parallel mode
-     */
-    constructor() : this(ServiceLoader.load(ClassTransformer::class.java, JavassistTransformer::class.java.classLoader))
+    private val transformers: Iterable<ClassTransformer>
 
-    /**
-     * Initialize [JavassistTransformer] with [transformers]
-     */
-    constructor(vararg transformers: ClassTransformer) : this(transformers.toList())
+    constructor() : this(Thread.currentThread().contextClassLoader)
 
-    /**
-     * Initialize [JavassistTransformer] with [transformers]
-     */
-    constructor(transformers: Iterable<ClassTransformer>) {
-        this.transformers = transformers.sortedBy {
-            it.javaClass.getAnnotation(Priority::class.java)?.value ?: 0
-        }
+    constructor(classLoader: ClassLoader = Thread.currentThread().contextClassLoader) : this(classLoader, ServiceLoader.load(ClassTransformer::class.java, classLoader).sortedBy {
+        it.javaClass.getAnnotation(Priority::class.java)?.value ?: 0
+    })
+
+    constructor(classLoader: ClassLoader = Thread.currentThread().contextClassLoader, transformers: Iterable<ClassTransformer>) {
+        this.classLoader = classLoader
+        this.transformers = transformers
     }
 
     override fun onPreTransform(context: TransformContext) {

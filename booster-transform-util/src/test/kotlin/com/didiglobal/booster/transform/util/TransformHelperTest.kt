@@ -15,12 +15,12 @@ class TransformHelperTest {
         try {
             val input = File(TransformHelperTest::class.java.classLoader.getResource("booster")!!.file)
 
-            TransformHelper(input).transform(AsmTransformer(object : ClassTransformer {
+            TransformHelper(input).transform(AsmTransformer(listOf(object : ClassTransformer {
                 override fun transform(context: TransformContext, klass: ClassNode): ClassNode {
                     println(klass.name)
                     return klass
                 }
-            }))
+            })))
         } catch (e: RuntimeException) {
             println(e.localizedMessage)
         } catch (e: FileNotFoundException) {
