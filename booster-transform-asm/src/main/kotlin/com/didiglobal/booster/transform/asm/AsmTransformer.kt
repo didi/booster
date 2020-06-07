@@ -26,25 +26,19 @@ class AsmTransformer : Transformer {
 
     private val durations = mutableMapOf<ClassTransformer, Long>()
 
-    internal val transformers: Collection<ClassTransformer>
+    private val classLoader: ClassLoader
 
-    /*
-     * Preload transformers as List to fix NoSuchElementException caused by ServiceLoader in parallel mode
-     */
-    constructor() : this(ServiceLoader.load(ClassTransformer::class.java, AsmTransformer::class.java.classLoader))
+    internal val transformers: Iterable<ClassTransformer>
 
-    /**
-     * Initialize [AsmTransformer] with [transformers]
-     */
-    constructor(vararg transformers: ClassTransformer) : this(transformers.toList())
+    constructor() : this(Thread.currentThread().contextClassLoader)
 
-    /**
-     * Initialize [AsmTransformer] with [transformers]
-     */
-    constructor(transformers: Iterable<ClassTransformer>) {
-        this.transformers = transformers.sortedBy {
-            it.javaClass.getAnnotation(Priority::class.java)?.value ?: 0
-        }
+    constructor(classLoader: ClassLoader = Thread.currentThread().contextClassLoader) : this(ServiceLoader.load(ClassTransformer::class.java, classLoader).sortedBy {
+        it.javaClass.getAnnotation(Priority::class.java)?.value ?: 0
+    }, classLoader)
+
+    constructor(transformers: Iterable<ClassTransformer>, classLoader: ClassLoader = Thread.currentThread().contextClassLoader) {
+        this.classLoader = classLoader
+        this.transformers = transformers
     }
 
     override fun onPreTransform(context: TransformContext) {
