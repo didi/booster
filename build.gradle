@@ -32,7 +32,7 @@ allprojects { project ->
     apply plugin: 'de.marcphilipp.nexus-publish'
 
     group = 'com.didiglobal.booster'
-    version = '1.7.2'
+    version = '2.0.0-SNAPSHOT'
 
     repositories {
         mavenLocal()
