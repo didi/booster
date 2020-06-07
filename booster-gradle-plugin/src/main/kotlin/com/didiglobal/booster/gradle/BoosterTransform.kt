@@ -8,9 +8,7 @@ import com.android.build.gradle.internal.pipeline.TransformManager
 import com.android.build.gradle.internal.pipeline.TransformManager.SCOPE_FULL_PROJECT
 import com.didiglobal.booster.annotations.Priority
 import com.didiglobal.booster.transform.AbstractKlassPool
-import com.didiglobal.booster.transform.Transformer
 import org.gradle.api.Project
-import java.util.ServiceLoader
 
 /**
  * Represents the transform base
@@ -22,7 +20,7 @@ open class BoosterTransform(val project: Project) : Transform() {
     /*
      * Preload transformers as List to fix NoSuchElementException caused by ServiceLoader in parallel mode
      */
-    internal val transformers = ServiceLoader.load(Transformer::class.java, project.buildscript.classLoader).sortedBy {
+    internal val transformers = loadTransformers(project.buildscript.classLoader).sortedBy {
         it.javaClass.getAnnotation(Priority::class.java)?.value ?: 0
     }
 
