@@ -108,6 +108,7 @@ val BaseVariant.mergeResourcesTask: Task
  */
 val BaseVariant.processResTask: ProcessAndroidResources
     get() = when {
+        GTE_V4_X -> VariantScopeV40.getProcessResourcesTask(scope)
         GTE_V3_6 -> VariantScopeV36.getProcessResourcesTask(scope)
         GTE_V3_5 -> VariantScopeV35.getProcessResourcesTask(scope)
         GTE_V3_3 -> VariantScopeV33.getProcessResourcesTask(scope)
