@@ -107,4 +107,10 @@ val BaseVariant.mergeResourcesTask: Task
  * The `processRes` task associates with this variant
  */
 val BaseVariant.processResTask: ProcessAndroidResources
-    get() = project.tasks.withType(ProcessAndroidResources::class.java).findByName("process${name.capitalize()}Resources")!!
+    get() = when {
+        GTE_V3_6 -> VariantScopeV36.getProcessResourcesTask(scope)
+        GTE_V3_5 -> VariantScopeV35.getProcessResourcesTask(scope)
+        GTE_V3_3 -> VariantScopeV33.getProcessResourcesTask(scope)
+        GTE_V3_2 -> VariantScopeV32.getProcessResourcesTask(scope)
+        else -> VariantScopeV30.getProcessResourcesTask(scope)
+    }
