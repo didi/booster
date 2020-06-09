@@ -132,11 +132,11 @@ class ActivityThreadCallback implements Handler.Callback {
     private boolean isUserStackTrace(final StackTraceElement element) {
         final String name = element.getClassName();
         for (final String prefix : this.mIgnorePackages) {
-            if (!name.startsWith(prefix)) {
-                return true;
+            if (name.startsWith(prefix)) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     private static boolean hasStackTraceElement(final Throwable t, final String... traces) {
