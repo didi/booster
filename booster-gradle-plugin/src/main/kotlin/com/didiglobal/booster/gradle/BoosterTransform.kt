@@ -5,7 +5,6 @@ import com.android.build.api.transform.Transform
 import com.android.build.api.transform.TransformInvocation
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.pipeline.TransformManager
-import com.android.build.gradle.internal.pipeline.TransformManager.SCOPE_FULL_PROJECT
 import com.didiglobal.booster.annotations.Priority
 import com.didiglobal.booster.transform.AbstractKlassPool
 import org.gradle.api.Project
