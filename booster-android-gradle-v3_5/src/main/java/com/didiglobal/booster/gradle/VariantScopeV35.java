@@ -9,6 +9,7 @@ import com.android.build.gradle.internal.scope.InternalArtifactType;
 import com.android.build.gradle.internal.scope.VariantScope;
 import com.android.build.gradle.tasks.ProcessAndroidResources;
 import com.android.sdklib.BuildToolInfo;
+import org.gradle.api.file.FileSystemLocation;
 import org.gradle.api.tasks.TaskContainer;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +17,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,7 +49,7 @@ class VariantScopeV35 {
      */
     @NotNull
     static Collection<File> getMergedAssets(@NotNull final VariantScope scope) {
-        return getFinalArtifactFiles(scope, InternalArtifactType.MERGED_ASSETS);
+        return getFinalProductFiles(scope, InternalArtifactType.MERGED_ASSETS);
     }
 
     /**
@@ -88,7 +90,7 @@ class VariantScopeV35 {
 
     @NotNull
     static Collection<File> getJavac(@NotNull final VariantScope scope) {
-        return getFinalArtifactFiles(scope, InternalArtifactType.JAVAC);
+        return getFinalProductFiles(scope, InternalArtifactType.JAVAC);
     }
 
     @NotNull
@@ -122,4 +124,9 @@ class VariantScopeV35 {
         return (ProcessAndroidResources) tasks.getByName(scope.getTaskName("process", "Resources"));
     }
 
+    private static Collection<File> getFinalProductFiles(@NotNull final VariantScope scope, @NotNull final ArtifactType type) {
+        return Stream.of(scope.getArtifacts().getFinalProduct(type).map(FileSystemLocation::getAsFile).getOrNull())
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
 }
