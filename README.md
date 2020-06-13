@@ -45,8 +45,8 @@ Booster provides a collection of modules for performance detection, multithreadi
 ## Prerequisite | 先决条件
 
 - JDK (`1.8` is recommended)
-- Gradle version `4.1+`
-- Android Gradle Plugin version `3.0+` (`3.0.0` - `3.5.x` is recommended)
+- Gradle version `4.1+` (`5.0+` is recommended)
+- Android Gradle Plugin version `3.0+` (`3.0.0` - `4.0.0` is recommended)
 
 ## Best Practise | 最佳实践
 
@@ -56,7 +56,7 @@ The best practise of using Booster is integrating the specific moudle to solve t
 
 ```groovy
 buildscript {
-    ext.booster_version = '2.0.0-SNAPSHOT'
+    ext.booster_version = '2.0.0'
     repositories {
         google()
         mavenCentral()
@@ -147,12 +147,24 @@ Here are all the modules of Booster:
   classpath "com.didiglobal.booster:booster-task-compression-cwebp:$booster_version"
   ```
 
+  The option `android.precompileDependenciesResources` need to be set on Android Gradle Plugin 3.6 and higher
+
+  ```properties
+  android.precompileDependenciesResources=false
+  ```
+
 - [booster-task-compression-pngquant](./booster-task-compression-pngquant) - 采用 pngquant 对资源进行压缩
 
   ```groovy
   classpath "com.didiglobal.booster:booster-task-compression-pngquant:$booster_version"
   ```
-  
+
+  The option `android.precompileDependenciesResources` need to be set on Android Gradle Plugin 3.6 and higher
+
+  ```properties
+  android.precompileDependenciesResources=false
+  ```
+
   > [booster-pngquant-provider](https://github.com/johnsonlee/booster-pngquant-provider) could be used for image compressing by *pngquant* without installation
 
 - [booster-task-compression-processed-res](./booster-task-compression-processed-res) - ap_ 文件压缩
@@ -165,6 +177,12 @@ Here are all the modules of Booster:
 
   ```groovy
   classpath "com.didiglobal.booster:booster-task-resource-deredundancy:$booster_version"
+  ```
+
+  The option `android.precompileDependenciesResources` need to be set on Android Gradle Plugin 3.6 and higher
+
+  ```properties
+  android.precompileDependenciesResources=false
   ```
 
 - [booster-transform-r-inline](./booster-transform-r-inline) - 资源索引内联
