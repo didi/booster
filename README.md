@@ -54,14 +54,14 @@ The following table lists which version of Gradle is required for each version o
 
 | Android Gradle Plugin |  Gradle  |
 |:---------------------:|:--------:|
-| 3.0.0+	              | 4.1+     |
-| 3.1.0+	              | 4.4+     |
-| 3.2.0 - 3.2.1         |	4.6+     |
-| 3.3.0 - 3.3.2         |	4.10.1+  |
-| 3.4.0 - 3.4.1         |	5.1.1+   |
-| 3.5.0 - 3.5.3         |	5.4.1+   |
-| 3.6.0 - 3.6.2         |	5.6.4+   |
-| 4.0.0+                |	6.1.1+   |
+| 3.0.0+                | 4.1+     |
+| 3.1.0+                | 4.4+     |
+| 3.2.0 - 3.2.1         | 4.6+     |
+| 3.3.0 - 3.3.2         | 4.10.1+  |
+| 3.4.0 - 3.4.1         | 5.1.1+   |
+| 3.5.0 - 3.5.3         | 5.4.1+   |
+| 3.6.0 - 3.6.2         | 5.6.4+   |
+| 4.0.0+                | 6.1.1+   |
 
 ## Best Practise | 最佳实践
 
@@ -71,7 +71,7 @@ The best practise of using Booster is integrating the specific moudle to solve t
 
 ```groovy
 buildscript {
-    ext.booster_version = '2.0.0'
+    ext.booster_version = '2.1.0'
     repositories {
         google()
         mavenCentral()
