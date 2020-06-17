@@ -169,30 +169,32 @@ class ThreadTransformer : ClassTransformer {
 
     private fun TypeInsnNode.transformWithName(context: TransformContext, klass: ClassNode, method: MethodNode, type: String, prefix: String = "") {
         this.find {
-            it.opcode == Opcodes.INVOKESPECIAL
+            (it.opcode == Opcodes.INVOKESPECIAL) &&
+                    (it is MethodInsnNode) &&
+                    (this.desc == it.owner && "<init>" == it.name)
         }?.isInstanceOf { init: MethodInsnNode ->
-            if (this.desc == init.owner && "<init>" == init.name) {
-                val name = "new${prefix.capitalize()}${this.desc.substringAfterLast('/')}"
-                val desc = "${init.desc.substringBeforeLast(')')}Ljava/lang/String;)L${this.desc};"
-                logger.println(" * ${init.owner}.${init.name}${init.desc} => $type.$name$desc: ${klass.name}.${method.name}${method.desc}")
-                // replace NEW with INVOKESTATIC
-                init.owner = type
-                init.name = name
-                init.desc = desc
-                init.opcode = Opcodes.INVOKESTATIC
-                init.itf = false
-                // add name as last parameter
-                method.instructions.insertBefore(init, LdcInsnNode(makeThreadName(klass.className)))
+            val name = "new${prefix.capitalize()}${this.desc.substringAfterLast('/')}"
+            val desc = "${init.desc.substringBeforeLast(')')}Ljava/lang/String;)L${this.desc};"
+            logger.println(" * ${init.owner}.${init.name}${init.desc} => $type.$name$desc: ${klass.name}.${method.name}${method.desc}")
+            // replace NEW with INVOKESTATIC
+            init.owner = type
+            init.name = name
+            init.desc = desc
+            init.opcode = Opcodes.INVOKESTATIC
+            init.itf = false
+            // add name as last parameter
+            method.instructions.insertBefore(init, LdcInsnNode(makeThreadName(klass.className)))
 
-                // remove the next DUP of NEW
-                val dup = this.next
-                if (Opcodes.DUP == dup.opcode) {
-                    method.instructions.remove(dup)
-                } else {
-                    TODO("Unexpected instruction 0x${dup.opcode.toString(16)}: ${klass.name}.${method.name}${method.desc}")
-                }
-                method.instructions.remove(this)
+            // remove the next DUP of NEW
+            val dup = this.next
+            if (Opcodes.DUP == dup.opcode) {
+                method.instructions.remove(dup)
+            } else {
+                TODO("Unexpected instruction 0x${dup.opcode.toString(16)}: ${klass.name}.${method.name}${method.desc}")
             }
+            method.instructions.remove(this)
+        }?: run {
+            logger.println(" ! failed to match $desc: ${klass.name}.${method.name}${method.desc}")
         }
     }
 
