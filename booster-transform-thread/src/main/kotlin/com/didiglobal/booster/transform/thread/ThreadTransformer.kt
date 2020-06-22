@@ -172,8 +172,7 @@ class ThreadTransformer : ClassTransformer {
             (it.opcode == Opcodes.INVOKESPECIAL) &&
                     (it is MethodInsnNode) &&
                     (this.desc == it.owner && "<init>" == it.name)
-        }?.let { init ->
-            if (init !is MethodInsnNode) return
+        }?.isInstanceOf { init: MethodInsnNode ->
             val name = "new${prefix.capitalize()}${this.desc.substringAfterLast('/')}"
             val desc = "${init.desc.substringBeforeLast(')')}Ljava/lang/String;)L${this.desc};"
             logger.println(" * ${init.owner}.${init.name}${init.desc} => $type.$name$desc: ${klass.name}.${method.name}${method.desc}")
