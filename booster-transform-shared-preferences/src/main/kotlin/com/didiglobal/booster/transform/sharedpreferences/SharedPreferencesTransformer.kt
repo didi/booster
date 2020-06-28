@@ -48,13 +48,14 @@ class SharedPreferencesTransformer : ClassTransformer {
 
         klass.methods.forEach { method ->
             method.instructions.iterator().asIterable().filter {
-                it.opcode == INVOKEVIRTUAL
+                it.opcode == INVOKEVIRTUAL || it.opcode == INVOKESTATIC
             }.map {
                 it as MethodInsnNode
             }.forEach {
                 mapOf(
                     CONTEXT_GET_SHARED_PREFERENCES to SHADOW_CONTEXT_GET_SHARED_PREFERENCES,
-                    ACTIVITY_GET_PREFERENCES to SHADOW_ACTIVITY_GET_PREFERENCES
+                    ACTIVITY_GET_PREFERENCES to SHADOW_ACTIVITY_GET_PREFERENCES,
+                    PREFERENCE_MANAGER_GET_DEFAULT_SHARED_PREFERENCES to SHADOW_PREFERENCE_MANAGER_GET_DEFAULT_SHARED_PREFERENCES
                 ).forEach { (original, shadow) ->
                     if (it.opcode == original.opcode && it.name == original.name && it.desc == original.desc && context.klassPool.get(original.owner).isAssignableFrom(it.owner)) {
                         logger.println(" * ${shadow.owner}${shadow.name}${shadow.desc} => ${it.owner}.${it.name}${it.desc}: ${klass.name}.${method.name}${method.desc}")
@@ -72,6 +73,7 @@ class SharedPreferencesTransformer : ClassTransformer {
 
 private const val ACTIVITY = "android/app/Activity"
 private const val CONTEXT = "android/content/Context"
+private const val PREFERENCE_MANAGER = "android.preference/PreferenceManager"
 private const val SHARED_PREFERENCES = "android/content/SharedPreferences"
 private const val SUPPORT_MULTIDEX_PACKAGE_PREFIX = "android/support/multidex/"
 private const val BOOSTER_DIRECTORY_PREFIX = "com/didiglobal/booster/instrument"
@@ -79,5 +81,9 @@ private const val SHADOW_SHARED_PREFERENCES = "$BOOSTER_DIRECTORY_PREFIX/ShadowS
 
 private val CONTEXT_GET_SHARED_PREFERENCES = MethodInsnNode(INVOKEVIRTUAL, CONTEXT, "getSharedPreferences", "(Ljava/lang/String;I)L$SHARED_PREFERENCES;")
 private val SHADOW_CONTEXT_GET_SHARED_PREFERENCES = MethodInsnNode(INVOKESTATIC, SHADOW_SHARED_PREFERENCES, "getSharedPreferences", "(L$CONTEXT;Ljava/lang/String;I)L$SHARED_PREFERENCES;")
+
+private val PREFERENCE_MANAGER_GET_DEFAULT_SHARED_PREFERENCES = MethodInsnNode(INVOKESTATIC, PREFERENCE_MANAGER, "getDefaultSharedPreferences", "(L$CONTEXT;)L$SHARED_PREFERENCES;")
+private val SHADOW_PREFERENCE_MANAGER_GET_DEFAULT_SHARED_PREFERENCES = MethodInsnNode(INVOKESTATIC, SHADOW_SHARED_PREFERENCES, "getDefaultSharedPreferences", "(L$CONTEXT;)L$SHARED_PREFERENCES;")
+
 private val ACTIVITY_GET_PREFERENCES = MethodInsnNode(INVOKEVIRTUAL, ACTIVITY, "getPreferences", "(I)L$SHARED_PREFERENCES;")
 private val SHADOW_ACTIVITY_GET_PREFERENCES = MethodInsnNode(INVOKESTATIC, SHADOW_SHARED_PREFERENCES, "getPreferences", "(L$ACTIVITY;I)L$SHARED_PREFERENCES;")
