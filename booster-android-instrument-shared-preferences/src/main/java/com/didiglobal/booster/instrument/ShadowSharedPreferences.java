@@ -15,6 +15,14 @@ public class ShadowSharedPreferences {
         return BoosterSharedPreferences.getSharedPreferences(context, name);
     }
 
+    public static SharedPreferences getDefaultSharedPreferences(Context context) {
+        return BoosterSharedPreferences.getSharedPreferences(context, getDefaultSharedPreferencesName(context));
+    }
+
+    private static String getDefaultSharedPreferencesName(Context context) {
+        return context.getPackageName() + "_preferences";
+    }
+
     public static SharedPreferences getPreferences(final Activity activity, final int mode) {
         return getSharedPreferences(activity.getApplicationContext(), activity.getLocalClassName(), mode);
     }
