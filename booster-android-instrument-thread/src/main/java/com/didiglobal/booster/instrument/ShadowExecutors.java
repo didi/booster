@@ -8,6 +8,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
@@ -100,6 +101,30 @@ public class ShadowExecutors {
 
     public static ScheduledExecutorService newScheduledThreadPool(final int corePoolSize, final ThreadFactory factory, final String name) {
         return Executors.newScheduledThreadPool(corePoolSize, new NamedThreadFactory(factory, name));
+    }
+
+    // </editor-fold>
+
+    // <editor-fold desc="- named work stealing pool">
+
+    public static ExecutorService newWorkStealingPool(final String name) {
+        return new ForkJoinPool(Runtime.getRuntime().availableProcessors(), new NamedForkJoinWorkerThreadFactory(name), null, true);
+    }
+
+    public static ExecutorService newWorkStealingPool(final int parallelism, final String name) {
+        return new ForkJoinPool(parallelism, new NamedForkJoinWorkerThreadFactory(name), null, true);
+    }
+
+    // </editor-fold>
+
+    // <editor-fold desc="- optimized fixed thread pool">
+
+    public static ExecutorService newOptimizedFixedThreadPool(final int nThreads, final String name) {
+        return Executors.newFixedThreadPool(nThreads, new NamedThreadFactory(name));
+    }
+
+    public static ExecutorService newOptimizedFixedThreadPool(final int nThreads, final ThreadFactory factory, final String name) {
+        return Executors.newFixedThreadPool(nThreads, new NamedThreadFactory(factory, name));
     }
 
     // </editor-fold>
@@ -199,6 +224,18 @@ public class ShadowExecutors {
     }
 
     //</editor-fold>
+
+    // <editor-fold desc="* optimized work stealing pool">
+
+    public static ExecutorService newOptimizedWorkStealingPool(final String name) {
+        return new ForkJoinPool(Runtime.getRuntime().availableProcessors(), new NamedForkJoinWorkerThreadFactory(name), null, true);
+    }
+
+    public static ExecutorService newOptimizedWorkStealingPool(final int parallelism, final String name) {
+        return new ForkJoinPool(parallelism, new NamedForkJoinWorkerThreadFactory(name), null, true);
+    }
+
+    // </editor-fold>
 
     private static class DelegatedExecutorService extends AbstractExecutorService {
 
