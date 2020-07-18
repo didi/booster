@@ -14,6 +14,10 @@ public final class Looper {
         throw new RuntimeException("Stub!");
     }
 
+    public static MessageQueue myQueue() {
+        throw new RuntimeException("Stub!");
+    }
+
     public static void prepare() {
         throw new RuntimeException("Stub!");
     }

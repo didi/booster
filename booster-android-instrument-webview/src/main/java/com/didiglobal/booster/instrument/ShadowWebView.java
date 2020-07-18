@@ -3,6 +3,8 @@ package com.didiglobal.booster.instrument;
 import android.app.Application;
 import android.content.Context;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.MessageQueue;
 import android.os.SystemClock;
 import android.util.Log;
@@ -18,17 +20,22 @@ import static com.didiglobal.booster.instrument.Reflection.invokeStaticMethod;
 public class ShadowWebView {
 
     public static void preloadWebView(final Application app) {
-        try {
-            app.getMainLooper().getQueue().addIdleHandler(new MessageQueue.IdleHandler() {
-                @Override
-                public boolean queueIdle() {
-                    startChromiumEngine(app);
-                    return false;
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
+                        @Override
+                        public boolean queueIdle() {
+                            startChromiumEngine(app);
+                            return false;
+                        }
+                    });
+                } catch (final Throwable t) {
+                    Log.e(TAG, "Oops!", t);
                 }
-            });
-        } catch (final Throwable t) {
-            Log.e(TAG, "Oops!", t);
-        }
+            }
+        });
     }
 
     private static void startChromiumEngine(final Context context) {
