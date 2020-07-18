@@ -5,7 +5,28 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.didiglobal.booster.instrument.ShadowThread.setThreadName;
 
-class NamedThreadFactory implements ThreadFactory {
+public class NamedThreadFactory implements ThreadFactory {
+
+    /**
+     * Used by {@code ThreadTransformer} for thread renaming
+     *
+     * @param prefix the prefix of name
+     * @return an instance of ThreadFactory
+     */
+    public static ThreadFactory newInstance(final String prefix) {
+        return new NamedThreadFactory(prefix);
+    }
+
+    /**
+     * Used by {@code ThreadTransformer} for thread renaming
+     *
+     * @param factory the factory delegate
+     * @param prefix  the prefix of name
+     * @return an instance of ThreadFactory
+     */
+    public static ThreadFactory newInstance(final ThreadFactory factory, final String prefix) {
+        return new NamedThreadFactory(factory, prefix);
+    }
 
     private final String name;
     private final AtomicInteger counter = new AtomicInteger(1);

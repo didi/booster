@@ -1,6 +1,9 @@
 package com.didiglobal.booster.instrument;
 
-public class ShadowThread {
+/**
+ * @author johnsonlee
+ */
+public class ShadowThread extends Thread {
 
     /**
      * {@code U+200B}: Zero-Width Space
@@ -50,6 +53,98 @@ public class ShadowThread {
 
     public static String makeThreadName(final String name, final String prefix) {
         return name == null ? prefix : (name.startsWith(MARK) ? name : (prefix + "#" + name));
+    }
+
+    /**
+     * Initialize {@code Thread} with new name, this constructor is used by {@code ThreadTransformer} for renaming
+     *
+     * @param prefix the new name
+     */
+    public ShadowThread(final String prefix) {
+        super(makeThreadName(prefix));
+    }
+
+    /**
+     * Initialize {@code Thread} with new name, this constructor is used by {@code ThreadTransformer} for renaming
+     *
+     * @param target the object whose {@code run} method is invoked when this thread is started.
+     *               If {@code null}, this thread's run method is invoked.
+     * @param prefix the new name
+     */
+    public ShadowThread(final Runnable target, final String prefix) {
+        super(target, makeThreadName(prefix));
+    }
+
+    /**
+     * Initialize {@code Thread} with new name, this constructor is used by {@code ThreadTransformer} for renaming
+     *
+     * @param group  the thread group
+     * @param target the object whose {@code run} method is invoked when this thread is started.
+     *               If {@code null}, this thread's run method is invoked.
+     * @param prefix the new name
+     */
+    public ShadowThread(final ThreadGroup group, final Runnable target, final String prefix) {
+        super(group, target, makeThreadName(prefix));
+    }
+
+    /**
+     * Initialize {@code Thread} with new name, this constructor is used by {@code ThreadTransformer} for renaming
+     *
+     * @param name   the original name
+     * @param prefix the prefix of new name
+     */
+    public ShadowThread(final String name, final String prefix) {
+        super(makeThreadName(name, prefix));
+    }
+
+    /**
+     * Initialize {@code Thread} with new name, this constructor is used by {@code ThreadTransformer} for renaming
+     *
+     * @param group  the thread group
+     * @param name   the original name
+     * @param prefix the prefix of new name
+     */
+    public ShadowThread(final ThreadGroup group, final String name, final String prefix) {
+        super(group, makeThreadName(name, prefix));
+    }
+
+    /**
+     * Initialize {@code Thread} with new name, this constructor is used by {@code ThreadTransformer} for renaming
+     *
+     * @param target the object whose {@code run} method is invoked when this thread is started.
+     *               If {@code null}, this thread's run method is invoked.
+     * @param name   the original name
+     * @param prefix the prefix of new name
+     */
+    public ShadowThread(final Runnable target, final String name, final String prefix) {
+        super(target, makeThreadName(name, prefix));
+    }
+
+    /**
+     * Initialize {@code Thread} with new name, this constructor is used by {@code ThreadTransformer} for renaming
+     *
+     * @param group  the thread group
+     * @param target the object whose {@code run} method is invoked when this thread is started.
+     *               If {@code null}, this thread's run method is invoked.
+     * @param name   the original name
+     * @param prefix the prefix of new name
+     */
+    public ShadowThread(final ThreadGroup group, final Runnable target, final String name, final String prefix) {
+        super(group, target, makeThreadName(name, prefix));
+    }
+
+    /**
+     * Initialize {@code Thread} with new name, this constructor is used by {@code ThreadTransformer} for renaming
+     *
+     * @param group     the thread group
+     * @param target    the object whose {@code run} method is invoked when this thread is started.
+     *                  If {@code null}, this thread's run method is invoked.
+     * @param name      the original name
+     * @param stackSize the desired stack size for the new thread, or zero to indicate that this parameter is to be ignored.
+     * @param prefix    the prefix of new name
+     */
+    public ShadowThread(final ThreadGroup group, final Runnable target, final String name, final long stackSize, final String prefix) {
+        super(group, target, makeThreadName(name, prefix), stackSize);
     }
 
 }
