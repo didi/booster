@@ -13,6 +13,7 @@ import com.android.dx.command.dexer.Main
 import com.didiglobal.booster.kotlinx.NCPU
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.green
+import com.didiglobal.booster.kotlinx.red
 import com.didiglobal.booster.transform.AbstractKlassPool
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.TransformContext
@@ -181,7 +182,7 @@ internal class BoosterTransformInvocation(
     }
 
     private fun doVerify() {
-        outputs.forEach { output ->
+        outputs.sortedBy(File::nameWithoutExtension).forEach { output ->
             val dex = temporaryDir.file("${output.nameWithoutExtension}.dex")
             val args = Main.Arguments().apply {
                 numThreads = NCPU
@@ -195,12 +196,14 @@ internal class BoosterTransformInvocation(
                 fileNames = arrayOf(output.absolutePath)
                 outName = dex.absolutePath
             }
-
-            if (0 != Main.run(args)) {
-                throw VerifyError(output.absolutePath)
+            val (rc, ex) = try {
+                Main.run(args) to null
+            } catch (t: Throwable) {
+                t.printStackTrace()
+                -1 to t
             }
 
-            println("${green("✔")} $output")
+            println("${if (rc != 0) red("✗") else green("✓")} $output")
             dex.deleteRecursively()
         }
     }
