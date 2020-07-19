@@ -5,8 +5,6 @@ import com.didiglobal.booster.command.CommandService
 import com.didiglobal.booster.compression.CompressionTaskCreatorFactory
 import com.didiglobal.booster.compression.CompressionTool
 import com.didiglobal.booster.compression.SimpleCompressionTaskCreator
-import com.didiglobal.booster.gradle.getProperty
-import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.kotlinx.OS
 import com.didiglobal.booster.task.compression.pngquant.Pngquant.Companion.PROGRAM
 
@@ -25,9 +23,7 @@ internal class Pngquant : CompressionTool(CommandService.get(PNGQUANT)), Compres
 
         const val PROGRAM = "pngquant"
 
-        fun get(variant: BaseVariant): Pngquant? {
-            val quality = variant.project.getProperty(PROPERTY_OPTION_QUALITY, 80)
-            val speed = variant.project.getProperty(PROPERTY_OPTION_SPEED, 3)
+        fun get(@Suppress("UNUSED_PARAMETER") variant: BaseVariant): Pngquant? {
             return Pngquant()
         }
 

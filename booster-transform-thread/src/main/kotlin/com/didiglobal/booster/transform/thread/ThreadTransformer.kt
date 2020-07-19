@@ -302,7 +302,7 @@ class ThreadTransformer : ClassTransformer {
     /**
      * Transform the static calls of [java.util.concurrent.Executors]
      */
-    private fun MethodInsnNode.transformInvokeStatic(context: TransformContext, klass: ClassNode, method: MethodNode) {
+    private fun MethodInsnNode.transformInvokeStatic(@Suppress("UNUSED_PARAMETER") context: TransformContext, klass: ClassNode, method: MethodNode) {
         when (this.owner) {
             EXECUTORS -> {
                 when (this.name) {

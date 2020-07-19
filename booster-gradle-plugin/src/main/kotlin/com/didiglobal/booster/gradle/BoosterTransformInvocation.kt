@@ -196,11 +196,11 @@ internal class BoosterTransformInvocation(
                 fileNames = arrayOf(output.absolutePath)
                 outName = dex.absolutePath
             }
-            val (rc, ex) = try {
-                Main.run(args) to null
+            val rc = try {
+                Main.run(args)
             } catch (t: Throwable) {
                 t.printStackTrace()
-                -1 to t
+                -1
             }
 
             println("${if (rc != 0) red("✗") else green("✓")} $output")
