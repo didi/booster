@@ -144,7 +144,7 @@ class ThreadTransformer : ClassTransformer {
                     // ..., handler => ..., handler, prefix
                     insertBefore(init, LdcInsnNode(makeThreadName(klass.className)))
                     // ..., handler, prefix => ..., handler, factory
-                    insertBefore(init, MethodInsnNode(Opcodes.INVOKESTATIC, NAMED_THREAD_FACTORY, "newInstance", "(Ljava/lang/String;)Ljava/util/concurrent/ThreadFactory;V", false))
+                    insertBefore(init, MethodInsnNode(Opcodes.INVOKESTATIC, NAMED_THREAD_FACTORY, "newInstance", "(Ljava/lang/String;)Ljava/util/concurrent/ThreadFactory;", false))
                     // ..., handler, factory => ..., factory, handler
                     insertBefore(init, InsnNode(Opcodes.SWAP))
                 }
