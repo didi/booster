@@ -23,6 +23,8 @@ open class BoosterTransform(val project: Project) : Transform() {
         it.javaClass.getAnnotation(Priority::class.java)?.value ?: 0
     }
 
+    internal val verifyEnabled = project.getProperty(OPT_TRANSFORM_VERIFY, false)
+
     private val android: BaseExtension = project.getAndroid()
 
     private lateinit var androidKlassPool: AbstractKlassPool
@@ -38,9 +40,9 @@ open class BoosterTransform(val project: Project) : Transform() {
 
     override fun getName() = "booster"
 
-    override fun isIncremental() = true
+    override fun isIncremental() = !verifyEnabled
 
-    override fun isCacheable() = true
+    override fun isCacheable() = !verifyEnabled
 
     override fun getInputTypes(): MutableSet<QualifiedContent.ContentType> = TransformManager.CONTENT_CLASS
 
@@ -74,3 +76,8 @@ open class BoosterTransform(val project: Project) : Transform() {
     }
 
 }
+
+/**
+ * The option for transform outputs verifying, default is false
+ */
+private const val OPT_TRANSFORM_VERIFY = "booster.transform.verify"
