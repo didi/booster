@@ -183,14 +183,14 @@ internal class BoosterTransformInvocation(
 
     private fun doVerify() {
         outputs.sortedBy(File::nameWithoutExtension).forEach { output ->
-            val dex = temporaryDir.file("${output.nameWithoutExtension}.dex")
+            val dex = temporaryDir.file(output.name)
             val args = Main.Arguments().apply {
                 numThreads = NCPU
                 debug = true
                 warnings = true
                 emptyOk = true
-                multiDex = false
-                jarOutput = false
+                multiDex = true
+                jarOutput = true
                 optimize = false
                 minSdkVersion = variant.extension.defaultConfig.targetSdkVersion.apiLevel
                 fileNames = arrayOf(output.absolutePath)
