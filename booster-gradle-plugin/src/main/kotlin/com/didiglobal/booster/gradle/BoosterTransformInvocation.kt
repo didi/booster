@@ -108,7 +108,7 @@ internal class BoosterTransformInvocation(
 
         this.onPostTransform()
 
-        if (project.getProperty(OPT_TRANSFORM_VERIFY, false)) {
+        if (transform.verifyEnabled) {
             this.doVerify()
         }
     }
@@ -221,8 +221,3 @@ internal class BoosterTransformInvocation(
         }
     }
 }
-
-/**
- * The option for transform outputs verifying, default is false
- */
-private const val OPT_TRANSFORM_VERIFY = "booster.transform.verify"
