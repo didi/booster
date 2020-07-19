@@ -405,7 +405,7 @@ internal const val SHADOW_TIMER = "${SHADOW}Timer"
 internal const val SHADOW_EXECUTORS = "${SHADOW}Executors"
 internal const val SHADOW_THREAD_POOL_EXECUTOR = "${SHADOW}ThreadPoolExecutor"
 internal const val SHADOW_ASYNC_TASK = "${SHADOW}AsyncTask"
-internal const val NAMED_THREAD_FACTORY = "${BOOSTER_INSTRUMENT}/NamedThreadFactory"
+internal const val NAMED_THREAD_FACTORY = "${BOOSTER_INSTRUMENT}NamedThreadFactory"
 
 
 internal const val JAVA_UTIL = "java/util/"
