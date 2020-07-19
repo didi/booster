@@ -19,7 +19,7 @@ class AnalyserVariantProcessor : VariantProcessor {
     override fun process(variant: BaseVariant) {
         val project = variant.project
         val variantName = variant.name.capitalize()
-        val transform = variant.extension.transforms.reversed().first {
+        val transform = variant.extension.transforms.reversed().firstOrNull {
             it.scopes.containsAll(TransformManager.SCOPE_FULL_PROJECT)
                     && it.inputTypes.contains(QualifiedContent.DefaultContentType.CLASSES)
         } ?: throw GradleException("No available transform")
