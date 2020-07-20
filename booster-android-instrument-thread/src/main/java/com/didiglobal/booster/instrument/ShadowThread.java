@@ -48,7 +48,7 @@ public class ShadowThread extends Thread {
     }
 
     public static String makeThreadName(final String name) {
-        return MARK;
+        return name == null ? "" : name.startsWith(MARK) ? name : (MARK + name);
     }
 
     public static String makeThreadName(final String name, final String prefix) {
