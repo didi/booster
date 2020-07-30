@@ -42,7 +42,9 @@ class SharedPreferencesTransformer : ClassTransformer {
     }
 
     override fun transform(context: TransformContext, klass: ClassNode): ClassNode {
-        if (klass.name.startsWith(BOOSTER_DIRECTORY_PREFIX) || klass.name.startsWith(SUPPORT_MULTIDEX_PACKAGE_PREFIX)) {
+        if (klass.name.startsWith(BOOSTER_DIRECTORY_PREFIX)
+                || klass.name.startsWith(SUPPORT_MULTIDEX_PACKAGE_PREFIX)
+                || klass.name.startsWith(JETPACK_MULTIDEX_PACKAGE_PREFIX)) {
             return klass
         }
 
@@ -76,6 +78,7 @@ private const val CONTEXT = "android/content/Context"
 private const val PREFERENCE_MANAGER = "android.preference/PreferenceManager"
 private const val SHARED_PREFERENCES = "android/content/SharedPreferences"
 private const val SUPPORT_MULTIDEX_PACKAGE_PREFIX = "android/support/multidex/"
+private const val JETPACK_MULTIDEX_PACKAGE_PREFIX = "androidx/multidex/"
 private const val BOOSTER_DIRECTORY_PREFIX = "com/didiglobal/booster/instrument"
 private const val SHADOW_SHARED_PREFERENCES = "$BOOSTER_DIRECTORY_PREFIX/ShadowSharedPreferences"
 
