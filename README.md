@@ -76,6 +76,8 @@ buildscript {
         google()
         mavenCentral()
         jcenter()
+        
+        // OPTIONAL If you want to use SNAPSHOT version, sonatype repository is required.
         maven { url 'https://oss.sonatype.org/content/repositories/public' }
     }
     dependencies {
@@ -90,6 +92,8 @@ allprojects {
         google()
         mavenCentral()
         jcenter()
+        
+        // OPTIONAL If you want to use SNAPSHOT version, sonatype repository is required.
         maven { url 'https://oss.sonatype.org/content/repositories/public' }
     }
 }
