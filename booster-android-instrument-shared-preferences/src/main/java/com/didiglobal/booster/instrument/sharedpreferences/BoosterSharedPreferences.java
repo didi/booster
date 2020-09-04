@@ -288,7 +288,7 @@ public final class BoosterSharedPreferences implements SharedPreferences {
 
             private void notifyListeners(final Collection<String> keys) {
                 if (Looper.myLooper() == Looper.getMainLooper()) {
-                    final Set<OnSharedPreferenceChangeListener> listeners = new HashSet<>(mListeners.keySet());
+                    final OnSharedPreferenceChangeListener[] listeners = mListeners.keySet().toArray(new OnSharedPreferenceChangeListener[0]);
                     for (final OnSharedPreferenceChangeListener listener : listeners) {
                         for (String key : keys) {
                             listener.onSharedPreferenceChanged(BoosterSharedPreferences.this, key);
