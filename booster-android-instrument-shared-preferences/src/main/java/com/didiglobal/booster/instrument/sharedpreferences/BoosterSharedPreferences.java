@@ -9,6 +9,7 @@ import com.didiglobal.booster.instrument.ShadowExecutors;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,7 +28,7 @@ public final class BoosterSharedPreferences implements SharedPreferences {
     private static final Map<String, BoosterSharedPreferences> sSharedPreferencesMap = new ConcurrentHashMap<>();
     private static final Object SENTINEL = new Object();
 
-    private final WeakHashMap<OnSharedPreferenceChangeListener, Object> mListeners = new WeakHashMap<>();
+    private final Map<OnSharedPreferenceChangeListener, Object> mListeners = Collections.synchronizedMap(new WeakHashMap<>());
     private final Object mLock = new Object();
     private final Object mLoadLock = new Object();
     private final ExecutorService mWriteExecutor;
