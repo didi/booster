@@ -9,8 +9,10 @@ import com.android.build.gradle.tasks.MergeResources;
 import com.android.build.gradle.tasks.ProcessAndroidResources;
 import com.android.ide.common.res2.ResourceSet;
 import com.android.sdklib.BuildToolInfo;
+import org.gradle.api.Task;
 import org.gradle.api.tasks.TaskContainer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -140,5 +142,15 @@ class VariantScopeV30 {
     public static ProcessAndroidResources getProcessResourcesTask(@NotNull final VariantScope scope) {
         final TaskContainer tasks = scope.getGlobalScope().getProject().getTasks();
         return (ProcessAndroidResources) tasks.getByName(scope.getProcessResourcesTask().getName());
+    }
+
+    @Nullable
+    public static Task getBundleResourceTask(@NotNull final VariantScope scope) {
+        return null;
+    }
+
+    @Nullable
+    static Task getPackageBundleTask(@NotNull final VariantScope scope) {
+        return null;
     }
 }

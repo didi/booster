@@ -2,14 +2,18 @@ package com.didiglobal.booster.gradle;
 
 import com.android.build.api.artifact.ArtifactType;
 import com.android.build.gradle.BaseExtension;
+import com.android.build.gradle.internal.res.LinkAndroidResForBundleTask;
 import com.android.build.gradle.internal.scope.AnchorOutputType;
 import com.android.build.gradle.internal.scope.InternalArtifactType;
 import com.android.build.gradle.internal.scope.VariantScope;
+import com.android.build.gradle.internal.tasks.PackageBundleTask;
 import com.android.build.gradle.tasks.ProcessAndroidResources;
 import com.android.sdklib.BuildToolInfo;
+import org.gradle.api.UnknownTaskException;
 import org.gradle.api.file.FileSystemLocation;
 import org.gradle.api.tasks.TaskContainer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.AbstractMap;
@@ -123,4 +127,23 @@ class VariantScopeV36 {
         return (ProcessAndroidResources) tasks.getByName(scope.getTaskName("process", "Resources"));
     }
 
+    @Nullable
+    static LinkAndroidResForBundleTask getBundleResourceTask(@NotNull final VariantScope scope) {
+        final TaskContainer tasks = scope.getGlobalScope().getProject().getTasks();
+        try {
+            return (LinkAndroidResForBundleTask) tasks.getByName(scope.getTaskName("bundle", "Resources"));
+        } catch (final UnknownTaskException e) {
+            return null;
+        }
+    }
+
+    @Nullable
+    static PackageBundleTask getPackageBundleTask(@NotNull VariantScope scope) {
+        final TaskContainer tasks = scope.getGlobalScope().getProject().getTasks();
+        try {
+            return (PackageBundleTask) tasks.getByName(scope.getTaskName("package", "Bundle"));
+        } catch (final UnknownTaskException e) {
+            return null;
+        }
+    }
 }

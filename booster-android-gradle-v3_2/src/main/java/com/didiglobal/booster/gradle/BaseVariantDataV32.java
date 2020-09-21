@@ -2,6 +2,7 @@ package com.didiglobal.booster.gradle;
 
 import com.android.build.gradle.internal.variant.BaseVariantData;
 import com.google.wireless.android.sdk.stats.GradleBuildVariant;
+import org.jetbrains.annotations.NotNull;
 
 class BaseVariantDataV32 {
 
@@ -33,4 +34,13 @@ class BaseVariantDataV32 {
         return variantData.getType().getAnalyticsVariantType();
     }
 
+    @NotNull
+    public static String getApplicationId(@NotNull BaseVariantData variantData) {
+        return variantData.getVariantConfiguration().getApplicationId();
+    }
+
+    @NotNull
+    static String getOriginalApplicationId(final BaseVariantData variantData) {
+        return variantData.getVariantConfiguration().getOriginalApplicationId();
+    }
 }
