@@ -115,3 +115,29 @@ val BaseVariant.processResTask: ProcessAndroidResources
         GTE_V3_2 -> VariantScopeV32.getProcessResourcesTask(scope)
         else -> VariantScopeV30.getProcessResourcesTask(scope)
     }
+
+/**
+ * The `bundleResources` tasks associates with this variant
+ */
+val BaseVariant.bundleResourcesTask: Task?
+    get() = when {
+        GTE_V4_X -> VariantScopeV40.getBundleResourceTask(scope)
+        GTE_V3_6 -> VariantScopeV36.getBundleResourceTask(scope)
+        GTE_V3_5 -> VariantScopeV35.getBundleResourceTask(scope)
+        GTE_V3_3 -> VariantScopeV33.getBundleResourceTask(scope)
+        GTE_V3_2 -> VariantScopeV32.getBundleResourceTask(scope)
+        else -> VariantScopeV30.getBundleResourceTask(scope)
+    }
+
+/**
+ * The `packageBundle` tasks associates with this variant
+ */
+val BaseVariant.packageBundleTask: Task?
+    get() = when {
+        GTE_V4_X -> VariantScopeV40.getPackageBundleTask(scope)
+        GTE_V3_6 -> VariantScopeV36.getPackageBundleTask(scope)
+        GTE_V3_5 -> VariantScopeV35.getPackageBundleTask(scope)
+        GTE_V3_3 -> VariantScopeV33.getPackageBundleTask(scope)
+        GTE_V3_2 -> VariantScopeV32.getPackageBundleTask(scope)
+        else -> VariantScopeV30.getPackageBundleTask(scope)
+    }

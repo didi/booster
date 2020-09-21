@@ -48,7 +48,7 @@ fun CompressionResults.generateReport(variant: BaseVariant, artifact: String) {
             logger.println("${it.sixth.padStart(maxWith6)} ${it.first.padEnd(maxWith1)} ${it.fifth.padStart(maxWith5)} ${it.seventh.padStart(maxWith7)} ${it.eighth}")
         }
         logger.println("-".repeat(maxWith1 + maxWith5 + maxWith6 + 2))
-        logger.println(" TOTAL ${decimal(table.sumByDouble { it.fourth.toDouble() }).padStart(fullWith - 13)}")
+        logger.println(" TOTAL ${decimal(table.sumByDouble { it.fourth.toDouble() }).padStart((fullWith - 13).coerceAtLeast(0))}")
     }
 
 }

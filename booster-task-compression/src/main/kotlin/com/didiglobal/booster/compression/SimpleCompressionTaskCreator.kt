@@ -4,6 +4,7 @@ import com.android.build.gradle.api.BaseVariant
 import com.didiglobal.booster.command.CommandInstaller
 import com.didiglobal.booster.compression.task.CompressImages
 import com.didiglobal.booster.gradle.aapt2Enabled
+import com.didiglobal.booster.gradle.bundleResourcesTask
 import com.didiglobal.booster.gradle.mergeResourcesTask
 import com.didiglobal.booster.gradle.processResTask
 import com.didiglobal.booster.gradle.project
@@ -34,6 +35,7 @@ class SimpleCompressionTaskCreator(private val tool: CompressionTool, private va
         }.apply {
             dependsOn(install, deps)
             variant.processResTask.dependsOn(this)
+            variant.bundleResourcesTask?.dependsOn(this)
         }
     }
 
