@@ -1,4 +1,23 @@
-language: groovy
+language: android
+dist: trusty
+android:
+  components:
+    - build-tools-26.0.3
+    - build-tools-27.0.3
+    - build-tools-28.0.2
+    - build-tools-28.0.3
+    - build-tools-29.0.2
+    - build-tools-29.0.3
+    - build-tools-30.0.2
+    - android-25
+    - android-26
+    - android-27
+    - android-28
+    - android-29
+    - android-30
+    - extra-android-m2repository
+  licenses:
+    - 'android-sdk-license-.+'
 jdk:
 - openjdk8
 before_cache:
@@ -11,11 +30,11 @@ cache:
 before_install:
 - if [ "$encrypted_3571c34b0299_key" != "" ] && [ "$encrypted_3571c34b0299_iv" != "" ]; then openssl aes-256-cbc -K $encrypted_3571c34b0299_key -iv $encrypted_3571c34b0299_iv -in .travis/secring.gpg.enc -out .travis/secring.gpg -d; fi
 install:
-- "./gradlew assemble -POSSRH_USERNAME=${OSSRH_USERNAME} -POSSRH_PASSWORD=${OSSRH_PASSWORD}"
+- "./gradlew publishToMavenLocal -i -POSSRH_USERNAME=${OSSRH_USERNAME} -POSSRH_PASSWORD=${OSSRH_PASSWORD} -Psigning.skip"
 before_script:
 - chmod +x gradlew
 script:
-    - "./gradlew check -POSSRH_USERNAME=${OSSRH_USERNAME} -POSSRH_PASSWORD=${OSSRH_PASSWORD}"
+    - "./gradlew check -i -POSSRH_USERNAME=${OSSRH_USERNAME} -POSSRH_PASSWORD=${OSSRH_PASSWORD}"
 deploy:
   skip_cleanup: true
   provider: script
