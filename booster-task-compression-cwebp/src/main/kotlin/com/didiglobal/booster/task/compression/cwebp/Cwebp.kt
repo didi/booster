@@ -4,7 +4,7 @@ import com.android.build.gradle.api.BaseVariant
 import com.didiglobal.booster.command.CommandService
 import com.didiglobal.booster.compression.CompressionTool
 import com.didiglobal.booster.compression.SimpleCompressionTaskCreator
-import com.didiglobal.booster.gradle.scope
+import com.didiglobal.booster.gradle.minSdkVersion
 import com.didiglobal.booster.kotlinx.OS
 import com.didiglobal.booster.task.compression.cwebp.Cwebp.Companion.PROGRAM
 
@@ -38,7 +38,7 @@ class Cwebp internal constructor(val supportAlpha: Boolean) : CompressionTool(Co
          * @see <a href="https://developer.android.com/studio/write/convert-webp">convert-webp</a>
          */
         fun get(variant: BaseVariant): Cwebp? {
-            val minSdkVersion = variant.scope.minSdkVersion.apiLevel
+            val minSdkVersion = variant.minSdkVersion.apiLevel
             return when {
                 minSdkVersion >= 18 -> Cwebp(true)
                 minSdkVersion in 14..17 -> Cwebp(false)

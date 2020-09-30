@@ -9,6 +9,7 @@ import com.android.build.api.transform.Status.CHANGED
 import com.android.build.api.transform.Status.NOTCHANGED
 import com.android.build.api.transform.Status.REMOVED
 import com.android.build.api.transform.TransformInvocation
+import com.android.dex.DexFormat
 import com.android.dx.command.dexer.Main
 import com.didiglobal.booster.kotlinx.NCPU
 import com.didiglobal.booster.kotlinx.file
@@ -192,7 +193,7 @@ internal class BoosterTransformInvocation(
                 multiDex = true
                 jarOutput = true
                 optimize = false
-                minSdkVersion = variant.extension.defaultConfig.targetSdkVersion.apiLevel
+                minSdkVersion = variant.extension.defaultConfig.targetSdkVersion?.apiLevel ?: DexFormat.API_NO_EXTENDED_OPCODES
                 fileNames = arrayOf(output.absolutePath)
                 outName = dex.absolutePath
             }

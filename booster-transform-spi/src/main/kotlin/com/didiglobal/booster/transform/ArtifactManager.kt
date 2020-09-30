@@ -3,7 +3,7 @@ package com.didiglobal.booster.transform
 import java.io.File
 
 /**
- * Represents a manager of artifacts
+ * Represents a manager of build artifacts
  */
 interface ArtifactManager {
 
@@ -11,8 +11,6 @@ interface ArtifactManager {
         const val AAR = "AAR"
         const val ALL_CLASSES = "ALL_CLASSES"
         const val APK = "APK"
-        const val JAR = "JAR"
-        const val JAVAC = "JAVAC"
         const val MERGED_ASSETS = "MERGED_ASSETS"
         const val MERGED_RES = "MERGED_RES"
         const val MERGED_MANIFESTS = "MERGED_MANIFESTS"

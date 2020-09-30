@@ -22,11 +22,11 @@ class AndroidSdk {
          * @param apiLevel Android API level
          */
         fun getAndroidJar(apiLevel: Int = findPlatform()): File {
-            val jar = File(getLocation(), "platforms${File.separator}android-${apiLevel}${File.separator}android.jar")
+            val jar = File(location, "platforms${File.separator}android-${apiLevel}${File.separator}android.jar")
             return jar.takeIf { it.exists() } ?: throw FileNotFoundException(jar.path)
         }
 
-        fun findPlatform(): Int = File(getLocation(), "platforms").listFiles()?.filter {
+        fun findPlatform(): Int = File(location, "platforms").listFiles()?.filter {
             it.name.startsWith("android-") && File(it, "android.jar").exists()
         }?.map {
             it.name.substringAfter("android-")
@@ -44,36 +44,43 @@ class AndroidSdk {
          *     - linux: ~/Android/sdk
          *     - windows: ~\AppData\Local\Android\sdk
          */
-        fun getLocation(): File = System.getenv("ANDROID_HOME")?.takeIf {
-            it.isNotBlank()
-        }?.let {
-            File(it)
-        }?.takeIf {
-            it.exists() && it.isDirectory
-        } ?: System.getenv("PATH").splitToSequence(File.pathSeparator).map {
-            File(it, "android")
-        }.find {
-            it.exists() && it.canExecute()
-        }?.canonicalFile?.parentFile?.parentFile ?: File(CWD, "local.properties").let { local ->
-            if (local.exists()) {
-                val props = Properties();
-                local.inputStream().use {
-                    props.load(it)
+        @JvmStatic
+        val location: File
+            get() = System.getenv("ANDROID_HOME")?.takeIf {
+                it.isNotBlank()
+            }?.let {
+                File(it)
+            }?.takeIf {
+                it.exists() && it.isDirectory
+            } ?: System.getenv("PATH").splitToSequence(File.pathSeparator).map {
+                File(it, "android")
+            }.find {
+                it.exists() && it.canExecute()
+            }?.canonicalFile?.parentFile?.parentFile ?: System.getenv("PATH").splitToSequence(File.pathSeparator).map {
+                File(it, "sdkmanager")
+            }.find {
+                it.exists() && it.canExecute()
+            }?.canonicalFile?.parentFile?.parentFile?.parentFile ?: File(CWD, "local.properties").let { local ->
+                if (local.exists()) {
+                    val props = Properties();
+                    local.inputStream().use {
+                        props.load(it)
+                    }
+                    props.getProperty("sdk.dir", null)?.let {
+                        File(it)
+                    }?.takeIf {
+                        it.exists() && it.isDirectory
+                    }
+                } else {
+                    null
                 }
-                props.getProperty("sdk.dir", null)?.let {
-                    File(it)
-                }?.takeIf {
-                    it.exists() && it.isDirectory
-                }
-            } else {
-                null
+            } ?: when {
+                OS.isMac() -> File(HOME, "Library${File.separator}Android${File.separator}sdk").takeIf { it.exists() && it.isDirectory }
+                OS.isLinux() -> File(HOME, "Android${File.separator}sdk").takeIf { it.exists() && it.isDirectory }
+                OS.isWindows() -> File(HOME, "AppData${File.separator}Local${File.separator}Android${File.separator}sdk").takeIf { it.exists() && it.isDirectory }
+                else -> null
             }
-        } ?: when {
-            OS.isMac() -> File(HOME, "Library${File.separator}Android${File.separator}sdk").takeIf { it.exists() && it.isDirectory }
-            OS.isLinux() -> File(HOME, "Android${File.separator}sdk").takeIf { it.exists() && it.isDirectory }
-            OS.isWindows() -> File(HOME, "AppData${File.separator}Local${File.separator}Android${File.separator}sdk").takeIf { it.exists() && it.isDirectory }
-            else -> null
-        } ?: throw RuntimeException("`ANDROID_HOME` is not set and `android` command not in your PATH")
+            ?: throw RuntimeException("`ANDROID_HOME` is not set and neither `android` nor `sdkmanager` command not in your PATH")
     }
 
 }

@@ -1,4 +1,4 @@
-apply from: '../gradle/booster.gradle'
+apply from: "$rootDir/gradle/booster.gradle"
 
 dependencies {
     kapt 'com.google.auto.service:auto-service:1.0-rc6'
@@ -8,4 +8,15 @@ dependencies {
     api project(':booster-transform-util')
     compileOnly 'com.android.tools.build:gradle:4.0.0'
     testCompileOnly 'com.android.tools.build:gradle:4.0.0'
+}
+
+apply plugin: 'java-gradle-plugin'
+
+gradlePlugin {
+    plugins {
+        boosterPlugin {
+            id = 'com.didiglobal.booster'
+            implementationClass = 'com.didiglobal.booster.gradle.BoosterPlugin'
+        }
+    }
 }

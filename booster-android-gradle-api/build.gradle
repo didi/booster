@@ -1,4 +1,4 @@
-apply from: '../gradle/booster.gradle'
+apply from: "$rootDir/gradle/booster.gradle"
 
 dependencies {
     implementation project(':booster-android-gradle-v3_0')
@@ -7,7 +7,8 @@ dependencies {
     implementation project(':booster-android-gradle-v3_5')
     implementation project(':booster-android-gradle-v3_6')
     implementation project(':booster-android-gradle-v4_0')
+    implementation project(':booster-android-gradle-v4_1')
     api project(':booster-kotlinx')
-    compileOnly 'com.android.tools.build:gradle:4.0.0'
-    testCompileOnly 'com.android.tools.build:gradle:4.0.0'
+    compileOnly 'com.android.tools.build:gradle:3.0.0'
+    testCompileOnly 'com.android.tools.build:gradle:3.0.0'
 }

@@ -9,7 +9,6 @@ import com.didiglobal.booster.compression.CompressionResults
 import com.didiglobal.booster.gradle.processResTask
 import com.didiglobal.booster.gradle.processedRes
 import com.didiglobal.booster.gradle.project
-import com.didiglobal.booster.gradle.scope
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.search
 import com.didiglobal.booster.kotlinx.touch
@@ -43,7 +42,7 @@ class ProcessedResourcesCompressionVariantProcessor : VariantProcessor {
 }
 
 private fun BaseVariant.compressProcessedRes(results: CompressionResults) {
-    val files = scope.processedRes.search {
+    val files = processedRes.search {
         it.name.startsWith(SdkConstants.FN_RES_BASE) && it.extension == SdkConstants.EXT_RES
     }
     files.parallelStream().forEach { ap_ ->

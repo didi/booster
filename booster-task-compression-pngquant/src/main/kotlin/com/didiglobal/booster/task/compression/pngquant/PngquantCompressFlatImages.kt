@@ -11,7 +11,6 @@ import com.didiglobal.booster.compression.CompressionResult
 import com.didiglobal.booster.compression.task.Aapt2ActionData
 import com.didiglobal.booster.gradle.buildTools
 import com.didiglobal.booster.gradle.project
-import com.didiglobal.booster.gradle.scope
 import com.didiglobal.booster.kotlinx.CSI_RED
 import com.didiglobal.booster.kotlinx.CSI_RESET
 import com.didiglobal.booster.kotlinx.file
@@ -40,7 +39,7 @@ internal open class PngquantCompressFlatImages : AbstractPngquantCompressImages(
 
     override fun compress() {
         val pngquant = this.compressor.canonicalPath
-        val aapt2 = variant.scope.buildTools.getPath(BuildToolInfo.PathId.AAPT2)
+        val aapt2 = variant.buildTools.getPath(BuildToolInfo.PathId.AAPT2)
 
         compiledRes.mkdirs()
         compressedRes.file(FD_RES_MIPMAP).mkdirs()

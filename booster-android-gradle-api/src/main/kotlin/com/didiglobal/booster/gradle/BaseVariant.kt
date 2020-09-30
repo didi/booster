@@ -2,19 +2,30 @@ package com.didiglobal.booster.gradle
 
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.BaseVariant
-import com.android.build.gradle.internal.scope.VariantScope
-import com.android.build.gradle.internal.variant.BaseVariantData
+import com.android.build.gradle.internal.publishing.AndroidArtifacts
 import com.android.build.gradle.tasks.ProcessAndroidResources
+import com.android.builder.core.VariantType
+import com.android.sdklib.AndroidVersion
+import com.android.sdklib.BuildToolInfo
+import org.gradle.api.Incubating
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.artifacts.ArtifactCollection
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import java.io.File
+
+/**
+ * The project which this variant belongs
+ */
+@Suppress("DEPRECATION")
+val BaseVariant.project: Project
+    get() = globalScope.project
 
 /**
  * The `android` extension associates with this variant
  */
 val BaseVariant.extension: BaseExtension
-    get() = scope.extension
+    get() = project.getAndroid()
 
 /**
  * The location of `$ANDROID_HOME`/platforms/android-`${compileSdkVersion}`
@@ -31,113 +42,159 @@ val BaseVariant.dependencies: Collection<ResolvedArtifactResult>
     get() = ResolvedArtifactResults(this)
 
 /**
- * The variant scope
- */
-val BaseVariant.scope: VariantScope
-    get() = variantData.scope
-
-/**
- * The project which this variant belongs
- */
-val BaseVariant.project: Project
-    get() = scope.globalScope.project
-
-/**
- * The variant data
- */
-val BaseVariant.variantData: BaseVariantData
-    get() = javaClass.getDeclaredMethod("getVariantData").invoke(this) as BaseVariantData
-
-/**
  * The `compileJava` task associates with this variant
  */
 @Suppress("DEPRECATION")
 val BaseVariant.javaCompilerTask: Task
-    get() = if (GTE_V3_3) {
-        this.javaCompileProvider.get()
-    } else {
-        this.javaCompiler
-    }
+    get() = AGP.run { javaCompilerTask }
 
 /**
  * The `preBuild` task associates with this variant
  */
 @Suppress("DEPRECATION")
 val BaseVariant.preBuildTask: Task
-    get() = if (GTE_V3_3) {
-        this.preBuildProvider.get()
-    } else {
-        this.preBuild
-    }
+    get() = AGP.run { preBuildTask }
 
 /**
  * The `assemble` task associates with this variant
  */
 @Suppress("DEPRECATION")
 val BaseVariant.assembleTask: Task
-    get() = if (GTE_V3_3) {
-        this.assembleProvider.get()
-    } else {
-        this.assemble
-    }
+    get() = AGP.run { assembleTask }
 
 /**
  * The `mergeAssets` task associates with this variant
  */
 @Suppress("DEPRECATION")
 val BaseVariant.mergeAssetsTask: Task
-    get() = if (GTE_V3_3) {
-        this.mergeAssetsProvider.get()
-    } else {
-        this.mergeAssets
-    }
+    get() = AGP.run { mergeAssetsTask }
 
 /**
  * The `mergeResources` task associates with this variant
  */
 @Suppress("DEPRECATION")
 val BaseVariant.mergeResourcesTask: Task
-    get() = if (GTE_V3_3) {
-        this.mergeResourcesProvider.get()
-    } else {
-        this.mergeResources
-    }
+    get() = AGP.run { mergeResourcesTask }
 
 /**
  * The `processRes` task associates with this variant
  */
 val BaseVariant.processResTask: ProcessAndroidResources
-    get() = when {
-        GTE_V4_X -> VariantScopeV40.getProcessResourcesTask(scope)
-        GTE_V3_6 -> VariantScopeV36.getProcessResourcesTask(scope)
-        GTE_V3_5 -> VariantScopeV35.getProcessResourcesTask(scope)
-        GTE_V3_3 -> VariantScopeV33.getProcessResourcesTask(scope)
-        GTE_V3_2 -> VariantScopeV32.getProcessResourcesTask(scope)
-        else -> VariantScopeV30.getProcessResourcesTask(scope)
-    }
+    get() = project.tasks.findByName(getTaskName("process", "Resources")) as ProcessAndroidResources
 
 /**
  * The `bundleResources` tasks associates with this variant
  */
 val BaseVariant.bundleResourcesTask: Task?
-    get() = when {
-        GTE_V4_X -> VariantScopeV40.getBundleResourceTask(scope)
-        GTE_V3_6 -> VariantScopeV36.getBundleResourceTask(scope)
-        GTE_V3_5 -> VariantScopeV35.getBundleResourceTask(scope)
-        GTE_V3_3 -> VariantScopeV33.getBundleResourceTask(scope)
-        GTE_V3_2 -> VariantScopeV32.getBundleResourceTask(scope)
-        else -> VariantScopeV30.getBundleResourceTask(scope)
-    }
+    get() = project.tasks.findByName(getTaskName("bundle", "Resources"))
 
 /**
  * The `packageBundle` tasks associates with this variant
  */
 val BaseVariant.packageBundleTask: Task?
-    get() = when {
-        GTE_V4_X -> VariantScopeV40.getPackageBundleTask(scope)
-        GTE_V3_6 -> VariantScopeV36.getPackageBundleTask(scope)
-        GTE_V3_5 -> VariantScopeV35.getPackageBundleTask(scope)
-        GTE_V3_3 -> VariantScopeV33.getPackageBundleTask(scope)
-        GTE_V3_2 -> VariantScopeV32.getPackageBundleTask(scope)
-        else -> VariantScopeV30.getPackageBundleTask(scope)
+    get() = project.tasks.findByName(getTaskName("package", "Bundle"))
+
+fun BaseVariant.getTaskName(prefix: String): String = AGP.run {
+    getTaskName(prefix)
+}
+
+fun BaseVariant.getTaskName(prefix: String, suffix: String): String = AGP.run {
+    getTaskName(prefix, suffix)
+}
+
+val BaseVariant.minSdkVersion: AndroidVersion
+    get() = AGP.run {
+        minSdkVersion
+    }
+
+val BaseVariant.variantType: VariantType
+    get() = AGP.run {
+        variantType
+    }
+
+val BaseVariant.originalApplicationId: String
+    get() = AGP.run {
+        originalApplicationId
+    }
+
+@Incubating
+fun BaseVariant.getArtifactCollection(
+        configType: AndroidArtifacts.ConsumedConfigType,
+        scope: AndroidArtifacts.ArtifactScope,
+        artifactType: AndroidArtifacts.ArtifactType
+): ArtifactCollection = AGP.run {
+    getArtifactCollection(configType, scope, artifactType)
+}
+
+val BaseVariant.aar: Collection<File>
+    get() = AGP.run {
+        aar
+    }
+
+/**
+ * The output directory of APK files
+ */
+val BaseVariant.apk: Collection<File>
+    get() = AGP.run {
+        apk
+    }
+
+/**
+ * The output directory of merged [AndroidManifest.xml](https://developer.android.com/guide/topics/manifest/manifest-intro)
+ */
+val BaseVariant.mergedManifests: Collection<File>
+    get() = AGP.run {
+        mergedManifests
+    }
+
+/**
+ * The output directory of merged resources
+ */
+val BaseVariant.mergedRes: Collection<File>
+    get() = AGP.run {
+        mergedRes
+    }
+
+/**
+ * The output directory of merged assets
+ */
+val BaseVariant.mergedAssets: Collection<File>
+    get() = AGP.run {
+        mergedAssets
+    }
+
+/**
+ * The output directory of processed resources: *resources-**variant**.ap\_*
+ */
+val BaseVariant.processedRes: Collection<File>
+    get() = AGP.run {
+        processedRes
+    }
+
+/**
+ * All of classes
+ */
+val BaseVariant.allClasses: Collection<File>
+    get() = AGP.run {
+        allClasses
+    }
+
+val BaseVariant.symbolList: Collection<File>
+    get() = AGP.run {
+        symbolList
+    }
+
+val BaseVariant.symbolListWithPackageName: Collection<File>
+    get() = AGP.run {
+        symbolListWithPackageName
+    }
+
+val BaseVariant.allArtifacts: Map<String, Collection<File>>
+    get() = AGP.run {
+        allArtifacts
+    }
+
+val BaseVariant.buildTools: BuildToolInfo
+    get() = AGP.run {
+        buildTools
     }
