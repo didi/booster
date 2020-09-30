@@ -11,7 +11,6 @@ import com.didiglobal.booster.compression.task.Aapt2ActionData
 import com.didiglobal.booster.gradle.buildTools
 import com.didiglobal.booster.gradle.mergedManifests
 import com.didiglobal.booster.gradle.project
-import com.didiglobal.booster.gradle.scope
 import com.didiglobal.booster.kotlinx.CSI_RED
 import com.didiglobal.booster.kotlinx.CSI_RESET
 import com.didiglobal.booster.kotlinx.file
@@ -36,9 +35,9 @@ internal open class CwebpCompressFlatImages : AbstractCwebpCompressImages() {
 
     override fun compress(filter: (File) -> Boolean) {
         val cwebp = this.compressor.canonicalPath
-        val aapt2 = variant.scope.buildTools.getPath(BuildToolInfo.PathId.AAPT2)
+        val aapt2 = variant.buildTools.getPath(BuildToolInfo.PathId.AAPT2)
         val parser = SAXParserFactory.newInstance().newSAXParser()
-        val icons = variant.scope.mergedManifests.search {
+        val icons = variant.mergedManifests.search {
             it.name == SdkConstants.ANDROID_MANIFEST_XML
         }.parallelStream().map { manifest ->
             LauncherIconHandler().let {

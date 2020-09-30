@@ -1,9 +1,6 @@
 package com.didiglobal.booster.gradle
 
 import com.android.build.api.transform.TransformInvocation
-import com.android.build.gradle.AppExtension
-import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.api.BaseVariant
 import org.gradle.api.Project
 import java.io.File
@@ -14,7 +11,7 @@ import java.io.File
  * @author johnsonlee
  */
 val TransformInvocation.project: Project
-    get() = context.task.project
+    get() = AGP.run { project }
 
 /**
  * Returns the corresponding variant of this transform invocation
@@ -22,25 +19,10 @@ val TransformInvocation.project: Project
  * @author johnsonlee
  */
 val TransformInvocation.variant: BaseVariant
-    get() = project.getAndroid<BaseExtension>().let { android ->
-        this.context.variantName.let { variant ->
-            when (android) {
-                is AppExtension -> when {
-                    variant.endsWith("AndroidTest") -> android.testVariants.single { it.name == variant }
-                    variant.endsWith("UnitTest") -> android.unitTestVariants.single { it.name == variant }
-                    else -> android.applicationVariants.single { it.name == variant }
-                }
-                is LibraryExtension -> android.libraryVariants.single { it.name == variant }
-                else -> TODO("variant not found")
-            }
-        }
-    }
+    get() = AGP.run { variant }
 
 val TransformInvocation.bootClasspath: Collection<File>
-    get() = project.getAndroid<BaseExtension>().bootClasspath
-
-val TransformInvocation.isDataBindingEnabled: Boolean
-    get() = project.getAndroid<BaseExtension>().dataBinding.isEnabled
+    get() = AGP.run { bootClasspath }
 
 /**
  * Returns the compile classpath of this transform invocation
@@ -66,10 +48,13 @@ val TransformInvocation.runtimeClasspath: Collection<File>
  * Returns the application id
  */
 val TransformInvocation.applicationId: String
-    get() = variant.variantData.getApplicationId()
+    get() = variant.applicationId
 
 /**
  * Returns the original application ID before any overrides from flavors
  */
 val TransformInvocation.originalApplicationId: String
-    get() = variant.variantData.getOriginalApplicationId()
+    get() = variant.originalApplicationId
+
+val TransformInvocation.isDataBindingEnabled: Boolean
+    get() = AGP.run { isDataBindingEnabled }

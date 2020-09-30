@@ -1,0 +1,35 @@
+sourceSets {
+    integrationTest {
+        java {
+            srcDirs += []
+        }
+        kotlin {
+            srcDirs += ['src/integrationTest/kotlin', 'src/integrationTest/java']
+        }
+        resources.srcDir file('src/integrationTest/resources')
+        compileClasspath += sourceSets.main.output + configurations.testRuntime
+        runtimeClasspath += output + compileClasspath
+    }
+}
+
+configurations {
+    integrationTestImplementation.extendsFrom testImplementation
+    integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
+task integrationTest(type: Test) {
+    description = 'Runs the integration tests.'
+    group = 'verification'
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    mustRunAfter test
+    testLogging {
+        events "passed", "skipped", "failed", "standardError"
+    }
+}
+
+check.dependsOn integrationTest
+
+compileIntegrationTestKotlin {
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8
+}

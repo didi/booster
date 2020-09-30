@@ -5,7 +5,7 @@ import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactScope.ALL
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactType.AAR
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH
-import com.didiglobal.booster.gradle.scope
+import com.didiglobal.booster.gradle.getArtifactCollection
 import com.didiglobal.booster.kotlinx.CSI_RESET
 import com.didiglobal.booster.kotlinx.CSI_YELLOW
 import com.didiglobal.booster.kotlinx.ifNotEmpty
@@ -31,7 +31,7 @@ internal open class ListPermission : DefaultTask() {
 
     @TaskAction
     fun run() {
-        variant.scope.getArtifactFileCollection(RUNTIME_CLASSPATH, ALL, AAR).files.forEach { aar ->
+        variant.getArtifactCollection(RUNTIME_CLASSPATH, ALL, AAR).artifactFiles.forEach { aar ->
             ZipFile(aar).use { zip ->
                 zip.getEntry(SdkConstants.FN_ANDROID_MANIFEST_XML)?.let { entry ->
                     zip.getInputStream(entry).use { source ->

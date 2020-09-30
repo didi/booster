@@ -1,4 +1,4 @@
-apply from: '../gradle/booster.gradle'
+apply from: "$rootDir/gradle/booster.gradle"
 
 dependencies {
     api gradleApi()
