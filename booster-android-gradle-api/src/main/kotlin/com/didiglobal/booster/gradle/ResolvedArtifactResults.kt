@@ -23,7 +23,7 @@ class ResolvedArtifactResults(private val variant: BaseVariant) : Collection<Res
 
     private val results = listOf(AAR, JAR)
             .asSequence()
-            .map { variant.scope.getArtifactCollection(RUNTIME_CLASSPATH, ALL, it) }
+            .map { variant.getArtifactCollection(RUNTIME_CLASSPATH, ALL, it) }
             .map { it.artifacts }
             .flatten()
             .filter { it.id.componentIdentifier !is ProjectComponentIdentifier }
@@ -76,7 +76,7 @@ class ResolvedArtifactResults(private val variant: BaseVariant) : Collection<Res
     /**
      * Default output location: $buildDir/intermediates/dependencies/${variantDirName}/dependencies.txt
      */
-    private fun makeDependenciesOutput() = variant.scope.globalScope.intermediatesDir.file(
+    private fun makeDependenciesOutput() = variant.globalScope.intermediatesDir.file(
             "dependencies",
             variant.dirName.separatorsToSystem(),
             "dependencies.txt"

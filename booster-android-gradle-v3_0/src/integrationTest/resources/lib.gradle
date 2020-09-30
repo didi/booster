@@ -1,0 +1,59 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+        jcenter()
+        maven { url 'https://oss.sonatype.org/content/repositories/public/' }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:${project.android_gradle_version}"
+        classpath("com.didiglobal.booster:booster-gradle-plugin:${project.booster_version}") {
+            exclude group: 'com.google.guava'
+        }
+        classpath "io.bootstage.testkit:testkit-gradle-plugin:1.1.0"
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'com.didiglobal.booster'
+apply plugin: 'io.bootstage.testkit'
+
+android {
+    compileSdkVersion project.compile_sdk_version as Integer
+    buildToolsVersion project.build_tools_version
+    defaultConfig {
+        minSdkVersion  project.min_sdk_version as Integer
+        targetSdkVersion project.target_sdk_version as Integer
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    flavorDimensions 'lang'
+    productFlavors {
+        en {
+            dimension 'lang'
+        }
+        cn {
+            dimension 'lang'
+        }
+    }
+    lintOptions {
+        checkReleaseBuilds false
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    google()
+    jcenter()
+    maven { url 'https://oss.sonatype.org/content/repositories/public/' }
+}

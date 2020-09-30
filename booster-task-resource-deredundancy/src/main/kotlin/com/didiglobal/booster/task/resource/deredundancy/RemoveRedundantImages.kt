@@ -4,7 +4,6 @@ import com.android.SdkConstants
 import com.android.build.gradle.api.BaseVariant
 import com.didiglobal.booster.compression.CompressionResults
 import com.didiglobal.booster.gradle.mergedManifests
-import com.didiglobal.booster.gradle.scope
 import com.didiglobal.booster.kotlinx.search
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
@@ -25,7 +24,7 @@ internal open class RemoveRedundantImages: DefaultTask() {
     val supportsRtl: Boolean
         get() {
             val parser = SAXParserFactory.newInstance().newSAXParser()
-            return variant.scope.mergedManifests.search {
+            return variant.mergedManifests.search {
                 it.name == SdkConstants.ANDROID_MANIFEST_XML
             }.parallelStream().map { manifest ->
                 LayoutDirHandler().let {

@@ -9,7 +9,6 @@ import com.didiglobal.booster.gradle.aapt2Enabled
 import com.didiglobal.booster.gradle.mergeResourcesTask
 import com.didiglobal.booster.gradle.mergedRes
 import com.didiglobal.booster.gradle.project
-import com.didiglobal.booster.gradle.scope
 import com.didiglobal.booster.kotlinx.search
 import com.didiglobal.booster.task.spi.VariantProcessor
 import com.google.auto.service.AutoService
@@ -24,7 +23,7 @@ class CwebpCompressionVariantProcessor : VariantProcessor {
         val results = CompressionResults()
         val filter = if (variant.project.aapt2Enabled) ::isFlatPngExceptRaw else ::isPngExceptRaw
         Cwebp.get(variant)?.newCompressionTaskCreator()?.createCompressionTask(variant, results, "resources", {
-            variant.scope.mergedRes.search(filter)
+            variant.mergedRes.search(filter)
         }, variant.mergeResourcesTask)?.doLast {
             results.generateReport(variant, Build.ARTIFACT)
         }

@@ -37,10 +37,14 @@ class FileSearch internal constructor(private val roots: Iterable<File>, private
 
 }
 
+@JvmOverloads
 fun File.search(filter: (File) -> Boolean = { true }): Collection<File> = FileSearch(this, filter).execute()
 
+@JvmOverloads
 fun Iterable<File>.search(filter: (File) -> Boolean = { true }): Collection<File> = FileSearch(this, filter).execute()
 
+@JvmOverloads
 fun Iterator<File>.search(filter: (File) -> Boolean = { true }): Collection<File> = FileSearch(this.asIterable(), filter).execute()
 
+@JvmOverloads
 fun Array<File>.search(filter: (File) -> Boolean = { true }): Collection<File> = FileSearch(this, filter).execute()

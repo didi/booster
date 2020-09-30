@@ -1,0 +1,26 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+        jcenter()
+        maven { url 'https://oss.sonatype.org/content/repositories/public/' }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    google()
+    jcenter()
+    maven { url 'https://oss.sonatype.org/content/repositories/public/' }
+}
+
+dependencies {
+    implementation "com.android.tools.build:gradle:${project.android_gradle_version}"
+    implementation("com.didiglobal.booster:booster-android-gradle-api:${project.booster_version}") {
+        exclude group: 'com.google.guava'
+    }
+    implementation "io.bootstage.testkit:testkit-gradle-plugin:1.1.0"
+}

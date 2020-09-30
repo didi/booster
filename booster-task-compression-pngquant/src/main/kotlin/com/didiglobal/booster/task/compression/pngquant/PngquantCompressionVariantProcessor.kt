@@ -11,7 +11,6 @@ import com.didiglobal.booster.gradle.aapt2Enabled
 import com.didiglobal.booster.gradle.mergeResourcesTask
 import com.didiglobal.booster.gradle.mergedRes
 import com.didiglobal.booster.gradle.project
-import com.didiglobal.booster.gradle.scope
 import com.didiglobal.booster.kotlinx.search
 import com.didiglobal.booster.task.spi.VariantProcessor
 import com.google.auto.service.AutoService
@@ -30,7 +29,7 @@ class PngquantCompressionVariantProcessor : VariantProcessor {
             it.variant.name == variant.name
         }
         Pngquant.get(variant)?.newCompressionTaskCreator()?.createCompressionTask(variant, results, "resources", {
-            variant.scope.mergedRes.search(filter)
+            variant.mergedRes.search(filter)
         }, *(compress + variant.mergeResourcesTask).toTypedArray())?.doLast {
             results.generateReport(variant, Build.ARTIFACT)
         }

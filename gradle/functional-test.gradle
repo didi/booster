@@ -1,0 +1,35 @@
+sourceSets {
+    functionalTest {
+        java {
+            srcDirs += []
+        }
+        kotlin {
+            srcDirs += ['src/functionalTest/kotlin', 'src/functionalTest/java']
+        }
+        resources.srcDir file('src/functionalTest/resources')
+        compileClasspath += sourceSets.main.output + configurations.testRuntime
+        runtimeClasspath += output + compileClasspath
+    }
+}
+
+configurations {
+    functionalTestImplementation.extendsFrom testImplementation
+    functionalTestRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
+task functionalTest(type: Test) {
+    description = 'Runs the functional tests.'
+    group = 'verification'
+    testClassesDirs = sourceSets.functionalTest.output.classesDirs
+    classpath = sourceSets.functionalTest.runtimeClasspath
+    mustRunAfter test, integrationTest
+    testLogging {
+        events "passed", "skipped", "failed", "standardError"
+    }
+}
+
+check.dependsOn functionalTest
+
+compileFunctionalTestKotlin {
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8
+}

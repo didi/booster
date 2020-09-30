@@ -1,0 +1,10 @@
+apply from: "$rootDir/gradle/booster.gradle"
+
+dependencies {
+    api gradleApi()
+    compileOnly 'com.android.tools.build:gradle:3.0.0'
+    testCompileOnly 'com.android.tools.build:gradle:3.0.0'
+    testApi project(':booster-build')
+    testApi gradleTestKit()
+    testApi 'org.spockframework:spock-core:1.3-groovy-2.5'
+}
