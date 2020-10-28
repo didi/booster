@@ -16,6 +16,8 @@ gradlePlugin {
     plugins {
         boosterPlugin {
             id = 'com.didiglobal.booster'
+            displayName = "${id}.gradle.plugin"
+            description = project.description ?: project.name
             implementationClass = 'com.didiglobal.booster.gradle.BoosterPlugin'
         }
     }

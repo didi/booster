@@ -31,7 +31,7 @@ allprojects { project ->
     apply plugin: 'de.marcphilipp.nexus-publish'
 
     group = 'com.didiglobal.booster'
-    version = '3.0.0-SNAPSHOT'
+    version = '3.0.0-alpha-1'
 
     repositories {
         mavenLocal()
@@ -73,55 +73,54 @@ allprojects { project ->
         }
     }
 
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                groupId = project.group
-                artifactId = project.name
-                version = project.version
+    def configurePublication = { MavenPublication publication ->
+        groupId = project.group
+        artifactId = project.name
+        version = project.version
 
-                from components.java
+        if ("mavenJava" == publication.name) {
+            from components.java
+        }
 
-                artifact project.packageSources {
-                    classifier "sources"
+        artifact project.packageSources {
+            classifier "sources"
+        }
+
+        artifact project.packageJavadoc {
+            classifier "javadoc"
+        }
+
+        pom {
+            name = project.name
+            url = 'https://github.com/didi/booster'
+            description = project.description ?: project.name
+
+            scm {
+                connection = 'scm:git:git://github.com/didi/booster.git'
+                developerConnection = 'scm:git:git@github.com:didi/booster.git'
+                url = 'https://github.com/didi/booster'
+            }
+
+            licenses {
+                license {
+                    name = 'Apache License'
+                    url = 'https://www.apache.org/licenses/LICENSE-2.0'
                 }
+            }
 
-                artifact project.packageJavadoc {
-                    classifier "javadoc"
-                }
-
-                pom {
-                    name = project.name
-                    url = 'https://github.com/didi/booster'
-                    description = project.description ?: project.name
-
-                    scm {
-                        connection = 'scm:git:git://github.com/didi/booster.git'
-                        developerConnection = 'scm:git:git@github.com:didi/booster.git'
-                        url = 'https://github.com/didi/booster'
-                    }
-
-                    licenses {
-                        license {
-                            name = 'Apache License'
-                            url = 'https://www.apache.org/licenses/LICENSE-2.0'
-                        }
-                    }
-                }
-                pom.withXml { xml ->
-                    (['git', 'log', '--format=%aN %aE'].execute() | ['sort', '-u'].execute()).with {
-                        waitForOrKill(5000)
-                        if (0 == exitValue()) {
-                            def developers = xml.asNode().appendNode('developers')
-                            text.eachLine { line ->
-                                def sp = line.lastIndexOf(' ')
-                                if (sp > 0) {
-                                    def id = line.substring(0, sp).trim()
-                                    def email = line.substring(sp + 1).trim()
-                                    developers.appendNode('developer').with {
-                                        appendNode('id', id)
-                                        appendNode('email', email)
-                                    }
+            withXml { xml ->
+                (['git', 'log', '--format=%aN %aE'].execute() | ['sort', '-u'].execute()).with {
+                    waitForOrKill(5000)
+                    if (0 == exitValue()) {
+                        def developers = xml.asNode().appendNode('developers')
+                        text.eachLine { line ->
+                            def sp = line.lastIndexOf(' ')
+                            if (sp > 0) {
+                                def id = line.substring(0, sp).trim()
+                                def email = line.substring(sp + 1).trim()
+                                developers.appendNode('developer').with {
+                                    appendNode('id', id)
+                                    appendNode('email', email)
                                 }
                             }
                         }
@@ -129,13 +128,26 @@ allprojects { project ->
                 }
             }
         }
+
+
+        if (!project.hasProperty("signing.skip")) {
+            apply plugin: 'signing'
+
+            project.signing {
+                sign publication
+            }
+        }
     }
 
-    if (!project.hasProperty("signing.skip")) {
-        apply plugin: 'signing'
-
-        signing {
-            sign publishing.publications.mavenJava
+    project.afterEvaluate {
+        publishing {
+            publications {
+                if (project.plugins.hasPlugin('java-gradle-plugin')) {
+                    withType(MavenPublication).configureEach(configurePublication)
+                } else {
+                    mavenJava(MavenPublication, configurePublication)
+                }
+            }
         }
     }
 }
@@ -185,20 +197,20 @@ task reference(type: org.jetbrains.dokka.gradle.DokkaTask, group: 'Documentation
             suppress = true
         }
         includes = [
-            'booster-aapt2/packages-zh-CN.md',
-            'booster-android-gradle-api/packages-zh-CN.md',
-            'booster-annotations/packages-zh-CN.md',
-            'booster-api/packages-zh-CN.md',
-            'booster-build/packages-zh-CN.md',
-            'booster-cha/packages-zh-CN.md',
-            'booster-command/packages-zh-CN.md',
-            'booster-kotlinx/packages-zh-CN.md',
-            'booster-task-compression/packages-zh-CN.md',
-            'booster-task-spi/packages-zh-CN.md',
-            'booster-transform-asm/packages-zh-CN.md',
-            'booster-transform-javassist/packages-zh-CN.md',
-            'booster-transform-spi/packages-zh-CN.md',
-            'booster-transform-util/packages-zh-CN.md',
+                'booster-aapt2/packages-zh-CN.md',
+                'booster-android-gradle-api/packages-zh-CN.md',
+                'booster-annotations/packages-zh-CN.md',
+                'booster-api/packages-zh-CN.md',
+                'booster-build/packages-zh-CN.md',
+                'booster-cha/packages-zh-CN.md',
+                'booster-command/packages-zh-CN.md',
+                'booster-kotlinx/packages-zh-CN.md',
+                'booster-task-compression/packages-zh-CN.md',
+                'booster-task-spi/packages-zh-CN.md',
+                'booster-transform-asm/packages-zh-CN.md',
+                'booster-transform-javassist/packages-zh-CN.md',
+                'booster-transform-spi/packages-zh-CN.md',
+                'booster-transform-util/packages-zh-CN.md',
         ]
         jdkVersion = 8
     }
