@@ -16,7 +16,7 @@ internal val BaseVariant.scope: VariantScope
 @Suppress("DEPRECATION")
 internal val BaseVariant.globalScope: GlobalScope
     get() = AGP.run {
-        globalScope
+        scope.globalScope
     }
 
 /**
