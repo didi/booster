@@ -19,7 +19,7 @@ import java.io.File
  */
 @Suppress("DEPRECATION")
 val BaseVariant.project: Project
-    get() = globalScope.project
+    get() = AGP.run { globalScope }.project
 
 /**
  * The `android` extension associates with this variant

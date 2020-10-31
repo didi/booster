@@ -76,7 +76,7 @@ class ResolvedArtifactResults(private val variant: BaseVariant) : Collection<Res
     /**
      * Default output location: $buildDir/intermediates/dependencies/${variantDirName}/dependencies.txt
      */
-    private fun makeDependenciesOutput() = variant.globalScope.intermediatesDir.file(
+    private fun makeDependenciesOutput() = AGP.run { variant.globalScope }.intermediatesDir.file(
             "dependencies",
             variant.dirName.separatorsToSystem(),
             "dependencies.txt"

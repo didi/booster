@@ -64,175 +64,151 @@ abstract class V41IntegrationTest(val isLib: Boolean) {
     @Test
     @Case(ScopeFullWithFeaturesTest::class)
     fun `test AGPInterface#scopeFullWithFeatures`() {
-
     }
 
     @Test
     @Case(ScopeFullLibraryWithFeaturesTest::class)
     fun `test AGPInterface#scopeFullLibraryWithFeatures`() {
-
     }
 
     @Test
     @Case(ProjectTest::class)
     fun `test AGPInterface#project`() {
-
     }
 
     @Test
     @Case(JavaCompilerTaskTestUnit::class)
     fun `test AGPInterface#javaCompilerTask`() {
-
     }
 
     @Test
     @Case(PreBuildTaskTestUnit::class)
     fun `test AGPInterface#preBuildTask`() {
-
     }
 
     @Test
     @Case(AssembleTaskTestUnit::class)
     fun `test AGPInterface#assembleTask`() {
-
     }
 
     @Test
     @Case(MergeAssetsTaskTestUnit::class)
     fun `test AGPInterface#mergeAssetsTask`() {
-
     }
 
     @Test
     @Case(MergeResourcesTaskTestUnit::class)
     fun `test AGPInterface#mergeResources`() {
-
     }
 
     @Test
     @Case(GetTaskNameTestUnit::class)
     fun `test AGPInterface#getTaskName(String)`() {
-
     }
 
     @Test
     @Case(GetTaskName2TestUnit::class)
     fun `test AGPInterface#getTaskName(String, String)`() {
-
     }
 
     @Test
     @Case(VariantDataTestUnit::class)
     fun `test AGPInterface#variantData`() {
-
     }
 
     @Test
     @Case(VariantScopeTestUnit::class)
     fun `test AGPInterface#variantScope`() {
+    }
 
+    @Test
+    @Case(GlobalScopeTestCase::class)
+    fun `test AGPInterface#globalScope`() {
     }
 
     @Test
     @Case(OriginalApplicationIdTestUnit::class)
     fun `test AGPInterface#originalApplicationId`() {
-
     }
 
     @Test
     @Case(HasDynamicFeatureTestUnit::class)
     fun `test AGPInterface#hasDynamicFeature`() {
-
     }
 
     @Test
     @Case(RawAndroidResourcesTestUnit::class)
     fun `test AGPInterface#rawAndroidResources`() {
-
     }
 
     @Test
     @Case(AllArtifactsTestUnit::class)
     fun `test AGPInterface#allArtifacts`() {
-
     }
 
     @Test
     @Case(MinSdkVersionTestUnit::class)
     fun `test AGPInterface#minSdkVersion`() {
-
     }
 
     @Test
     @Case(TargetSdkVersionTestUnit::class)
     fun `test AGPInterface#targetSdkVersion`() {
-
     }
 
     @Test
     @Case(VariantTypeTestUnit::class)
     fun `test AGPInterface#variantType`() {
-
     }
 
     @Test
     @Case(AarTestUnit::class)
     fun `test AGPInterface#aar`() {
-
     }
 
     @Test
     @Case(ApkTestUnit::class)
     fun `test AGPInterface#apk`() {
-
     }
 
     @Test
     @Case(MergedManifestsTestUnit::class)
     fun `test AGPInterface#mergedManifests`() {
-
     }
 
     @Test
     @Case(MergedResourcesTestUnit::class)
     fun `test AGPInterface#mergedRes`() {
-
     }
 
     @Test
     @Case(MergedAssetsTestUnit::class)
     fun `test AGPInterface#mergedAssets`() {
-
     }
 
     @Test
     @Case(ProcessedResTestUnit::class)
     fun `test AGPInterface#processedRes`() {
-
     }
 
     @Test
     @Case(SymbolListTestUnit::class)
     fun `test AGPInterface#symbolList`() {
-
     }
 
     @Test
     @Case(SymbolListWithPackageNameTestUnit::class)
     fun `test AGPInterface#symbolListWithPackageName`() {
-
     }
 
     @Test
     @Case(AllClassesTestUnit::class)
     fun `test AGPInterface#allClasses`() {
-
     }
 
     @Test
     @Case(BuildToolsTestUnit::class)
     fun `test AGPInterface#buildTools`() {
-
     }
 
 }
@@ -314,14 +290,18 @@ class VariantDataTestUnit : VariantTestCase() {
     override fun apply(variant: BaseVariant) {
         assertNotNull(AGP.run { variant.variantData })
     }
-
 }
 
 class VariantScopeTestUnit : VariantTestCase() {
     override fun apply(variant: BaseVariant) {
         assertNotNull(AGP.run { variant.variantScope })
     }
+}
 
+class GlobalScopeTestCase : VariantTestCase() {
+    override fun apply(variant: BaseVariant) {
+        assertNotNull(AGP.run { variant.globalScope })
+    }
 }
 
 class OriginalApplicationIdTestUnit : VariantTestCase() {

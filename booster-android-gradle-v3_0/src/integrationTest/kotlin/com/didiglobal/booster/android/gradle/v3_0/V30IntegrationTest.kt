@@ -122,6 +122,11 @@ abstract class V30IntegrationTest(val isLib: Boolean) {
     }
 
     @Test
+    @Case(GlobalScopeTestCase::class)
+    fun `test AGPInterface#globalScope`() {
+    }
+
+    @Test
     @Case(OriginalApplicationIdTestCase::class)
     fun `test AGPInterface#originalApplicationId`() {
     }
@@ -285,14 +290,18 @@ class VariantDataTestCase : VariantTestCase() {
     override fun apply(variant: BaseVariant) {
         assertNotNull(AGP.run { variant.variantData })
     }
-
 }
 
 class VariantScopeTestCase : VariantTestCase() {
     override fun apply(variant: BaseVariant) {
         assertNotNull(AGP.run { variant.variantScope })
     }
+}
 
+class GlobalScopeTestCase : VariantTestCase() {
+    override fun apply(variant: BaseVariant) {
+        assertNotNull(AGP.run { variant.globalScope })
+    }
 }
 
 class OriginalApplicationIdTestCase : VariantTestCase() {

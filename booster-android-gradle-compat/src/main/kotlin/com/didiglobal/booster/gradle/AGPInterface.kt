@@ -10,6 +10,7 @@ import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.pipeline.TransformManager
 import com.android.build.gradle.internal.pipeline.TransformTask
 import com.android.build.gradle.internal.publishing.AndroidArtifacts
+import com.android.build.gradle.internal.scope.GlobalScope
 import com.android.build.gradle.internal.scope.VariantScope
 import com.android.build.gradle.internal.variant.BaseVariantData
 import com.android.builder.core.VariantType
@@ -48,6 +49,8 @@ interface AGPInterface {
     val BaseVariant.variantData: BaseVariantData
 
     val BaseVariant.variantScope: VariantScope
+
+    val BaseVariant.globalScope: GlobalScope
 
     val BaseVariant.originalApplicationId: String
 

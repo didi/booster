@@ -90,6 +90,9 @@ object V40 : AGPInterface {
     override val BaseVariant.variantScope: VariantScope
         get() = variantData.scope
 
+    override val BaseVariant.globalScope: GlobalScope
+        get() = variantScope.globalScope
+
     override val BaseVariant.originalApplicationId: String
         get() = variantData.variantDslInfo.originalApplicationId
 
