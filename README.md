@@ -72,12 +72,12 @@ The best practise of using Booster is integrating the specific moudle to solve t
 
 ```groovy
 buildscript {
-    ext.booster_version = '2.4.0'
+    ext.booster_version = '3.0.0'
     repositories {
         google()
         mavenCentral()
         jcenter()
-        
+
         // OPTIONAL If you want to use SNAPSHOT version, sonatype repository is required.
         maven { url 'https://oss.sonatype.org/content/repositories/public' }
     }
@@ -93,7 +93,7 @@ allprojects {
         google()
         mavenCentral()
         jcenter()
-        
+
         // OPTIONAL If you want to use SNAPSHOT version, sonatype repository is required.
         maven { url 'https://oss.sonatype.org/content/repositories/public' }
     }
@@ -102,6 +102,8 @@ allprojects {
 apply plugin: 'com.android.application'
 apply plugin: 'com.didiglobal.booster' // ③
 ```
+
+The `plugins` DSL also supported since Booster 3.0.0
 
 Here are all the modules of Booster:
 
