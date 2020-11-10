@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static com.didiglobal.booster.instrument.Constants.TAG;
+import static com.didiglobal.booster.instrument.Intrinsics.sanitizeStackTrace;
 import static com.didiglobal.booster.instrument.Reflection.getFieldValue;
 import static com.didiglobal.booster.instrument.Reflection.getStaticFieldValue;
 import static com.didiglobal.booster.instrument.Reflection.invokeMethod;
@@ -103,13 +104,13 @@ class ActivityThreadCallback implements Handler.Callback {
 
     private void rethrowIfCausedByUser(final RuntimeException e) {
         if (isCausedByUser(e)) {
-            throw e;
+            throw sanitizeStackTrace(e, getClass());
         }
     }
 
     private void rethrowIfCausedByUser(final Error e) {
         if (isCausedByUser(e)) {
-            throw e;
+            throw sanitizeStackTrace(e, getClass());
         }
     }
 
