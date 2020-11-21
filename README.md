@@ -66,7 +66,7 @@ The following table lists which version of Gradle is required for each version o
 
 ## Best Practise | 最佳实践
 
-The best practise of using Booster is integrating the specific moudle to solve the problems you have encountered as following:
+The best practise of using Booster is integrating the specific module to solve the problems you have encountered as following:
 
 > 集成 Booster 的最佳方式是集成真正需要的模块来解决项目中遇到的特定问题。
 
