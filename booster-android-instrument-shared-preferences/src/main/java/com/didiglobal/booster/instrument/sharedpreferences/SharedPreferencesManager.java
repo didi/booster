@@ -2,7 +2,6 @@ package com.didiglobal.booster.instrument.sharedpreferences;
 
 import android.content.Context;
 import android.util.Log;
-
 import com.didiglobal.booster.instrument.sharedpreferences.io.XmlUtils;
 
 import java.io.BufferedInputStream;
@@ -13,8 +12,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static com.didiglobal.booster.instrument.sharedpreferences.io.IoUtils.close;
 
@@ -28,7 +25,6 @@ class SharedPreferencesManager {
     private static final int S_IRWXG = 00070;
     private static final int S_IRWXO = 00007;
 
-    private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     private final File mSpFile;
     private final File mTempFile;
 
@@ -39,45 +35,47 @@ class SharedPreferencesManager {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     boolean write(final Map<String, Object> map) {
-        if (!mTempFile.exists()) {
-            try {
-                mTempFile.createNewFile();
-            } catch (final IOException e) {
-                prepare();
-                try {
-                    mTempFile.createNewFile();
-                } catch (IOException ex) {
-                    Log.e(TAG, "Couldn't create tempfile" + mTempFile, ex);
-                }
-                return false;
-            }
-        }
+        SharedPreferencesLock lock = null;
         FileOutputStream fos = null;
         try {
-            fos = new FileOutputStream(mTempFile);
-        } catch (final FileNotFoundException e) {
-            Log.e(TAG, "Couldn't write SharedPreferences file " + mTempFile, e);
-        }
-        if (fos != null) {
-            final Lock lock = readWriteLock.writeLock();
+            lock = new SharedPreferencesLock(mSpFile).writeLock();
+            if (!mTempFile.exists()) {
+                try {
+                    mTempFile.createNewFile();
+                } catch (final IOException e) {
+                    prepare();
+                    try {
+                        mTempFile.createNewFile();
+                    } catch (IOException ex) {
+                        Log.e(TAG, "Couldn't create tempfile" + mTempFile, ex);
+                    }
+                    return false;
+                }
+            }
             try {
-                lock.lock();
+                fos = new FileOutputStream(mTempFile);
+            } catch (final FileNotFoundException e) {
+                Log.e(TAG, "Couldn't write SharedPreferences file " + mTempFile, e);
+            }
+            if (fos != null) {
                 XmlUtils.writeMapXml(map, fos);
                 sync(fos);
                 if (mSpFile.exists()) {
                     mSpFile.delete();
                 }
                 return mTempFile.renameTo(mSpFile);
-            } catch (final Exception e) {
-                Log.e(TAG, "write message failed : " + e.getMessage());
-                return false;
-            } finally {
-                lock.unlock();
-                close(fos);
             }
-
+        } catch (final Exception e) {
+            Log.e(TAG, "write message failed : " + e.getMessage());
+            return false;
+        } finally {
+            close(fos);
+            if (lock != null) {
+                lock.unlock();
+            }
         }
         return false;
+
     }
 
     Map<String, Object> read() {
@@ -87,9 +85,9 @@ class SharedPreferencesManager {
         prepare();
         if (mSpFile.canRead()) {
             BufferedInputStream str = null;
-            final Lock lock = readWriteLock.readLock();
+            Lock lock = null;
             try {
-                lock.lock();
+                lock =new SharedPreferencesLock(mSpFile).readLock();
                 str = new BufferedInputStream(new FileInputStream(this.mSpFile), 16 * 1024);
                 return XmlUtils.readMapXml(str);
             } catch (Exception e) {
