@@ -35,10 +35,11 @@ class SharedPreferencesManager {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     boolean write(final Map<String, Object> map) {
-        SharedPreferencesLock lock = null;
+        Lock lock = null;
         FileOutputStream fos = null;
         try {
             lock = new SharedPreferencesLock(mSpFile).writeLock();
+            lock.lock();
             if (!mTempFile.exists()) {
                 try {
                     mTempFile.createNewFile();
@@ -88,6 +89,7 @@ class SharedPreferencesManager {
             Lock lock = null;
             try {
                 lock =new SharedPreferencesLock(mSpFile).readLock();
+                lock.lock();
                 str = new BufferedInputStream(new FileInputStream(this.mSpFile), 16 * 1024);
                 return XmlUtils.readMapXml(str);
             } catch (Exception e) {
