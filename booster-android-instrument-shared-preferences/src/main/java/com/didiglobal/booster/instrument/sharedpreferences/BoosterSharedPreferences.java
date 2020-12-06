@@ -1,21 +1,14 @@
 package com.didiglobal.booster.instrument.sharedpreferences;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.FileObserver;
 import android.os.Handler;
 import android.os.Looper;
 import com.didiglobal.booster.instrument.ShadowExecutors;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
+import java.io.File;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,12 +20,14 @@ public final class BoosterSharedPreferences implements SharedPreferences {
     private static final ExecutorService SYNC_EXECUTOR = Executors.newCachedThreadPool();
     private static final Map<String, BoosterSharedPreferences> sSharedPreferencesMap = new ConcurrentHashMap<>();
     private static final Object SENTINEL = new Object();
+    private static String sSharedPreferencesDir;
 
     private final Map<OnSharedPreferenceChangeListener, Object> mListeners = Collections.synchronizedMap(new WeakHashMap<>());
     private final Object mLock = new Object();
     private final Object mLoadLock = new Object();
     private final ExecutorService mWriteExecutor;
     private final SharedPreferencesManager mManager;
+    private final FileChangeObserver mObserver;
 
     private volatile boolean mLoaded = false;
     private Map<String, Object> mKeyValueMap = new ConcurrentHashMap<>();
@@ -40,6 +35,15 @@ public final class BoosterSharedPreferences implements SharedPreferences {
     private BoosterSharedPreferences(final Context context, final String name) {
         mWriteExecutor = ShadowExecutors.newOptimizedSingleThreadExecutor(name);
         mManager = new SharedPreferencesManager(context, name);
+        if (sSharedPreferencesDir == null) {
+            sSharedPreferencesDir = context.getFilesDir().getParent() + File.separator + "shared_prefs";
+            final File file = new File(sSharedPreferencesDir);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+        }
+        mObserver = new FileChangeObserver(name);
+        mObserver.startWatching();
         startLoadFromDisk();
     }
 
@@ -311,7 +315,41 @@ public final class BoosterSharedPreferences implements SharedPreferences {
     private class LoadThread implements Runnable {
         @Override
         public void run() {
+            mObserver.stopWatching();
             loadFromXml();
+            mObserver.startWatching();
+        }
+    }
+
+    private class FileChangeObserver extends FileObserver {
+
+        private static final int FILE_EVENTS = CLOSE_WRITE;
+        private final String name;
+
+        FileChangeObserver(String name) {
+            super(sSharedPreferencesDir, FILE_EVENTS);
+            this.name = name + ".xml";
+        }
+
+        @Override
+        public void onEvent(int event, String path) {
+            if (!name.equals(path)) {
+                return;
+            }
+            if (event == CLOSE_WRITE) {
+                SYNC_EXECUTOR.execute(new LoadThread());
+                mObserver.startWatching();
+            }
+        }
+
+        @Override
+        public synchronized void startWatching() {
+            super.startWatching();
+        }
+
+        @Override
+        public synchronized void stopWatching() {
+            super.stopWatching();
         }
     }
 }
