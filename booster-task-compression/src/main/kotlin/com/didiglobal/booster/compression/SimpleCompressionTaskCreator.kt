@@ -21,7 +21,7 @@ class SimpleCompressionTaskCreator(private val tool: CompressionTool, private va
 
     override fun getCompressionTaskClass(aapt2: Boolean) = compressor(aapt2)
 
-    override fun createCompressionTask(variant: BaseVariant, results: CompressionResults, name: String, supplier: () -> Collection<File>, vararg deps: Task): CompressImages<out CompressionOptions> {
+    override fun createCompressionTask(variant: BaseVariant, results: CompressionResults, name: String, supplier: () -> Collection<File>, filter: (String) -> Boolean, vararg deps: Task): CompressImages<out CompressionOptions> {
         val aapt2 = variant.project.aapt2Enabled
         val install = getCommandInstaller(variant)
 
@@ -30,7 +30,7 @@ class SimpleCompressionTaskCreator(private val tool: CompressionTool, private va
             task.variant = variant
             task.results = results
             task.supplier = {
-                supplier.invoke().filter { it.length() > 0 }.sortedBy { it }
+                supplier().filter { it.length() > 0 }.sortedBy { it }
             }
         }.apply {
             dependsOn(install, deps)
