@@ -47,6 +47,8 @@ internal open class PngquantCompressFlatImages : AbstractPngquantCompressImages(
 
         images.parallelStream().map {
             it to it.metadata
+        }.filter {
+            this.filter(it.second.resourceName)
         }.map {
             val output = compressedRes.file("${it.second.resourcePath.substringBeforeLast('.')}$DOT_PNG")
             Aapt2ActionData(it.first, it.second, output,
