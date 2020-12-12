@@ -7,6 +7,7 @@ import com.didiglobal.booster.command.CommandInstaller
 import com.didiglobal.booster.compression.CompressionOptions
 import com.didiglobal.booster.compression.CompressionResults
 import com.didiglobal.booster.compression.CompressionTool
+import com.didiglobal.booster.compression.ResourceNameFilter
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
@@ -30,6 +31,11 @@ abstract class CompressImages<T : CompressionOptions> : DefaultTask() {
     lateinit var options: T
 
     lateinit var supplier: () -> Collection<File>
+
+    /**
+     * The resource path filter
+     */
+    var filter: ResourceNameFilter = { true }
 
     val compressor: File
         get() = project.tasks.withType(CommandInstaller::class.java).find {

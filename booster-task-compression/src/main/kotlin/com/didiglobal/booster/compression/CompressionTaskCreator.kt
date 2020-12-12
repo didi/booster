@@ -29,6 +29,20 @@ interface CompressionTaskCreator {
      * @param supplier The image supplier
      * @param deps The dependent tasks
      */
-    fun createCompressionTask(variant: BaseVariant, results: CompressionResults, name: String, supplier: () -> Collection<File>, vararg deps: Task): CompressImages<out CompressionOptions>
+    fun createCompressionTask(variant: BaseVariant, results: CompressionResults, name: String, supplier: () -> Collection<File>, vararg deps: Task): CompressImages<out CompressionOptions> = createCompressionTask(variant, results, name, supplier, { true }, *deps)
+
+    /**
+     * Returns a task for compression
+     *
+     * @param variant The build variant
+     * @param results The compression results for report generating
+     * @param name The name of task
+     * @param supplier The image supplier
+     * @param filter The resource name filter
+     * @param deps The dependent tasks
+     */
+    fun createCompressionTask(variant: BaseVariant, results: CompressionResults, name: String, supplier: () -> Collection<File>, filter: ResourceNameFilter, vararg deps: Task): CompressImages<out CompressionOptions>
 
 }
+
+typealias ResourceNameFilter = (String) -> Boolean
