@@ -1,5 +1,6 @@
 package com.didiglobal.booster.task.compression.pngquant
 
+import com.android.SdkConstants
 import com.android.SdkConstants.DOT_PNG
 import com.didiglobal.booster.compression.CompressionResult
 import com.didiglobal.booster.compression.task.ActionData
@@ -24,7 +25,9 @@ internal open class PngquantCompressImages : AbstractPngquantCompressImages() {
     override fun compress() {
         val pngquant = this.compressor.canonicalPath
 
-        images.parallelStream().map {
+        images.parallelStream().filter {
+            this.filter("${it.parent.substringBefore(SdkConstants.RES_QUALIFIER_SEP)}/${it.nameWithoutExtension}")
+        }.map {
             ActionData(it, it, listOf(pngquant, "--strip", "--skip-if-larger", "-f", "--ext", DOT_PNG, "-s", "${options.speed}", "-Q", "${options.quality}-100", it.absolutePath))
         }.forEach {
             val s0 = it.input.length()
