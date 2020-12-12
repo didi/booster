@@ -1,5 +1,6 @@
 package com.didiglobal.booster.task.compression.cwebp
 
+import com.android.SdkConstants
 import com.didiglobal.booster.compression.CompressionResult
 import com.didiglobal.booster.compression.task.ActionData
 import com.didiglobal.booster.kotlinx.CSI_RED
@@ -22,7 +23,9 @@ internal open class CwebpCompressImages : AbstractCwebpCompressImages() {
 
     override fun compress(filter: (File) -> Boolean) {
         val cwebp = compressor.canonicalPath
-        images.parallelStream().filter(filter).map { input ->
+        images.parallelStream().filter {
+            this.filter("${it.parent.substringBefore(SdkConstants.RES_QUALIFIER_SEP)}/${it.nameWithoutExtension}")
+        }.filter(filter).map { input ->
             val output = File(input.absolutePath.substringBeforeLast('.') + ".webp")
             ActionData(input, output, listOf(cwebp, "-mt", "-quiet", "-q", options.quality.toString(), "-o", output.absolutePath, input.absolutePath))
         }.forEach {
