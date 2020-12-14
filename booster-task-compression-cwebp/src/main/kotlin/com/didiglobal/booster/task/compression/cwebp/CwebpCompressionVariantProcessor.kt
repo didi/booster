@@ -2,7 +2,6 @@ package com.didiglobal.booster.task.compression.cwebp
 
 import com.android.build.gradle.api.BaseVariant
 import com.didiglobal.booster.compression.CompressionResults
-import com.didiglobal.booster.compression.ResourceNameFilter
 import com.didiglobal.booster.compression.generateReport
 import com.didiglobal.booster.compression.isFlatPngExceptRaw
 import com.didiglobal.booster.compression.isPngExceptRaw
@@ -23,15 +22,13 @@ class CwebpCompressionVariantProcessor : VariantProcessor {
 
     override fun process(variant: BaseVariant) {
         val results = CompressionResults()
-        val filter: ResourceNameFilter = if (variant.project.hasProperty(PROPERTY_IGNORES)) {
-            val ignores = "${variant.project.property(PROPERTY_IGNORES)}".trim().split(',').map(Wildcard.Companion::valueOf).toSet();
-            { res -> ignores.none { it.matches(res) } }
-        } else {
-            { true }
-        }
+        val ignores = variant.project.findProperty(PROPERTY_IGNORES)?.toString()?.trim()?.split(',')?.map {
+            Wildcard(it)
+        }?.toSet() ?: emptySet()
+
         Cwebp.get(variant)?.newCompressionTaskCreator()?.createCompressionTask(variant, results, "resources", {
             variant.mergedRes.search(if (variant.project.aapt2Enabled) ::isFlatPngExceptRaw else ::isPngExceptRaw)
-        }, filter, variant.mergeResourcesTask)?.doLast {
+        }, ignores, variant.mergeResourcesTask)?.doLast {
             results.generateReport(variant, Build.ARTIFACT)
         }
     }

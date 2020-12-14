@@ -3,11 +3,14 @@ package com.didiglobal.booster.compression
 import com.android.build.gradle.api.BaseVariant
 import com.didiglobal.booster.command.CommandInstaller
 import com.didiglobal.booster.compression.task.CompressImages
+import com.didiglobal.booster.compression.task.MATCH_ALL_RESOURCES
+import com.didiglobal.booster.compression.task.excludes
 import com.didiglobal.booster.gradle.aapt2Enabled
 import com.didiglobal.booster.gradle.bundleResourcesTask
 import com.didiglobal.booster.gradle.mergeResourcesTask
 import com.didiglobal.booster.gradle.processResTask
 import com.didiglobal.booster.gradle.project
+import com.didiglobal.booster.kotlinx.Wildcard
 import org.gradle.api.Task
 import java.io.File
 import kotlin.reflect.KClass
@@ -21,7 +24,7 @@ class SimpleCompressionTaskCreator(private val tool: CompressionTool, private va
 
     override fun getCompressionTaskClass(aapt2: Boolean) = compressor(aapt2)
 
-    override fun createCompressionTask(variant: BaseVariant, results: CompressionResults, name: String, supplier: () -> Collection<File>, filter: (String) -> Boolean, vararg deps: Task): CompressImages<out CompressionOptions> {
+    override fun createCompressionTask(variant: BaseVariant, results: CompressionResults, name: String, supplier: () -> Collection<File>, ignores: Set<Wildcard>, vararg deps: Task): CompressImages<out CompressionOptions> {
         val aapt2 = variant.project.aapt2Enabled
         val install = getCommandInstaller(variant)
 
@@ -29,7 +32,7 @@ class SimpleCompressionTaskCreator(private val tool: CompressionTool, private va
             task.tool = tool
             task.variant = variant
             task.results = results
-            task.filter = filter
+            task.filter = if (ignores.isNotEmpty()) excludes(ignores) else MATCH_ALL_RESOURCES
             task.supplier = {
                 supplier().filter { it.length() > 0 }.sortedBy { it }
             }

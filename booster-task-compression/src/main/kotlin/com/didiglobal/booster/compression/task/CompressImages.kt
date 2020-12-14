@@ -1,13 +1,15 @@
 package com.didiglobal.booster.compression.task
 
+import com.android.SdkConstants
 import com.android.build.gradle.api.BaseVariant
 import com.didiglobal.booster.aapt2.Aapt2Container
 import com.didiglobal.booster.command.Command
 import com.didiglobal.booster.command.CommandInstaller
 import com.didiglobal.booster.compression.CompressionOptions
+import com.didiglobal.booster.compression.CompressionResult
 import com.didiglobal.booster.compression.CompressionResults
 import com.didiglobal.booster.compression.CompressionTool
-import com.didiglobal.booster.compression.ResourceNameFilter
+import com.didiglobal.booster.kotlinx.Wildcard
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
@@ -35,7 +37,7 @@ abstract class CompressImages<T : CompressionOptions> : DefaultTask() {
     /**
      * The resource path filter
      */
-    var filter: ResourceNameFilter = { true }
+    var filter: ResourceNameFilter = MATCH_ALL_RESOURCES
 
     val compressor: File
         get() = project.tasks.withType(CommandInstaller::class.java).find {
@@ -55,6 +57,34 @@ abstract class CompressImages<T : CompressionOptions> : DefaultTask() {
     val images: Collection<File>
         get() = supplier()
 
+    protected open fun shouldIgnore(arg: Pair<File, Aapt2Container.Metadata>): Boolean {
+        val (input, metadata) = arg
+        return if (!filter(metadata.resourceName)) true else false.also {
+            ignore(input, File(metadata.sourcePath))
+        }
+    }
+
+    protected open fun shouldIgnore(input: File): Boolean {
+        return if (!filter("${input.parent.substringBefore(SdkConstants.RES_QUALIFIER_SEP)}/${input.nameWithoutExtension}")) true else false.also {
+            ignore(input, input)
+        }
+    }
+
+    private fun ignore(dest: File, src: File) {
+        val s0 = dest.length()
+        results.add(CompressionResult(dest, s0, s0, src))
+    }
+
+}
+
+internal typealias ResourceNameFilter = (String) -> Boolean
+
+internal val MATCH_ALL_RESOURCES: ResourceNameFilter = { true }
+
+internal fun excludes(ignores: Set<Wildcard>): ResourceNameFilter = { res ->
+    ignores.none {
+        it.matches(res)
+    }
 }
 
 data class ActionData(val input: File, val output: File, val cmdline: List<String>)
