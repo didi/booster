@@ -9,11 +9,11 @@ This module is used for assets and resource compression using `pngquant`
 
 The following table shows the properties that transformer supports:
 
-| Property                                           | Description                                                  | Example                            |
-| -------------------------------------------------- | ------------------------------------------------------------ | ---------------------------------- |
-| `booster.task.compression.pngquant.option.quality` | compression quality (this default is 80)                     |                                    | 
-| `booster.task.compression.pngquant.option.speed`   | compression speed (the default is 3)                         |                                    | 
-| `booster.task.compression.pngquant.ignores`        | ignore wildcards (separated by comma)                        | `mipmap/*,drawable/abc_*`          | 
+| Property                                           | Description                               | Example                                     |
+| -------------------------------------------------- | ----------------------------------------- | ------------------------------------------- |
+| `booster.task.compression.pngquant.option.quality` | compression quality (this default is 80)  |                                             | 
+| `booster.task.compression.pngquant.option.speed`   | compression speed (the default is 3)      |                                             | 
+| `booster.task.compression.pngquant.ignores`        | ignore wildcards (separated by comma)     | `mipmap/ic_launcher*,drawable/ic_launcher*` | 
 
 ## Using `pngquant`
 
