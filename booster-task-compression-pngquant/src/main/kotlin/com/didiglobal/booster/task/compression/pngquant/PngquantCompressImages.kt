@@ -24,7 +24,7 @@ internal open class PngquantCompressImages : AbstractPngquantCompressImages() {
     override fun compress() {
         val pngquant = this.compressor.canonicalPath
 
-        images.parallelStream().filter(this::shouldIgnore).map {
+        images.parallelStream().filter(this::includes).map {
             ActionData(it, it, listOf(pngquant, "--strip", "--skip-if-larger", "-f", "--ext", DOT_PNG, "-s", "${options.speed}", "-Q", "${options.quality}-100", it.absolutePath))
         }.forEach {
             val s0 = it.input.length()
