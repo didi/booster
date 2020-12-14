@@ -13,6 +13,7 @@ The following table shows the properties that transformer supports:
 | -------------------------------------------------- | ------------------------------------------------------------ | ---------------------------------- |
 | `booster.task.compression.pngquant.option.quality` | compression quality (this default is 80)                     |                                    | 
 | `booster.task.compression.pngquant.option.speed`   | compression speed (the default is 3)                         |                                    | 
+| `booster.task.compression.pngquant.ignores`        | ignore wildcards (separated by comma)                        | `mipmap/*,drawable/abc_*`          | 
 
 ## Using `pngquant`
 

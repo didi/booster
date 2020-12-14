@@ -6,9 +6,10 @@ This module is used for assets and resource compression using `cwebp`
 
 The following table shows the properties that transformer supports:
 
-| Property                                 | Description                              |
-| ---------------------------------------- | ---------------------------------------- |
-| `booster.task.compression.cwebp.quality` | compression quality (the default is 80)  |
+| Property                                 | Description                              | Example                            |
+| ---------------------------------------- | ---------------------------------------- | ---------------------------------- |
+| `booster.task.compression.cwebp.quality` | compression quality (the default is 80)  |                                    |
+| `booster.task.compression.cwebp.ignores` | ignore wildcards (separated by comma)    | `mipmap/*,drawable/abc_*`          | 
 
 ## Using `cwebp`
 
