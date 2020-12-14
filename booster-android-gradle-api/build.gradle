@@ -9,6 +9,7 @@ dependencies {
     implementation project(':booster-android-gradle-v3_6')
     implementation project(':booster-android-gradle-v4_0')
     implementation project(':booster-android-gradle-v4_1')
+    implementation project(':booster-android-gradle-v4_2')
     api project(':booster-kotlinx')
     compileOnly 'com.android.tools.build:gradle:3.0.0'
     testCompileOnly 'com.android.tools.build:gradle:3.0.0'
