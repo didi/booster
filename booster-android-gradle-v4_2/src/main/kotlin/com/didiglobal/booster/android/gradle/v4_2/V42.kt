@@ -1,9 +1,9 @@
-package com.didiglobal.booster.android.gradle.v4_1
+package com.didiglobal.booster.android.gradle.v4_2
 
 import com.android.build.api.artifact.Artifact
 import com.android.build.api.artifact.ArtifactType
 import com.android.build.api.artifact.impl.ArtifactsImpl
-import com.android.build.api.component.impl.ComponentPropertiesImpl
+import com.android.build.api.component.impl.ComponentImpl
 import com.android.build.api.transform.Context
 import com.android.build.api.transform.QualifiedContent
 import com.android.build.gradle.api.ApplicationVariant
@@ -43,10 +43,10 @@ private val ARTIFACT_TYPES = arrayOf(
     it.javaClass.simpleName to it
 }.toMap()
 
-private val BaseVariant.componentProperties: ComponentPropertiesImpl
-    get() = BaseVariantImpl::class.java.getDeclaredField("componentProperties").apply {
+private val BaseVariant.component: ComponentImpl
+    get() = BaseVariantImpl::class.java.getDeclaredField("component").apply {
         isAccessible = true
-    }.get(this) as ComponentPropertiesImpl
+    }.get(this) as ComponentImpl
 
 @Suppress("UnstableApiUsage")
 private fun <T : FileSystemLocation> BaseVariant.getFinalArtifactFiles(type: Artifact.SingleArtifact<T>): Collection<File> {
@@ -55,13 +55,13 @@ private fun <T : FileSystemLocation> BaseVariant.getFinalArtifactFiles(type: Art
 
 @Suppress("DEPRECATION")
 private val BaseVariant.globalScope: GlobalScope
-    get() = componentProperties.globalScope
+    get() = component.globalScope
 
 @Suppress("UnstableApiUsage")
 private val BaseVariant.artifacts: ArtifactsImpl
-    get() = componentProperties.artifacts
+    get() = component.artifacts
 
-object V41 : AGPInterface {
+object V42 : AGPInterface {
 
     override val scopeFullWithFeatures: MutableSet<in QualifiedContent.Scope>
         get() = TransformManager.SCOPE_FULL_WITH_FEATURES
@@ -88,11 +88,11 @@ object V41 : AGPInterface {
         get() = mergeResourcesProvider.get()
 
     override fun BaseVariant.getTaskName(prefix: String): String {
-        return componentProperties.computeTaskName(prefix)
+        return component.computeTaskName(prefix)
     }
 
     override fun BaseVariant.getTaskName(prefix: String, suffix: String): String {
-        return componentProperties.computeTaskName(prefix, suffix)
+        return component.computeTaskName(prefix, suffix)
     }
 
     override val BaseVariant.variantData: BaseVariantData
@@ -101,26 +101,26 @@ object V41 : AGPInterface {
         }.invoke(this) as BaseVariantData
 
     override val BaseVariant.variantScope: VariantScope
-        get() = componentProperties.variantScope
+        get() = component.variantScope
 
     override val BaseVariant.globalScope: GlobalScope
-        get() = componentProperties.globalScope
+        get() = component.globalScope
 
     override val BaseVariant.originalApplicationId: String
-        get() = componentProperties.variantDslInfo.packageName.get()
+        get() = component.variantDslInfo.packageName.get()
 
     override val BaseVariant.hasDynamicFeature: Boolean
         get() = globalScope.hasDynamicFeatures()
 
     override val BaseVariant.rawAndroidResources: Collection<File>
-        get() = componentProperties.variantData.allRawAndroidResources.files
+        get() = component.variantData.allRawAndroidResources.files
 
     override fun BaseVariant.getArtifactCollection(
             configType: AndroidArtifacts.ConsumedConfigType,
             scope: AndroidArtifacts.ArtifactScope,
             artifactType: AndroidArtifacts.ArtifactType
     ): ArtifactCollection {
-        return componentProperties.variantDependencies.getArtifactCollection(configType, scope, artifactType)
+        return component.variantDependencies.getArtifactCollection(configType, scope, artifactType)
     }
 
     override val BaseVariant.allArtifacts: Map<String, Collection<File>>
@@ -132,16 +132,19 @@ object V41 : AGPInterface {
         }.toMap(TreeMap())
 
     override val BaseVariant.minSdkVersion: AndroidVersion
-        get() = componentProperties.minSdkVersion
+        get() = component.minSdkVersion.run {
+            @Suppress("UnstableApiUsage")
+            AndroidVersion(apiLevel, codename)
+        }
 
     override val BaseVariant.targetSdkVersion: ApiVersion
-        get() = componentProperties.targetSdkVersion
+        get() = component.targetSdkVersion
 
     override val BaseVariant.variantType: VariantType
-        get() = componentProperties.variantType
+        get() = component.variantType
 
     override val BaseVariant.aar: Collection<File>
-        get() = getFinalArtifactFiles(InternalArtifactType.AAR)
+        get() = getFinalArtifactFiles(ArtifactType.AAR)
 
     override val BaseVariant.apk: Collection<File>
         get() = getFinalArtifactFiles(ArtifactType.APK)
