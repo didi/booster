@@ -29,6 +29,7 @@ class SimpleCompressionTaskCreator(private val tool: CompressionTool, private va
             task.tool = tool
             task.variant = variant
             task.results = results
+            task.filter = filter
             task.supplier = {
                 supplier().filter { it.length() > 0 }.sortedBy { it }
             }
