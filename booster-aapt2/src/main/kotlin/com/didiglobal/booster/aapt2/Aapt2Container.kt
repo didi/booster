@@ -13,9 +13,13 @@ class Aapt2Container(val header: Header, private vararg val _entries: Entry<*>) 
 
     data class Metadata(val resourceName: String, val sourcePath: String, val configuration: Configuration) {
 
-        val sourceFile = File(sourcePath)
+        val sourceFile: File by lazy {
+            File(sourcePath)
+        }
 
-        val resourcePath = "${sourceFile.parentFile.name}${File.separatorChar}${sourceFile.name}"
+        val resourcePath: String by lazy {
+            sourceFile.resourcePath
+        }
 
     }
 
@@ -27,7 +31,7 @@ class Aapt2Container(val header: Header, private vararg val _entries: Entry<*>) 
 
     open class Png(header: ResourcesInternal.CompiledFile, val image: ByteBuffer) : ResFile(header)
 
-    open class Xml(file: ResourcesInternal.CompiledFile, val root: Resources.XmlNode): ResFile(file)
+    open class Xml(file: ResourcesInternal.CompiledFile, val root: Resources.XmlNode) : ResFile(file)
 
     val entries: List<Entry<*>>
         get() = listOf(*_entries)

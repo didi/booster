@@ -261,8 +261,11 @@ private fun BinaryParser.parsePng(header: ResourcesInternal.CompiledFile): Png {
 }
 
 val ResourcesInternal.CompiledFile.resourcePath: String
-    get() {
-        val src = File(this.sourcePath)
-        return "${src.parentFile.name}${File.separatorChar}${src.name}"
-    }
+    get() = File(this.sourcePath).resourcePath
+
+val File.resourcePath: String
+    get() = "${parentFile.name}${File.separatorChar}${name}"
+
+val File.resourceName: String
+    get() = "${parentFile.name}${File.separatorChar}${nameWithoutExtension}"
 
