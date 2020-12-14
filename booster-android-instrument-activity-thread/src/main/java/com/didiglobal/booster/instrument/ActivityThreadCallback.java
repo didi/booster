@@ -104,13 +104,19 @@ class ActivityThreadCallback implements Handler.Callback {
 
     private void rethrowIfCausedByUser(final RuntimeException e) {
         if (isCausedByUser(e)) {
-            throw sanitizeStackTrace(e, getClass());
+            for (Throwable cause = e; null != cause; cause = cause.getCause()) {
+                sanitizeStackTrace(cause, getClass());
+            }
+            throw e;
         }
     }
 
     private void rethrowIfCausedByUser(final Error e) {
         if (isCausedByUser(e)) {
-            throw sanitizeStackTrace(e, getClass());
+            for (Throwable cause = e; null != cause; cause = cause.getCause()) {
+                sanitizeStackTrace(cause, getClass());
+            }
+            throw e;
         }
     }
 

@@ -1,6 +1,8 @@
 package com.didiglobal.booster.instrument;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 
 public abstract class Intrinsics {
 
@@ -8,17 +10,22 @@ public abstract class Intrinsics {
         return sanitizeStackTrace(throwable, clazz.getName());
     }
 
+    @SuppressWarnings("Java8CollectionRemoveIf")
     public static <T extends Throwable> T sanitizeStackTrace(T throwable, String classNameToDrop) {
         final StackTraceElement[] stackTrace = throwable.getStackTrace();
-        final ArrayList<StackTraceElement> newStackTrace = new ArrayList<>(stackTrace.length);
+        final ArrayList<StackTraceElement> newStackTrace = new ArrayList<>(Arrays.asList(stackTrace));
 
-        for (StackTraceElement ste : stackTrace) {
-            if (!classNameToDrop.equals(ste.getClassName())) {
-                newStackTrace.add(ste);
+        for (final Iterator<StackTraceElement> i = newStackTrace.iterator(); i.hasNext();) {
+            final StackTraceElement ste = i.next();
+            if (classNameToDrop.equals(ste.getClassName())) {
+                i.remove();
             }
         }
 
-        throwable.setStackTrace(newStackTrace.toArray(new StackTraceElement[0]));
+        if (stackTrace.length != newStackTrace.size()) {
+            throwable.setStackTrace(newStackTrace.toArray(new StackTraceElement[0]));
+        }
+
         return throwable;
     }
 
