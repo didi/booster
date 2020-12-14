@@ -267,5 +267,5 @@ val File.resourcePath: String
     get() = "${parentFile.name}${File.separatorChar}${name}"
 
 val File.resourceName: String
-    get() = "${parentFile.name}${File.separatorChar}${nameWithoutExtension}"
+    get() = "${parentFile.name.substringBefore('-')}${File.separatorChar}${nameWithoutExtension}"
 

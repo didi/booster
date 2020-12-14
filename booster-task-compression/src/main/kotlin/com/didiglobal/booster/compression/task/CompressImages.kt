@@ -1,8 +1,8 @@
 package com.didiglobal.booster.compression.task
 
-import com.android.SdkConstants
 import com.android.build.gradle.api.BaseVariant
 import com.didiglobal.booster.aapt2.Aapt2Container
+import com.didiglobal.booster.aapt2.resourceName
 import com.didiglobal.booster.command.Command
 import com.didiglobal.booster.command.CommandInstaller
 import com.didiglobal.booster.compression.CompressionOptions
@@ -57,22 +57,23 @@ abstract class CompressImages<T : CompressionOptions> : DefaultTask() {
     val images: Collection<File>
         get() = supplier()
 
-    protected open fun shouldIgnore(arg: Pair<File, Aapt2Container.Metadata>): Boolean {
+    protected open fun includes(arg: Pair<File, Aapt2Container.Metadata>): Boolean {
         val (input, metadata) = arg
-        return if (!filter(metadata.resourceName)) true else false.also {
-            ignore(input, File(metadata.sourcePath))
+        return if (filter(metadata.resourceName)) true else false.also {
+            ignore(metadata.resourceName, input, File(metadata.sourcePath))
         }
     }
 
-    protected open fun shouldIgnore(input: File): Boolean {
-        return if (!filter("${input.parent.substringBefore(SdkConstants.RES_QUALIFIER_SEP)}/${input.nameWithoutExtension}")) true else false.also {
-            ignore(input, input)
+    protected open fun includes(input: File): Boolean {
+        return if (filter(input.resourceName)) true else false.also {
+            ignore(input.resourceName, input, input)
         }
     }
 
-    private fun ignore(dest: File, src: File) {
+    protected fun ignore(resName: String, dest: File, src: File) {
         val s0 = dest.length()
         results.add(CompressionResult(dest, s0, s0, src))
+        logger.info("${tool.command.name}: exclude $resName $dest => $src")
     }
 
 }

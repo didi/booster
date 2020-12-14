@@ -52,14 +52,13 @@ internal open class CwebpCompressFlatImages : AbstractCwebpCompressImages() {
         // https://developer.android.com/topic/performance/reduce-apk-size#use-webp
         val isNotLauncherIcon: (Pair<File, Aapt2Container.Metadata>) -> Boolean = { (input, metadata) ->
             if (!icons.contains(metadata.resourceName)) true else false.also {
-                val s0 = input.length()
-                results.add(CompressionResult(input, s0, s0, File(metadata.sourcePath)))
+                ignore(metadata.resourceName, input, File(metadata.sourcePath))
             }
         }
 
         images.parallelStream().map {
             it to it.metadata
-        }.filter(this::shouldIgnore).filter(isNotLauncherIcon).filter {
+        }.filter(this::includes).filter(isNotLauncherIcon).filter {
             filter(File(it.second.sourcePath))
         }.map {
             val output = compressedRes.file("${it.second.resourcePath.substringBeforeLast('.')}.webp")
