@@ -5,6 +5,7 @@ dependencies {
     api project(':booster-annotations')
     api project(':booster-build')
     api project(':booster-transform-spi')
+    api project(':booster-transform-util')
     api 'org.javassist:javassist:3.25.0-GA'
     api 'com.google.auto.service:auto-service:1.0-rc6'
 }

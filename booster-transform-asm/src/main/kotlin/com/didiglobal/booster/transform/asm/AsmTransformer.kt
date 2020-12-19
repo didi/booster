@@ -1,8 +1,10 @@
 package com.didiglobal.booster.transform.asm
 
 import com.didiglobal.booster.annotations.Priority
+import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.Transformer
+import com.didiglobal.booster.transform.util.diff
 import com.google.auto.service.AutoService
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
@@ -50,12 +52,25 @@ class AsmTransformer : Transformer {
     }
 
     override fun transform(context: TransformContext, bytecode: ByteArray): ByteArray {
+        val diffEnabled = context.getProperty("booster.transform.diff", false)
         return ClassWriter(ClassWriter.COMPUTE_MAXS).also { writer ->
             this.transformers.fold(ClassNode().also { klass ->
                 ClassReader(bytecode).accept(klass, 0)
-            }) { klass, transformer ->
+            }) { a, transformer ->
                 this.threadMxBean.sumCpuTime(transformer) {
-                    transformer.transform(context, klass)
+                    if (diffEnabled) {
+                        val left = a.textify()
+                        transformer.transform(context, a).also trans@{ b ->
+                            val right = b.textify()
+                            val diff = if (left == right) "" else left diff right
+                            if (diff.isEmpty() || diff.isBlank()) {
+                                return@trans
+                            }
+                            transformer.getReport(context, "${a.className}.diff").touch().writeText(diff)
+                        }
+                    } else {
+                        transformer.transform(context, a)
+                    }
                 }
             }.accept(writer)
         }.toByteArray()

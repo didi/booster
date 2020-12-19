@@ -1,12 +1,16 @@
 package com.didiglobal.booster.transform.asm
 
 import org.objectweb.asm.Opcodes
+import org.objectweb.asm.tree.AnnotationNode
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.InsnList
 import org.objectweb.asm.tree.InsnNode
 import org.objectweb.asm.tree.MethodInsnNode
 import org.objectweb.asm.tree.MethodNode
 import org.objectweb.asm.tree.VarInsnNode
+import org.objectweb.asm.util.TraceClassVisitor
+import java.io.PrintWriter
+import java.io.StringWriter
 
 /**
  * The simple name of class
@@ -44,19 +48,6 @@ val ClassNode.isStatic: Boolean
 val ClassNode.isFinal: Boolean
     get() = 0 != (access and Opcodes.ACC_FINAL)
 
-fun ClassNode.isInvisibleAnnotationPresent(annotations: Iterable<String>) = this.invisibleAnnotations?.map {
-    it.desc
-}?.any(annotations::contains) ?: false
-
-fun ClassNode.isInvisibleAnnotationPresent(vararg annotations: String) = isInvisibleAnnotationPresent(annotations.asIterable())
-
-
-fun ClassNode.isVisibleAnnotationPresent(annotations: Iterable<String>) = this.visibleAnnotations?.map {
-    it.desc
-}?.any(annotations::contains) ?: false
-
-fun ClassNode.isVisibleAnnotationPresent(vararg annotations: String) = isVisibleAnnotationPresent(annotations.asIterable())
-
 val ClassNode.defaultClinit: MethodNode
     get() = MethodNode(Opcodes.ACC_STATIC, "<clinit>", "()V", null, null).apply {
         maxStack = 1
@@ -82,3 +73,16 @@ val ClassNode.defaultOnCreate: MethodNode
         })
         maxStack = 1
     }
+
+fun ClassNode.isInvisibleAnnotationPresent(annotations: Iterable<String>) = invisibleAnnotations?.map(AnnotationNode::desc)?.any(annotations::contains) ?: false
+
+fun ClassNode.isInvisibleAnnotationPresent(vararg annotations: String) = isInvisibleAnnotationPresent(annotations.asIterable())
+
+fun ClassNode.isVisibleAnnotationPresent(annotations: Iterable<String>) = visibleAnnotations?.map(AnnotationNode::desc)?.any(annotations::contains) ?: false
+
+fun ClassNode.isVisibleAnnotationPresent(vararg annotations: String) = isVisibleAnnotationPresent(annotations.asIterable())
+
+fun ClassNode.textify(): String = StringWriter().run {
+    accept(TraceClassVisitor(PrintWriter(this)))
+    toString()
+}
