@@ -15,8 +15,8 @@ internal fun File.dex(output: File, api: Int = DexFormat.API_NO_EXTENDED_OPCODES
         jarOutput = true
         optimize = false
         minSdkVersion = api
-        fileNames = arrayOf(output.absolutePath)
-        outName = absolutePath
+        fileNames = arrayOf(output.canonicalPath)
+        outName = canonicalPath
     }
     return try {
         Main.run(args)

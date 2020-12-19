@@ -23,8 +23,8 @@ internal open class CwebpCompressImages : AbstractCwebpCompressImages() {
     override fun compress(filter: (File) -> Boolean) {
         val cwebp = compressor.canonicalPath
         images.parallelStream().filter(this::includes).filter(filter).map { input ->
-            val output = File(input.absolutePath.substringBeforeLast('.') + ".webp")
-            ActionData(input, output, listOf(cwebp, "-mt", "-quiet", "-q", options.quality.toString(), "-o", output.absolutePath, input.absolutePath))
+            val output = File(input.canonicalPath.substringBeforeLast('.') + ".webp")
+            ActionData(input, output, listOf(cwebp, "-mt", "-quiet", "-q", options.quality.toString(), "-o", output.canonicalPath, input.canonicalPath))
         }.forEach {
             val s0 = it.input.length()
             val rc = project.exec { spec ->

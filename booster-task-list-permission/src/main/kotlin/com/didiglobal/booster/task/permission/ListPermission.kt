@@ -69,21 +69,21 @@ internal val File.componentId: String
             return "${group.name}:${artifact.name}:${version.name}"
         }
 
-        this.absolutePath.let {
+        this.canonicalPath.let {
             val idxAndroidM2 = it.indexOf(EXTRA_ANDROID_M2REPOSITORY)
             if (idxAndroidM2 > -1) {
                 val artifact = parent.parentFile
-                val group = artifact.parentFile.absolutePath.substring(idxAndroidM2 + LEN_EXTRA_ANDROID_M2REPOSITORY).replace(File.separatorChar, '.')
+                val group = artifact.parentFile.canonicalPath.substring(idxAndroidM2 + LEN_EXTRA_ANDROID_M2REPOSITORY).replace(File.separatorChar, '.')
                 return "$group:${artifact.name}:${parent.name}"
             }
 
             val idxGoogleM2 = it.indexOf(EXTRA_GOOGLE_M2REPOSITORY)
             if (idxGoogleM2 > -1) {
                 val artifact = parent.parentFile
-                val group = artifact.parentFile.absolutePath.substring(idxGoogleM2 + LEN_EXTRA_GOOGLE_M2REPOSITORY).replace(File.separatorChar, '.')
+                val group = artifact.parentFile.canonicalPath.substring(idxGoogleM2 + LEN_EXTRA_GOOGLE_M2REPOSITORY).replace(File.separatorChar, '.')
                 return "$group:${artifact.name}:${parent.name}"
             }
 
-            TODO("Unrecognizable AAR: $absolutePath")
+            TODO("Unrecognizable AAR: $canonicalPath")
         }
     }

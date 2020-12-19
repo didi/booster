@@ -41,7 +41,7 @@ internal class DirectoryClassSet(val location: File) : AbstractClassSet() {
 
     override fun iterator(): Iterator<ClassNode> = this.classes.values.iterator()
 
-    override fun toString(): String = this.location.absolutePath
+    override fun toString(): String = this.location.canonicalPath
 
     override fun close() {
     }

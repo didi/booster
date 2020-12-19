@@ -112,7 +112,7 @@ class SymbolList private constructor(builder: Builder) : Iterable<SymbolList.Sym
 
                             builder.addSymbol(IntArraySymbol(type, name, values.toIntArray()))
                         }
-                        else -> throw MalformedSymbolListException(file.absolutePath)
+                        else -> throw MalformedSymbolListException(file.canonicalPath)
                     }
                 }
             }

@@ -63,8 +63,8 @@ internal open class CwebpCompressFlatImages : AbstractCwebpCompressImages() {
         }.map {
             val output = compressedRes.file("${it.second.resourcePath.substringBeforeLast('.')}.webp")
             Aapt2ActionData(it.first, it.second, output,
-                    listOf(cwebp, "-mt", "-quiet", "-q", options.quality.toString(), it.second.sourcePath, "-o", output.absolutePath),
-                    listOf(aapt2, "compile", "-o", it.first.parent, output.absolutePath))
+                    listOf(cwebp, "-mt", "-quiet", "-q", options.quality.toString(), it.second.sourcePath, "-o", output.canonicalPath),
+                    listOf(aapt2, "compile", "-o", it.first.parent, output.canonicalPath))
         }.forEach {
             it.output.parentFile.mkdirs()
             val s0 = File(it.metadata.sourcePath).length()

@@ -59,7 +59,7 @@ class RInlineTransformer : ClassTransformer {
         }
 
         val retainedSymbols: Set<String>
-        val classpath = context.compileClasspath.map { it.absolutePath }
+        val classpath = context.compileClasspath.map { it.canonicalPath}
         if (classpath.any { it.contains(PREFIX_SUPPORT_CONSTRAINT_LAYOUT) || it.contains(PREFIX_JETPACK_CONSTRAINT_LAYOUT) }) {
             // Find symbols that should be retained
             retainedSymbols = context.findRetainedSymbols()

@@ -50,8 +50,8 @@ internal open class PngquantCompressFlatImages : AbstractPngquantCompressImages(
         }.filter(this::includes).map {
             val output = compressedRes.file("${it.second.resourcePath.substringBeforeLast('.')}$DOT_PNG")
             Aapt2ActionData(it.first, it.second, output,
-                    listOf(pngquant, "--strip", "--skip-if-larger", "-f", "-o", output.absolutePath, "-s", "${options.speed}", "-Q", "${options.quality}-100", it.second.sourcePath),
-                    listOf(aapt2, "compile", "-o", it.first.parent, output.absolutePath))
+                    listOf(pngquant, "--strip", "--skip-if-larger", "-f", "-o", output.canonicalPath, "-s", "${options.speed}", "-Q", "${options.quality}-100", it.second.sourcePath),
+                    listOf(aapt2, "compile", "-o", it.first.parent, output.canonicalPath))
         }.forEach {
             it.output.parentFile.mkdirs()
             val s0 = File(it.metadata.sourcePath).length()

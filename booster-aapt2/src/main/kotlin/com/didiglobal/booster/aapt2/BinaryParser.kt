@@ -48,7 +48,7 @@ class BinaryParser : Closeable {
     constructor(file: File, order: ByteOrder = ByteOrder.LITTLE_ENDIAN) {
         _channel = FileChannel.open(file.toPath(), StandardOpenOption.READ)
         _buffer = _channel.map(FileChannel.MapMode.READ_ONLY, 0, file.length()).order(order)
-        _file = file.absolutePath
+        _file = file.canonicalPath
     }
 
     /**

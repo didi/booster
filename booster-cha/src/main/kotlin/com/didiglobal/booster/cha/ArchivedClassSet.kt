@@ -48,6 +48,6 @@ internal class ArchivedClassSet(val location: File) : AbstractClassSet() {
 
     override fun close() = zip.close()
 
-    override fun toString(): String = this.location.absolutePath
+    override fun toString(): String = this.location.canonicalPath
 
 }

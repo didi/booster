@@ -33,8 +33,8 @@ open class CommandInstaller : DefaultTask() {
             FileUtils.copyInputStreamToFile(input, location)
             project.exec {
                 it.commandLine = when {
-                    OS.isLinux() || OS.isMac() -> listOf("chmod", "+x", location.absolutePath)
-                    OS.isWindows() -> listOf("cmd", "/c echo Y|cacls ${location.absolutePath} /t /p everyone:f")
+                    OS.isLinux() || OS.isMac() -> listOf("chmod", "+x", location.canonicalPath)
+                    OS.isWindows() -> listOf("cmd", "/c echo Y|cacls ${location.canonicalPath} /t /p everyone:f")
                     else -> TODO("Unsupported OS ${OS.name}")
                 }
             }
