@@ -1,13 +1,12 @@
 package com.didiglobal.booster.transform.br.inline
 
 import com.didiglobal.booster.kotlinx.asIterable
-import com.didiglobal.booster.kotlinx.file
+import com.didiglobal.booster.kotlinx.search
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.ArtifactManager.Companion.ALL_CLASSES
 import com.didiglobal.booster.transform.ArtifactManager.Companion.DATA_BINDING_DEPENDENCY_ARTIFACTS
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
-import com.didiglobal.booster.kotlinx.search
 import com.google.auto.service.AutoService
 import org.gradle.api.logging.Logging
 import org.objectweb.asm.Opcodes.GETSTATIC
@@ -31,8 +30,10 @@ class BRInlineTransformer : ClassTransformer {
     private lateinit var logger: PrintWriter
     private lateinit var validClasses: Set<String>
 
+    override val name: String = Build.ARTIFACT
+
     override fun onPreTransform(context: TransformContext) {
-        logger = context.reportsDir.file(Build.ARTIFACT).file(context.name).file("report.txt").touch().printWriter()
+        logger = getReport(context, "report.txt").touch().printWriter()
         validClasses = context.findValidClasses()
         val allBR = context.findAllBR()
         symbols = allBR.find { it.second == context.appBR }?.first?.let {

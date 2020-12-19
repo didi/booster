@@ -1,7 +1,6 @@
 package com.didiglobal.booster.transform.logcat
 
 import com.didiglobal.booster.kotlinx.asIterable
-import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
@@ -31,8 +30,10 @@ class LogcatTransformer : ClassTransformer {
 
     private lateinit var logger: PrintWriter
 
+    override val name: String = Build.ARTIFACT
+
     override fun onPreTransform(context: TransformContext) {
-        this.logger = context.reportsDir.file(Build.ARTIFACT).file(context.name).file("report.txt").touch().printWriter()
+        this.logger = getReport(context, "report.txt").touch().printWriter()
     }
 
     override fun onPostTransform(context: TransformContext) {

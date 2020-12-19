@@ -1,7 +1,6 @@
 package com.didiglobal.booster.transform.sharedpreferences
 
 import com.didiglobal.booster.kotlinx.asIterable
-import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.TransformContext
@@ -27,6 +26,8 @@ class SharedPreferencesTransformer : ClassTransformer {
     private lateinit var logger: PrintWriter
     private val applications = mutableSetOf<String>()
 
+    override val name: String = Build.ARTIFACT
+
     override fun onPreTransform(context: TransformContext) {
         val parser = SAXParserFactory.newInstance().newSAXParser()
         context.artifacts.get(ArtifactManager.MERGED_MANIFESTS).forEach { manifest ->
@@ -34,7 +35,7 @@ class SharedPreferencesTransformer : ClassTransformer {
             parser.parse(manifest, handler)
             applications.addAll(handler.applications)
         }
-        logger = context.reportsDir.file(Build.ARTIFACT).file(context.name).file("report.txt").touch().printWriter()
+        logger = getReport(context, "report.txt").touch().printWriter()
     }
 
     override fun onPostTransform(context: TransformContext) {
@@ -55,9 +56,9 @@ class SharedPreferencesTransformer : ClassTransformer {
                 it as MethodInsnNode
             }.forEach {
                 mapOf(
-                    CONTEXT_GET_SHARED_PREFERENCES to SHADOW_CONTEXT_GET_SHARED_PREFERENCES,
-                    ACTIVITY_GET_PREFERENCES to SHADOW_ACTIVITY_GET_PREFERENCES,
-                    PREFERENCE_MANAGER_GET_DEFAULT_SHARED_PREFERENCES to SHADOW_PREFERENCE_MANAGER_GET_DEFAULT_SHARED_PREFERENCES
+                        CONTEXT_GET_SHARED_PREFERENCES to SHADOW_CONTEXT_GET_SHARED_PREFERENCES,
+                        ACTIVITY_GET_PREFERENCES to SHADOW_ACTIVITY_GET_PREFERENCES,
+                        PREFERENCE_MANAGER_GET_DEFAULT_SHARED_PREFERENCES to SHADOW_PREFERENCE_MANAGER_GET_DEFAULT_SHARED_PREFERENCES
                 ).forEach { (original, shadow) ->
                     if (it.opcode == original.opcode && it.name == original.name && it.desc == original.desc && context.klassPool.get(original.owner).isAssignableFrom(it.owner)) {
                         logger.println(" * ${shadow.owner}${shadow.name}${shadow.desc} => ${it.owner}.${it.name}${it.desc}: ${klass.name}.${method.name}${method.desc}")
