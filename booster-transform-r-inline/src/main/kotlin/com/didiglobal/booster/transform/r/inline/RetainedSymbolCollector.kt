@@ -43,19 +43,19 @@ internal fun File.parseLayoutXml(): Collection<String> {
         BinaryParser(this).use { parser ->
             val magic = parser.readInt()
             if (MAGIC != magic) {
-                logger.error("Invalid AAPT2 container file: $absolutePath")
+                logger.error("Invalid AAPT2 container file: $canonicalPath")
                 return emptySet()
             }
 
             val version = parser.readInt()
             if (version <= 0) {
-                logger.error("Invalid AAPT2 container version: $absolutePath")
+                logger.error("Invalid AAPT2 container version: $canonicalPath")
                 return emptySet()
             }
 
             val count = parser.readInt()
             if (count <= 0) {
-                logger.warn("Empty AAPT2 container: $absolutePath")
+                logger.warn("Empty AAPT2 container: $canonicalPath")
                 return emptySet()
             }
 

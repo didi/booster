@@ -29,11 +29,11 @@ val File.metadata: Metadata
 
                 when (type) {
                     RES_FILE -> parser.parseResFileMetadata()
-                    else -> throw RuntimeException("Unsupported entry type 0x${type.toString(16)} `$absolutePath`")
+                    else -> throw RuntimeException("Unsupported entry type 0x${type.toString(16)} `$canonicalPath`")
                 }
             }
             RES_FILE -> parser.parseLegacyMetadata()
-            else -> throw Aapt2ParseException("Unrecognized file `$absolutePath`")
+            else -> throw Aapt2ParseException("Unrecognized file `$canonicalPath`")
         }
     }
 

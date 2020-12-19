@@ -25,7 +25,7 @@ internal fun File.hasAlpha() = try {
         it.colorModel.hasAlpha() && it.hasAlpha()
     }
 } catch (e: IIOException) {
-    throw IIOException("${e.message}: ${this.absolutePath}", e.cause)
+    throw IIOException("${e.message}: ${this.canonicalPath}", e.cause)
 }
 
 internal fun BufferedImage.hasAlpha(): Boolean {

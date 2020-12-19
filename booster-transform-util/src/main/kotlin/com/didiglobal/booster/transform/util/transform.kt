@@ -2,8 +2,8 @@ package com.didiglobal.booster.transform.util
 
 import com.didiglobal.booster.kotlinx.NCPU
 import com.didiglobal.booster.kotlinx.redirect
-import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.kotlinx.search
+import com.didiglobal.booster.kotlinx.touch
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry
 import org.apache.commons.compress.archivers.zip.ParallelScatterZipCreator
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry
@@ -46,7 +46,7 @@ fun File.transform(output: File, transformer: (ByteArray) -> ByteArray = { it ->
             }
             else -> this.copyTo(output, true)
         }
-        else -> throw IOException("Unexpected file: ${this.absolutePath}")
+        else -> throw IOException("Unexpected file: ${this.canonicalPath}")
     }
 }
 
