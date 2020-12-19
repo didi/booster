@@ -10,7 +10,7 @@ import com.android.build.api.transform.Status.NOTCHANGED
 import com.android.build.api.transform.Status.REMOVED
 import com.android.build.api.transform.TransformInvocation
 import com.android.dex.DexFormat
-import com.android.dx.command.dexer.Main
+import com.didiglobal.booster.gradle.util.dex
 import com.didiglobal.booster.kotlinx.NCPU
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.green
@@ -184,28 +184,10 @@ internal class BoosterTransformInvocation(
 
     private fun doVerify() {
         outputs.sortedBy(File::nameWithoutExtension).forEach { output ->
-            val dex = temporaryDir.file(output.name)
-            val args = Main.Arguments().apply {
-                numThreads = NCPU
-                debug = true
-                warnings = true
-                emptyOk = true
-                multiDex = true
-                jarOutput = true
-                optimize = false
-                minSdkVersion = variant.extension.defaultConfig.targetSdkVersion?.apiLevel ?: DexFormat.API_NO_EXTENDED_OPCODES
-                fileNames = arrayOf(output.absolutePath)
-                outName = dex.absolutePath
-            }
-            val rc = try {
-                Main.run(args)
-            } catch (t: Throwable) {
-                t.printStackTrace()
-                -1
-            }
-
+            val out = temporaryDir.file(output.name)
+            val rc = out.dex(output, variant.extension.defaultConfig.targetSdkVersion?.apiLevel ?: DexFormat.API_NO_EXTENDED_OPCODES)
             println("${if (rc != 0) red("✗") else green("✓")} $output")
-            dex.deleteRecursively()
+            out.deleteRecursively()
         }
     }
 
