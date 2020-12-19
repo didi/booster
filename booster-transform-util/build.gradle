@@ -4,5 +4,6 @@ dependencies {
     api project(':booster-transform-spi')
     api project(':booster-build')
     api 'org.apache.commons:commons-compress:1.19'
+    implementation 'org.eclipse.jgit:org.eclipse.jgit:5.10.0.202012080955-r'
     testImplementation project(':booster-transform-asm')
 }
