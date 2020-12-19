@@ -1,6 +1,5 @@
 package com.didiglobal.booster.transform.activitythread
 
-import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.TransformContext
@@ -32,6 +31,8 @@ class ActivityThreadTransformer : ClassTransformer {
 
     private lateinit var packagesIgnore: String
 
+    override val name: String = Build.ARTIFACT
+
     override fun onPreTransform(context: TransformContext) {
         val parser = SAXParserFactory.newInstance().newSAXParser()
         context.artifacts.get(ArtifactManager.MERGED_MANIFESTS).forEach { manifest ->
@@ -40,7 +41,7 @@ class ActivityThreadTransformer : ClassTransformer {
             applications.addAll(handler.applications)
         }
 
-        this.logger = context.reportsDir.file(Build.ARTIFACT).file(context.name).file("report.txt").touch().printWriter()
+        this.logger = getReport(context, "report.txt").touch().printWriter()
         this.packagesIgnore = context.getProperty(PROPERTY_PACKAGES_IGNORE, "")
     }
 

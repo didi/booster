@@ -1,7 +1,6 @@
 package com.didiglobal.booster.transform.thread
 
 import com.didiglobal.booster.kotlinx.asIterable
-import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.TransformContext
@@ -35,6 +34,8 @@ class ThreadTransformer : ClassTransformer {
     private var optimizationEnabled = DEFAULT_OPTIMIZATION_ENABLED
     private val applications = mutableSetOf<String>()
 
+    override val name: String = Build.ARTIFACT
+
     override fun onPreTransform(context: TransformContext) {
         val parser = SAXParserFactory.newInstance().newSAXParser()
         context.artifacts.get(ArtifactManager.MERGED_MANIFESTS).forEach { manifest ->
@@ -43,7 +44,7 @@ class ThreadTransformer : ClassTransformer {
             applications.addAll(handler.applications)
         }
         this.optimizationEnabled = context.getProperty(PROPERTY_OPTIMIZATION_ENABLED, "$DEFAULT_OPTIMIZATION_ENABLED").toBoolean()
-        this.logger = context.reportsDir.file(Build.ARTIFACT).file(context.name).file("report.txt").touch().printWriter()
+        this.logger = getReport(context, "report.txt").touch().printWriter()
     }
 
     override fun onPostTransform(context: TransformContext) {
@@ -319,7 +320,7 @@ class ThreadTransformer : ClassTransformer {
                     "newSingleThreadExecutor",
                     "newSingleThreadScheduledExecutor",
                     "newScheduledThreadPool",
-                    "newWorkStealingPool"-> {
+                    "newWorkStealingPool" -> {
                         val r = this.desc.lastIndexOf(')')
                         val name = if (optimizationEnabled) this.name.replace("new", "newOptimized") else this.name
                         val desc = "${this.desc.substring(0, r)}Ljava/lang/String;${this.desc.substring(r)}"

@@ -1,7 +1,6 @@
 package com.didiglobal.booster.transform.res.check
 
 import com.didiglobal.booster.kotlinx.asIterable
-import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.TransformContext
@@ -34,6 +33,8 @@ class ResCheckTransformer : ClassTransformer {
     private lateinit var logger: PrintWriter
     private val applications = mutableSetOf<String>()
 
+    override val name: String = Build.ARTIFACT
+
     override fun onPreTransform(context: TransformContext) {
         val parser = SAXParserFactory.newInstance().newSAXParser()
         context.artifacts.get(ArtifactManager.MERGED_MANIFESTS).forEach { manifest ->
@@ -42,7 +43,7 @@ class ResCheckTransformer : ClassTransformer {
             applications.addAll(handler.applications)
         }
 
-        this.logger = context.reportsDir.file(Build.ARTIFACT).file(context.name).file("report.txt").touch().printWriter()
+        this.logger = getReport(context, "report.txt").touch().printWriter()
     }
 
     override fun onPostTransform(context: TransformContext) {

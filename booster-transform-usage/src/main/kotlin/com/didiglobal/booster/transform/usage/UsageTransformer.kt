@@ -19,6 +19,8 @@ class UsageTransformer : ClassTransformer {
 
     private lateinit var usedApis: Set<String>
 
+    override val name: String = Build.ARTIFACT
+
     override fun onPreTransform(context: TransformContext) {
         this.usedApis = context.getProperty<String?>(PROPERTY_USED_APIS, null)?.let { uri ->
             URL(uri).openStream().bufferedReader().use {
