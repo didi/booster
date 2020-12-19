@@ -6,6 +6,7 @@ import com.android.build.api.transform.TransformInvocation
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.pipeline.TransformManager
 import com.didiglobal.booster.annotations.Priority
+import com.didiglobal.booster.gradle.internal.BoosterTransformV34
 import com.didiglobal.booster.transform.AbstractKlassPool
 import org.gradle.api.Project
 
@@ -14,7 +15,7 @@ import org.gradle.api.Project
  *
  * @author johnsonlee
  */
-open class BoosterTransform(val project: Project) : Transform() {
+open class BoosterTransform protected constructor(val project: Project) : Transform() {
 
     /*
      * Preload transformers as List to fix NoSuchElementException caused by ServiceLoader in parallel mode
@@ -73,6 +74,15 @@ open class BoosterTransform(val project: Project) : Transform() {
                 doFullTransform()
             }
         }
+    }
+
+    companion object {
+
+        fun newInstance(project: Project): BoosterTransform = when {
+            GTE_V3_4 -> BoosterTransformV34(project)
+            else -> BoosterTransform(project)
+        }
+
     }
 
 }
