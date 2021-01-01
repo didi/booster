@@ -72,8 +72,7 @@ internal class BoosterTransformInvocation(
 
     override fun hasProperty(name: String) = project.hasProperty(name)
 
-    @Suppress("UNCHECKED_CAST")
-    override fun <T> getProperty(name: String, default: T): T = project.properties[name] as? T ?: default
+    override fun <T> getProperty(name: String, default: T): T = project.getProperty(name, default)
 
     override fun get(type: String) = variant.artifacts.get(type)
 
