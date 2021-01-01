@@ -20,7 +20,8 @@ val Project.gradleVersion: Revision
 val Project.aapt2Enabled: Boolean
     get() = AGP.run { aapt2Enabled }
 
-inline fun <reified T> Project.getProperty(name: String, defaultValue: T): T {
+@Suppress("UNCHECKED_CAST")
+fun <T> Project.getProperty(name: String, defaultValue: T): T {
     val value = findProperty(name) ?: return defaultValue
     return when (defaultValue) {
         is Boolean -> if (value is Boolean) value as T else value.toString().toBoolean() as T
