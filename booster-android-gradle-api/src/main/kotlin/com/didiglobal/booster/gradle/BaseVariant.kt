@@ -79,8 +79,8 @@ val BaseVariant.mergeResourcesTask: Task
 /**
  * The `processRes` task associates with this variant
  */
-val BaseVariant.processResTask: ProcessAndroidResources
-    get() = project.tasks.findByName(getTaskName("process", "Resources")) as ProcessAndroidResources
+val BaseVariant.processResTask: ProcessAndroidResources?
+    get() = project.tasks.findByName(getTaskName("process", "Resources")) as? ProcessAndroidResources
 
 /**
  * The `bundleResources` tasks associates with this variant

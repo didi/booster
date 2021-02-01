@@ -33,7 +33,7 @@ class ProcessedResourcesCompressionVariantProcessor : VariantProcessor {
     override fun process(variant: BaseVariant) {
         val results = CompressionResults()
 
-        variant.processResTask.doLast {
+        variant.processResTask?.doLast {
             variant.compressProcessedRes(results)
             variant.generateReport(results)
         }

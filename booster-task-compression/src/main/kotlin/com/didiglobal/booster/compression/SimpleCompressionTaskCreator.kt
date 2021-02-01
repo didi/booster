@@ -38,7 +38,7 @@ class SimpleCompressionTaskCreator(private val tool: CompressionTool, private va
             }
         }.apply {
             dependsOn(install, deps)
-            variant.processResTask.dependsOn(this)
+            variant.processResTask?.dependsOn(this)
             variant.bundleResourcesTask?.dependsOn(this)
         }
     }
