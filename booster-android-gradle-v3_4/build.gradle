@@ -1,0 +1,17 @@
+apply plugin: 'java-gradle-plugin'
+
+apply from: "$rootDir/gradle/booster.gradle"
+apply from: "$rootDir/gradle/integration-test.gradle"
+apply from: "$rootDir/gradle/functional-test.gradle"
+
+dependencies {
+    api project(':booster-android-gradle-compat')
+    compileOnly 'com.android.tools.build:gradle:3.4.0'
+    testImplementation 'com.android.tools.build:gradle:3.4.0'
+    testImplementation 'io.bootstage.testkit:testkit-gradle-plugin:1.4.0'
+    testImplementation project(':booster-build')
+}
+
+gradlePlugin {
+    testSourceSets sourceSets.functionalTest, sourceSets.integrationTest
+}
