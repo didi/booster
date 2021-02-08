@@ -8,7 +8,7 @@ dependencies {
     api project(':booster-android-gradle-compat')
     compileOnly 'com.android.tools.build:gradle:3.5.0'
     testImplementation 'com.android.tools.build:gradle:3.5.0'
-    testImplementation 'io.bootstage.testkit:testkit-gradle-plugin:1.1.0'
+    testImplementation 'io.bootstage.testkit:testkit-gradle-plugin:1.4.0'
     testImplementation project(':booster-build')
 }
 

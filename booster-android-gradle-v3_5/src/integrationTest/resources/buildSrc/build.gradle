@@ -22,5 +22,5 @@ dependencies {
     implementation("com.didiglobal.booster:booster-android-gradle-api:${project.booster_version}") {
         exclude group: 'com.google.guava'
     }
-    implementation "io.bootstage.testkit:testkit-gradle-plugin:1.1.0"
+    implementation "io.bootstage.testkit:testkit-gradle-plugin:1.4.0"
 }

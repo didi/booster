@@ -12,7 +12,7 @@ buildscript {
         classpath("com.didiglobal.booster:booster-gradle-plugin:${project.booster_version}") {
             exclude group: 'com.google.guava'
         }
-        classpath "io.bootstage.testkit:testkit-gradle-plugin:1.1.0"
+        classpath "io.bootstage.testkit:testkit-gradle-plugin:1.4.0"
     }
 }
 
