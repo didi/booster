@@ -39,4 +39,3 @@ internal val AGP: AGPInterface = arrayOf(
         GTE_V3_2 to V32,
         GTE_V3_X to V30
 ).firstOrNull(Pair<Boolean, AGPInterface>::first)?.second ?: throw TODO("Incompatible with AGP $ANDROID_GRADLE_PLUGIN_VERSION")
-
