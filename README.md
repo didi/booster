@@ -63,6 +63,7 @@ The following table lists which version of Gradle is required for each version o
 | 3.6.0 - 3.6.4         | 5.6.4+   |
 | 4.0.0+                | 6.1.1+   |
 | 4.1.0+                | 6.5+     |
+| 4.2.0+                | 6.7.1+   |
 
 ## Best Practise | 最佳实践
 
@@ -72,11 +73,10 @@ The best practise of using Booster is integrating the specific module to solve t
 
 ```groovy
 buildscript {
-    ext.booster_version = '3.1.0'
+    ext.booster_version = '3.2.0'
     repositories {
         google()
         mavenCentral()
-        jcenter()
 
         // OPTIONAL If you want to use SNAPSHOT version, sonatype repository is required.
         maven { url 'https://oss.sonatype.org/content/repositories/public' }
@@ -92,7 +92,6 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter()
 
         // OPTIONAL If you want to use SNAPSHOT version, sonatype repository is required.
         maven { url 'https://oss.sonatype.org/content/repositories/public' }
