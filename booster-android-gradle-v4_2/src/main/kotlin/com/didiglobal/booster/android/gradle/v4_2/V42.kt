@@ -6,6 +6,7 @@ import com.android.build.api.artifact.impl.ArtifactsImpl
 import com.android.build.api.component.impl.ComponentImpl
 import com.android.build.api.transform.Context
 import com.android.build.api.transform.QualifiedContent
+import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.ApplicationVariant
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.LibraryVariant
@@ -23,6 +24,7 @@ import com.android.builder.model.ApiVersion
 import com.android.sdklib.AndroidVersion
 import com.android.sdklib.BuildToolInfo
 import com.didiglobal.booster.gradle.AGPInterface
+import com.didiglobal.booster.gradle.getAndroid
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.ArtifactCollection
@@ -103,6 +105,7 @@ object V42 : AGPInterface {
     override val BaseVariant.variantScope: VariantScope
         get() = component.variantScope
 
+    @Suppress("DEPRECATION")
     override val BaseVariant.globalScope: GlobalScope
         get() = component.globalScope
 
@@ -182,7 +185,11 @@ object V42 : AGPInterface {
         get() = getFinalArtifactFiles(InternalArtifactType.JAVAC)
 
     override val BaseVariant.buildTools: BuildToolInfo
-        get() = globalScope.sdkComponents.get().buildToolInfoProvider.get()
+        get() {
+            val compileSdkVersion = project.provider { globalScope.extension.compileSdkVersion!! }
+            val buildToolRevision = project.provider(globalScope.extension::buildToolsRevision)
+            return globalScope.sdkComponents.get().sdkLoader(compileSdkVersion, buildToolRevision).buildToolInfoProvider.get()
+        }
 
     override val Context.task: TransformTask
         get() = javaClass.getDeclaredField("this$1").apply {
