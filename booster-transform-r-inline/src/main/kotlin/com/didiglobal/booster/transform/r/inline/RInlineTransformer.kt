@@ -50,7 +50,9 @@ class RInlineTransformer : ClassTransformer {
         this.logger = getReport(context, "report.txt").touch().printWriter()
         this.symbols = SymbolList.from(context.artifacts.get(SYMBOL_LIST).single())
         this.appRStyleable = "$appPackage/$R_STYLEABLE"
-        this.ignores = context.getProperty(PROPERTY_IGNORES, "").trim().split(',').map(Wildcard.Companion::valueOf).toSet()
+        this.ignores = context.getProperty(PROPERTY_IGNORES, "").trim().split(',')
+                .filter(String::isNotEmpty)
+                .map(Wildcard.Companion::valueOf).toSet()
 
         if (this.symbols.isEmpty()) {
             logger_.error("Inline R symbols failed: R.txt doesn't exist or blank")

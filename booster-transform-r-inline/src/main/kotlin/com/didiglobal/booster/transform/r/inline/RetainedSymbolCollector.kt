@@ -104,41 +104,52 @@ internal fun Resources.XmlNode.findAllRetainedSymbols(): Collection<String> {
 
     return mutableSetOf<String>().apply {
         while (stack.isNotEmpty()) {
-            stack.pop().also { element ->
-                element.childList.filter {
-                    it.hasElement()
-                }.forEach {
-                    stack.push(it.element)
-                }
-            }.attributeList?.forEach { attr ->
-                when (attr.name) {
-                    "constraint_referenced_ids" -> addAll(attr.value.split(PATTERN_COMMA))
-                    "layout_constraintHorizontal_bias",
-                    "layout_constraintVertical_bias",
-                    "layout_constraintCircleRadius",
-                    "layout_constraintCircleAngle",
-                    "layout_constraintDimensionRatio",
-                    "layout_constraintWidth_default",
-                    "layout_constraintHeight_default",
-                    "layout_constraintWidth_percent",
-                    "layout_constraintHeight_percent",
-                    "layout_constraintHorizontal_chainStyle",
-                    "layout_constraintVertical_chainStyle",
-                    "layout_constraintHorizontal_weight",
-                    "layout_constraintVertical_weight" -> Unit // just ignore
-                    else -> if (attr.name.startsWith("layout_constraint")) {
-                        addAll(attr.value.split(PATTERN_COMMA).filter(::isValidSymbol).map {
-                            it.substringAfter('/')
-                        })
-                    }
-                }
-            }
+            val next = stack.pop()
+            next.childList.filter(Resources.XmlNode::hasElement)
+                    .map(Resources.XmlNode::getElement)
+                    .let(stack::addAll)
+            next.findRetainedSymbols()?.let(this::addAll)
         }
     }
 }
 
-internal fun isValidSymbol(token: String) = token.isNotEmpty() && "parent" != token && token.isValidJavaIdentifier()
+internal fun Resources.XmlElement.findRetainedSymbols(): Collection<String>? = attributeList?.filter {
+    it.name !in IGNORED_CONSTRAINT_LAYOUT_ATTRS
+}?.map { attr ->
+    when {
+        attr.name == "constraint_referenced_ids" -> attr.value.split(PATTERN_COMMA)
+        attr.name.startsWith("layout_constraint") -> attr.value.split(PATTERN_COMMA).filter {
+            "parent" != it
+        }.map {
+            it.substringAfter('/')
+        }.filter(String::isValidJavaIdentifier)
+        else -> emptyList()
+    }
+}?.flatten()
 
 private val logger = Logging.getLogger(RetainedSymbolCollector::class.java)
+
+/**
+ * ref: https://developer.android.com/reference/androidx/constraintlayout/widget/ConstraintLayout
+ */
+private val IGNORED_CONSTRAINT_LAYOUT_ATTRS = setOf(
+        "layout_constraintHorizontal_bias",
+        "layout_constraintVertical_bias",
+        "layout_constraintCircleRadius",
+        "layout_constraintCircleAngle",
+        "layout_constraintDimensionRatio",
+        "layout_constraintHeight_default",
+        "layout_constraintHeight_min",
+        "layout_constraintHeight_max",
+        "layout_constraintHeight_percent",
+        "layout_constraintWidth_default",
+        "layout_constraintWidth_min",
+        "layout_constraintWidth_max",
+        "layout_constraintWidth_percent",
+        "layout_constraintHorizontal_chainStyle",
+        "layout_constraintVertical_chainStyle",
+        "layout_constraintHorizontal_weight",
+        "layout_constraintVertical_weight"
+)
 
 private val PATTERN_COMMA = Pattern.compile("\\s*,\\s*")
