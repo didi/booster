@@ -17,7 +17,6 @@ import org.objectweb.asm.Opcodes.GETSTATIC
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldInsnNode
 import org.objectweb.asm.tree.LdcInsnNode
-import java.io.File
 import java.io.PrintWriter
 import java.util.concurrent.ConcurrentHashMap
 import java.util.regex.Pattern
@@ -60,8 +59,8 @@ class RInlineTransformer : ClassTransformer {
         }
 
         val retainedSymbols: Set<String>
-        val classpath = context.compileClasspath.map { it.canonicalPath}
-        if (classpath.any { it.contains(PREFIX_SUPPORT_CONSTRAINT_LAYOUT) || it.contains(PREFIX_JETPACK_CONSTRAINT_LAYOUT) }) {
+        val deps = context.dependencies
+        if (deps.any { it.contains(SUPPORT_CONSTRAINT_LAYOUT) || it.contains(JETPACK_CONSTRAINT_LAYOUT) }) {
             // Find symbols that should be retained
             retainedSymbols = context.findRetainedSymbols()
             if (retainedSymbols.isNotEmpty()) {
@@ -72,7 +71,7 @@ class RInlineTransformer : ClassTransformer {
             retainedSymbols = emptySet()
         }
 
-        logger.println(classpath.joinToString("\n  - ", "classpath:\n  - ", "\n"))
+        logger.println(deps.joinToString("\n  - ", "dependencies:\n  - ", "\n"))
         logger.println("$PROPERTY_IGNORES=$ignores\n")
 
         retainedSymbols.ifNotEmpty { symbols ->
@@ -171,8 +170,7 @@ private val PROPERTY_PREFIX = Build.ARTIFACT.replace('-', '.')
 
 private val PROPERTY_IGNORES = "$PROPERTY_PREFIX.ignores"
 
-private val PREFIX_SUPPORT_CONSTRAINT_LAYOUT = "${File.separatorChar}com.android.support.constraint${File.separatorChar}constraint-layout"
-
-private val PREFIX_JETPACK_CONSTRAINT_LAYOUT = "${File.separator}androidx.constraintlayout${File.separator}constraintlayout"
+private const val SUPPORT_CONSTRAINT_LAYOUT = "com.android.support.constraint:constraint-layout:"
+private const val JETPACK_CONSTRAINT_LAYOUT = "androidx.constraintlayout:constraintlayout:"
 
 private val logger_ = Logging.getLogger(RInlineTransformer::class.java)
