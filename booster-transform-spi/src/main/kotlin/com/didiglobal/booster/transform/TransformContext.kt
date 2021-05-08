@@ -55,6 +55,11 @@ interface TransformContext {
     val artifacts: ArtifactManager
 
     /**
+     * The original dependencies, may be same to [compileClasspath] if booster is the first applied plugin
+     */
+    val dependencies: Collection<String>
+
+    /**
      * The class pool
      */
     val klassPool: KlassPool
