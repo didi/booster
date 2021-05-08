@@ -24,6 +24,10 @@ abstract class AbstractTransformContext(
 
     override val artifacts = object : ArtifactManager {}
 
+    override val dependencies: Collection<String> by lazy {
+        compileClasspath.map { it.canonicalPath }
+    }
+
     override val klassPool = object : AbstractKlassPool(runtimeClasspath, bootKlassPool) {}
 
     override val originalApplicationId = applicationId

@@ -60,6 +60,12 @@ internal class BoosterTransformInvocation(
 
     override val artifacts = this
 
+    override val dependencies: Collection<String> by lazy {
+        ResolvedArtifactResults(variant).map {
+            it.id.displayName
+        }
+    }
+
     override val klassPool: AbstractKlassPool = object : AbstractKlassPool(compileClasspath, transform.bootKlassPool) {}
 
     override val applicationId = delegate.applicationId

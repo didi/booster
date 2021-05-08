@@ -8,7 +8,6 @@ import com.android.build.gradle.internal.publishing.AndroidArtifacts.ConsumedCon
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.separatorsToSystem
 import com.didiglobal.booster.kotlinx.touch
-import org.gradle.api.artifacts.component.ProjectComponentIdentifier
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import java.io.File
 import java.io.PrintWriter
@@ -26,7 +25,6 @@ class ResolvedArtifactResults(private val variant: BaseVariant) : Collection<Res
             .map { variant.getArtifactCollection(RUNTIME_CLASSPATH, ALL, it) }
             .map { it.artifacts }
             .flatten()
-            .filter { it.id.componentIdentifier !is ProjectComponentIdentifier }
             .distinctBy { it.id.componentIdentifier.displayName }
             .sortedBy { it.id.componentIdentifier.displayName }
             .toList()
