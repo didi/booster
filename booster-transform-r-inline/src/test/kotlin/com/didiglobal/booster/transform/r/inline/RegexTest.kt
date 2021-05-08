@@ -1,6 +1,5 @@
 package com.didiglobal.booster.transform.r.inline
 
-import java.io.File
 import java.util.regex.Pattern
 import kotlin.test.Test
 import kotlin.test.assertFalse
@@ -21,6 +20,14 @@ class RegexTest {
         assertTrue {
             Pattern.matches(R_REGEX, "io/github/boostersamples/R\$styleable")
         }
+    }
+
+    @Test
+    fun `valid symbol`() {
+        assertTrue(isValidSymbol("H"))
+        assertTrue(isValidSymbol("icon"))
+        assertTrue(isValidSymbol("ic_app"))
+        assertFalse(isValidSymbol("4:1"))
     }
 
 }

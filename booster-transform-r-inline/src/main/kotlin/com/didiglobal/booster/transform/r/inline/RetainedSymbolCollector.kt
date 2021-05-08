@@ -5,6 +5,7 @@ import com.didiglobal.booster.aapt2.MAGIC
 import com.didiglobal.booster.aapt2.RES_FILE
 import com.didiglobal.booster.aapt2.Resources
 import com.didiglobal.booster.aapt2.ResourcesInternal
+import com.didiglobal.booster.kotlinx.isValidJavaIdentifier
 import com.didiglobal.booster.kotlinx.stackTraceAsString
 import org.gradle.api.logging.Logging
 import java.io.File
@@ -112,10 +113,21 @@ internal fun Resources.XmlNode.findAllRetainedSymbols(): Collection<String> {
             }.attributeList?.forEach { attr ->
                 when (attr.name) {
                     "constraint_referenced_ids" -> addAll(attr.value.split(PATTERN_COMMA))
+                    "layout_constraintHorizontal_bias",
+                    "layout_constraintVertical_bias",
+                    "layout_constraintCircleRadius",
+                    "layout_constraintCircleAngle",
+                    "layout_constraintDimensionRatio",
+                    "layout_constraintWidth_default",
+                    "layout_constraintHeight_default",
+                    "layout_constraintWidth_percent",
+                    "layout_constraintHeight_percent",
+                    "layout_constraintHorizontal_chainStyle",
+                    "layout_constraintVertical_chainStyle",
+                    "layout_constraintHorizontal_weight",
+                    "layout_constraintVertical_weight" -> Unit // just ignore
                     else -> if (attr.name.startsWith("layout_constraint")) {
-                        addAll(attr.value.split(PATTERN_COMMA).filter {
-                            it != "parent"
-                        }.map {
+                        addAll(attr.value.split(PATTERN_COMMA).filter(::isValidSymbol).map {
                             it.substringAfter('/')
                         })
                     }
@@ -124,6 +136,8 @@ internal fun Resources.XmlNode.findAllRetainedSymbols(): Collection<String> {
         }
     }
 }
+
+internal fun isValidSymbol(token: String) = token.isNotEmpty() && "parent" != token && token.isValidJavaIdentifier()
 
 private val logger = Logging.getLogger(RetainedSymbolCollector::class.java)
 

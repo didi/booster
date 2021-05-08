@@ -3,6 +3,9 @@ package com.didiglobal.booster.kotlinx
 import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
+import java.util.regex.Pattern
+
+private val PATTERN_JAVA_IDENTIFIER = Pattern.compile("[a-zA-Z_\$][a-zA-Z\\d_\$]*")
 
 fun String.separatorsToUnix(): String {
     return if ('/' == File.separatorChar) this else this.replace(File.separatorChar, '/')
@@ -19,3 +22,5 @@ fun String.md5(): String {
 fun String.matches(wildcard: Wildcard): Boolean {
     return wildcard.matches(this)
 }
+
+fun String.isValidJavaIdentifier(): Boolean = PATTERN_JAVA_IDENTIFIER.matcher(this).matches()
