@@ -3,5 +3,5 @@ apply from: "$rootDir/gradle/booster.gradle"
 dependencies {
     api gradleApi()
     api project(":booster-build")
-    api "commons-io:commons-io:2.6"
+    api "commons-io:commons-io:2.7"
 }
