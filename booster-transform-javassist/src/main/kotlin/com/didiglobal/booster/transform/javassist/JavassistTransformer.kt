@@ -9,6 +9,7 @@ import com.google.auto.service.AutoService
 import javassist.ClassPool
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
+import java.io.File
 import java.lang.management.ManagementFactory
 import java.lang.management.ThreadMXBean
 import java.util.ServiceLoader
@@ -43,9 +44,8 @@ class JavassistTransformer : Transformer {
     }
 
     override fun onPreTransform(context: TransformContext) {
-        context.bootClasspath.forEach {
-            this.pool.appendClassPath(it.canonicalPath)
-        }
+        this.pool.appendClassPath(context.bootClasspath.joinToString(File.pathSeparator) { it.canonicalPath })
+        this.pool.appendClassPath(context.compileClasspath.joinToString(File.pathSeparator) { it.canonicalPath })
 
         this.transformers.forEach { transformer ->
             this.threadMxBean.sumCpuTime(transformer) {
