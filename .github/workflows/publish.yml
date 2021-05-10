@@ -1,0 +1,35 @@
+name: Publish build to Sonatype
+
+on:
+  push:
+    tags:
+      - '*'
+  repository_dispatch:
+    types: [publish]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup Java
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '11'
+
+    - name: publish to sonatype
+      run: |
+        echo "Create GPG private key"
+        echo $GPG_KEY_ARMOR | base64 --decode > $GITHUB_WORKSPACE/secring.gpg
+        ./gradlew clean publishToSonatype -POSSRH_USERNAME=${OSSRH_USERNAME} -POSSRH_PASSWORD=${OSSRH_PASSWORD} -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_PASSPHRASE} -Psigning.secretKeyRingFile=${GITHUB_WORKSPACE}/secring.gpg -S --no-daemon
+        ./gradlew closeAndReleaseRepository -POSSRH_USERNAME=${OSSRH_USERNAME} -POSSRH_PASSWORD=${OSSRH_PASSWORD} --no-daemon
+      env:
+        GPG_KEY_ARMOR: ${{ secrets.GPG_KEY_ARMOR }}
+        GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+        OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
