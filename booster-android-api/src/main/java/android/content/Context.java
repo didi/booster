@@ -4,6 +4,7 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
+import android.content.pm.ApplicationInfo;
 
 import java.io.File;
 
@@ -32,5 +33,7 @@ public abstract class Context {
     public abstract File getFilesDir();
 
     public abstract String getPackageName();
+
+    public abstract ApplicationInfo getApplicationInfo();
 
 }

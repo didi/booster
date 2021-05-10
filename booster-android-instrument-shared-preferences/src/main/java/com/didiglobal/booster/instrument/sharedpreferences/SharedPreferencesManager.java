@@ -33,7 +33,7 @@ class SharedPreferencesManager {
     private final File mTempFile;
 
     SharedPreferencesManager(Context context, String name) {
-        this.mSpFile = new File(context.getFilesDir().getParent(), "shared_prefs" + File.separator + name + ".xml");
+        this.mSpFile = new File(getPreferencesDir(context), name + ".xml");
         this.mTempFile = new File(mSpFile.getPath() + ".tmp");
     }
 
@@ -128,4 +128,16 @@ class SharedPreferencesManager {
         } catch (IOException ignored) {
         }
     }
+
+    private static File getPreferencesDir(Context context) {
+        final File files = context.getFilesDir();
+        final File data = null != files ? files.getParentFile() : getDataDirFile(context);
+        return new File(data, "shared_prefs");
+    }
+
+    private static File getDataDirFile(Context context) {
+        final String dataDir = context.getApplicationInfo().dataDir;
+        return new File(null != dataDir ? dataDir : "/data/data/" + context.getPackageName());
+    }
+
 }

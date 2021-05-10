@@ -1,5 +1,6 @@
 package android.content;
 
+import android.content.pm.ApplicationInfo;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.Handler;
@@ -74,6 +75,11 @@ public class ContextWrapper extends Context {
 
     @Override
     public String getPackageName() {
+        throw new RuntimeException("Stub!");
+    }
+
+    @Override
+    public ApplicationInfo getApplicationInfo() {
         throw new RuntimeException("Stub!");
     }
 
