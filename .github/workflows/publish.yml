@@ -10,6 +10,7 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    if: ${{ secrets.GPG_KEY_ARMOR != '' && secrets.GPG_KEY_ID != '' && secrets.GPG_PASSPHRASE != '' && secrets.OSSRH_PASSWORD != '' }}
 
     steps:
     - name: Checkout
