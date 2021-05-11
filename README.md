@@ -1,8 +1,8 @@
 ![Booster](assets/booster-logo.png)
 
 ![GitHub](https://img.shields.io/github/license/didi/booster.svg?style=for-the-badge)
-![Travis (.org)](https://img.shields.io/travis/didi/booster.svg?style=for-the-badge)
-![GitHub release](https://img.shields.io/github/release/didi/booster.svg?style=for-the-badge)
+![Build Status](https://img.shields.io/github/workflow/status/didi/booster/Run%20unit%20tests?style=for-the-badge)
+![GitHub Release](https://img.shields.io/github/release/didi/booster.svg?style=for-the-badge)
 
 ## Overview | 概览
 
@@ -102,7 +102,28 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.didiglobal.booster' // ③
 ```
 
-The `plugins` DSL also supported since Booster 3.0.0
+Then using the following command in terminal to check if Booster enabled
+
+> 然后在终端用如下命令来确认 Booster 是否启用：
+
+```bash
+./gradlew assembleDebug --dry-run
+```
+
+If *transformClassesWithBoosterForDebug* can be found in the output, it means *Booster* is enabled. Congratulations! 🎉🎉🎉
+
+> 如果在命令行输出中能搜到 *transformClassesWithBoosterForDebug* 说明 *Booster* 已经启用了，那么恭喜你！ 🎉🎉🎉
+
+
+The `plugins` DSL also supported since Booster *3.0.0*
+
+> *Booster* 从 *3.0.0* 开始支持 `plugins` *DSL* 的方式来启用
+
+```groovy
+plugins {
+    id 'com.didiglobal.booster' version '3.3.1'
+}
+```
 
 Here are all the modules of Booster:
 
