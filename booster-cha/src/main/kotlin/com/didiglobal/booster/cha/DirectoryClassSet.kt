@@ -2,8 +2,6 @@ package com.didiglobal.booster.cha
 
 import com.didiglobal.booster.kotlinx.green
 import com.didiglobal.booster.kotlinx.search
-import com.didiglobal.booster.transform.asm.asClassNode
-import org.objectweb.asm.tree.ClassNode
 import java.io.File
 import java.io.FileNotFoundException
 import java.util.stream.Collectors.toMap
@@ -13,19 +11,22 @@ private val CLASS_FILE_FILTER = { file: File -> file.extension.equals("class", t
 /**
  * @author johnsonlee
  */
-internal class DirectoryClassSet(val location: File) : AbstractClassSet() {
+internal class DirectoryClassSet<ClassFile, ClassParser : ClassFileParser<ClassFile>>(
+        val location: File,
+        override val parser: ClassParser
+) : AbstractClassSet<ClassFile, ClassParser>() {
 
-    private val classes: Map<String, ClassNode> by lazy {
+    private val classes: Map<String, ClassFile> by lazy {
         location.search(CLASS_FILE_FILTER).parallelStream()
-                .map(File::asClassNode)
-                .collect(toMap(ClassNode::name) { it })
+                .map(parser::parse)
+                .collect(toMap(parser::getClassName) { it })
     }
 
-    constructor(location: String) : this(File(location).takeIf {
+    constructor(location: String, parser: ClassParser) : this(File(location).takeIf {
         it.exists()
-    } ?: throw FileNotFoundException(location))
+    } ?: throw FileNotFoundException(location), parser)
 
-    override fun get(name: String) = this.classes[name]
+    override fun get(name: String): ClassFile? = this.classes[name]
 
     override fun contains(name: String) = this.classes.containsKey(name)
 
@@ -34,12 +35,12 @@ internal class DirectoryClassSet(val location: File) : AbstractClassSet() {
 
     override fun isEmpty() = this.size <= 0
 
-    override fun load(): DirectoryClassSet {
+    override fun load(): DirectoryClassSet<ClassFile, ClassParser> {
         println("Load ${green(this.classes.size)} classes from $location")
         return this
     }
 
-    override fun iterator(): Iterator<ClassNode> = this.classes.values.iterator()
+    override fun iterator(): Iterator<ClassFile> = this.classes.values.iterator()
 
     override fun toString(): String = this.location.canonicalPath
 

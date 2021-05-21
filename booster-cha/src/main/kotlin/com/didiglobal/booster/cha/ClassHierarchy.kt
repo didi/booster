@@ -1,8 +1,5 @@
 package com.didiglobal.booster.cha
 
-import com.didiglobal.booster.transform.asm.isFinal
-import com.didiglobal.booster.transform.asm.isInterface
-import org.objectweb.asm.tree.ClassNode
 import java.util.Collections
 import java.util.Objects
 import java.util.concurrent.ConcurrentHashMap
@@ -11,28 +8,30 @@ import java.util.concurrent.ConcurrentHashMap
  * @author johnsonlee
  */
 @Suppress("MemberVisibilityCanBePrivate")
-class ClassHierarchy(private val classSet: ClassSet) {
+class ClassHierarchy<ClassFile, ClassParser : ClassFileParser<ClassFile>>(
+        private val classSet: ClassSet<ClassFile, ClassParser>
+) : ClassFileParser<ClassFile> by classSet.parser {
 
     private val unresolved = ConcurrentHashMap.newKeySet<String>()
 
     val unresolvedClasses: Set<String>
         get() = Collections.unmodifiableSet(unresolved)
 
-    operator fun get(name: String): ClassNode? {
-        val clazz = classSet[name]
+    operator fun get(name: String?): ClassFile? {
+        val clazz = name?.let { classSet[it] }
         if (null == clazz) {
             unresolved += name
         }
         return clazz
     }
 
-    val classes: Iterable<ClassNode> = classSet
+    val classes: Iterable<ClassFile> = classSet
 
-    fun isInheritFrom(child: ClassNode, parent: ClassNode) = when {
-        child.name == parent.name -> true
-        parent.isInterface -> isInheritFromInterface(child, parent)
-        child.isInterface -> parent.name == JAVA_LANG_OBJECT
-        parent.isFinal -> false
+    fun isInheritFrom(child: ClassFile, parent: ClassFile) = when {
+        getClassName(child) == getClassName(parent) -> true
+        isInterface(parent) -> isInheritFromInterface(child, parent)
+        isInterface(child) -> getClassName(parent) == JAVA_LANG_OBJECT
+        isFinal(parent) -> false
         else -> isInheritFromClass(child, parent)
     }
 
@@ -42,57 +41,58 @@ class ClassHierarchy(private val classSet: ClassSet) {
         return isInheritFrom(childClass, parentClass)
     }
 
-    fun isInheritFrom(child: String, parent: ClassNode) = (!parent.isFinal) && this[child]?.let { childClass ->
+    fun isInheritFrom(child: String, parent: ClassFile) = (!isFinal(parent)) && this[child]?.let { childClass ->
         isInheritFrom(childClass, parent)
     } ?: false
 
-    fun isInheritFrom(child: ClassNode, parent: String) = this[parent]?.let { parentClass ->
+    fun isInheritFrom(child: ClassFile, parent: String) = this[parent]?.let { parentClass ->
         isInheritFrom(child, parentClass)
     } ?: false
 
-    fun isInheritFromInterface(child: ClassNode, parent: ClassNode): Boolean {
-        if (parent.name in child.interfaces) {
+    fun isInheritFromInterface(child: ClassFile, parent: ClassFile): Boolean {
+        val interfaces = getInterfaces(child)
+        if (getClassName(parent) in interfaces) {
             return true
         }
 
-        return child.interfaces.any { itf ->
+        return interfaces.any { itf ->
             this[itf]?.let {
                 isInheritFromInterface(it, parent)
             } ?: false
         }
     }
 
-    fun isInheritFromClass(child: ClassNode, parent: ClassNode): Boolean {
-        if (Objects.equals(child.superName, parent.name)) {
+    fun isInheritFromClass(child: ClassFile, parent: ClassFile): Boolean {
+        if (Objects.equals(getSuperName(child), getClassName(parent))) {
             return true
         }
 
-        if (null == child.superName
-                || Objects.equals(child.superName, parent.superName)
-                || Objects.equals(parent.superName, child.name)) {
+        if (null == getSuperName(child)
+                || Objects.equals(getSuperName(child), getSuperName(parent))
+                || Objects.equals(getSuperName(parent), getClassName(child))) {
             return false
         }
 
-        return this[child.superName]?.let {
+        return this[getSuperName(child)]?.let {
             isInheritFromClass(it, parent)
         } ?: false
     }
 
-    fun getSuperClasses(clazz: ClassNode): Set<ClassNode> {
-        if (clazz.superName == null) {
-            return emptySet<ClassNode>()
+    fun getSuperClasses(clazz: ClassFile): Set<ClassFile> {
+        if (getSuperName(clazz) == null) {
+            return emptySet()
         }
 
-        if (clazz.superName == JAVA_LANG_OBJECT) {
-            return setOf(this[clazz.superName]!!)
+        if (getSuperName(clazz) == JAVA_LANG_OBJECT) {
+            return setOf(this[getSuperName(clazz)]!!)
         }
 
-        val classes = mutableSetOf<ClassNode>()
-        var parent = this[clazz.superName]
+        val classes = mutableSetOf<ClassFile>()
+        var parent = this[getSuperName(clazz)]
 
         while (null != parent) {
             classes += parent
-            parent = parent.superName?.let {
+            parent = getSuperName(parent)?.let {
                 this[it]
             }
         }

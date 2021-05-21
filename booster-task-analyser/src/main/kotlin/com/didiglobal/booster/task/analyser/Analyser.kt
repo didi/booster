@@ -55,9 +55,13 @@ class Analyser(
         private val properties: Map<String, *> = emptyMap<String, Any>()
 ) {
 
-    private val providedClasses = providedClasspath.map(ClassSet.Companion::from).fold()
+    private val providedClasses = providedClasspath.map {
+        ClassSet.from(it, AsmClassFileParser)
+    }.fold()
 
-    private val compileClasses = compileClasspath.map(ClassSet.Companion::from).fold()
+    private val compileClasses = compileClasspath.map {
+        ClassSet.from(it, AsmClassFileParser)
+    }.fold()
 
     private val classes = providedClasses + compileClasses
 

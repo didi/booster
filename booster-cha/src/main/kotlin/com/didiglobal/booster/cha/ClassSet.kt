@@ -2,39 +2,53 @@ package com.didiglobal.booster.cha
 
 import com.didiglobal.booster.kotlinx.isEmpty
 import com.didiglobal.booster.kotlinx.red
-import org.objectweb.asm.tree.ClassNode
 import java.io.Closeable
 import java.io.File
 
 /**
  * @author johnsonlee
  */
-interface ClassSet : Set<ClassNode>, Closeable {
+interface ClassSet<ClassFile, ClassParser : ClassFileParser<ClassFile>> : Set<ClassFile>, Closeable {
 
-    operator fun get(name: String): ClassNode?
+    val parser: ClassParser
 
-    operator fun plus(classSet: ClassSet): ClassSet = of(this, classSet)
+    operator fun get(name: String): ClassFile?
 
-    fun contains(name: String): Boolean
+    operator fun plus(classSet: ClassSet<ClassFile, ClassParser>): ClassSet<ClassFile, ClassParser> = of(this, classSet)
 
-    fun load(): ClassSet
+    operator fun contains(name: String): Boolean
+
+    override fun contains(element: ClassFile) = contains(parser.getClassName(element))
+
+    override fun containsAll(elements: Collection<ClassFile>) = elements.all {
+        contains(parser.getClassName(it))
+    }
+
+    fun load(): ClassSet<ClassFile, ClassParser>
 
     companion object {
 
         private val ARCHIVES = Regex("^(zip)|(jar)$", RegexOption.IGNORE_CASE)
 
-        fun from(file: File): ClassSet = when {
-            file.isDirectory -> DirectoryClassSet(file)
-            file.extension matches ARCHIVES -> ArchivedClassSet(file)
+        fun <ClassFile, ClassParser : ClassFileParser<ClassFile>> from(
+                file: File,
+                parser: ClassParser
+        ): ClassSet<ClassFile, ClassParser> = when {
+            file.isDirectory -> DirectoryClassSet<ClassFile, ClassParser>(file, parser)
+            file.extension matches ARCHIVES -> ArchivedClassSet<ClassFile, ClassParser>(file, parser)
             else -> {
                 System.err.println(red("unsupported file: $file"))
-                EmptyClassSet()
+                EmptyClassSet(parser)
             }
         }
 
-        fun of(vararg classSets: ClassSet): ClassSet = of(classSets.asIterable())
+        fun <ClassFile, ClassParser : ClassFileParser<ClassFile>> of(
+                vararg classSets: ClassSet<ClassFile, ClassParser>
+        ): ClassSet<ClassFile, ClassParser> = of(classSets.asIterable())
 
-        fun of(classSets: Iterable<ClassSet>): ClassSet = when {
+        fun <ClassFile, ClassParser : ClassFileParser<ClassFile>> of(
+                classSets: Iterable<ClassSet<ClassFile, ClassParser>>
+        ): ClassSet<ClassFile, ClassParser> = when {
             classSets.isEmpty() -> EmptyClassSet()
             classSets.count() == 1 -> classSets.first()
             else -> CompositeClassSet(classSets)
@@ -44,4 +58,4 @@ interface ClassSet : Set<ClassNode>, Closeable {
 
 }
 
-fun Iterable<ClassSet>.fold() = ClassSet.of(this)
+fun <ClassFile, ClassParser : ClassFileParser<ClassFile>> Iterable<ClassSet<ClassFile, ClassParser>>.fold() = ClassSet.of(this)
