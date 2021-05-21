@@ -35,7 +35,7 @@ private val AGP = V42
 private val ARGS = arrayOf(
         "assemble", "-S",
         "-Pbooster_version=${Build.VERSION}",
-        "-Pandroid_gradle_version=4.2.0-beta01",
+        "-Pandroid_gradle_version=4.2.1",
         "-Pcompile_sdk_version=28",
         "-Pbuild_tools_version=26.0.3",
         "-Pmin_sdk_version=${MIN_SDK_VERSION}",
