@@ -3,8 +3,6 @@ package com.didiglobal.booster.cha
 import com.didiglobal.booster.kotlinx.asIterable
 import com.didiglobal.booster.kotlinx.green
 import com.didiglobal.booster.kotlinx.parallelStream
-import com.didiglobal.booster.transform.asm.asClassNode
-import org.objectweb.asm.tree.ClassNode
 import java.io.File
 import java.io.FileNotFoundException
 import java.util.stream.Collectors.toMap
@@ -16,19 +14,22 @@ private val CLASS_ENTRY_FILTER = { entry: ZipEntry -> entry.name.endsWith(".clas
 /**
  * @author johnsonlee
  */
-internal class ArchivedClassSet(val location: File) : AbstractClassSet() {
+internal class ArchivedClassSet<ClassFile, ClassParser : ClassFileParser<ClassFile>>(
+        val location: File,
+        override val parser: ClassParser
+) : AbstractClassSet<ClassFile, ClassParser>() {
 
     private val zip = ZipFile(location)
 
-    private val classes: Map<String, ClassNode> by lazy {
+    private val classes: Map<String, ClassFile> by lazy {
         zip.entries().iterator().asIterable().parallelStream().filter(CLASS_ENTRY_FILTER).map { entry ->
-            zip.getInputStream(entry).asClassNode()
-        }.collect(toMap(ClassNode::name) { it })
+            parser.parse(zip.getInputStream(entry))
+        }.collect(toMap(parser::getClassName) { it })
     }
 
-    constructor(location: String) : this(File(location).takeIf {
+    constructor(location: String, parser: ClassParser) : this(File(location).takeIf {
         it.exists()
-    } ?: throw FileNotFoundException(location))
+    } ?: throw FileNotFoundException(location), parser)
 
     override fun get(name: String) = this.classes[name]
 
@@ -39,12 +40,12 @@ internal class ArchivedClassSet(val location: File) : AbstractClassSet() {
 
     override fun isEmpty() = this.size <= 0
 
-    override fun load(): ArchivedClassSet {
+    override fun load(): ArchivedClassSet<ClassFile, ClassParser> {
         println("Load ${green(this.classes.size)} classes from $location")
         return this
     }
 
-    override fun iterator(): Iterator<ClassNode> = this.classes.values.iterator()
+    override fun iterator(): Iterator<ClassFile> = this.classes.values.iterator()
 
     override fun close() = zip.close()
 

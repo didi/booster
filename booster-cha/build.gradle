@@ -1,5 +1,5 @@
 apply from: "$rootDir/gradle/booster.gradle"
 
 dependencies {
-    api project(':booster-transform-asm')
+    api project(':booster-transform-util')
 }

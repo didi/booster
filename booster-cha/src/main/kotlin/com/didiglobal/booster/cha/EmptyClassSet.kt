@@ -1,25 +1,26 @@
 package com.didiglobal.booster.cha
 
-import org.objectweb.asm.tree.ClassNode
-
 /**
  * @author johnsonlee
  */
-internal class EmptyClassSet : AbstractClassSet() {
+@Suppress("UNCHECKED_CAST")
+internal class EmptyClassSet<ClassFile, ClassParser : ClassFileParser<ClassFile>>(
+        override val parser: ClassParser = NullClassFileParser as ClassParser
+) : AbstractClassSet<ClassFile, ClassParser>() {
 
     override val size: Int = 0
 
     override fun isEmpty() = true
 
-    override fun get(name: String): ClassNode? = null
+    override fun get(name: String): ClassFile? = null
 
     override fun contains(name: String) = false
 
-    override fun contains(element: ClassNode) = false
+    override fun contains(element: ClassFile) = false
 
-    override fun containsAll(elements: Collection<ClassNode>) = false
+    override fun containsAll(elements: Collection<ClassFile>) = false
 
-    override fun iterator() = object : Iterator<ClassNode> {
+    override fun iterator() = object : Iterator<ClassFile> {
 
         override fun hasNext() = false
 
