@@ -68,6 +68,7 @@ class RInlineTransformer : ClassTransformer {
             if (retainedSymbols.isNotEmpty()) {
                 this.ignores += setOf(Wildcard.valueOf("android/support/constraint/R\$id"))
                 this.ignores += setOf(Wildcard.valueOf("androidx/constraintlayout/R\$id"))
+                this.ignores += setOf(Wildcard.valueOf("androidx/constraintlayout/widget/R\$id"))
             }
         } else {
             retainedSymbols = emptySet()
