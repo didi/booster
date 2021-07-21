@@ -1,7 +1,7 @@
 apply from: "$rootDir/gradle/booster.gradle"
 
 dependencies {
-    kapt 'com.google.auto.service:auto-service:1.0-rc6'
+    kapt 'com.google.auto.service:auto-service:1.0'
     api gradleApi()
     api project(':booster-annotations')
     api project(':booster-api')
