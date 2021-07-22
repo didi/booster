@@ -44,37 +44,35 @@ val BaseVariant.dependencies: Collection<ResolvedArtifactResult>
 /**
  * The `compileJava` task associates with this variant
  */
-@Suppress("DEPRECATION")
 val BaseVariant.javaCompilerTask: Task
     get() = AGP.run { javaCompilerTask }
 
 /**
  * The `preBuild` task associates with this variant
  */
-@Suppress("DEPRECATION")
 val BaseVariant.preBuildTask: Task
     get() = AGP.run { preBuildTask }
 
 /**
  * The `assemble` task associates with this variant
  */
-@Suppress("DEPRECATION")
 val BaseVariant.assembleTask: Task
     get() = AGP.run { assembleTask }
 
 /**
  * The `mergeAssets` task associates with this variant
  */
-@Suppress("DEPRECATION")
 val BaseVariant.mergeAssetsTask: Task
     get() = AGP.run { mergeAssetsTask }
 
 /**
  * The `mergeResources` task associates with this variant
  */
-@Suppress("DEPRECATION")
 val BaseVariant.mergeResourcesTask: Task
     get() = AGP.run { mergeResourcesTask }
+
+val BaseVariant.processJavaResourcesTask: Task
+    get() = AGP.run { processJavaResourcesTask }
 
 /**
  * The `processRes` task associates with this variant
@@ -93,6 +91,9 @@ val BaseVariant.bundleResourcesTask: Task?
  */
 val BaseVariant.packageBundleTask: Task?
     get() = project.tasks.findByName(getTaskName("package", "Bundle"))
+
+val BaseVariant.mergeJavaResourceTask: Task?
+    get() = project.tasks.findByName(getTaskName("merge", "JavaResource"))
 
 fun BaseVariant.getTaskName(prefix: String): String = AGP.run {
     getTaskName(prefix)

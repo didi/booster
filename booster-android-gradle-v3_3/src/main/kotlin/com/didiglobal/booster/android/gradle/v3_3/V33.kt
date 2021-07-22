@@ -73,6 +73,9 @@ object V33 : AGPInterface {
     override val BaseVariant.mergeResourcesTask: Task
         get() = mergeResourcesProvider.get()
 
+    override val BaseVariant.processJavaResourcesTask: Task
+        get() = processJavaResourcesProvider.get()
+
     override fun BaseVariant.getTaskName(prefix: String): String {
         return variantScope.getTaskName(prefix)
     }
