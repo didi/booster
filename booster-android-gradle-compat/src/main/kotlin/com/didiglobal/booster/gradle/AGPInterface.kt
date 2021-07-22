@@ -42,6 +42,8 @@ interface AGPInterface {
 
     val BaseVariant.mergeResourcesTask: Task
 
+    val BaseVariant.processJavaResourcesTask: Task
+
     fun BaseVariant.getTaskName(prefix: String): String
 
     fun BaseVariant.getTaskName(prefix: String, suffix: String): String
