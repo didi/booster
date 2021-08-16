@@ -4,6 +4,11 @@ import com.didiglobal.booster.aapt.Configuration
 import com.didiglobal.booster.aapt2.Aapt2Container
 import com.didiglobal.booster.aapt2.metadata
 import com.didiglobal.booster.compression.CompressionResult
+import com.didiglobal.booster.compression.isFlatPng
+import com.didiglobal.booster.compression.isPng
+import com.didiglobal.booster.gradle.isAapt2Enabled
+import com.didiglobal.booster.gradle.mergedRes
+import com.didiglobal.booster.kotlinx.search
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.io.IOException
@@ -18,13 +23,13 @@ internal open class RemoveRedundantFlatImages : RemoveRedundantImages() {
 
     @TaskAction
     override fun run() {
-        val resources = supplier().parallelStream().map {
+        val resources = variant.mergedRes.search(if (project.isAapt2Enabled) ::isFlatPng else ::isPng).parallelStream().map {
             it to it.metadata
         }.collect(Collectors.toSet())
 
         resources.filter {
             when {
-                supportsRtl -> true
+                variant.isSupportsRtl -> true
                 // remove ldrtl resources if RTL is not supported
                 it.second.configuration.screenConfig.layout == Configuration.ScreenConfig.SCREEN_LAYOUT_DIR_RTL -> {
                     it.remove()

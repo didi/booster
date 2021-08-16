@@ -1,19 +1,18 @@
 package com.didiglobal.booster.task.resource.deredundancy
 
 import com.android.build.gradle.api.BaseVariant
+import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.didiglobal.booster.annotations.Priority
 import com.didiglobal.booster.compression.CompressionResults
 import com.didiglobal.booster.compression.generateReport
-import com.didiglobal.booster.compression.isFlatPng
-import com.didiglobal.booster.compression.isPng
 import com.didiglobal.booster.compression.task.CompressImages
-import com.didiglobal.booster.gradle.aapt2Enabled
-import com.didiglobal.booster.gradle.mergeResourcesTask
-import com.didiglobal.booster.gradle.mergedRes
+import com.didiglobal.booster.gradle.getTaskName
+import com.didiglobal.booster.gradle.isAapt2Enabled
+import com.didiglobal.booster.gradle.mergeResourcesTaskProvider
 import com.didiglobal.booster.gradle.project
-import com.didiglobal.booster.kotlinx.search
 import com.didiglobal.booster.task.spi.VariantProcessor
 import com.google.auto.service.AutoService
+import org.gradle.api.UnknownTaskException
 
 
 /**
@@ -26,16 +25,27 @@ import com.google.auto.service.AutoService
 class ResourceDeredundancyVariantProcessor : VariantProcessor {
 
     override fun process(variant: BaseVariant) {
+        val project = variant.project
         val results = CompressionResults()
-        val aapt2 = variant.project.aapt2Enabled
-        val klassRemoveRedundantImages = if (aapt2) RemoveRedundantFlatImages::class else RemoveRedundantImages::class
-        val deredundancy = variant.project.tasks.create("remove${variant.name.capitalize()}RedundantResources", klassRemoveRedundantImages.java) {
-            it.outputs.upToDateWhen { false }
-            it.variant = variant
-            it.results = results
-            it.supplier = { variant.mergedRes.search(if (aapt2) ::isFlatPng else ::isPng) }
-        }.dependsOn(variant.mergeResourcesTask).doLast {
-            results.generateReport(variant, Build.ARTIFACT)
+        val klassRemoveRedundantImages = if (project.isAapt2Enabled) RemoveRedundantFlatImages::class else RemoveRedundantImages::class
+        val deredundancy = variant.project.tasks.register("remove${variant.name.capitalize()}RedundantResources", klassRemoveRedundantImages.java) { task ->
+            task.outputs.upToDateWhen { false }
+            task.variant = variant
+            task.results = results
+        }.apply {
+            (try {
+                project.tasks.named(variant.getTaskName("process", "Manifest"))
+            } catch (e: UnknownTaskException) {
+                null
+            })?.let {
+                dependsOn(it)
+            }
+            dependsOn(variant.mergeResourcesTaskProvider)
+            configure {
+                it.doLast {
+                    results.generateReport(variant, Build.ARTIFACT)
+                }
+            }
         }
 
         variant.project.tasks.withType(CompressImages::class.java).filter {

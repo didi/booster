@@ -14,15 +14,15 @@ import java.io.File
  * @author johnsonlee
  */
 @CacheableTask
-internal open class CwebpCompressImages : AbstractCwebpCompressImages() {
+internal abstract class CwebpCompressImages : AbstractCwebpCompressImages() {
 
     @get:OutputFiles
-    private val compressedImages: Collection<File>
-        get() = images
+    val compressedImages: Collection<File>
+        get() = images()
 
     override fun compress(filter: (File) -> Boolean) {
         val cwebp = compressor.canonicalPath
-        images.parallelStream().filter(this::includes).filter(filter).map { input ->
+        images().parallelStream().filter(this::includes).filter(filter).map { input ->
             val output = File(input.canonicalPath.substringBeforeLast('.') + ".webp")
             ActionData(input, output, listOf(cwebp, "-mt", "-quiet", "-q", options.quality.toString(), "-o", output.canonicalPath, input.canonicalPath))
         }.forEach {

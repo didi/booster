@@ -7,6 +7,7 @@ import com.didiglobal.booster.compression.CompressionReport
 import com.didiglobal.booster.compression.CompressionResult
 import com.didiglobal.booster.compression.CompressionResults
 import com.didiglobal.booster.gradle.processResTask
+import com.didiglobal.booster.gradle.processResTaskProvider
 import com.didiglobal.booster.gradle.processedRes
 import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.kotlinx.file
@@ -32,10 +33,11 @@ class ProcessedResourcesCompressionVariantProcessor : VariantProcessor {
 
     override fun process(variant: BaseVariant) {
         val results = CompressionResults()
-
-        variant.processResTask?.doLast {
-            variant.compressProcessedRes(results)
-            variant.generateReport(results)
+        variant.processResTaskProvider?.configure {
+            it.doLast {
+                variant.compressProcessedRes(results)
+                variant.generateReport(results)
+            }
         }
     }
 
