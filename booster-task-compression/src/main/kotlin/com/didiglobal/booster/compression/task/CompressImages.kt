@@ -12,9 +12,7 @@ import com.didiglobal.booster.compression.CompressionTool
 import com.didiglobal.booster.kotlinx.Wildcard
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputFiles
-import org.gradle.api.tasks.PathSensitive
-import org.gradle.api.tasks.PathSensitivity
+import org.gradle.api.tasks.Internal
 import java.io.File
 
 /**
@@ -24,21 +22,28 @@ import java.io.File
  */
 abstract class CompressImages<T : CompressionOptions> : DefaultTask() {
 
+    @get:Internal
     lateinit var variant: BaseVariant
 
+    @get:Internal
     lateinit var tool: CompressionTool
 
+    @get:Internal
     lateinit var results: CompressionResults
 
+    @get:Internal
     lateinit var options: T
 
-    lateinit var supplier: () -> Collection<File>
+    @get:Internal
+    lateinit var images: () -> Collection<File>
 
     /**
      * The resource path filter
      */
+    @get:Internal
     var filter: ResourceNameFilter = MATCH_ALL_RESOURCES
 
+    @get:Internal
     val compressor: File
         get() = project.tasks.withType(CommandInstaller::class.java).find {
             it.command == tool.command
@@ -51,11 +56,6 @@ abstract class CompressImages<T : CompressionOptions> : DefaultTask() {
     @get:Input
     val variantName: String
         get() = variant.name
-
-    @get:InputFiles
-    @get:PathSensitive(PathSensitivity.RELATIVE)
-    val images: Collection<File>
-        get() = supplier()
 
     protected open fun includes(arg: Pair<File, Aapt2Container.Metadata>): Boolean {
         val (input, metadata) = arg

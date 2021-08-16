@@ -4,6 +4,7 @@ import com.android.build.gradle.api.BaseVariant
 import com.didiglobal.booster.compression.task.CompressImages
 import com.didiglobal.booster.kotlinx.Wildcard
 import org.gradle.api.Task
+import org.gradle.api.tasks.TaskProvider
 import java.io.File
 import kotlin.reflect.KClass
 
@@ -30,7 +31,13 @@ interface CompressionTaskCreator {
      * @param supplier The image supplier
      * @param deps The dependent tasks
      */
-    fun createCompressionTask(variant: BaseVariant, results: CompressionResults, name: String, supplier: () -> Collection<File>, vararg deps: Task): CompressImages<out CompressionOptions> = createCompressionTask(variant, results, name, supplier, emptySet(), *deps)
+    fun createCompressionTask(
+            variant: BaseVariant,
+            results: CompressionResults,
+            name: String,
+            supplier: () -> Collection<File>,
+            vararg deps: TaskProvider<out Task>
+    ): TaskProvider<out CompressImages<out CompressionOptions>> = createCompressionTask(variant, results, name, supplier, emptySet(), *deps)
 
     /**
      * Returns a task for compression
@@ -42,6 +49,13 @@ interface CompressionTaskCreator {
      * @param ignores wildcard of the resource name which to be excluded
      * @param deps The dependent tasks
      */
-    fun createCompressionTask(variant: BaseVariant, results: CompressionResults, name: String, supplier: () -> Collection<File>, ignores: Set<Wildcard> = emptySet(), vararg deps: Task): CompressImages<out CompressionOptions>
+    fun createCompressionTask(
+            variant: BaseVariant,
+            results: CompressionResults,
+            name: String,
+            supplier: () -> Collection<File>,
+            ignores: Set<Wildcard> = emptySet(),
+            vararg deps: TaskProvider<out Task>
+    ): TaskProvider<out CompressImages<out CompressionOptions>>
 
 }

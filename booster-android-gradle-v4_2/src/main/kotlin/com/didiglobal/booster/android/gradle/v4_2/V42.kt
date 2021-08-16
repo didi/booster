@@ -6,7 +6,6 @@ import com.android.build.api.artifact.impl.ArtifactsImpl
 import com.android.build.api.component.impl.ComponentImpl
 import com.android.build.api.transform.Context
 import com.android.build.api.transform.QualifiedContent
-import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.ApplicationVariant
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.LibraryVariant
@@ -24,11 +23,12 @@ import com.android.builder.model.ApiVersion
 import com.android.sdklib.AndroidVersion
 import com.android.sdklib.BuildToolInfo
 import com.didiglobal.booster.gradle.AGPInterface
-import com.didiglobal.booster.gradle.getAndroid
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.ArtifactCollection
+import org.gradle.api.file.FileCollection
 import org.gradle.api.file.FileSystemLocation
+import org.gradle.api.tasks.TaskProvider
 import java.io.File
 import java.util.TreeMap
 
@@ -45,25 +45,21 @@ private val ARTIFACT_TYPES = arrayOf(
     it.javaClass.simpleName to it
 }.toMap()
 
-private val BaseVariant.component: ComponentImpl
-    get() = BaseVariantImpl::class.java.getDeclaredField("component").apply {
-        isAccessible = true
-    }.get(this) as ComponentImpl
+internal object V42 : AGPInterface {
 
-@Suppress("UnstableApiUsage")
-private fun <T : FileSystemLocation> BaseVariant.getFinalArtifactFiles(type: Artifact.SingleArtifact<T>): Collection<File> {
-    return listOfNotNull(artifacts.get(type).map(FileSystemLocation::getAsFile).orNull)
-}
+    private val BaseVariant.component: ComponentImpl
+        get() = BaseVariantImpl::class.java.getDeclaredField("component").apply {
+            isAccessible = true
+        }.get(this) as ComponentImpl
 
-@Suppress("DEPRECATION")
-private val BaseVariant.globalScope: GlobalScope
-    get() = component.globalScope
+    @Suppress("UnstableApiUsage")
+    private fun <T : FileSystemLocation> BaseVariant.getFinalArtifactFiles(type: Artifact.SingleArtifact<T>): Collection<File> {
+        return listOfNotNull(artifacts.get(type).map(FileSystemLocation::getAsFile).orNull)
+    }
 
-@Suppress("UnstableApiUsage")
-private val BaseVariant.artifacts: ArtifactsImpl
-    get() = component.artifacts
-
-object V42 : AGPInterface {
+    @Suppress("UnstableApiUsage")
+    private val BaseVariant.artifacts: ArtifactsImpl
+        get() = component.artifacts
 
     override val scopeFullWithFeatures: MutableSet<in QualifiedContent.Scope>
         get() = TransformManager.SCOPE_FULL_WITH_FEATURES
@@ -74,23 +70,23 @@ object V42 : AGPInterface {
     override val BaseVariant.project: Project
         get() = globalScope.project
 
-    override val BaseVariant.javaCompilerTask: Task
-        get() = javaCompileProvider.get()
+    override val BaseVariant.javaCompilerTaskProvider: TaskProvider<out Task>
+        get() = javaCompileProvider
 
-    override val BaseVariant.preBuildTask: Task
-        get() = preBuildProvider.get()
+    override val BaseVariant.preBuildTaskProvider: TaskProvider<out Task>
+        get() = preBuildProvider
 
-    override val BaseVariant.assembleTask: Task
-        get() = assembleProvider.get()
+    override val BaseVariant.assembleTaskProvider: TaskProvider<out Task>
+        get() = assembleProvider
 
-    override val BaseVariant.mergeAssetsTask: Task
-        get() = mergeAssetsProvider.get()
+    override val BaseVariant.mergeAssetsTaskProvider: TaskProvider<out Task>
+        get() = mergeAssetsProvider
 
-    override val BaseVariant.mergeResourcesTask: Task
-        get() = mergeResourcesProvider.get()
+    override val BaseVariant.mergeResourcesTaskProvider: TaskProvider<out Task>
+        get() = mergeResourcesProvider
 
-    override val BaseVariant.processJavaResourcesTask: Task
-        get() = processJavaResourcesProvider.get()
+    override val BaseVariant.processJavaResourcesTaskProvider: TaskProvider<out Task>
+        get() = processJavaResourcesProvider
 
     override fun BaseVariant.getTaskName(prefix: String): String {
         return component.computeTaskName(prefix)
@@ -127,6 +123,14 @@ object V42 : AGPInterface {
             artifactType: AndroidArtifacts.ArtifactType
     ): ArtifactCollection {
         return component.variantDependencies.getArtifactCollection(configType, scope, artifactType)
+    }
+
+    override fun BaseVariant.getArtifactFileCollection(
+            configType: AndroidArtifacts.ConsumedConfigType,
+            scope: AndroidArtifacts.ArtifactScope,
+            artifactType: AndroidArtifacts.ArtifactType
+    ): FileCollection {
+        return component.variantDependencies.getArtifactFileCollection(configType, scope, artifactType)
     }
 
     override val BaseVariant.allArtifacts: Map<String, Collection<File>>
@@ -193,6 +197,9 @@ object V42 : AGPInterface {
             val buildToolRevision = project.provider(globalScope.extension::buildToolsRevision)
             return globalScope.sdkComponents.get().sdkLoader(compileSdkVersion, buildToolRevision).buildToolInfoProvider.get()
         }
+
+    override val BaseVariant.isPrecompileDependenciesResourcesEnabled: Boolean
+        get() = component.isPrecompileDependenciesResourcesEnabled
 
     override val Context.task: TransformTask
         get() = javaClass.getDeclaredField("this$1").apply {

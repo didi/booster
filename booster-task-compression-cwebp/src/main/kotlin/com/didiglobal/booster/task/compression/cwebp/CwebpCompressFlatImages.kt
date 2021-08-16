@@ -27,10 +27,10 @@ import javax.xml.parsers.SAXParserFactory
  * @author johnsonlee
  */
 @CacheableTask
-internal open class CwebpCompressFlatImages : AbstractCwebpCompressImages() {
+internal abstract class CwebpCompressFlatImages : AbstractCwebpCompressImages() {
 
     @get:OutputDirectory
-    private val compressedRes: File
+    val compressedRes: File
         get() = variant.project.buildDir.file(FD_INTERMEDIATES).file("compressed_${FD_RES}_cwebp", variant.dirName, this.name)
 
     override fun compress(filter: (File) -> Boolean) {
@@ -56,7 +56,7 @@ internal open class CwebpCompressFlatImages : AbstractCwebpCompressImages() {
             }
         }
 
-        images.parallelStream().map {
+        images().parallelStream().map {
             it to it.metadata
         }.filter(this::includes).filter(isNotLauncherIcon).filter {
             filter(File(it.second.sourcePath))

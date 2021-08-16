@@ -5,8 +5,8 @@ import com.didiglobal.booster.compression.CompressionResults
 import com.didiglobal.booster.compression.generateReport
 import com.didiglobal.booster.compression.isFlatPngExceptRaw
 import com.didiglobal.booster.compression.isPngExceptRaw
-import com.didiglobal.booster.gradle.aapt2Enabled
-import com.didiglobal.booster.gradle.mergeResourcesTask
+import com.didiglobal.booster.gradle.isAapt2Enabled
+import com.didiglobal.booster.gradle.mergeResourcesTaskProvider
 import com.didiglobal.booster.gradle.mergedRes
 import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.kotlinx.Wildcard
@@ -21,15 +21,18 @@ import com.google.auto.service.AutoService
 class CwebpCompressionVariantProcessor : VariantProcessor {
 
     override fun process(variant: BaseVariant) {
+        val project = variant.project
         val results = CompressionResults()
-        val ignores = variant.project.findProperty(PROPERTY_IGNORES)?.toString()?.trim()?.split(',')?.map {
+        val ignores = project.findProperty(PROPERTY_IGNORES)?.toString()?.trim()?.split(',')?.map {
             Wildcard(it)
         }?.toSet() ?: emptySet()
 
         Cwebp.get(variant)?.newCompressionTaskCreator()?.createCompressionTask(variant, results, "resources", {
-            variant.mergedRes.search(if (variant.project.aapt2Enabled) ::isFlatPngExceptRaw else ::isPngExceptRaw)
-        }, ignores, variant.mergeResourcesTask)?.doLast {
-            results.generateReport(variant, Build.ARTIFACT)
+            variant.mergedRes.search(if (project.isAapt2Enabled) ::isFlatPngExceptRaw else ::isPngExceptRaw)
+        }, ignores, variant.mergeResourcesTaskProvider)?.configure {
+            it.doLast {
+                results.generateReport(variant, Build.ARTIFACT)
+            }
         }
     }
 

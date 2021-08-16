@@ -24,17 +24,17 @@ import java.io.File
  * @author johnsonlee
  */
 @CacheableTask
-internal open class PngquantCompressFlatImages : AbstractPngquantCompressImages() {
+internal abstract class PngquantCompressFlatImages : AbstractPngquantCompressImages() {
 
     private val intermediates: File
         get() = variant.project.buildDir.file(FD_INTERMEDIATES)
 
     @get:OutputDirectory
-    private val compressedRes: File
+    val compressedRes: File
         get() = intermediates.file("compressed_${FD_RES}_pngquant", variant.dirName, this.name)
 
     @get:OutputDirectory
-    private val compiledRes: File
+    val compiledRes: File
         get() = intermediates.file("compiled_${FD_RES}_pngquant", variant.dirName, this.name)
 
     override fun compress() {
@@ -45,7 +45,7 @@ internal open class PngquantCompressFlatImages : AbstractPngquantCompressImages(
         compressedRes.file(FD_RES_MIPMAP).mkdirs()
         compressedRes.file(FD_RES_DRAWABLE).mkdirs()
 
-        images.parallelStream().map {
+        images().parallelStream().map {
             it to it.metadata
         }.filter(this::includes).map {
             val output = compressedRes.file("${it.second.resourcePath.substringBeforeLast('.')}$DOT_PNG")

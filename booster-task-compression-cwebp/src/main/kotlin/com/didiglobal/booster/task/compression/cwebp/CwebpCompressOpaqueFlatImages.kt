@@ -9,7 +9,7 @@ import java.io.File
  * @author johnsonlee
  */
 @CacheableTask
-internal open class CwebpCompressOpaqueFlatImages : CwebpCompressFlatImages() {
+internal abstract class CwebpCompressOpaqueFlatImages : CwebpCompressFlatImages() {
 
     override fun compress(filter: (File) -> Boolean) = super.compress { true }
 

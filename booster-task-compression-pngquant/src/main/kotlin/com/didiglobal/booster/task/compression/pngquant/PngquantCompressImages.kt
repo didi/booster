@@ -15,16 +15,16 @@ import java.io.File
  * @author johnsonlee
  */
 @CacheableTask
-internal open class PngquantCompressImages : AbstractPngquantCompressImages() {
+internal abstract class PngquantCompressImages : AbstractPngquantCompressImages() {
 
     @get:OutputFiles
-    private val compressedImages: Collection<File>
-        get() = images
+    val compressedImages: Collection<File>
+        get() = images()
 
     override fun compress() {
         val pngquant = this.compressor.canonicalPath
 
-        images.parallelStream().filter(this::includes).map {
+        images().parallelStream().filter(this::includes).map {
             ActionData(it, it, listOf(pngquant, "--strip", "--skip-if-larger", "-f", "--ext", DOT_PNG, "-s", "${options.speed}", "-Q", "${options.quality}-100", it.canonicalPath))
         }.forEach {
             val s0 = it.input.length()

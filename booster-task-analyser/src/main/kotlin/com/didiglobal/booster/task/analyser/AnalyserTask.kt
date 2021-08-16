@@ -4,7 +4,7 @@ import com.android.build.gradle.api.BaseVariant
 import com.didiglobal.booster.gradle.extension
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.transform.artifacts
-import org.gradle.api.internal.AbstractTask
+import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import java.io.File
@@ -14,7 +14,7 @@ import java.io.File
  *
  * @author johnsonlee
  */
-open class AnalyserTask : AbstractTask() {
+open class AnalyserTask : DefaultTask() {
 
     lateinit var variant: BaseVariant
 
