@@ -1,0 +1,40 @@
+name: Deploy API reference
+
+on:
+  push:
+    tags:
+      - '*'
+  repository_dispatch:
+    types: [publish]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    if: github.repository == 'johnsonlee/booster'
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup Java
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '8'
+
+    - name: Build API reference
+      run: ./gradlew reference -S --no-daemon
+
+    - name: Deploy API reference
+      working-directory: ./build/reference
+      run: |
+        echo "reference.johnsonlee.io" > CNAME
+        git init
+        git config user.name "johnsonlee"
+        git config user.email "g.johnsonlee@gmail.com"
+        git remote add origin https://johnsonlee:${GH_DEPLOY_TOKEN}@github.com/johnsonlee/reference.johnsonlee.io.git
+        git add .
+        git commit -m "Deployed Booster ${GITHUB_REF/refs\/tags\//} API reference" -a
+        git push -u origin HEAD:master --force
+      env:
+        GH_DEPLOY_TOKEN: ${{ secrets.GH_DEPLOY_TOKEN }}
