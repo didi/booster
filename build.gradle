@@ -172,6 +172,7 @@ task reference(type: org.jetbrains.dokka.gradle.DokkaTask, group: 'Documentation
     subProjects = [
             'booster-aapt2',
             'booster-android-gradle-api',
+            'booster-android-gradle-compat',
             'booster-annotations',
             'booster-api',
             'booster-build',
