@@ -123,7 +123,7 @@ internal val NO_COMPRESS = setOf(
         "mpg", "mpeg", "mid", "midi", "smf", "jet",
         "rtttl", "imy", "xmf", "mp4", "m4a",
         "m4v", "3gp", "3gpp", "3g2", "3gpp2",
-        "amr", "awb", "wma", "wmv", "webm", "mkv"
+        "amr", "awb", "wma", "wmv", "webm", "mkv", "arsc"
 )
 
 internal val percentage: (Number) -> String = DecimalFormat("#,##0.00'%'")::format
