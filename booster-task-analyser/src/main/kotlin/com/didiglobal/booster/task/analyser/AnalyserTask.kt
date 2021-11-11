@@ -6,6 +6,7 @@ import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.transform.artifacts
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 
@@ -16,8 +17,10 @@ import java.io.File
  */
 open class AnalyserTask : DefaultTask() {
 
+    @get:Internal
     lateinit var variant: BaseVariant
 
+    @get:Internal
     lateinit var supplier: () -> File
 
     @get:Input

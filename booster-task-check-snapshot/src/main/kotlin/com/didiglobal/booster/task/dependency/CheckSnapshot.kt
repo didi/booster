@@ -7,10 +7,12 @@ import com.didiglobal.booster.kotlinx.CSI_YELLOW
 import com.didiglobal.booster.kotlinx.ifNotEmpty
 import org.gradle.api.DefaultTask
 import org.gradle.api.internal.artifacts.repositories.resolver.MavenUniqueSnapshotComponentIdentifier
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 
 internal open class CheckSnapshot : DefaultTask() {
 
+    @get:Internal
     lateinit var variant: BaseVariant
 
     @TaskAction

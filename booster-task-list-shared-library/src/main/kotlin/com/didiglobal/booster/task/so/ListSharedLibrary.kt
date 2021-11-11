@@ -6,11 +6,13 @@ import com.didiglobal.booster.kotlinx.CSI_CYAN
 import com.didiglobal.booster.kotlinx.CSI_RESET
 import com.didiglobal.booster.kotlinx.ifNotEmpty
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import java.util.jar.JarFile
 
 internal open class ListSharedLibrary : DefaultTask() {
 
+    @get:Internal
     lateinit var variant: BaseVariant
 
     @TaskAction
