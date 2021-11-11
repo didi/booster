@@ -10,6 +10,7 @@ import com.didiglobal.booster.kotlinx.CSI_RESET
 import com.didiglobal.booster.kotlinx.CSI_YELLOW
 import com.didiglobal.booster.kotlinx.ifNotEmpty
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.util.zip.ZipFile
@@ -19,6 +20,7 @@ internal open class ListPermission : DefaultTask() {
 
     private val factory = SAXParserFactory.newInstance()
 
+    @get:Internal
     lateinit var variant: BaseVariant
 
     init {
