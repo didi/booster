@@ -73,7 +73,7 @@ The best practise of using Booster is integrating the specific module to solve t
 
 ```groovy
 buildscript {
-    ext.booster_version = '4.0.0'
+    ext.booster_version = '4.1.0'
     repositories {
         google()
         mavenCentral()
@@ -121,7 +121,7 @@ The `plugins` DSL also supported since Booster *3.0.0*
 
 ```groovy
 plugins {
-    id 'com.didiglobal.booster' version '4.0.0'
+    id 'com.didiglobal.booster' version '4.1.0'
 }
 ```
 

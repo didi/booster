@@ -31,7 +31,7 @@ allprojects { project ->
     apply plugin: 'de.marcphilipp.nexus-publish'
 
     group = 'com.didiglobal.booster'
-    version = '4.0.0'
+    version = '4.1.0'
 
     repositories {
         mavenLocal()
@@ -164,8 +164,8 @@ nexusStaging {
     packageGroup = "com.didiglobal"
     username = OSSRH_USERNAME
     password = OSSRH_PASSWORD
-    numberOfRetries = 50
-    delayBetweenRetriesInMillis = 3000
+    numberOfRetries = 100
+    delayBetweenRetriesInMillis = 5000
 }
 
 task reference(type: org.jetbrains.dokka.gradle.DokkaTask, group: 'Documentation') {

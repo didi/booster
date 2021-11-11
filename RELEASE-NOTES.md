@@ -1,3 +1,12 @@
+## v4.1.0
+
+- Fix issue [#258](https://github.com/didi/booster/issues/258)
+- Fix bug when install in android-R machine: no compress arsc file.
+
+## v4.0.0
+
+- Support AGP 7.0
+
 ## v3.5.0
 
 - Fix `booster-transform-r-inline` 支持 `constraintlayout` `v2.0`
