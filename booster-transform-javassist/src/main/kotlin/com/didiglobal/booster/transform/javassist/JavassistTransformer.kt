@@ -44,9 +44,12 @@ class JavassistTransformer : Transformer {
     }
 
     override fun onPreTransform(context: TransformContext) {
-        this.pool.appendClassPath(context.bootClasspath.joinToString(File.pathSeparator) { it.canonicalPath })
-        this.pool.appendClassPath(context.compileClasspath.joinToString(File.pathSeparator) { it.canonicalPath })
-
+        context.bootClasspath.forEach { file ->
+            this.pool.appendClassPath(file.canonicalPath)
+        }
+        context.compileClasspath.forEach { file ->
+            this.pool.appendClassPath(file.canonicalPath)
+        }
         this.transformers.forEach { transformer ->
             this.threadMxBean.sumCpuTime(transformer) {
                 transformer.onPreTransform(context)
