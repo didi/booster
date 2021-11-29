@@ -3,6 +3,7 @@ apply from: "$rootDir/gradle/booster.gradle"
 dependencies {
     kapt "com.google.auto.service:auto-service:1.0"
     implementation project(':booster-task-compression')
+    implementation ("pink.madis.apk.arsc:android-chunk-utils:0.0.7")
     compileOnly 'com.android.tools.build:gradle:4.0.0'
     compileOnly 'com.android.tools.build:builder:4.0.0'
     testCompileOnly 'com.android.tools.build:gradle:4.0.0'
