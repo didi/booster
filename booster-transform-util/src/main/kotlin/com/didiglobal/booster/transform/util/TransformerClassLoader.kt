@@ -32,7 +32,7 @@ class TransformerClassLoader : URLClassLoader {
     }
 
     private val context: TransformContext by lazy {
-        object : AbstractTransformContext(javaClass.name, javaClass.name, classpath, classpath) {}
+        object : AbstractTransformContext(javaClass.name, javaClass.name, emptyList(), classpath, classpath) {}
     }
 
     override fun findClass(name: String): Class<*> {
