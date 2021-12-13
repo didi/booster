@@ -31,7 +31,7 @@ allprojects { project ->
     apply plugin: 'maven-publish'
 
     group = 'com.didiglobal.booster'
-    version = '4.1.0'
+    version = '4.2.0'
 
     repositories {
         mavenLocal()
