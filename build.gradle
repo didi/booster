@@ -1,3 +1,4 @@
+import java.time.Duration
 import static org.gradle.kotlin.dsl.KotlinDependencyExtensionsKt.embeddedKotlinVersion
 
 buildscript {
@@ -12,8 +13,7 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.21.2"
-        classpath "de.marcphilipp.gradle:nexus-publish-plugin:0.4.0"
+        classpath "io.github.gradle-nexus:publish-plugin:1.1.0"
         classpath "io.johnsonlee.buildprops:buildprops-gradle-plugin:1.1.0"
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.10.1"
     }
@@ -21,14 +21,14 @@ buildscript {
 
 def OSSRH_USERNAME = project.properties['OSSRH_USERNAME'] ?: System.getenv('OSSRH_USERNAME')
 def OSSRH_PASSWORD = project.properties['OSSRH_PASSWORD'] ?: System.getenv('OSSRH_PASSWORD')
+def OSSRH_STAGING_PROFILE_ID = project.properties['OSSRH_STAGING_PROFILE_ID'] ?: System.getenv('OSSRH_STAGING_PROFILE_ID')
 
-apply plugin: 'io.codearte.nexus-staging'
 apply plugin: 'org.jetbrains.dokka'
+apply plugin: 'io.github.gradle-nexus.publish-plugin'
 
 allprojects { project ->
     apply plugin: 'java'
-    apply plugin: 'maven'
-    apply plugin: 'de.marcphilipp.nexus-publish'
+    apply plugin: 'maven-publish'
 
     group = 'com.didiglobal.booster'
     version = '4.1.0'
@@ -61,15 +61,6 @@ allprojects { project ->
     test {
         testLogging {
             events "passed", "skipped", "failed", "standardOut", "standardError"
-        }
-    }
-
-    nexusPublishing {
-        repositories {
-            sonatype {
-                username = OSSRH_USERNAME
-                password = OSSRH_PASSWORD
-            }
         }
     }
 
@@ -160,12 +151,24 @@ dependencies {
     implementation project(':booster-gradle-plugin')
 }
 
-nexusStaging {
+nexusPublishing {
     packageGroup = "com.didiglobal"
-    username = OSSRH_USERNAME
-    password = OSSRH_PASSWORD
-    numberOfRetries = 100
-    delayBetweenRetriesInMillis = 5000
+
+    repositories {
+        sonatype {
+            username = OSSRH_USERNAME
+            password = OSSRH_PASSWORD
+            stagingProfileId = OSSRH_STAGING_PROFILE_ID
+        }
+    }
+
+    clientTimeout = Duration.ofSeconds(300)
+    connectTimeout = Duration.ofSeconds(60)
+
+    transitionCheckOptions {
+        maxRetries.set(3000)
+        delayBetween.set(Duration.ofMillis(3000))
+    }
 }
 
 task reference(type: org.jetbrains.dokka.gradle.DokkaTask, group: 'Documentation') {
