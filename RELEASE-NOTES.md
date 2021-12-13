@@ -1,3 +1,9 @@
+## v4.2.0
+
+- Add Android stub APIs
+- Fix bug of the classpath of class pool
+- Add runtime instrumentation support
+
 ## v4.1.0
 
 - Fix issue [#258](https://github.com/didi/booster/issues/258)
