@@ -64,6 +64,7 @@ The following table lists which version of Gradle is required for each version o
 | 4.0.0+                | 6.1.1+   |
 | 4.1.0+                | 6.5+     |
 | 4.2.0+                | 6.7.1+   |
+| 7.0                   | 7.0+     |
 
 ## Best Practise | 最佳实践
 
@@ -73,7 +74,7 @@ The best practise of using Booster is integrating the specific module to solve t
 
 ```groovy
 buildscript {
-    ext.booster_version = '4.2.0'
+    ext.booster_version = '4.2.1'
     repositories {
         google()
         mavenCentral()
@@ -121,7 +122,7 @@ The `plugins` DSL also supported since Booster *3.0.0*
 
 ```groovy
 plugins {
-    id 'com.didiglobal.booster' version '4.2.0'
+    id 'com.didiglobal.booster' version '4.2.1'
 }
 ```
 
