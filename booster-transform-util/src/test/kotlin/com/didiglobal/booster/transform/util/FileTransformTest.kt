@@ -8,8 +8,8 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-private val PWD: String = System.getProperty("user.dir")
-private val BUILD_DIR = File(PWD, "build")
+internal val PWD: String = System.getProperty("user.dir")
+internal val BUILD_DIR = File(PWD, "build")
 
 class FileTransformTest {
 

@@ -134,14 +134,14 @@ fun ZipInputStream.transform(
 private const val DEFAULT_BUFFER_SIZE = 8 * 1024
 
 private fun InputStream.readBytes(estimatedSize: Int = DEFAULT_BUFFER_SIZE): ByteArray {
-    val buffer = ByteArrayOutputStream(estimatedSize.coerceAtLeast(this.available()))
+    val buffer = ByteArrayOutputStream(maxOf(estimatedSize, this.available()))
     copyTo(buffer)
     return buffer.toByteArray()
 }
 
 private fun InputStream.copyTo(out: OutputStream, bufferSize: Int = DEFAULT_BUFFER_SIZE): Long {
     var bytesCopied: Long = 0
-    val buffer = ByteArray(bufferSize)
+    val buffer = ByteArray(maxOf(bufferSize, this.available()))
     var bytes = read(buffer)
     while (bytes >= 0) {
         out.write(buffer, 0, bytes)
