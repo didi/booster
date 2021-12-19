@@ -1,0 +1,6 @@
+apply from: "$rootDir/gradle/booster.gradle"
+
+dependencies {
+    implementation project(':booster-transform-util')
+    api("junit:junit:4.12")
+}
