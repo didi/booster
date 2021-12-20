@@ -74,7 +74,7 @@ The best practise of using Booster is integrating the specific module to solve t
 
 ```groovy
 buildscript {
-    ext.booster_version = '4.2.1'
+    ext.booster_version = '4.3.0'
     repositories {
         google()
         mavenCentral()
@@ -122,7 +122,7 @@ The `plugins` DSL also supported since Booster *3.0.0*
 
 ```groovy
 plugins {
-    id 'com.didiglobal.booster' version '4.2.1'
+    id 'com.didiglobal.booster' version '4.3.0'
 }
 ```
 
@@ -290,6 +290,21 @@ Here are all the modules of Booster:
 
   ```groovy
   classpath "com.didiglobal.booster:booster-task-list-shared-library:$booster_version"
+  ```
+
+### Unit Test
+
+- [booster-test-asm](./booster-test-asm) - Support running unit test with ASM based transformer
+
+  ```groovy
+  classpath "com.didiglobal.booster:booster-task-asm:$booster_version"
+  ```
+
+- [booster-test-javassist](./booster-test-javassist) - Support running unit test with Javassist based transformer
+
+
+  ```groovy
+  classpath "com.didiglobal.booster:booster-task-javassist:$booster_version"
   ```
 
 ## Samples | 示例
