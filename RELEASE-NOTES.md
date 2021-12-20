@@ -1,3 +1,8 @@
+## v4.3.0
+
+- Support running local unit test with transformer
+- Add collector API for multi-round transform
+
 ## v4.2.0
 
 - Add Android stub APIs
