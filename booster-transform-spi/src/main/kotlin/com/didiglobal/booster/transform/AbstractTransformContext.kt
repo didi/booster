@@ -1,6 +1,7 @@
 package com.didiglobal.booster.transform
 
 import java.io.File
+import java.util.concurrent.CopyOnWriteArrayList
 
 abstract class AbstractTransformContext(
         final override val applicationId: String,
@@ -10,6 +11,8 @@ abstract class AbstractTransformContext(
         final override val runtimeClasspath: Collection<File> = emptyList(),
         val bootKlassPool: KlassPool = makeKlassPool(bootClasspath)
 ) : TransformContext {
+
+    val collectors = CopyOnWriteArrayList<Collector<*>>()
 
     override val projectDir = File(System.getProperty("user.dir"))
 
@@ -37,6 +40,14 @@ abstract class AbstractTransformContext(
     override val isDataBindingEnabled = false
 
     override fun hasProperty(name: String) = false
+
+    override fun <R> registerCollector(collector: Collector<R>) {
+        this.collectors += collector
+    }
+
+    override fun <R> unregisterCollector(collector: Collector<R>) {
+        this.collectors -= collector
+    }
 
 }
 

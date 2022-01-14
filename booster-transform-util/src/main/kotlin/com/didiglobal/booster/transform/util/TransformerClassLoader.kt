@@ -1,7 +1,6 @@
 package com.didiglobal.booster.transform.util
 
 import com.didiglobal.booster.transform.AbstractTransformContext
-import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.Transformer
 import java.io.File
 import java.io.IOException
@@ -47,7 +46,7 @@ class TransformerClassLoader : URLClassLoader {
         this.urLs.map { File(it.path) }
     }
 
-    private val context: TransformContext by lazy {
+    private val context by lazy {
         object : AbstractTransformContext(javaClass.name, javaClass.name, emptyList(), classpath, classpath) {}
     }
 
@@ -65,6 +64,7 @@ class TransformerClassLoader : URLClassLoader {
         val bytecode = transformer.run {
             try {
                 onPreTransform(context)
+                context.collect()
                 getResourceAsStream("${name.replace('.', '/')}.class")?.use(InputStream::readBytes)?.let {
                     transform(context, it)
                 } ?: throw IOException("Read class $name failed")

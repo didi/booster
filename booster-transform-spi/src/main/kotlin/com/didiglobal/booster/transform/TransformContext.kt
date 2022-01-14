@@ -99,4 +99,7 @@ interface TransformContext {
      */
     fun <T> getProperty(name: String, default: T): T = default
 
+    fun <R> registerCollector(collector: Collector<R>)
+    fun <R> unregisterCollector(collector: Collector<R>)
+
 }
