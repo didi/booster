@@ -31,7 +31,7 @@ allprojects { project ->
     apply plugin: 'maven-publish'
 
     group = 'com.didiglobal.booster'
-    version = '4.3.0'
+    version = findProperty('version') ?: '1.0.0-SNAPSHOT'
 
     repositories {
         mavenLocal()

@@ -1,3 +1,7 @@
+## v4.4.0
+
+- Support force update inputs for incremental build
+
 ## v4.3.0
 
 - Support running local unit test with transformer
