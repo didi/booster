@@ -26,7 +26,7 @@ jobs:
       run: |
         echo "Create GPG private key"
         echo $GPG_KEY_ARMOR | base64 --decode > $GITHUB_WORKSPACE/secring.gpg
-        ./gradlew publishToSonatype closeAndReleaseStagingRepository -POSSRH_USERNAME=${OSSRH_USERNAME} -POSSRH_PASSWORD=${OSSRH_PASSWORD} -POSSRH_STAGING_PROFILE_ID=${OSSRH_STAGING_PROFILE_ID} -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_PASSPHRASE} -Psigning.secretKeyRingFile=${GITHUB_WORKSPACE}/secring.gpg -S --no-daemon
+        ./gradlew publishToSonatype closeAndReleaseStagingRepository -Pversion=${GITHUB_REF/refs\/tags\/v/} -POSSRH_USERNAME=${OSSRH_USERNAME} -POSSRH_PASSWORD=${OSSRH_PASSWORD} -POSSRH_STAGING_PROFILE_ID=${OSSRH_STAGING_PROFILE_ID} -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_PASSPHRASE} -Psigning.secretKeyRingFile=${GITHUB_WORKSPACE}/secring.gpg -S --no-daemon
       env:
         GPG_KEY_ARMOR: ${{ secrets.GPG_KEY_ARMOR }}
         GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
