@@ -4,8 +4,6 @@ import com.android.build.api.transform.DirectoryInput
 import com.android.build.api.transform.Format
 import com.android.build.api.transform.JarInput
 import com.android.build.api.transform.QualifiedContent
-import com.android.build.api.transform.Status.ADDED
-import com.android.build.api.transform.Status.CHANGED
 import com.android.build.api.transform.Status.NOTCHANGED
 import com.android.build.api.transform.Status.REMOVED
 import com.android.build.api.transform.TransformInvocation
@@ -17,11 +15,15 @@ import com.didiglobal.booster.kotlinx.green
 import com.didiglobal.booster.kotlinx.red
 import com.didiglobal.booster.transform.AbstractKlassPool
 import com.didiglobal.booster.transform.ArtifactManager
+import com.didiglobal.booster.transform.Collector
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.artifacts
+import com.didiglobal.booster.transform.util.CompositeCollector
+import com.didiglobal.booster.transform.util.collect
 import com.didiglobal.booster.transform.util.transform
 import java.io.File
 import java.net.URI
+import java.util.concurrent.Callable
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -41,6 +43,8 @@ internal class BoosterTransformInvocation(
     private val project = transform.project
 
     private val outputs = CopyOnWriteArrayList<File>()
+
+    private val collectors = CopyOnWriteArrayList<Collector<*>>()
 
     override val name: String = delegate.context.variantName
 
@@ -82,9 +86,31 @@ internal class BoosterTransformInvocation(
 
     override fun get(type: String) = variant.artifacts.get(type)
 
+    override fun <R> registerCollector(collector: Collector<R>) {
+        this.collectors += collector
+    }
+
+    override fun <R> unregisterCollector(collector: Collector<R>) {
+        this.collectors -= collector
+    }
+
     internal fun doFullTransform() = doTransform(this::transformFully)
 
     internal fun doIncrementalTransform() = doTransform(this::transformIncrementally)
+
+    private fun lookAhead(executor: ExecutorService): Set<File> {
+        return this.inputs.asSequence().map {
+            it.jarInputs + it.directoryInputs
+        }.flatten().map { input ->
+            executor.submit(Callable {
+                input.file.takeIf { file ->
+                    file.collect(CompositeCollector(collectors)).isNotEmpty()
+                }
+            })
+        }.mapNotNull {
+            it.get()
+        }.toSet()
+    }
 
     private fun onPreTransform() {
         transform.transformers.forEach {
@@ -98,13 +124,21 @@ internal class BoosterTransformInvocation(
         }
     }
 
-    private fun doTransform(block: (ExecutorService) -> Iterable<Future<*>>) {
+    private fun doTransform(block: (ExecutorService, Set<File>) -> Iterable<Future<*>>) {
         this.outputs.clear()
-        this.onPreTransform()
+        this.collectors.clear()
 
         val executor = Executors.newFixedThreadPool(NCPU)
+
+        this.onPreTransform()
+
+        // Look ahead to determine which input need to be transformed even incremental build
+        val outOfDate = this.lookAhead(executor).onEach {
+            project.logger.info("✨ ${it.canonicalPath} OUT-OF-DATE ")
+        }
+
         try {
-            block(executor).forEach {
+            block(executor, outOfDate).forEach {
                 it.get()
             }
         } finally {
@@ -119,7 +153,7 @@ internal class BoosterTransformInvocation(
         }
     }
 
-    private fun transformFully(executor: ExecutorService) = this.inputs.map {
+    private fun transformFully(executor: ExecutorService, @Suppress("UNUSED_PARAMETER") outOfDate: Set<File>) = this.inputs.map {
         it.jarInputs + it.directoryInputs
     }.flatten().map { input ->
         executor.submit {
@@ -131,15 +165,18 @@ internal class BoosterTransformInvocation(
         }
     }
 
-    private fun transformIncrementally(executor: ExecutorService) = this.inputs.map { input ->
-        input.jarInputs.filter { it.status != NOTCHANGED }.map { jarInput ->
+    private fun transformIncrementally(executor: ExecutorService, outOfDate: Set<File>) = this.inputs.map { input ->
+        input.jarInputs.filter {
+            it.status != NOTCHANGED || outOfDate.contains(it.file)
+        }.map { jarInput ->
             executor.submit {
                 doIncrementalTransform(jarInput)
             }
-        } + input.directoryInputs.filter { it.changedFiles.isNotEmpty() }.map { dirInput ->
-            val base = dirInput.file.toURI()
+        } + input.directoryInputs.filter {
+            it.changedFiles.isNotEmpty() || outOfDate.contains(it.file)
+        }.map { dirInput ->
             executor.submit {
-                doIncrementalTransform(dirInput, base)
+                doIncrementalTransform(dirInput, dirInput.file.toURI())
             }
         }
     }.flatten()
@@ -148,7 +185,7 @@ internal class BoosterTransformInvocation(
     private fun doIncrementalTransform(jarInput: JarInput) {
         when (jarInput.status) {
             REMOVED -> jarInput.file.delete()
-            CHANGED, ADDED -> {
+            else -> {
                 project.logger.info("Transforming ${jarInput.file}")
                 outputProvider?.let { provider ->
                     jarInput.transform(provider.getContentLocation(jarInput.name, jarInput.contentTypes, jarInput.scopes, Format.JAR))
@@ -172,7 +209,7 @@ internal class BoosterTransformInvocation(
                     }
                     file.delete()
                 }
-                ADDED, CHANGED -> {
+                else -> {
                     project.logger.info("Transforming $file")
                     outputProvider?.let { provider ->
                         val root = provider.getContentLocation(dirInput.name, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY)

@@ -67,6 +67,16 @@ open class TransformHelper(
                 it.get()
             }
 
+            inputs.map { input ->
+                executor.submit {
+                    input.takeIf {
+                        it.collect(CompositeCollector(context.collectors)).isNotEmpty()
+                    }
+                }
+            }.forEach {
+                it.get()
+            }
+
             inputs.map {
                 executor.submit {
                     it.transform(context.buildDir.file("transforms", it.name)) { bytecode ->
@@ -95,4 +105,3 @@ open class TransformHelper(
     fun transform(vararg transformers: Transformer, output: File = TMPDIR) = transform(output, *transformers)
 
 }
-
