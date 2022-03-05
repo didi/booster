@@ -104,6 +104,7 @@ class ThreadTransformer : ClassTransformer {
      * - `java.lang.Thread`
      * - `java.util.Timer`
      * - `java.util.concurrent.ThreadPoolExecutor`
+     * - `java.util.concurrent.ScheduledThreadPoolExecutor`
      * - `android.os.HandlerThread`
      */
     private fun MethodInsnNode.transformInvokeSpecial(@Suppress("UNUSED_PARAMETER") context: TransformContext, klass: ClassNode, method: MethodNode) {
@@ -115,12 +116,13 @@ class ThreadTransformer : ClassTransformer {
             HANDLER_THREAD -> transformHandlerThreadInvokeSpecial(klass, method)
             TIMER -> transformTimerInvokeSpecial(klass, method)
             THREAD_POOL_EXECUTOR -> transformThreadPoolExecutorInvokeSpecial(klass, method)
+            SCHEDULED_THREAD_POOL_EXECUTOR -> transformScheduledThreadPoolExecutorInvokeSpecial(klass, method)
         }
     }
 
     private fun MethodInsnNode.transformThreadPoolExecutorInvokeSpecial(klass: ClassNode, method: MethodNode, init: MethodInsnNode = this) {
         when (this.desc) {
-            // ThreadPoolExecutor(int, int, long, TimeUnit, BlockingQueue)
+            // ThreadPoolExecutor(int, int, long, TimeUnit, BlockingQueue) => ThreadPoolExecutor(int, int, long, TimeUnit, BlockingQueue, ThreadFactory)
             "(IIJLjava/util/concurrent/TimeUnit;Ljava/util/concurrent/BlockingQueue;)V" -> {
                 method.instructions.apply {
                     // ..., queue => ..., queue, prefix
@@ -139,7 +141,7 @@ class ThreadTransformer : ClassTransformer {
                     insertBefore(init, MethodInsnNode(Opcodes.INVOKESTATIC, NAMED_THREAD_FACTORY, "newInstance", "(Ljava/util/concurrent/ThreadFactory;Ljava/lang/String;)Ljava/util/concurrent/ThreadFactory;"))
                 }
             }
-            // ThreadPoolExecutor(int, int, long, TimeUnit, BlockingQueue, RejectedExecutionHandler)
+            // ThreadPoolExecutor(int, int, long, TimeUnit, BlockingQueue, RejectedExecutionHandler) => ThreadPoolExecutor(int, int, long, TimeUnit, BlockingQueue, ThreadFactory, RejectedExecutionHandler)
             "(IIJLjava/util/concurrent/TimeUnit;Ljava/util/concurrent/BlockingQueue;Ljava/util/concurrent/RejectedExecutionHandler;)V" -> {
                 method.instructions.apply {
                     // ..., handler => ..., handler, prefix
@@ -153,6 +155,55 @@ class ThreadTransformer : ClassTransformer {
             }
             // ThreadPoolExecutor(int, int, long, TimeUnit, BlockingQueue, ThreadFactory, RejectedExecutionHandler)
             "(IIJLjava/util/concurrent/TimeUnit;Ljava/util/concurrent/BlockingQueue;Ljava/util/concurrent/ThreadFactory;Ljava/util/concurrent/RejectedExecutionHandler;)V" -> {
+                method.instructions.apply {
+                    // ..., factory, handler => ..., handler, factory
+                    insertBefore(init, InsnNode(Opcodes.SWAP))
+                    // ..., handler, factory => ..., handler, factory, prefix
+                    insertBefore(init, LdcInsnNode(makeThreadName(klass.className)))
+                    // ..., handler, factory, prefix => ..., handler, factory
+                    insertBefore(init, MethodInsnNode(Opcodes.INVOKESTATIC, NAMED_THREAD_FACTORY, "newInstance", "(Ljava/util/concurrent/ThreadFactory;Ljava/lang/String;)Ljava/util/concurrent/ThreadFactory;"))
+                    // ..., handler, factory => ..., factory, handler
+                    insertBefore(init, InsnNode(Opcodes.SWAP))
+                }
+            }
+        }
+    }
+
+    private fun MethodInsnNode.transformScheduledThreadPoolExecutorInvokeSpecial(klass: ClassNode, method: MethodNode, init: MethodInsnNode = this) {
+        when (this.desc) {
+            // ScheduledThreadPoolExecutor(int) => ScheduledThreadPoolExecutor(int, ThreadFactory)
+            "(I)V" -> {
+                method.instructions.apply {
+                    // ..., coreSize => ..., coreSize, prefix
+                    insertBefore(init, LdcInsnNode(makeThreadName(klass.className)))
+                    // ..., queue, prefix => ..., queue, factory
+                    insertBefore(init, MethodInsnNode(Opcodes.INVOKESTATIC, NAMED_THREAD_FACTORY, "newInstance", "(Ljava/lang/String;)Ljava/util/concurrent/ThreadFactory;", false))
+                }
+                this.desc = "(IIJLjava/util/concurrent/TimeUnit;Ljava/util/concurrent/BlockingQueue;Ljava/util/concurrent/ThreadFactory;)V"
+            }
+            // ScheduledThreadPoolExecutor(int, ThreadFactory)
+            "(ILjava/util/concurrent/ThreadFactory;)V" -> {
+                method.instructions.apply {
+                    // ..., factory => ..., factory, prefix
+                    insertBefore(init, LdcInsnNode(makeThreadName(klass.className)))
+                    // ..., factory, prefix => ..., factory
+                    insertBefore(init, MethodInsnNode(Opcodes.INVOKESTATIC, NAMED_THREAD_FACTORY, "newInstance", "(Ljava/util/concurrent/ThreadFactory;Ljava/lang/String;)Ljava/util/concurrent/ThreadFactory;"))
+                }
+            }
+            // ScheduledThreadPoolExecutor(int, RejectedExecutionHandler) => ScheduledThreadPoolExecutor(int, ThreadFactory, RejectedExecutionHandler)
+            "(ILjava/util/concurrent/RejectedExecutionHandler;)V" -> {
+                method.instructions.apply {
+                    // ..., handler => ..., handler, prefix
+                    insertBefore(init, LdcInsnNode(makeThreadName(klass.className)))
+                    // ..., handler, prefix => ..., handler, factory
+                    insertBefore(init, MethodInsnNode(Opcodes.INVOKESTATIC, NAMED_THREAD_FACTORY, "newInstance", "(Ljava/lang/String;)Ljava/util/concurrent/ThreadFactory;", false))
+                    // ..., handler, factory => ..., factory, handler
+                    insertBefore(init, InsnNode(Opcodes.SWAP))
+                }
+                this.desc = "(IIJLjava/util/concurrent/TimeUnit;Ljava/util/concurrent/BlockingQueue;Ljava/util/concurrent/ThreadFactory;Ljava/util/concurrent/RejectedExecutionHandler;)V"
+            }
+            // ScheduledThreadPoolExecutor(int, ThreadFactory, RejectedExecutionHandler)
+            "(ILjava/util/concurrent/ThreadFactory;Ljava/util/concurrent/RejectedExecutionHandler;)V" -> {
                 method.instructions.apply {
                     // ..., factory, handler => ..., handler, factory
                     insertBefore(init, InsnNode(Opcodes.SWAP))
@@ -338,10 +389,11 @@ class ThreadTransformer : ClassTransformer {
 
     private fun TypeInsnNode.transform(context: TransformContext, klass: ClassNode, method: MethodNode) {
         when (this.desc) {
-            /*-*/ HANDLER_THREAD -> this.transformNew(context, klass, method, SHADOW_HANDLER_THREAD)
-            /*---------*/ THREAD -> this.transformNew(context, klass, method, SHADOW_THREAD)
-            THREAD_POOL_EXECUTOR -> this.transformNew(context, klass, method, SHADOW_THREAD_POOL_EXECUTOR, true)
-            /*----------*/ TIMER -> this.transformNew(context, klass, method, SHADOW_TIMER)
+            /*-----------*/ HANDLER_THREAD -> this.transformNew(context, klass, method, SHADOW_HANDLER_THREAD)
+            /*-------------------*/ THREAD -> this.transformNew(context, klass, method, SHADOW_THREAD)
+            /*-----*/ THREAD_POOL_EXECUTOR -> this.transformNew(context, klass, method, SHADOW_THREAD_POOL_EXECUTOR, true)
+            SCHEDULED_THREAD_POOL_EXECUTOR -> this.transformNew(context, klass, method, SHADOW_SCHEDULED_THREAD_POOL_EXECUTOR, true)
+            /*--------------------*/ TIMER -> this.transformNew(context, klass, method, SHADOW_TIMER)
         }
     }
 
@@ -405,6 +457,7 @@ internal const val SHADOW_THREAD = "${SHADOW}Thread"
 internal const val SHADOW_TIMER = "${SHADOW}Timer"
 internal const val SHADOW_EXECUTORS = "${SHADOW}Executors"
 internal const val SHADOW_THREAD_POOL_EXECUTOR = "${SHADOW}ThreadPoolExecutor"
+internal const val SHADOW_SCHEDULED_THREAD_POOL_EXECUTOR = "${SHADOW}ScheduledThreadPoolExecutor"
 internal const val SHADOW_ASYNC_TASK = "${SHADOW}AsyncTask"
 internal const val NAMED_THREAD_FACTORY = "${BOOSTER_INSTRUMENT}NamedThreadFactory"
 
@@ -416,3 +469,4 @@ internal const val THREAD = "java/lang/Thread"
 internal const val TIMER = "${JAVA_UTIL}Timer"
 internal const val EXECUTORS = "${JAVA_UTIL_CONCURRENT}Executors"
 internal const val THREAD_POOL_EXECUTOR = "${JAVA_UTIL_CONCURRENT}ThreadPoolExecutor"
+internal const val SCHEDULED_THREAD_POOL_EXECUTOR = "${JAVA_UTIL_CONCURRENT}ScheduledThreadPoolExecutor"
