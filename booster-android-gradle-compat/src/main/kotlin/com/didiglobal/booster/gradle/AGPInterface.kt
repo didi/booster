@@ -206,7 +206,7 @@ private val REVISION: Revision by lazy {
 }
 
 private val FACTORIES: List<AGPInterfaceFactory> by lazy {
-    ServiceLoader.load(AGPInterfaceFactory::class.java)
+    ServiceLoader.load(AGPInterfaceFactory::class.java, AGPInterface::class.java.classLoader)
             .sortedByDescending(AGPInterfaceFactory::revision)
             .toList()
 }
