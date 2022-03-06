@@ -1,27 +1,21 @@
 package com.didiglobal.booster.compression
 
 import com.android.build.gradle.api.BaseVariant
-import com.android.build.gradle.internal.publishing.AndroidArtifacts
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.didiglobal.booster.command.CommandInstaller
 import com.didiglobal.booster.compression.task.CompressImages
 import com.didiglobal.booster.compression.task.MATCH_ALL_RESOURCES
 import com.didiglobal.booster.compression.task.excludes
-import com.didiglobal.booster.gradle.aapt2Enabled
 import com.didiglobal.booster.gradle.bundleResourcesTaskProvider
-import com.didiglobal.booster.gradle.getArtifactFileCollection
 import com.didiglobal.booster.gradle.isAapt2Enabled
-import com.didiglobal.booster.gradle.mergeResourcesTask
 import com.didiglobal.booster.gradle.mergeResourcesTaskProvider
 import com.didiglobal.booster.gradle.preBuildTaskProvider
 import com.didiglobal.booster.gradle.processResTaskProvider
 import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.kotlinx.Wildcard
-import com.didiglobal.booster.kotlinx.search
 import org.gradle.api.Task
 import org.gradle.api.UnknownTaskException
 import org.gradle.api.tasks.TaskProvider
-import org.gradle.internal.concurrent.GradleThread
 import java.io.File
 import kotlin.reflect.KClass
 

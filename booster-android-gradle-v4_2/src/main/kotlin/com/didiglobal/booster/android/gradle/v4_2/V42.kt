@@ -83,7 +83,11 @@ internal object V42 : AGPInterface {
         get() = mergeAssetsProvider
 
     override val BaseVariant.mergeResourcesTaskProvider: TaskProvider<out Task>
-        get() = mergeResourcesProvider
+        get() = try {
+            project.tasks.named(getTaskName("merge", "Resources"))
+        } catch (e: Throwable) {
+            mergeResourcesProvider
+        }
 
     override val BaseVariant.processJavaResourcesTaskProvider: TaskProvider<out Task>
         get() = processJavaResourcesProvider
