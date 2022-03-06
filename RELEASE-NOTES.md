@@ -1,3 +1,11 @@
+## v4.5.3
+
+- Fix `mergeResources` task
+
+## v4.5.2
+
+- Fix issue [#284](https://github.com/didi/booster/issues/284)
+
 ## v4.5.1
 
 - Fix issue [#287](https://github.com/didi/booster/issues/287)
