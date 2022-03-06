@@ -1,3 +1,11 @@
+## v4.5.1
+
+- Fix issue [#287](https://github.com/didi/booster/issues/287)
+
+## v4.5.0
+
+- Fix issue [#280](https://github.com/didi/booster/issues/280)
+
 ## v4.4.0
 
 - Support force update inputs for incremental build
@@ -20,7 +28,7 @@
 
 ## v4.0.0
 
-- Support AGP 7.0
+- Support AGP 7.0, no longer supported AGP 3.2 and lower versions
 
 ## v3.5.0
 
