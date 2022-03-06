@@ -3,10 +3,10 @@ package com.didiglobal.booster.task.compression.processed.res
 import com.android.SdkConstants
 import com.android.SdkConstants.DOT_PNG
 import com.android.build.gradle.api.BaseVariant
+import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.didiglobal.booster.compression.CompressionReport
 import com.didiglobal.booster.compression.CompressionResult
 import com.didiglobal.booster.compression.CompressionResults
-import com.didiglobal.booster.gradle.processResTask
 import com.didiglobal.booster.gradle.processResTaskProvider
 import com.didiglobal.booster.gradle.processedRes
 import com.didiglobal.booster.gradle.project
@@ -17,6 +17,9 @@ import com.didiglobal.booster.task.spi.VariantProcessor
 import com.didiglobal.booster.transform.util.transform
 import com.google.auto.service.AutoService
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.text.DecimalFormat
 import java.util.zip.ZipEntry
@@ -32,13 +35,29 @@ import java.util.zip.ZipFile
 class ProcessedResourcesCompressionVariantProcessor : VariantProcessor {
 
     override fun process(variant: BaseVariant) {
-        val results = CompressionResults()
-        variant.processResTaskProvider?.configure {
-            it.doLast {
-                variant.compressProcessedRes(results)
-                variant.generateReport(results)
+        val compress = variant.project.tasks.register("compress${variant.name.capitalize()}ProcessedRes", CompressProcessedRes::class.java) {
+            it.variant = variant
+        }
+        variant.processResTaskProvider?.let { processRes ->
+            compress.dependsOn(processRes)
+            processRes.configure {
+                it.finalizedBy(compress)
             }
         }
+    }
+
+}
+
+internal abstract class CompressProcessedRes : DefaultTask() {
+
+    @get:Internal
+    lateinit var variant: BaseVariant
+
+    @TaskAction
+    fun compress() {
+        val results = CompressionResults()
+        variant.compressProcessedRes(results)
+        variant.generateReport(results)
     }
 
 }
