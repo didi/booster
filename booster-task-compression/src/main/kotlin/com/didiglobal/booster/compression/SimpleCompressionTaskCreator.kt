@@ -41,7 +41,6 @@ class SimpleCompressionTaskCreator(private val tool: CompressionTool, private va
         val install = getCommandInstaller(variant)
 
         return project.tasks.register("compress${variant.name.capitalize()}${name.capitalize()}With${tool.command.name.substringBefore('.').capitalize()}", getCompressionTaskClass(aapt2).java) { task ->
-            task.dependsOn(variant.preBuildTaskProvider.get())
             task.tool = tool
             task.variant = variant
             task.results = results
