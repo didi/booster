@@ -2,6 +2,7 @@ package com.didiglobal.booster.compression
 
 import com.android.SdkConstants
 import com.android.build.gradle.api.BaseVariant
+import com.didiglobal.booster.gradle.getReport
 import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.kotlinx.Octuple
 import com.didiglobal.booster.kotlinx.Quadruple
@@ -38,7 +39,7 @@ fun CompressionResults.generateReport(variant: BaseVariant, artifact: String) {
     val maxWith7 = table.map { it.seventh.length }.max() ?: 0
     val fullWith = maxWith1 + maxWith5 + maxWith6 + 8
 
-    variant.project.buildDir.file("reports", artifact, variant.name, "report.txt").touch().printWriter().use { logger ->
+    variant.getReport(artifact, "report.txt").touch().printWriter().use { logger ->
         // sort by reduced size and original size
         table.sortedWith(compareByDescending<CompressionReport> {
             it.fourth
