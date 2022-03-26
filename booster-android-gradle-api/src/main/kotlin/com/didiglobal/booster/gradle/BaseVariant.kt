@@ -7,6 +7,7 @@ import com.android.build.gradle.tasks.ProcessAndroidResources
 import com.android.builder.core.VariantType
 import com.android.sdklib.AndroidVersion
 import com.android.sdklib.BuildToolInfo
+import com.didiglobal.booster.kotlinx.file
 import org.gradle.api.Incubating
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -23,6 +24,12 @@ import java.io.File
 @Suppress("DEPRECATION")
 val BaseVariant.project: Project
     get() = AGP.run { project }
+
+
+fun BaseVariant.getReport(artifactName: String, fileName: String): File {
+    return project.buildDir.file("reports", artifactName, name, fileName)
+}
+
 
 /**
  * The `android` extension associates with this variant
