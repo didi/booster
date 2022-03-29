@@ -176,6 +176,14 @@ val BaseVariant.mergedAssets: Collection<File>
     }
 
 /**
+ * The output directory of merged native libs
+ */
+val BaseVariant.mergedNativeLibs: Collection<File>
+    get() = AGP.run {
+        mergedNativeLibs
+    }
+
+/**
  * The output directory of processed resources: *resources-**variant**.ap\_*
  */
 val BaseVariant.processedRes: Collection<File>
