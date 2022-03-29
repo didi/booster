@@ -20,6 +20,7 @@ import com.android.build.gradle.internal.scope.getOutputDir
 import com.android.build.gradle.internal.variant.BaseVariantData
 import com.android.build.gradle.options.BooleanOption
 import com.android.builder.core.VariantType
+import com.android.builder.model.AndroidProject.FD_INTERMEDIATES
 import com.android.builder.model.ApiVersion
 import com.android.sdklib.AndroidVersion
 import com.android.sdklib.BuildToolInfo
@@ -160,6 +161,9 @@ object V34 : AGPInterface {
 
     override val BaseVariant.mergedRes: Collection<File>
         get() = getFinalArtifactFiles(InternalArtifactType.MERGED_RES)
+
+    override val BaseVariant.mergedNativeLibs: Collection<File>
+        get() = setOf((File("${project.buildDir.path}/$FD_INTERMEDIATES/transforms/mergeJniLibs/$name")))
 
     override val BaseVariant.mergedAssets: Collection<File>
         get() = getFinalArtifactFiles(when (this) {

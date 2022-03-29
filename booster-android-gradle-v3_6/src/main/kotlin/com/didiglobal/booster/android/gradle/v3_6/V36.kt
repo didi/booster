@@ -159,6 +159,9 @@ object V36 : AGPInterface {
     override val BaseVariant.mergedRes: Collection<File>
         get() = getFinalArtifactFiles(InternalArtifactType.MERGED_RES)
 
+    override val BaseVariant.mergedNativeLibs: Collection<File>
+        get() = getFinalArtifactFiles(InternalArtifactType.MERGED_NATIVE_LIBS)
+
     @Suppress("UnstableApiUsage")
     override val BaseVariant.mergedAssets: Collection<File>
         get() = getFinalArtifactFiles(when (this) {

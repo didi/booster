@@ -146,6 +146,8 @@ interface AGPInterface {
 
     val BaseVariant.mergedAssets: Collection<File>
 
+    val BaseVariant.mergedNativeLibs: Collection<File>
+
     val BaseVariant.processedRes: Collection<File>
 
     val BaseVariant.symbolList: Collection<File>

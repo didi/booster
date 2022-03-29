@@ -156,6 +156,9 @@ internal object V40 : AGPInterface {
     override val BaseVariant.mergedRes: Collection<File>
         get() = getFinalArtifactFiles(InternalArtifactType.MERGED_RES)
 
+    override val BaseVariant.mergedNativeLibs: Collection<File>
+        get() = getFinalArtifactFiles(InternalArtifactType.MERGED_NATIVE_LIBS)
+
     override val BaseVariant.mergedAssets: Collection<File>
         get() = when (this) {
             is ApplicationVariant -> getFinalArtifactFiles(InternalArtifactType.MERGED_ASSETS)
