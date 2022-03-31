@@ -161,7 +161,7 @@ internal object V33 : AGPInterface {
         get() = getFinalArtifactFiles(InternalArtifactType.MERGED_RES)
 
     override val BaseVariant.mergedNativeLibs: Collection<File>
-        get() = setOf((File("${project.buildDir.path}/${AndroidProject.FD_INTERMEDIATES}/transforms/mergeJniLibs/$name")))
+        get() = setOf((File("${project.buildDir.path}${File.separatorChar}${AndroidProject.FD_INTERMEDIATES}${File.separatorChar}transforms${File.separatorChar}mergeJniLibs${File.separatorChar}$name")))
 
     override val BaseVariant.mergedAssets: Collection<File>
         get() = getFinalArtifactFiles(when (this) {
