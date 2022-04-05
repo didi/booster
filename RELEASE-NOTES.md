@@ -1,3 +1,9 @@
+## v4.6.0
+
+- Add extension property `BaseVariant.mergedNativeLibs: Collection<File>`
+- Add extension function `BaseVariant..getReport(String, String): File`
+- Fix Jacoco coverage report issue
+
 ## v4.5.3
 
 - Fix `mergeResources` task
