@@ -50,7 +50,7 @@ class CallGraph private constructor(private val edges: Map<Node, Set<Node>>, val
     open class Node internal constructor(val type: String, val name: String, val desc: String, val args: String) {
 
         constructor(type: String, name: String, desc: String)
-                : this(type, name, desc, desc.substring(desc.indexOf('(') + 1, desc.lastIndexOf(')')))
+                : this(type, name, desc, desc.substring(desc.indexOf('(') + 1, desc.lastIndexOf(')').takeIf { it > -1 } ?: desc.length))
 
         override fun equals(other: Any?) = when {
             other === this -> true
