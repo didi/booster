@@ -179,7 +179,7 @@ class ThreadTransformer : ClassTransformer {
                     // ..., queue, prefix => ..., queue, factory
                     insertBefore(init, MethodInsnNode(Opcodes.INVOKESTATIC, NAMED_THREAD_FACTORY, "newInstance", "(Ljava/lang/String;)Ljava/util/concurrent/ThreadFactory;", false))
                 }
-                this.desc = "(IIJLjava/util/concurrent/TimeUnit;Ljava/util/concurrent/BlockingQueue;Ljava/util/concurrent/ThreadFactory;)V"
+                this.desc = "(ILjava/util/concurrent/ThreadFactory;)V"
             }
             // ScheduledThreadPoolExecutor(int, ThreadFactory)
             "(ILjava/util/concurrent/ThreadFactory;)V" -> {
@@ -200,7 +200,7 @@ class ThreadTransformer : ClassTransformer {
                     // ..., handler, factory => ..., factory, handler
                     insertBefore(init, InsnNode(Opcodes.SWAP))
                 }
-                this.desc = "(IIJLjava/util/concurrent/TimeUnit;Ljava/util/concurrent/BlockingQueue;Ljava/util/concurrent/ThreadFactory;Ljava/util/concurrent/RejectedExecutionHandler;)V"
+                this.desc = "(ILjava/util/concurrent/ThreadFactory;Ljava/util/concurrent/RejectedExecutionHandler;)V"
             }
             // ScheduledThreadPoolExecutor(int, ThreadFactory, RejectedExecutionHandler)
             "(ILjava/util/concurrent/ThreadFactory;Ljava/util/concurrent/RejectedExecutionHandler;)V" -> {
