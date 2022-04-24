@@ -13,6 +13,7 @@ import com.didiglobal.booster.gradle.preBuildTaskProvider
 import com.didiglobal.booster.gradle.processResTaskProvider
 import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.kotlinx.Wildcard
+import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.UnknownTaskException
 import org.gradle.api.tasks.TaskProvider
@@ -56,14 +57,25 @@ class SimpleCompressionTaskCreator(private val tool: CompressionTool, private va
     }
 
     private fun getCommandInstaller(variant: BaseVariant): TaskProvider<out Task> {
-        val name = "install${tool.command.name.substringBefore('.').capitalize()}"
-        return (try {
-            variant.project.tasks.named(name)
+        return variant.project.tasks.register(getInstallTaskName(variant.name)).apply {
+            dependsOn(getCommandInstaller(variant.project))
+            dependsOn(variant.mergeResourcesTaskProvider)
+        }
+    }
+
+    private fun getCommandInstaller(project: Project): TaskProvider<out Task> {
+        val name = getInstallTaskName()
+        return try {
+            project.tasks.named(name)
         } catch (e: UnknownTaskException) {
             null
-        } ?: variant.project.tasks.register(name, CommandInstaller::class.java) {
+        } ?: project.tasks.register(name, CommandInstaller::class.java) {
             it.command = tool.command
-        }).dependsOn(variant.mergeResourcesTaskProvider)
+        }
+    }
+
+    private fun getInstallTaskName(variant: String = ""): String {
+        return "install${variant.capitalize()}${tool.command.name.substringBefore('.').capitalize()}"
     }
 
 }
