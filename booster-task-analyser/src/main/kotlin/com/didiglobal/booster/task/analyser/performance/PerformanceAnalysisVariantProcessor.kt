@@ -5,6 +5,7 @@ import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.pipeline.TransformManager
 import com.android.build.gradle.internal.pipeline.TransformTask
 import com.android.build.gradle.internal.tasks.factory.dependsOn
+import com.didiglobal.booster.BOOSTER
 import com.didiglobal.booster.gradle.extension
 import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.task.analyser.configureReportConvention
@@ -30,8 +31,8 @@ class PerformanceAnalysisVariantProcessor : VariantProcessor {
             project.tasks.named(TASK_ANALYSE_PERFORMANCE)
         } catch (e: UnknownTaskException) {
             project.tasks.register(TASK_ANALYSE_PERFORMANCE) {
-                it.description = "Analyses performance issues for Android project"
-                it.group = "booster"
+                it.description = "Analyses performance issues for Android projects"
+                it.group = BOOSTER
             }
         }
 
@@ -39,8 +40,8 @@ class PerformanceAnalysisVariantProcessor : VariantProcessor {
             it.name.endsWith(variantName) && it.transform == transform
         }?.let { transformTask ->
             val profile = project.tasks.register("${TASK_ANALYSE_PERFORMANCE}${variantName}", PerformanceAnalysisTask::class.java) {
-                it.description = "Analyses performance issues for Android project"
-                it.group = "booster"
+                it.description = "Analyses performance issues for ${variant.name}"
+                it.group = BOOSTER
                 it.variant = variant
                 it.supplier = {
                     transformTask.outputs.files.single()

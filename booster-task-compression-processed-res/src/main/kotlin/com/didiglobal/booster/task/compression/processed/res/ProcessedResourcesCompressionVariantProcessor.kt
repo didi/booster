@@ -4,6 +4,7 @@ import com.android.SdkConstants
 import com.android.SdkConstants.DOT_PNG
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.tasks.factory.dependsOn
+import com.didiglobal.booster.BOOSTER
 import com.didiglobal.booster.compression.CompressionReport
 import com.didiglobal.booster.compression.CompressionResult
 import com.didiglobal.booster.compression.CompressionResults
@@ -36,6 +37,8 @@ class ProcessedResourcesCompressionVariantProcessor : VariantProcessor {
 
     override fun process(variant: BaseVariant) {
         val compress = variant.project.tasks.register("compress${variant.name.capitalize()}ProcessedRes", CompressProcessedRes::class.java) {
+            it.group = BOOSTER
+            it.description = "Compress the processed resource file for ${variant.name}"
             it.variant = variant
         }
         variant.processResTaskProvider?.let { processRes ->

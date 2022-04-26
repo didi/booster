@@ -2,6 +2,7 @@ package com.didiglobal.booster.compression
 
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.tasks.factory.dependsOn
+import com.didiglobal.booster.BOOSTER
 import com.didiglobal.booster.command.CommandInstaller
 import com.didiglobal.booster.compression.task.CompressImages
 import com.didiglobal.booster.compression.task.MATCH_ALL_RESOURCES
@@ -42,6 +43,8 @@ class SimpleCompressionTaskCreator(private val tool: CompressionTool, private va
         val install = getCommandInstaller(variant)
 
         return project.tasks.register("compress${variant.name.capitalize()}${name.capitalize()}With${tool.command.name.substringBefore('.').capitalize()}", getCompressionTaskClass(aapt2).java) { task ->
+            task.group = BOOSTER
+            task.description = "Compress image resources by ${tool.command.name} for ${variant.name}"
             task.dependsOn(variant.preBuildTaskProvider.get())
             task.tool = tool
             task.variant = variant
@@ -57,7 +60,10 @@ class SimpleCompressionTaskCreator(private val tool: CompressionTool, private va
     }
 
     private fun getCommandInstaller(variant: BaseVariant): TaskProvider<out Task> {
-        return variant.project.tasks.register(getInstallTaskName(variant.name)).apply {
+        return variant.project.tasks.register(getInstallTaskName(variant.name)) {
+            it.group = BOOSTER
+            it.description = "Install ${tool.command.name} for ${variant.name}"
+        }.apply {
             dependsOn(getCommandInstaller(variant.project))
             dependsOn(variant.mergeResourcesTaskProvider)
         }
@@ -70,6 +76,8 @@ class SimpleCompressionTaskCreator(private val tool: CompressionTool, private va
         } catch (e: UnknownTaskException) {
             null
         } ?: project.tasks.register(name, CommandInstaller::class.java) {
+            it.group = BOOSTER
+            it.description = "Install ${tool.command.name}"
             it.command = tool.command
         }
     }

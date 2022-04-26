@@ -6,8 +6,6 @@ import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.task.analyser.Build
 import com.didiglobal.booster.task.analyser.performance.reporting.PerformanceReports
 import com.didiglobal.booster.task.analyser.performance.reporting.PerformanceReportsImpl
-import com.didiglobal.booster.task.analyser.reference.reporting.ReferenceReports
-import com.didiglobal.booster.task.analyser.reference.reporting.ReferenceReportsImpl
 import com.didiglobal.booster.transform.artifacts
 import groovy.lang.Closure
 import org.gradle.api.Action
@@ -81,7 +79,9 @@ open class PerformanceAnalysisTask : DefaultTask(), Reporting<PerformanceReports
             }
         }
 
-        PerformanceAnalyser(variant.extension.bootClasspath, classpath, variant.artifacts, project.properties).analyse(reports.dot.destination.parentFile)
+        val output = project.projectDir.file("build", "reports", Build.ARTIFACT, variant.dirName)
+
+        PerformanceAnalyser(variant.extension.bootClasspath, classpath, variant.artifacts, project.properties).analyse(output)
     }
 
 }

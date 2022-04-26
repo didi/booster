@@ -2,6 +2,7 @@ package com.didiglobal.booster.task.dependency
 
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.tasks.factory.dependsOn
+import com.didiglobal.booster.BOOSTER
 import com.didiglobal.booster.gradle.javaCompilerTaskProvider
 import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.task.spi.VariantProcessor
@@ -18,9 +19,14 @@ class CheckSnapshotVariantProcessor : VariantProcessor {
             val checkSnapshot = try {
                 tasks.named(TASK_NAME)
             } catch (e: UnknownTaskException) {
-                tasks.register(TASK_NAME)
+                tasks.register(TASK_NAME) {
+                    it.group = BOOSTER
+                    it.description = "Check snapshot dependencies"
+                }
             }
             tasks.register("check${variant.name.capitalize()}Snapshot", CheckSnapshot::class.java) {
+                it.group = BOOSTER
+                it.description = "Check snapshot dependencies for ${variant.name}"
                 it.variant = variant
                 it.outputs.upToDateWhen { false }
             }.also {
