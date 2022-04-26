@@ -1,8 +1,17 @@
 package com.didiglobal.booster.cha.graph.dot
 
-import com.didiglobal.booster.kotlinx.RGB
 import com.didiglobal.booster.cha.graph.CallGraph
 import com.didiglobal.booster.cha.graph.CallGraphRenderer
+import com.didiglobal.booster.command.Command
+import com.didiglobal.booster.command.CommandService
+import com.didiglobal.booster.kotlinx.OS
+import com.didiglobal.booster.kotlinx.RGB
+import com.didiglobal.booster.kotlinx.execute
+import com.didiglobal.booster.kotlinx.stderr
+import com.didiglobal.booster.kotlinx.touch
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.IOException
 
 /**
  * Represents the graph type
@@ -38,6 +47,18 @@ sealed class DotGraph : CallGraphRenderer {
             }
         }
 
+    }
+
+    fun visualize(graph: CallGraph, output: File, format: String = "png", dot: Command = CommandService.fromPath("dot${OS.executableSuffix}")) {
+        output.touch().writeText(render(graph).toString())
+        dot.location.file.let(::File).takeIf(File::exists)?.let {
+            "${it.canonicalPath} -T${format} -O ${output.canonicalPath}".also(::println).execute()
+        }?.let { p ->
+            p.waitFor()
+            if (p.exitValue() != 0) {
+                throw IOException(p.stderr)
+            }
+        } ?: throw FileNotFoundException(dot.location.file)
     }
 
 }
