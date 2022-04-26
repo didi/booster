@@ -1,6 +1,5 @@
 package com.didiglobal.booster.cha.graph.dot
 
-import com.didiglobal.booster.cha.graph.dot.WebSafeColorPalette
 import kotlin.test.Test
 import kotlin.test.assertNotEquals
 

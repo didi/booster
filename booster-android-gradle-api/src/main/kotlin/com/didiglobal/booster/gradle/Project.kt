@@ -21,6 +21,17 @@ val Project.aapt2Enabled: Boolean
 val Project.isAapt2Enabled: Boolean
     get() = AGP.run { isAapt2Enabled }
 
+val Project.isAndroid: Boolean
+    get() = plugins.hasPlugin("com.android.application")
+            || plugins.hasPlugin("com.android.dynamic-feature")
+            || plugins.hasPlugin("com.android.library")
+
+val Project.isJava: Boolean
+    get() = plugins.hasPlugin("java") || isJavaLibrary
+
+val Project.isJavaLibrary: Boolean
+    get() = plugins.hasPlugin("java-library")
+
 @Suppress("UNCHECKED_CAST")
 fun <T> Project.getProperty(name: String, defaultValue: T): T {
     val value = findProperty(name) ?: return defaultValue

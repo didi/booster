@@ -1,6 +1,6 @@
 package com.didiglobal.booster.task.analyser
 
-import com.didiglobal.booster.cha.graph.CallGraph
+import com.didiglobal.booster.cha.graph.CallNode
 
 private const val DOLLAR = '$'
 
@@ -22,7 +22,7 @@ internal val EXCLUDES = Regex("^(((android[x]?)|(com/(((google/)?android)|(googl
 
 internal val PLATFORM_METHODS_RUN_ON_UI_THREAD = arrayOf(
     "androidx/asynclayoutinflater/view/AsyncLayoutInflater.inflate(ILandroid/view/ViewGroup;Landroidx/asynclayoutinflater/view/AsyncLayoutInflater${DOLLAR}OnInflateFinishedListener;)V"
-).map(CallGraph.Node.Companion::valueOf).toSet()
+).map(CallNode.Companion::valueOf).toSet()
 
 internal val PLATFORM_METHODS_RUN_ON_MAIN_THREAD = arrayOf(
         "android/content/ContextWrapper.attachBaseContext(Landroid/content/Context;)V",
@@ -53,7 +53,7 @@ internal val PLATFORM_METHODS_RUN_ON_MAIN_THREAD = arrayOf(
         "androidx/lifecycle/Lifecycle.removeObserver(Landroidx/lifecycle/Lifecycle/LifecycleObserver;)V",
         "androidx/lifecycle/Lifecycle.getCurrentState()Landroidx/lifecycle/Lifecycle${DOLLAR}State;",
         "androidx/lifecycle/LifecycleRegistry.markState(Landroidx/lifecycle/Lifecycle${DOLLAR}State;)V"
-).map(CallGraph.Node.Companion::valueOf).toSet()
+).map(CallNode.Companion::valueOf).toSet()
 
 internal val MAIN_THREAD_ANNOTATIONS = arrayOf(
         "androidx/annotation/MainThread",

@@ -1,9 +1,10 @@
 package com.didiglobal.booster.task.graph
 
 import com.android.build.gradle.api.BaseVariant
-import com.didiglobal.booster.cha.graph.CallGraph
-import com.didiglobal.booster.cha.graph.dot.DotGraph
 import com.didiglobal.booster.gradle.project
+import com.didiglobal.booster.graph.Edge
+import com.didiglobal.booster.graph.Graph
+import com.didiglobal.booster.graph.dot.DotGraph
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.task.spi.VariantProcessor
 import com.google.auto.service.AutoService
@@ -28,8 +29,8 @@ class TaskGraphVariantProcessor : VariantProcessor {
                     dep to task
                 }
             }.flatten().map { (dep, task) ->
-                CallGraph.Edge(TaskNode(dep.path), TaskNode(task.path))
-            }.fold(CallGraph.Builder().setTitle(title)) { builder, edge ->
+                Edge(TaskNode(dep.path), TaskNode(task.path))
+            }.fold(Graph.Builder<TaskNode>().setTitle(title)) { builder, edge ->
                 builder.addEdge(edge)
                 builder
             }.build()

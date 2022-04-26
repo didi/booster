@@ -1,9 +1,10 @@
-package com.didiglobal.booster.cha.graph.dot
+package com.didiglobal.booster.graph.dot
 
-import com.didiglobal.booster.cha.graph.CallGraph
-import com.didiglobal.booster.cha.graph.CallGraphRenderer
 import com.didiglobal.booster.command.Command
 import com.didiglobal.booster.command.CommandService
+import com.didiglobal.booster.graph.Graph
+import com.didiglobal.booster.graph.GraphRenderer
+import com.didiglobal.booster.graph.Node
 import com.didiglobal.booster.kotlinx.OS
 import com.didiglobal.booster.kotlinx.RGB
 import com.didiglobal.booster.kotlinx.execute
@@ -18,11 +19,11 @@ import java.io.IOException
  *
  * @author johnsonlee
  */
-sealed class DotGraph : CallGraphRenderer {
+sealed class DotGraph : GraphRenderer {
 
     object DIGRAPH : DotGraph() {
 
-        override fun render(graph: CallGraph): CharSequence {
+        override fun <N : Node> render(graph: Graph<N>, prettify: (N) -> String): CharSequence {
             return StringBuilder().apply {
                 appendln("digraph \"${graph.title}\" {")
                 appendln("    graph [bgcolor=\"transparent\",pad=\"0.555\"];")
@@ -30,18 +31,13 @@ sealed class DotGraph : CallGraphRenderer {
                 appendln("    edge [fontname=Helvetica];")
                 appendln("    rankdir = TB;")
                 graph.nodes.joinTo(this, "\n    ", "    ", "\n") { node ->
-                    val id = graph.title.substringAfterLast('.')
                     val color = RGB.valueOf(WebSafeColorPalette.random(0x000000, 0xffffff)) // except white color
-                    "\"${if (node == CallGraph.ROOT) id else node.toPrettyString()}\" [color=\"#$color\",fillcolor=\"#${color}40\"];"
+                    "\"${prettify(node)}\" [color=\"#$color\",fillcolor=\"#${color}40\"];"
 
                 }
                 graph.joinTo(this, "\n    ", "    ", "\n") { edge ->
-                    val id = graph.title.substringAfterLast('.')
                     val color = RGB.valueOf(WebSafeColorPalette.random(0x000000, 0xffffff)).toString() // except white color
-                    val from = if (edge.from == CallGraph.ROOT) id else edge.from.toPrettyString()
-                    val to = if (edge.to == CallGraph.ROOT) id else edge.to.toPrettyString()
-                    "\"$from\" -> \"$to\" [color=\"#$color\",fontcolor=\"#$color\"];"
-
+                    "\"${prettify(edge.from)}\" -> \"${prettify(edge.to)}\" [color=\"#$color\",fontcolor=\"#$color\"];"
                 }
                 appendln("}")
             }
@@ -49,8 +45,14 @@ sealed class DotGraph : CallGraphRenderer {
 
     }
 
-    fun visualize(graph: CallGraph, output: File, format: String = "png", dot: Command = CommandService.fromPath("dot${OS.executableSuffix}")) {
-        output.touch().writeText(render(graph).toString())
+    fun <N : Node> visualize(
+            graph: Graph<N>,
+            output: File,
+            format: String = "png",
+            dot: Command = CommandService.fromPath("dot${OS.executableSuffix}"),
+            prettify: (Node) -> String = Node::toPrettyString
+    ) {
+        output.touch().writeText(render(graph, prettify).toString())
         dot.location.file.let(::File).takeIf(File::exists)?.let {
             "${it.canonicalPath} -T${format} -O ${output.canonicalPath}".also(::println).execute()
         }?.let { p ->

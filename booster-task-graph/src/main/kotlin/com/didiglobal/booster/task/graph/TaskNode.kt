@@ -1,8 +1,8 @@
 package com.didiglobal.booster.task.graph
 
-import com.didiglobal.booster.cha.graph.CallGraph
+import com.didiglobal.booster.graph.Node
 
-data class TaskNode(val path: String) : CallGraph.Node("", path, "") {
+data class TaskNode(val path: String) : Node {
 
     override fun toPrettyString(): String = path
 

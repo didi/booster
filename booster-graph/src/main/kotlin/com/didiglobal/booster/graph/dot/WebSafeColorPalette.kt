@@ -1,4 +1,4 @@
-package com.didiglobal.booster.cha.graph.dot
+package com.didiglobal.booster.graph.dot
 
 import java.util.Random
 
