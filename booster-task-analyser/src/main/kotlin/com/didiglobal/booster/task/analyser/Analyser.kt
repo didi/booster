@@ -5,8 +5,10 @@ import com.didiglobal.booster.cha.ClassHierarchy
 import com.didiglobal.booster.cha.ClassSet
 import com.didiglobal.booster.cha.JAVA_LANG_OBJECT
 import com.didiglobal.booster.cha.fold
-import com.didiglobal.booster.cha.graph.CallGraph
-import com.didiglobal.booster.cha.graph.dot.DotGraph
+import com.didiglobal.booster.cha.graph.CallNode
+import com.didiglobal.booster.cha.graph.ROOT
+import com.didiglobal.booster.graph.Graph
+import com.didiglobal.booster.graph.dot.DotGraph
 import com.didiglobal.booster.kotlinx.NCPU
 import com.didiglobal.booster.kotlinx.asIterable
 import com.didiglobal.booster.kotlinx.file
@@ -14,7 +16,6 @@ import com.didiglobal.booster.kotlinx.green
 import com.didiglobal.booster.kotlinx.red
 import com.didiglobal.booster.kotlinx.search
 import com.didiglobal.booster.kotlinx.separatorsToSystem
-import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.kotlinx.yellow
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.asm.args
@@ -70,12 +71,12 @@ class Analyser(
     /**
      * The global call graph of whole project
      */
-    private val globalBuilder = CallGraph.Builder()
+    private val globalBuilder = Graph.Builder<CallNode>()
 
     /**
      * The call graph of each class
      */
-    private val graphBuilders = ConcurrentHashMap<String, CallGraph.Builder>()
+    private val graphBuilders = ConcurrentHashMap<String, Graph.Builder<CallNode>>()
 
     private val classesRunOnUiThread = ConcurrentHashMap<String, ClassNode>()
     private val classesRunOnMainThread = ConcurrentHashMap<String, ClassNode>()
@@ -84,11 +85,11 @@ class Analyser(
     private val nodesRunOnMainThread = CopyOnWriteArraySet(PLATFORM_METHODS_RUN_ON_MAIN_THREAD)
 
     private val blacklist = URL(properties[PROPERTY_BLACKLIST]?.toString() ?: VALUE_BLACKLIST).openStream().bufferedReader().use {
-        it.readLines().filter(String::isNotBlank).map(CallGraph.Node.Companion::valueOf).toSet()
+        it.readLines().filter(String::isNotBlank).map(CallNode.Companion::valueOf).toSet()
     }
 
     private val whitelist = URL(properties[PROPERTY_WHITELIST]?.toString() ?: VALUE_WHITELIST).openStream().bufferedReader().use {
-        it.readLines().filter(String::isNotBlank).map(CallGraph.Node.Companion::valueOf).toSet()
+        it.readLines().filter(String::isNotBlank).map(CallNode.Companion::valueOf).toSet()
     }
 
     private val mainThreadAnnotations: Set<String> by lazy {
@@ -186,13 +187,13 @@ class Analyser(
                     println("Loading main thread entry points from $component ...")
 
                     val nodes = entryPoints.map {
-                        CallGraph.Node(clazz.name, it.name, it.desc)
+                        CallNode(clazz.name, it.name, it.desc)
                     }
 
                     this.hierarchy[component]?.run {
                         classesRunOnMainThread[component] = this
                     }
-                    this.globalBuilder.addEdges(CallGraph.ROOT, nodes)
+                    this.globalBuilder.addEdges(ROOT, nodes)
                     this.nodesRunOnMainThread += nodes
                 }
             }
@@ -246,10 +247,10 @@ class Analyser(
                         }
 
                         val nodes = clazz.methods.filter(MethodNode::isEntryPoint).map { m ->
-                            CallGraph.Node(clazz.name, m.name, m.desc)
+                            CallNode(clazz.name, m.name, m.desc)
                         }
 
-                        globalBuilder.addEdges(CallGraph.ROOT, nodes)
+                        globalBuilder.addEdges(ROOT, nodes)
                         nodes
                     }
                 }.flatten()
@@ -269,7 +270,7 @@ class Analyser(
                     || method.isSubscribeOnMainThread()
 
             if (isMethodRunUiOrMainThread) {
-                val node = CallGraph.Node(clazz.name, method.name, method.desc)
+                val node = CallNode(clazz.name, method.name, method.desc)
 
                 if (isClassRunOnMainThread) {
                     nodesRunOnMainThread += node
@@ -279,13 +280,13 @@ class Analyser(
                     nodesRunOnUiThread += node
                 }
 
-                globalBuilder.addEdge(CallGraph.ROOT, node)
+                globalBuilder.addEdge(ROOT, node)
             }
 
             // construct call graph by scanning INVOKE* instructions
             method.instructions.iterator().asIterable().filterIsInstance(MethodInsnNode::class.java).forEach { invoke ->
-                val to = CallGraph.Node(invoke.owner, invoke.name, invoke.desc)
-                val from = CallGraph.Node(clazz.name, method.name, method.desc)
+                val to = CallNode(invoke.owner, invoke.name, invoke.desc)
+                val from = CallNode(clazz.name, method.name, method.desc)
 
                 // break circular invocation
                 if (!globalBuilder.hasEdge(to, from)) {
@@ -305,11 +306,11 @@ class Analyser(
         println("Generating call graphs ...")
 
         // Analyse global call graph and separate each chain to individual graph
-        global[CallGraph.ROOT].map { node ->
+        global[ROOT].map { node ->
             executor.submit {
-                analyse(global, node, listOf(CallGraph.ROOT, node)) { chain ->
+                analyse(global, node, listOf(ROOT, node)) { chain ->
                     val builder = graphBuilders.getOrPut(node.type) {
-                        CallGraph.Builder().setTitle(node.type.replace('/', '.'))
+                        Graph.Builder<CallNode>().setTitle(node.type.replace('/', '.'))
                     }
                     builder.addEdges(chain)
                 }
@@ -323,9 +324,8 @@ class Analyser(
                 File(output, name.separatorsToSystem() + ".dot") to builder.build()
             }.map { (dot, graph) ->
                 executor.submit {
-                    println(dot)
-                    dot.touch().printWriter().use { printer ->
-                        graph.print(printer, DotGraph.DIGRAPH::render)
+                    DotGraph.DIGRAPH.visualize(graph, dot) {
+                        if (it == ROOT) graph.title else it.toPrettyString()
                     }
                 }
             }.forEach {
@@ -343,7 +343,7 @@ class Analyser(
      * @param node The entry point
      * @param chain The call chain
      */
-    private fun analyse(graph: CallGraph, node: CallGraph.Node, chain: List<CallGraph.Node>, action: (List<CallGraph.Node>) -> Unit) {
+    private fun analyse(graph: Graph<CallNode>, node: CallNode, chain: List<CallNode>, action: (List<CallNode>) -> Unit) {
         if (node in whitelist) {
             return
         }
@@ -388,7 +388,7 @@ class Analyser(
      */
     private fun MethodNode.isRunOnUiThread(clazz: ClassNode) = isRunOnThread(clazz, uiThreadAnnotations, nodesRunOnUiThread)
 
-    private fun MethodNode.isRunOnThread(clazz: ClassNode, annotations: Set<String>, nodesRunOnThread: Set<CallGraph.Node>): Boolean {
+    private fun MethodNode.isRunOnThread(clazz: ClassNode, annotations: Set<String>, nodesRunOnThread: Set<CallNode>): Boolean {
         if (this.isInvisibleAnnotationPresent(annotations)) {
             return true
         }
@@ -398,7 +398,7 @@ class Analyser(
         }
     }
 
-    private infix fun CallGraph.Node.matches(apis: Collection<CallGraph.Node>) = apis.contains(this) || apis.any {
+    private infix fun CallNode.matches(apis: Collection<CallNode>) = apis.contains(this) || apis.any {
         // only match type, name and args because of covariant return type is partially allowed since JDK 1.5
         // (overridden method can have different return type in sub-type)
         this.name == it.name && this.args == it.args && hierarchy.isInheritFrom(this.type, it.type)

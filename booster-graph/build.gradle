@@ -2,6 +2,5 @@ apply from: "$rootDir/gradle/booster.gradle"
 
 dependencies {
     api project(':booster-command')
-    api project(':booster-graph')
-    api project(':booster-transform-util')
+    api project(':booster-kotlinx')
 }
