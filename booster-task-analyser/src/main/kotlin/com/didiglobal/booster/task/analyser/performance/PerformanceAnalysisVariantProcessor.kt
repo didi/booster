@@ -1,4 +1,4 @@
-package com.didiglobal.booster.task.analyser
+package com.didiglobal.booster.task.analyser.performance
 
 import com.android.build.api.transform.QualifiedContent
 import com.android.build.gradle.api.BaseVariant
@@ -14,7 +14,7 @@ import org.gradle.api.GradleException
  * @author johnsonlee
  */
 @AutoService(VariantProcessor::class)
-class AnalyserVariantProcessor : VariantProcessor {
+class PerformanceAnalysisVariantProcessor : VariantProcessor {
 
     override fun process(variant: BaseVariant) {
         val project = variant.project
@@ -28,7 +28,7 @@ class AnalyserVariantProcessor : VariantProcessor {
         project.tasks.withType(TransformTask::class.java).find {
             it.name.endsWith(variantName) && it.transform == transform
         }?.let { transformTask ->
-            val profile = project.tasks.create("analyse${variantName}", AnalyserTask::class.java) {
+            val profile = project.tasks.create("analyse${variantName}", PerformanceAnalysisTask::class.java) {
                 it.variant = variant
                 it.supplier = {
                     transformTask.outputs.files.single()

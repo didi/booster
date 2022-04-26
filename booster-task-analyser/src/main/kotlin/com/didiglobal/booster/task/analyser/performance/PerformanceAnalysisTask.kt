@@ -1,8 +1,9 @@
-package com.didiglobal.booster.task.analyser
+package com.didiglobal.booster.task.analyser.performance
 
 import com.android.build.gradle.api.BaseVariant
 import com.didiglobal.booster.gradle.extension
 import com.didiglobal.booster.kotlinx.file
+import com.didiglobal.booster.task.analyser.Build
 import com.didiglobal.booster.transform.artifacts
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
@@ -11,11 +12,11 @@ import org.gradle.api.tasks.TaskAction
 import java.io.File
 
 /**
- * Represents a task for performance profiling
+ * Represents a task for performance analysing
  *
  * @author johnsonlee
  */
-open class AnalyserTask : DefaultTask() {
+open class PerformanceAnalysisTask : DefaultTask() {
 
     @get:Internal
     lateinit var variant: BaseVariant
@@ -28,7 +29,7 @@ open class AnalyserTask : DefaultTask() {
         get() = variant.name
 
     @TaskAction
-    fun profile() {
+    fun analyse() {
         val classpath = supplier().let {
             if (it.isDirectory) {
                 it.listFiles()?.toList() ?: emptyList()
@@ -43,7 +44,7 @@ open class AnalyserTask : DefaultTask() {
 
         val output = project.projectDir.file("build", "reports", Build.ARTIFACT, variant.dirName)
 
-        Analyser(variant.extension.bootClasspath, classpath, variant.artifacts, project.properties).analyse(output)
+        PerformanceAnalyser(variant.extension.bootClasspath, classpath, variant.artifacts, project.properties).analyse(output)
     }
 
 }

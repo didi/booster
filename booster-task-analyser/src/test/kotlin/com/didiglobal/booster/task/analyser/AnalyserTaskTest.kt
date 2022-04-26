@@ -1,6 +1,7 @@
 package com.didiglobal.booster.task.analyser
 
 import com.didiglobal.booster.kotlinx.Wildcard
+import com.didiglobal.booster.task.analyser.performance.VALUE_BLACKLIST
 import java.net.URL
 import kotlin.test.Test
 import kotlin.test.assertNotNull
