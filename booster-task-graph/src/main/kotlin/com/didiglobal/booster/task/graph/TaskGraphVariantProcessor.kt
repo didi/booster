@@ -26,7 +26,7 @@ class TaskGraphVariantProcessor : VariantProcessor {
             val title = "./gradlew ${taskNames.joinToString(" ")}"
             val graph = project.gradle.taskGraph.allTasks.map { task ->
                 task.taskDependencies.getDependencies(task).map { dep ->
-                    dep to task
+                    task to dep
                 }
             }.flatten().map { (dep, task) ->
                 Edge(TaskNode(dep.path), TaskNode(task.path))
