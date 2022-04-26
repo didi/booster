@@ -2,6 +2,7 @@ package com.didiglobal.booster.task.permission
 
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.tasks.factory.dependsOn
+import com.didiglobal.booster.BOOSTER
 import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.task.spi.VariantProcessor
 import com.google.auto.service.AutoService
@@ -17,9 +18,14 @@ class ListPermissionVariantProcessor : VariantProcessor {
             val listPermissions = try {
                 tasks.named(TASK_NAME)
             } catch (e: UnknownTaskException) {
-                tasks.register("listPermissions")
+                tasks.register("listPermissions") {
+                    it.group = BOOSTER
+                    it.description = "List the permissions declared in AndroidManifest.xml"
+                }
             }
             tasks.register("list${variant.name.capitalize()}Permissions", ListPermission::class.java) {
+                it.group = BOOSTER
+                it.description = "List the permission declared in AndroidManifest.xml for ${variant.name}"
                 it.variant = variant
                 it.outputs.upToDateWhen { false }
             }.also {

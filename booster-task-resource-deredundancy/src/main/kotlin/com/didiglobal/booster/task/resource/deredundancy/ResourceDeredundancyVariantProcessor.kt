@@ -2,6 +2,7 @@ package com.didiglobal.booster.task.resource.deredundancy
 
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.tasks.factory.dependsOn
+import com.didiglobal.booster.BOOSTER
 import com.didiglobal.booster.annotations.Priority
 import com.didiglobal.booster.compression.CompressionResults
 import com.didiglobal.booster.compression.generateReport
@@ -29,6 +30,8 @@ class ResourceDeredundancyVariantProcessor : VariantProcessor {
         val results = CompressionResults()
         val klassRemoveRedundantImages = if (project.isAapt2Enabled) RemoveRedundantFlatImages::class else RemoveRedundantImages::class
         val deredundancy = variant.project.tasks.register("remove${variant.name.capitalize()}RedundantResources", klassRemoveRedundantImages.java) { task ->
+            task.group = BOOSTER
+            task.description = "Remove redundant resources for ${variant.name}"
             task.outputs.upToDateWhen { false }
             task.variant = variant
             task.results = results
