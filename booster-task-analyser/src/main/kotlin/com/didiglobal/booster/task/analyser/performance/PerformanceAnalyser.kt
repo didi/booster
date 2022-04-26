@@ -1,4 +1,4 @@
-package com.didiglobal.booster.task.analyser
+package com.didiglobal.booster.task.analyser.performance
 
 import com.didiglobal.booster.aapt2.metadata
 import com.didiglobal.booster.cha.ClassHierarchy
@@ -17,6 +17,8 @@ import com.didiglobal.booster.kotlinx.red
 import com.didiglobal.booster.kotlinx.search
 import com.didiglobal.booster.kotlinx.separatorsToSystem
 import com.didiglobal.booster.kotlinx.yellow
+import com.didiglobal.booster.task.analyser.Build
+import com.didiglobal.booster.task.analyser.AsmClassFileParser
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.asm.args
 import com.didiglobal.booster.transform.asm.className
@@ -44,12 +46,15 @@ import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import javax.xml.parsers.SAXParserFactory
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.set
 import kotlin.streams.toList
 
 /**
  * @author johnsonlee
  */
-class Analyser(
+class PerformanceAnalyser(
         private val providedClasspath: Collection<File>,
         private val compileClasspath: Collection<File>,
         private val artifacts: ArtifactManager,
@@ -439,7 +444,7 @@ private val PROPERTY_BLACKLIST = "$PROPERTY_PREFIX.blacklist"
 
 private val PROPERTY_WHITELIST = "$PROPERTY_PREFIX.whitelist"
 
-internal val VALUE_BLACKLIST = Analyser::class.java.classLoader.getResource("blacklist.txt")!!.toString()
+internal val VALUE_BLACKLIST = PerformanceAnalyser::class.java.classLoader.getResource("blacklist.txt")!!.toString()
 
-internal val VALUE_WHITELIST = Analyser::class.java.classLoader.getResource("whitelist.txt")!!.toString()
+internal val VALUE_WHITELIST = PerformanceAnalyser::class.java.classLoader.getResource("whitelist.txt")!!.toString()
 

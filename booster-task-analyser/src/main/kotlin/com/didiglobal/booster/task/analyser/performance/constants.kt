@@ -1,4 +1,4 @@
-package com.didiglobal.booster.task.analyser
+package com.didiglobal.booster.task.analyser.performance
 
 import com.didiglobal.booster.cha.graph.CallNode
 

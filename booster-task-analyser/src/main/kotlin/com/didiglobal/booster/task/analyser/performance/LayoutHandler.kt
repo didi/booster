@@ -1,4 +1,4 @@
-package com.didiglobal.booster.task.analyser
+package com.didiglobal.booster.task.analyser.performance
 
 import org.xml.sax.Attributes
 import org.xml.sax.helpers.DefaultHandler
