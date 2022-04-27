@@ -1,3 +1,10 @@
+## v4.7.0
+
+- Add `DotGraph.visualize()` for graph visualization
+- Add `booster-task-graph` for task graph visualization
+- Fix improper task dependencies
+- Fix issue [#304](https://github.com/didi/booster/issues/304): `ScheduledThreadPoolExecutor` transform bug
+
 ## v4.6.0
 
 - Add extension property `BaseVariant.mergedNativeLibs: Collection<File>`
