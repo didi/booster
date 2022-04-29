@@ -13,6 +13,7 @@ import com.didiglobal.booster.kotlinx.NCPU
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.green
 import com.didiglobal.booster.kotlinx.red
+import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.AbstractKlassPool
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.Collector
@@ -225,11 +226,11 @@ internal class BoosterTransformInvocation(
     }
 
     private fun doVerify() {
-        outputs.sortedBy(File::nameWithoutExtension).forEach { output ->
-            val out = temporaryDir.file(output.name)
-            val rc = out.dex(output, variant.extension.defaultConfig.targetSdkVersion?.apiLevel ?: DexFormat.API_NO_EXTENDED_OPCODES)
-            println("${if (rc != 0) red("✗") else green("✓")} $output")
-            out.deleteRecursively()
+        outputs.sortedBy(File::nameWithoutExtension).forEach { input ->
+            val output = temporaryDir.file(input.name)
+            val rc = input.dex(output, variant.extension.defaultConfig.targetSdkVersion?.apiLevel ?: DexFormat.API_NO_EXTENDED_OPCODES)
+            println("${if (rc != 0) red("✗") else green("✓")} $input")
+            output.deleteRecursively()
         }
     }
 
