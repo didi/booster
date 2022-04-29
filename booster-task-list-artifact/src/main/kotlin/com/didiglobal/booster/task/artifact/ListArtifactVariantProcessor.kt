@@ -1,21 +1,30 @@
 package com.didiglobal.booster.task.artifact
 
 import com.android.build.gradle.api.BaseVariant
+import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.task.spi.VariantProcessor
 import com.google.auto.service.AutoService
+import org.gradle.api.UnknownTaskException
+
+private const val TASK_NAME = "listArtifacts"
 
 @AutoService(VariantProcessor::class)
 class ListArtifactVariantProcessor : VariantProcessor {
 
     override fun process(variant: BaseVariant) {
-        val tasks = variant.project.tasks
-        val artifacts = tasks.findByName("listArtifacts") ?: tasks.create("listArtifacts")
-        tasks.create("list${variant.name.capitalize()}Artifacts", ListArtifact::class.java) {
-            it.variant = variant
-            it.outputs.upToDateWhen { false }
-        }.also {
-            artifacts.dependsOn(it)
+        variant.project.tasks.let { tasks ->
+            val listArtifacts = try {
+                tasks.named(TASK_NAME)
+            } catch (e: UnknownTaskException) {
+                tasks.register(TASK_NAME)
+            }
+            tasks.register("list${variant.name.capitalize()}Artifacts", ListArtifact::class.java) {
+                it.variant = variant
+                it.outputs.upToDateWhen { false }
+            }.also {
+                listArtifacts.dependsOn(it)
+            }
         }
     }
 
