@@ -79,6 +79,9 @@ object V36 : AGPInterface {
             mergeResourcesProvider
         }
 
+    override val BaseVariant.mergeNativeLibsTaskProvider: TaskProvider<out Task>
+        get() = project.tasks.named(getTaskName("merge", "NativeLibs"))
+
     override val BaseVariant.processJavaResourcesTaskProvider: TaskProvider<out Task>
         get() = processJavaResourcesProvider
 
