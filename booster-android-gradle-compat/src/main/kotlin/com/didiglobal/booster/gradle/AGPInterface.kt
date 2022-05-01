@@ -80,6 +80,7 @@ interface AGPInterface {
     val BaseVariant.mergeResourcesTask: Task
         get() = mergeResourcesTaskProvider.get()
 
+
     @Deprecated(
             message = "Use processJavaResourcesTaskProvider instead",
             replaceWith = ReplaceWith(expression = "processJavaResourcesTaskProvider"),
@@ -113,6 +114,8 @@ interface AGPInterface {
     val BaseVariant.mergeAssetsTaskProvider: TaskProvider<out Task>
 
     val BaseVariant.mergeResourcesTaskProvider: TaskProvider<out Task>
+
+    val BaseVariant.mergeNativeLibsTaskProvider: TaskProvider<out Task>
 
     val BaseVariant.processJavaResourcesTaskProvider: TaskProvider<out Task>
 

@@ -66,6 +66,9 @@ val BaseVariant.mergeAssetsTaskProvider: TaskProvider<out Task>
 val BaseVariant.mergeResourcesTaskProvider: TaskProvider<out Task>
     get() = AGP.run { mergeResourcesTaskProvider }
 
+val BaseVariant.mergeNativeLibsTaskProvider:TaskProvider<out Task>
+    get() = AGP.run { mergeNativeLibsTaskProvider }
+
 val BaseVariant.processJavaResourcesTaskProvider: TaskProvider<out Task>
     get() = AGP.run { processJavaResourcesTaskProvider }
 
