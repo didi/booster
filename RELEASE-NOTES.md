@@ -1,3 +1,11 @@
+## v4.8.0
+
+- Fix issue [#311](https://github.com/didi/booster/issues/311)
+- Add api `mergeNativeLibsTaskProvider`
+- Add `booster-graph` to generate graph with `dot`
+- Using deferred task instead of creating task directly
+- Reverse the edge direction of the task graph
+
 ## v4.7.0
 
 - Add `DotGraph.visualize()` for graph visualization
