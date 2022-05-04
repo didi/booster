@@ -5,6 +5,7 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.api.BaseVariant
 import com.android.builder.core.VariantTypeImpl
+import com.didiglobal.booster.gradle.AGP
 import com.didiglobal.booster.gradle.getAndroid
 import com.didiglobal.booster.kotlinx.search
 import io.bootstage.testkit.gradle.Case
@@ -29,8 +30,6 @@ private const val MIN_SDK_VERSION = 18
 
 private const val TARGET_SDK_VERSION = 30
 
-private val AGP = V70
-
 private val ARGS = arrayOf(
         "assemble", "-S",
         "-Pbooster_version=${Build.VERSION}",
@@ -42,7 +41,7 @@ private val ARGS = arrayOf(
 )
 
 @Suppress("RemoveCurlyBracesFromTemplate", "FunctionName")
-abstract class V70IntegrationTest(val isLib: Boolean) {
+abstract class V70IntegrationTest(private val isLib: Boolean) {
 
     private val projectDir = TemporaryFolder()
 
@@ -58,102 +57,85 @@ abstract class V70IntegrationTest(val isLib: Boolean) {
         projectDir.copyFromResource("${if (isLib) "lib" else "app"}.gradle", "build.gradle")
         projectDir.copyFromResource("buildSrc")
         projectDir.copyFromResource("src")
+        assertEquals(7, AGP.revision.major)
+        assertEquals(0, AGP.revision.minor)
     }
 
     @Test
     @Case(ScopeFullWithFeaturesTest::class)
-    fun `test AGPInterface#scopeFullWithFeatures`() {
-    }
+    fun `test AGPInterface#scopeFullWithFeatures`() = Unit
 
     @Test
     @Case(ScopeFullLibraryWithFeaturesTest::class)
-    fun `test AGPInterface#scopeFullLibraryWithFeatures`() {
-    }
+    fun `test AGPInterface#scopeFullLibraryWithFeatures`() = Unit
 
     @Test
     @Case(ProjectTest::class)
-    fun `test AGPInterface#project`() {
-    }
+    fun `test AGPInterface#project`() = Unit
 
     @Test
     @Case(JavaCompilerTaskTestUnit::class)
-    fun `test AGPInterface#javaCompilerTask`() {
-    }
+    fun `test AGPInterface#javaCompilerTask`() = Unit
 
     @Test
     @Case(PreBuildTaskTestUnit::class)
-    fun `test AGPInterface#preBuildTask`() {
-    }
+    fun `test AGPInterface#preBuildTask`() = Unit
 
     @Test
     @Case(AssembleTaskTestUnit::class)
-    fun `test AGPInterface#assembleTask`() {
-    }
+    fun `test AGPInterface#assembleTask`() = Unit
 
     @Test
     @Case(MergeAssetsTaskTestUnit::class)
-    fun `test AGPInterface#mergeAssetsTask`() {
-    }
+    fun `test AGPInterface#mergeAssetsTask`() = Unit
 
     @Test
     @Case(MergeResourcesTaskTestUnit::class)
-    fun `test AGPInterface#mergeResources`() {
-    }
+    fun `test AGPInterface#mergeResources`() = Unit
 
     @Test
     @Case(GetTaskNameTestUnit::class)
-    fun `test AGPInterface#getTaskName(String)`() {
-    }
+    fun `test AGPInterface#getTaskName(String)`() = Unit
 
     @Test
     @Case(GetTaskName2TestUnit::class)
-    fun `test AGPInterface#getTaskName(String, String)`() {
-    }
+    fun `test AGPInterface#getTaskName(String, String)`() = Unit
 
     @Test
     @Case(VariantDataTestUnit::class)
-    fun `test AGPInterface#variantData`() {
-    }
+    fun `test AGPInterface#variantData`() = Unit
 
     @Test
     @Case(VariantScopeTestUnit::class)
-    fun `test AGPInterface#variantScope`() {
-    }
+    fun `test AGPInterface#variantScope`() = Unit
 
     @Test
     @Case(GlobalScopeTestCase::class)
-    fun `test AGPInterface#globalScope`() {
-    }
+    fun `test AGPInterface#globalScope`() = Unit
 
     @Test
     @Case(OriginalApplicationIdTestUnit::class)
-    fun `test AGPInterface#originalApplicationId`() {
-    }
+    fun `test AGPInterface#originalApplicationId`() = Unit
 
     @Test
     @Case(HasDynamicFeatureTestUnit::class)
-    fun `test AGPInterface#hasDynamicFeature`() {
-    }
+    fun `test AGPInterface#hasDynamicFeature`() = Unit
 
     @Test
     @Case(RawAndroidResourcesTestUnit::class)
-    fun `test AGPInterface#rawAndroidResources`() {
-    }
+    fun `test AGPInterface#rawAndroidResources`() = Unit
 
     @Test
     @Case(AllArtifactsTestUnit::class)
-    fun `test AGPInterface#allArtifacts`() {
-    }
+    fun `test AGPInterface#allArtifacts`() = Unit
 
     @Test
     @Case(MinSdkVersionTestUnit::class)
-    fun `test AGPInterface#minSdkVersion`() {
-    }
+    fun `test AGPInterface#minSdkVersion`() = Unit
 
     @Test
     @Case(TargetSdkVersionTestUnit::class)
-    fun `test AGPInterface#targetSdkVersion`() {
-    }
+    fun `test AGPInterface#targetSdkVersion`() = Unit
 
     @Test
     @Case(VariantTypeTestUnit::class)

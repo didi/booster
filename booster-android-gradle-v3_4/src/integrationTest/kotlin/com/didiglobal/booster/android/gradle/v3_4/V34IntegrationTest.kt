@@ -4,9 +4,9 @@ import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.api.BaseVariant
-import com.android.builder.core.VariantType
 import com.android.builder.core.VariantTypeImpl
 import com.android.sdklib.BuildToolInfo
+import com.didiglobal.booster.gradle.AGP
 import com.didiglobal.booster.gradle.getAndroid
 import com.didiglobal.booster.kotlinx.search
 import io.bootstage.testkit.gradle.Case
@@ -31,8 +31,6 @@ private const val MIN_SDK_VERSION = 18
 
 private const val TARGET_SDK_VERSION = 26
 
-private val AGP = V34
-
 private val ARGS = arrayOf(
         "assemble", "-S",
         "-Pbooster_version=${Build.VERSION}",
@@ -44,7 +42,7 @@ private val ARGS = arrayOf(
 )
 
 @Suppress("RemoveCurlyBracesFromTemplate", "FunctionName")
-abstract class V34IntegrationTest(val isLib: Boolean) {
+abstract class V34IntegrationTest(private val isLib: Boolean) {
 
     private val projectDir = TemporaryFolder()
 
@@ -60,157 +58,129 @@ abstract class V34IntegrationTest(val isLib: Boolean) {
         projectDir.copyFromResource("${if (isLib) "lib" else "app"}.gradle", "build.gradle")
         projectDir.copyFromResource("buildSrc")
         projectDir.copyFromResource("src")
+        assertEquals(3, AGP.revision.major)
+        assertEquals(4, AGP.revision.minor)
     }
 
     @Test
     @Case(ScopeFullWithFeaturesTest::class)
-    fun `test AGPInterface#scopeFullWithFeatures`() {
-    }
+    fun `test AGPInterface#scopeFullWithFeatures`() = Unit
 
     @Test
     @Case(ScopeFullLibraryWithFeaturesTest::class)
-    fun `test AGPInterface#scopeFullLibraryWithFeatures`() {
-    }
+    fun `test AGPInterface#scopeFullLibraryWithFeatures`() = Unit
 
     @Test
     @Case(ProjectTest::class)
-    fun `test AGPInterface#project`() {
-    }
+    fun `test AGPInterface#project`() = Unit
 
     @Test
     @Case(JavaCompilerTaskTestUnit::class)
-    fun `test AGPInterface#javaCompilerTask`() {
-    }
+    fun `test AGPInterface#javaCompilerTask`() = Unit
 
     @Test
     @Case(PreBuildTaskTestUnit::class)
-    fun `test AGPInterface#preBuildTask`() {
-    }
+    fun `test AGPInterface#preBuildTask`() = Unit
 
     @Test
     @Case(AssembleTaskTestUnit::class)
-    fun `test AGPInterface#assembleTask`() {
-    }
+    fun `test AGPInterface#assembleTask`() = Unit
 
     @Test
     @Case(MergeAssetsTaskTestUnit::class)
-    fun `test AGPInterface#mergeAssetsTask`() {
-    }
+    fun `test AGPInterface#mergeAssetsTask`() = Unit
 
     @Test
     @Case(MergeResourcesTaskTestUnit::class)
-    fun `test AGPInterface#mergeResources`() {
-    }
+    fun `test AGPInterface#mergeResources`() = Unit
 
     @Test
     @Case(GetTaskNameTestUnit::class)
-    fun `test AGPInterface#getTaskName(String)`() {
-    }
+    fun `test AGPInterface#getTaskName(String)`() = Unit
 
     @Test
     @Case(GetTaskName2TestUnit::class)
-    fun `test AGPInterface#getTaskName(String, String)`() {
-    }
+    fun `test AGPInterface#getTaskName(String, String)`() = Unit
 
     @Test
     @Case(VariantDataTestUnit::class)
-    fun `test AGPInterface#variantData`() {
-    }
+    fun `test AGPInterface#variantData`() = Unit
 
     @Test
     @Case(VariantScopeTestUnit::class)
-    fun `test AGPInterface#variantScope`() {
-    }
+    fun `test AGPInterface#variantScope`() = Unit
 
     @Test
     @Case(GlobalScopeTestCase::class)
-    fun `test AGPInterface#globalScope`() {
-    }
+    fun `test AGPInterface#globalScope`() = Unit
 
     @Test
     @Case(OriginalApplicationIdTestUnit::class)
-    fun `test AGPInterface#originalApplicationId`() {
-    }
+    fun `test AGPInterface#originalApplicationId`() = Unit
 
     @Test
     @Case(HasDynamicFeatureTestUnit::class)
-    fun `test AGPInterface#hasDynamicFeature`() {
-    }
+    fun `test AGPInterface#hasDynamicFeature`() = Unit
 
     @Test
     @Case(RawAndroidResourcesTestUnit::class)
-    fun `test AGPInterface#rawAndroidResources`() {
-    }
+    fun `test AGPInterface#rawAndroidResources`() = Unit
 
     @Test
     @Case(AllArtifactsTestUnit::class)
-    fun `test AGPInterface#allArtifacts`() {
-    }
+    fun `test AGPInterface#allArtifacts`() = Unit
 
     @Test
     @Case(MinSdkVersionTestUnit::class)
-    fun `test AGPInterface#minSdkVersion`() {
-    }
+    fun `test AGPInterface#minSdkVersion`() = Unit
 
     @Test
     @Case(TargetSdkVersionTestUnit::class)
-    fun `test AGPInterface#targetSdkVersion`() {
-    }
+    fun `test AGPInterface#targetSdkVersion`() = Unit
 
     @Test
     @Case(VariantTypeTestUnit::class)
-    fun `test AGPInterface#variantType`() {
-    }
+    fun `test AGPInterface#variantType`() = Unit
 
     @Test
     @Case(AarTestUnit::class)
-    fun `test AGPInterface#aar`() {
-    }
+    fun `test AGPInterface#aar`() = Unit
 
     @Test
     @Case(ApkTestUnit::class)
-    fun `test AGPInterface#apk`() {
-    }
+    fun `test AGPInterface#apk`() = Unit
 
     @Test
     @Case(MergedManifestsTestUnit::class)
-    fun `test AGPInterface#mergedManifests`() {
-    }
+    fun `test AGPInterface#mergedManifests`() = Unit
 
     @Test
     @Case(MergedResourcesTestUnit::class)
-    fun `test AGPInterface#mergedRes`() {
-    }
+    fun `test AGPInterface#mergedRes`() = Unit
 
     @Test
     @Case(MergedAssetsTestUnit::class)
-    fun `test AGPInterface#mergedAssets`() {
-    }
+    fun `test AGPInterface#mergedAssets`() = Unit
 
     @Test
     @Case(ProcessedResTestUnit::class)
-    fun `test AGPInterface#processedRes`() {
-    }
+    fun `test AGPInterface#processedRes`() = Unit
 
     @Test
     @Case(SymbolListTestUnit::class)
-    fun `test AGPInterface#symbolList`() {
-    }
+    fun `test AGPInterface#symbolList`() = Unit
 
     @Test
     @Case(SymbolListWithPackageNameTestUnit::class)
-    fun `test AGPInterface#symbolListWithPackageName`() {
-    }
+    fun `test AGPInterface#symbolListWithPackageName`() = Unit
 
     @Test
     @Case(AllClassesTestUnit::class)
-    fun `test AGPInterface#allClasses`() {
-    }
+    fun `test AGPInterface#allClasses`() = Unit
 
     @Test
     @Case(BuildToolsTestUnit::class)
-    fun `test AGPInterface#buildTools`() {
-    }
+    fun `test AGPInterface#buildTools`() = Unit
 
 }
 
