@@ -1,7 +1,7 @@
 package com.didiglobal.booster.task.so
 
 import com.android.build.gradle.api.BaseVariant
-import com.didiglobal.booster.gradle.ResolvedArtifactResults
+import com.didiglobal.booster.gradle.dependencies
 import com.didiglobal.booster.kotlinx.CSI_CYAN
 import com.didiglobal.booster.kotlinx.CSI_RESET
 import com.didiglobal.booster.kotlinx.ifNotEmpty
@@ -17,7 +17,7 @@ internal open class ListSharedLibrary : DefaultTask() {
 
     @TaskAction
     fun run() {
-        ResolvedArtifactResults(variant).forEach { result ->
+        variant.dependencies.forEach { result ->
             when (result.file.extension.toLowerCase()) {
                 "aar", "jar" -> {
                     JarFile(result.file).use { jar ->

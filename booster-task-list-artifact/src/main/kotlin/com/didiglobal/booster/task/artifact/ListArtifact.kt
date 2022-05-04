@@ -17,7 +17,7 @@ internal open class ListArtifact : DefaultTask() {
         val maxTypeWidth: Int = artifacts.keys.map { it.length }.max()!!
 
         artifacts.forEach { (type, files) ->
-            println("${".".repeat(maxTypeWidth - type.length + 1)}$type : $files")
+            println("${".".repeat(maxTypeWidth - type.length + 1)}$type : ${files.files}")
         }
     }
 

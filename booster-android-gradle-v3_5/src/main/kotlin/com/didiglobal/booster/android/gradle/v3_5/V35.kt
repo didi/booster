@@ -14,7 +14,6 @@ import com.android.build.gradle.internal.publishing.AndroidArtifacts
 import com.android.build.gradle.internal.scope.AnchorOutputType
 import com.android.build.gradle.internal.scope.GlobalScope
 import com.android.build.gradle.internal.scope.InternalArtifactType
-import com.android.build.gradle.internal.scope.MissingTaskOutputException
 import com.android.build.gradle.internal.scope.VariantScope
 import com.android.build.gradle.internal.scope.getOutputDir
 import com.android.build.gradle.internal.variant.BaseVariantData
@@ -37,15 +36,17 @@ private val ARTIFACT_TYPES = arrayOf<Array<out ArtifactType>>(
         BuildArtifactType.values(),
         SourceArtifactType.values(),
         InternalArtifactType.values()
-).flatten().map {
-    it.name() to it
-}.toMap()
+).flatten().associateBy(ArtifactType::name)
 
 internal object V35 : AGPInterface {
 
     @Suppress("UnstableApiUsage")
-    private fun BaseVariant.getFinalArtifactFiles(type: ArtifactType): Collection<File> {
-        return variantScope.artifacts.getFinalArtifactFiles(type).files
+    private fun BaseVariant.getFinalArtifactFiles(type: ArtifactType): FileCollection {
+        return try {
+            project.objects.fileCollection().from(variantScope.artifacts.getFinalArtifactFiles(type))
+        } catch (e: Throwable) {
+            project.objects.fileCollection().builtBy(variantScope.artifacts.getFinalArtifactFiles(type))
+        }
     }
 
     override val scopeFullWithFeatures: MutableSet<in QualifiedContent.Scope>
@@ -104,8 +105,8 @@ internal object V35 : AGPInterface {
     override val BaseVariant.hasDynamicFeature: Boolean
         get() = globalScope.hasDynamicFeatures()
 
-    override val BaseVariant.rawAndroidResources: Collection<File>
-        get() = variantData.allRawAndroidResources.files
+    override val BaseVariant.rawAndroidResources: FileCollection
+        get() = variantData.allRawAndroidResources
 
     override fun BaseVariant.getArtifactCollection(
             configType: AndroidArtifacts.ConsumedConfigType,
@@ -124,31 +125,23 @@ internal object V35 : AGPInterface {
     }
 
     @Suppress("UnstableApiUsage")
-    override val BaseVariant.allArtifacts: Map<String, Collection<File>>
-        get() = ARTIFACT_TYPES.entries.map {
-            val artifacts: Collection<File> by lazy {
-                when (it.value) {
+    override val BaseVariant.allArtifacts: Map<String, FileCollection>
+        get() = ARTIFACT_TYPES.entries.associateTo(TreeMap()) { (name, type) ->
+            val artifacts: FileCollection by lazy {
+                when (type) {
                     InternalArtifactType.MERGED_MANIFESTS,
                     InternalArtifactType.LIBRARY_MANIFEST -> {
-                        listOf(File(it.value.getOutputDir(globalScope.buildDir), name))
+                        project.files(File(type.getOutputDir(globalScope.buildDir), name))
                     }
                     InternalArtifactType.LIBRARY_ASSETS,
                     InternalArtifactType.MERGED_ASSETS -> {
-                       listOf(File(it.value.getOutputDir(globalScope.buildDir), "out"))
+                        project.files(File(type.getOutputDir(globalScope.buildDir), "out"))
                     }
-                    else -> try {
-                        getFinalArtifactFiles(it.value)
-                    } catch (e: RuntimeException) {
-                        if (e.cause is MissingTaskOutputException) {
-                            emptyList<File>()
-                        } else {
-                            throw e
-                        }
-                    }
+                    else -> getFinalArtifactFiles(type)
                 }
             }
-            it.key to artifacts
-        }.toMap(TreeMap())
+            name to artifacts
+        }
 
     override val BaseVariant.minSdkVersion: AndroidVersion
         get() = variantData.variantConfiguration.minSdkVersion
@@ -159,51 +152,47 @@ internal object V35 : AGPInterface {
     override val BaseVariant.variantType: VariantType
         get() = variantScope.type
 
-    override val BaseVariant.aar: Collection<File>
+    override val BaseVariant.aar: FileCollection
         get() = getFinalArtifactFiles(InternalArtifactType.AAR)
 
-    override val BaseVariant.apk: Collection<File>
+    override val BaseVariant.apk: FileCollection
         get() = getFinalArtifactFiles(InternalArtifactType.APK)
 
     @Suppress("UnstableApiUsage")
-    override val BaseVariant.mergedManifests: Collection<File>
-        get() = listOf(when (this) {
+    override val BaseVariant.mergedManifests: FileCollection
+        get() = project.files(File(when (this) {
             is ApplicationVariant -> InternalArtifactType.MERGED_MANIFESTS
             is LibraryVariant -> InternalArtifactType.LIBRARY_MANIFEST
             else -> TODO("Unsupported variant type: $variantType")
-        }).map {
-            File(it.getOutputDir(globalScope.buildDir), name)
-        }
+        }.getOutputDir(globalScope.buildDir), name))
 
-    override val BaseVariant.mergedRes: Collection<File>
+    override val BaseVariant.mergedRes: FileCollection
         get() = getFinalArtifactFiles(InternalArtifactType.MERGED_RES)
 
-    override val BaseVariant.mergedNativeLibs: Collection<File>
+    override val BaseVariant.mergedNativeLibs: FileCollection
         get() = getFinalArtifactFiles(InternalArtifactType.MERGED_NATIVE_LIBS)
 
     @Suppress("UnstableApiUsage")
-    override val BaseVariant.mergedAssets: Collection<File>
-        get() = listOf(when (this) {
+    override val BaseVariant.mergedAssets: FileCollection
+        get() = project.files(File(when (this) {
             is ApplicationVariant -> InternalArtifactType.MERGED_ASSETS
             is LibraryVariant -> InternalArtifactType.LIBRARY_ASSETS
             else -> TODO("Unsupported variant type: $variantType")
-        }).map {
-            File(it.getOutputDir(globalScope.buildDir), "out")
-        }
+        }.getOutputDir(globalScope.buildDir), "out"))
 
-    override val BaseVariant.processedRes: Collection<File>
+    override val BaseVariant.processedRes: FileCollection
         get() = getFinalArtifactFiles(InternalArtifactType.PROCESSED_RES)
 
-    override val BaseVariant.symbolList: Collection<File>
+    override val BaseVariant.symbolList: FileCollection
         get() = getFinalArtifactFiles(InternalArtifactType.SYMBOL_LIST)
 
-    override val BaseVariant.symbolListWithPackageName: Collection<File>
+    override val BaseVariant.symbolListWithPackageName: FileCollection
         get() = getFinalArtifactFiles(InternalArtifactType.SYMBOL_LIST_WITH_PACKAGE_NAME)
 
-    override val BaseVariant.dataBindingDependencyArtifacts: Collection<File>
+    override val BaseVariant.dataBindingDependencyArtifacts: FileCollection
         get() = getFinalArtifactFiles(InternalArtifactType.DATA_BINDING_DEPENDENCY_ARTIFACTS)
 
-    override val BaseVariant.allClasses: Collection<File>
+    override val BaseVariant.allClasses: FileCollection
         get() = getFinalArtifactFiles(AnchorOutputType.ALL_CLASSES)
 
     override val BaseVariant.buildTools: BuildToolInfo

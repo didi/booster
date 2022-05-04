@@ -86,6 +86,13 @@ val BaseVariant.bundleResourcesTaskProvider: TaskProvider<out Task>?
         null
     }
 
+val BaseVariant.packageTaskProvider: TaskProvider<out Task>?
+    get() = try {
+        project.tasks.named(getTaskName("package"))
+    } catch (e: UnknownTaskException) {
+        null
+    }
+
 val BaseVariant.packageBundleTaskProvider: TaskProvider<out Task>?
     get() = try {
         project.tasks.named(getTaskName("package", "Bundle"))
@@ -141,7 +148,7 @@ fun BaseVariant.getArtifactFileCollection(
     getArtifactFileCollection(configType, scope, artifactType)
 }
 
-val BaseVariant.aar: Collection<File>
+val BaseVariant.aar: FileCollection
     get() = AGP.run {
         aar
     }
@@ -149,7 +156,7 @@ val BaseVariant.aar: Collection<File>
 /**
  * The output directory of APK files
  */
-val BaseVariant.apk: Collection<File>
+val BaseVariant.apk: FileCollection
     get() = AGP.run {
         apk
     }
@@ -157,7 +164,7 @@ val BaseVariant.apk: Collection<File>
 /**
  * The output directory of merged [AndroidManifest.xml](https://developer.android.com/guide/topics/manifest/manifest-intro)
  */
-val BaseVariant.mergedManifests: Collection<File>
+val BaseVariant.mergedManifests: FileCollection
     get() = AGP.run {
         mergedManifests
     }
@@ -165,7 +172,7 @@ val BaseVariant.mergedManifests: Collection<File>
 /**
  * The output directory of merged resources
  */
-val BaseVariant.mergedRes: Collection<File>
+val BaseVariant.mergedRes: FileCollection
     get() = AGP.run {
         mergedRes
     }
@@ -173,7 +180,7 @@ val BaseVariant.mergedRes: Collection<File>
 /**
  * The output directory of merged assets
  */
-val BaseVariant.mergedAssets: Collection<File>
+val BaseVariant.mergedAssets: FileCollection
     get() = AGP.run {
         mergedAssets
     }
@@ -181,7 +188,7 @@ val BaseVariant.mergedAssets: Collection<File>
 /**
  * The output directory of merged native libs
  */
-val BaseVariant.mergedNativeLibs: Collection<File>
+val BaseVariant.mergedNativeLibs: FileCollection
     get() = AGP.run {
         mergedNativeLibs
     }
@@ -189,7 +196,7 @@ val BaseVariant.mergedNativeLibs: Collection<File>
 /**
  * The output directory of processed resources: *resources-**variant**.ap\_*
  */
-val BaseVariant.processedRes: Collection<File>
+val BaseVariant.processedRes: FileCollection
     get() = AGP.run {
         processedRes
     }
@@ -197,22 +204,22 @@ val BaseVariant.processedRes: Collection<File>
 /**
  * All of classes
  */
-val BaseVariant.allClasses: Collection<File>
+val BaseVariant.allClasses: FileCollection
     get() = AGP.run {
         allClasses
     }
 
-val BaseVariant.symbolList: Collection<File>
+val BaseVariant.symbolList: FileCollection
     get() = AGP.run {
         symbolList
     }
 
-val BaseVariant.symbolListWithPackageName: Collection<File>
+val BaseVariant.symbolListWithPackageName: FileCollection
     get() = AGP.run {
         symbolListWithPackageName
     }
 
-val BaseVariant.allArtifacts: Map<String, Collection<File>>
+val BaseVariant.allArtifacts: Map<String, FileCollection>
     get() = AGP.run {
         allArtifacts
     }
