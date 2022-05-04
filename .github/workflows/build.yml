@@ -1,14 +1,15 @@
-name: Run tests
+name: Build project
 
 on:
   push:
-    tags:
-      - '*'
+    branches: [ '*' ]
+  pull_request:
+    branches: [ '*' ]
   repository_dispatch:
-    types: [test]
+    types: [build]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,11 +22,11 @@ jobs:
         distribution: 'adopt'
         java-version: '11'
 
-    - name: Run tests
+    - name: Build Project
       run: |
         echo "Create GPG private key"
         echo $GPG_KEY_ARMOR | base64 --decode > $GITHUB_WORKSPACE/secring.gpg
-        ./gradlew publishToMavenLocal check -POSSRH_USERNAME=${OSSRH_USERNAME} -POSSRH_PASSWORD=${OSSRH_PASSWORD} -POSSRH_STAGING_PROFILE_ID=${OSSRH_STAGING_PROFILE_ID} -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_PASSPHRASE} -Psigning.secretKeyRingFile=${GITHUB_WORKSPACE}/secring.gpg -S --no-daemon
+        ./gradlew assemble -POSSRH_USERNAME=${OSSRH_USERNAME} -POSSRH_PASSWORD=${OSSRH_PASSWORD} -POSSRH_STAGING_PROFILE_ID=${OSSRH_STAGING_PROFILE_ID} -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_PASSPHRASE} -Psigning.secretKeyRingFile=${GITHUB_WORKSPACE}/secring.gpg -S --no-daemon
       env:
         JAVA_OPTS: -Xmx8g -XX:MaxPermSize=1g -XX:MetaspaceSize=1g -Dfile.encoding=UTF-8
         JVM_OPTS: -Xmx8g -XX:MaxPermSize=1g -XX:MetaspaceSize=1g -Dfile.encoding=UTF-8
