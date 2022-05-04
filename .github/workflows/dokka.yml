@@ -10,7 +10,7 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    if: github.repository == 'johnsonlee/booster'
+    if: github.repository_owner == 'johnsonlee'
 
     steps:
     - name: Checkout
@@ -20,7 +20,7 @@ jobs:
       uses: actions/setup-java@v2
       with:
         distribution: 'adopt'
-        java-version: '8'
+        java-version: '11'
 
     - name: Build API reference
       run: ./gradlew reference -S --no-daemon

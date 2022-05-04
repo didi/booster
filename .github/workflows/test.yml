@@ -1,16 +1,17 @@
-name: Publish build to Sonatype
+name: Run tests
 
 on:
   push:
-    tags:
-      - '*'
+    branches: [ '*' ]
+  pull_request:
+    branches: [ '*' ]
+
   repository_dispatch:
-    types: [publish]
+    types: [test]
 
 jobs:
-  publish:
+  run-unit-test:
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'johnsonlee'
 
     steps:
     - name: Checkout
@@ -22,11 +23,11 @@ jobs:
         distribution: 'adopt'
         java-version: '11'
 
-    - name: Publish to Sonatype
+    - name: Run tests
       run: |
         echo "Create GPG private key"
         echo $GPG_KEY_ARMOR | base64 --decode > $GITHUB_WORKSPACE/secring.gpg
-        ./gradlew publishToSonatype closeAndReleaseStagingRepository -Pversion=${GITHUB_REF/refs\/tags\/v/} -POSSRH_USERNAME=${OSSRH_USERNAME} -POSSRH_PASSWORD=${OSSRH_PASSWORD} -POSSRH_STAGING_PROFILE_ID=${OSSRH_STAGING_PROFILE_ID} -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_PASSPHRASE} -Psigning.secretKeyRingFile=${GITHUB_WORKSPACE}/secring.gpg -S --no-daemon
+        ./gradlew publishToMavenLocal check -POSSRH_USERNAME=${OSSRH_USERNAME} -POSSRH_PASSWORD=${OSSRH_PASSWORD} -POSSRH_STAGING_PROFILE_ID=${OSSRH_STAGING_PROFILE_ID} -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_PASSPHRASE} -Psigning.secretKeyRingFile=${GITHUB_WORKSPACE}/secring.gpg -S --no-daemon
       env:
         JAVA_OPTS: -Xmx8g -XX:MaxPermSize=1g -XX:MetaspaceSize=1g -Dfile.encoding=UTF-8
         JVM_OPTS: -Xmx8g -XX:MaxPermSize=1g -XX:MetaspaceSize=1g -Dfile.encoding=UTF-8
