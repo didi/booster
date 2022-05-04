@@ -103,7 +103,7 @@ interface AGPInterface {
 
     val BaseVariant.hasDynamicFeature: Boolean
 
-    val BaseVariant.rawAndroidResources: Collection<File>
+    val BaseVariant.rawAndroidResources: FileCollection
 
     val BaseVariant.javaCompilerTaskProvider: TaskProvider<out Task>
 
@@ -131,7 +131,7 @@ interface AGPInterface {
             artifactType: AndroidArtifacts.ArtifactType
     ): FileCollection
 
-    val BaseVariant.allArtifacts: Map<String, Collection<File>>
+    val BaseVariant.allArtifacts: Map<String, FileCollection>
 
     val BaseVariant.minSdkVersion: AndroidVersion
 
@@ -139,27 +139,27 @@ interface AGPInterface {
 
     val BaseVariant.variantType: VariantType
 
-    val BaseVariant.aar: Collection<File>
+    val BaseVariant.aar: FileCollection
 
-    val BaseVariant.apk: Collection<File>
+    val BaseVariant.apk: FileCollection
 
-    val BaseVariant.mergedManifests: Collection<File>
+    val BaseVariant.mergedManifests: FileCollection
 
-    val BaseVariant.mergedRes: Collection<File>
+    val BaseVariant.mergedRes: FileCollection
 
-    val BaseVariant.mergedAssets: Collection<File>
+    val BaseVariant.mergedAssets: FileCollection
 
-    val BaseVariant.mergedNativeLibs: Collection<File>
+    val BaseVariant.mergedNativeLibs: FileCollection
 
-    val BaseVariant.processedRes: Collection<File>
+    val BaseVariant.processedRes: FileCollection
 
-    val BaseVariant.symbolList: Collection<File>
+    val BaseVariant.symbolList: FileCollection
 
-    val BaseVariant.symbolListWithPackageName: Collection<File>
+    val BaseVariant.symbolListWithPackageName: FileCollection
 
-    val BaseVariant.dataBindingDependencyArtifacts: Collection<File>
+    val BaseVariant.dataBindingDependencyArtifacts: FileCollection
 
-    val BaseVariant.allClasses: Collection<File>
+    val BaseVariant.allClasses: FileCollection
 
     val BaseVariant.buildTools: BuildToolInfo
 

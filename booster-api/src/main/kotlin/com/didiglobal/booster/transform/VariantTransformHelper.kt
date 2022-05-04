@@ -11,6 +11,7 @@ import com.didiglobal.booster.gradle.mergedManifests
 import com.didiglobal.booster.gradle.mergedRes
 import com.didiglobal.booster.gradle.platform
 import com.didiglobal.booster.gradle.processedRes
+import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.gradle.symbolList
 import com.didiglobal.booster.gradle.symbolListWithPackageName
 import com.didiglobal.booster.kotlinx.search
@@ -28,16 +29,16 @@ val BaseVariant.artifacts: ArtifactManager
     get() = object : ArtifactManager {
 
         override fun get(type: String): Collection<File> = when (type) {
-            ArtifactManager.AAR -> aar
-            ArtifactManager.ALL_CLASSES -> allClasses
-            ArtifactManager.APK -> apk
-            ArtifactManager.MERGED_ASSETS -> mergedAssets
-            ArtifactManager.MERGED_RES -> mergedRes
+            ArtifactManager.AAR -> aar.files
+            ArtifactManager.ALL_CLASSES -> allClasses.files
+            ArtifactManager.APK -> apk.files
+            ArtifactManager.MERGED_ASSETS -> mergedAssets.files
+            ArtifactManager.MERGED_RES -> mergedRes.files
             ArtifactManager.MERGED_MANIFESTS -> mergedManifests.search { SdkConstants.FN_ANDROID_MANIFEST_XML == it.name }
             ArtifactManager.PROCESSED_RES -> processedRes.search { it.name.startsWith(SdkConstants.FN_RES_BASE) && it.name.endsWith(SdkConstants.EXT_RES) }
-            ArtifactManager.SYMBOL_LIST -> symbolList
-            ArtifactManager.SYMBOL_LIST_WITH_PACKAGE_NAME -> symbolListWithPackageName
-            ArtifactManager.DATA_BINDING_DEPENDENCY_ARTIFACTS -> allArtifacts[ArtifactManager.DATA_BINDING_DEPENDENCY_ARTIFACTS] ?: emptyList()
+            ArtifactManager.SYMBOL_LIST -> symbolList.files
+            ArtifactManager.SYMBOL_LIST_WITH_PACKAGE_NAME -> symbolListWithPackageName.files
+            ArtifactManager.DATA_BINDING_DEPENDENCY_ARTIFACTS -> allArtifacts[ArtifactManager.DATA_BINDING_DEPENDENCY_ARTIFACTS]?.files ?: emptyList()
             else -> TODO("Unexpected type: $type")
         }
 
