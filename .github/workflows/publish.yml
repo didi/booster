@@ -1,4 +1,4 @@
-name: Publish build to Sonatype
+name: Publish artifacts to Sonatype
 
 on:
   push:
