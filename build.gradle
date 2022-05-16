@@ -1,8 +1,7 @@
 import java.time.Duration
-import static org.gradle.kotlin.dsl.KotlinDependencyExtensionsKt.embeddedKotlinVersion
 
 buildscript {
-    ext.kotlin_version = embeddedKotlinVersion
+    ext.kotlin_version = "1.4.32"
 
     repositories {
         mavenLocal()
