@@ -16,20 +16,23 @@ class Graph<N : Node> private constructor(
 ) : Iterable<Edge<N>> {
 
     private val entries: List<Edge<N>> by lazy {
-        edges.map { pair ->
-            pair.value.map {
-                Edge(pair.key, it)
-            }.toSet()
-        }.flatten()
+        Collections.unmodifiableList(edges.entries.fold(mutableListOf<Edge<N>>()) { acc, entry ->
+            entry.value.forEach { value ->
+                acc.add(Edge(entry.key, value))
+            }
+            acc
+        })
     }
 
     val nodes: Collection<N> by lazy {
-        this.map {
-            listOf(it.from, it.to)
-        }.flatten().toSet()
+        Collections.unmodifiableSet(fold(mutableSetOf<N>()) { acc, edge ->
+            acc.add(edge.from)
+            acc.add(edge.to)
+            acc
+        })
     }
 
-    operator fun get(node: N): Set<N> = Collections.unmodifiableSet(edges[node] ?: emptySet())
+    operator fun get(node: N): Set<N> = edges[node]?.let(Collections::unmodifiableSet) ?: emptySet()
 
     /**
      * Print this graph
