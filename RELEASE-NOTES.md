@@ -1,3 +1,10 @@
+## v4.9.0
+
+- Fix [CVE-2020-15250] In JUnit4 from version 4.7 and before 4.13.1, the test rule TemporaryFolder contains a local information disclosure vulnerability
+- Fix variant artifacts acquiring
+- Fix integration tests
+- Refactoring `booster-graph` to support grouping and render options
+
 ## v4.8.0
 
 - Fix issue [#311](https://github.com/didi/booster/issues/311)
