@@ -44,7 +44,6 @@ internal class DirectoryClassSet<ClassFile, ClassParser : ClassFileParser<ClassF
 
     override fun toString(): String = this.location.canonicalPath
 
-    override fun close() {
-    }
+    override fun close() = Unit
 
 }

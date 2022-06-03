@@ -19,12 +19,12 @@ internal class ArchivedClassSet<ClassFile, ClassParser : ClassFileParser<ClassFi
         override val parser: ClassParser
 ) : AbstractClassSet<ClassFile, ClassParser>() {
 
-    private val zip = ZipFile(location)
-
     private val classes: Map<String, ClassFile> by lazy {
-        zip.entries().iterator().asIterable().parallelStream().filter(CLASS_ENTRY_FILTER).map { entry ->
-            parser.parse(zip.getInputStream(entry))
-        }.collect(toMap(parser::getClassName) { it })
+        ZipFile(location).use { zip ->
+            zip.entries().iterator().asIterable().parallelStream().filter(CLASS_ENTRY_FILTER).map { entry ->
+                parser.parse(zip.getInputStream(entry))
+            }.collect(toMap(parser::getClassName) { it })
+        }
     }
 
     constructor(location: String, parser: ClassParser) : this(File(location).takeIf {
@@ -47,7 +47,7 @@ internal class ArchivedClassSet<ClassFile, ClassParser : ClassFileParser<ClassFi
 
     override fun iterator(): Iterator<ClassFile> = this.classes.values.iterator()
 
-    override fun close() = zip.close()
+    override fun close() = Unit
 
     override fun toString(): String = this.location.canonicalPath
 
