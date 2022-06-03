@@ -4,4 +4,5 @@ dependencies {
     api project(':booster-command')
     api project(':booster-graph')
     api project(':booster-transform-util')
+    testImplementation project(':booster-transform-asm')
 }

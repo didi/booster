@@ -1,15 +1,10 @@
 package com.didiglobal.booster.cha
 
-import com.didiglobal.booster.kotlinx.asIterable
 import com.didiglobal.booster.kotlinx.green
-import com.didiglobal.booster.kotlinx.parallelStream
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileNotFoundException
-import java.util.stream.Collectors.toMap
-import java.util.zip.ZipEntry
-import java.util.zip.ZipFile
-
-private val CLASS_ENTRY_FILTER = { entry: ZipEntry -> entry.name.endsWith(".class", true) }
+import java.util.zip.ZipInputStream
 
 /**
  * @author johnsonlee
@@ -20,16 +15,27 @@ internal class ArchivedClassSet<ClassFile, ClassParser : ClassFileParser<ClassFi
 ) : AbstractClassSet<ClassFile, ClassParser>() {
 
     private val classes: Map<String, ClassFile> by lazy {
-        ZipFile(location).use { zip ->
-            zip.entries().iterator().asIterable().parallelStream().filter(CLASS_ENTRY_FILTER).map { entry ->
-                parser.parse(zip.getInputStream(entry))
-            }.collect(toMap(parser::getClassName) { it })
+        ZipInputStream(FileInputStream(location)).use { zip ->
+            loadClasses(zip).associateByTo(mutableMapOf(), parser::getClassName)
         }
     }
 
     constructor(location: String, parser: ClassParser) : this(File(location).takeIf {
         it.exists()
     } ?: throw FileNotFoundException(location), parser)
+
+    private fun loadClasses(zip: ZipInputStream): List<ClassFile> {
+        val classes = mutableListOf<ClassFile>()
+        while (true) {
+            val entry = zip.nextEntry ?: break
+            classes += when {
+                entry.name.endsWith(".class", true) -> listOf(parser.parse(zip))
+                entry.name == "classes.jar" -> loadClasses(ZipInputStream(zip))
+                else -> emptyList()
+            }
+        }
+        return classes
+    }
 
     override fun get(name: String) = this.classes[name]
 

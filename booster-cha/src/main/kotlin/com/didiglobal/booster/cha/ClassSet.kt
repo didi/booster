@@ -28,14 +28,14 @@ interface ClassSet<ClassFile, ClassParser : ClassFileParser<ClassFile>> : Set<Cl
 
     companion object {
 
-        private val ARCHIVES = Regex("^(zip)|(jar)$", RegexOption.IGNORE_CASE)
+        private val ARCHIVES = Regex("^(aar)|(zip)|(jar)$", RegexOption.IGNORE_CASE)
 
         fun <ClassFile, ClassParser : ClassFileParser<ClassFile>> from(
                 file: File,
                 parser: ClassParser
         ): ClassSet<ClassFile, ClassParser> = when {
-            file.isDirectory -> DirectoryClassSet<ClassFile, ClassParser>(file, parser)
-            file.extension matches ARCHIVES -> ArchivedClassSet<ClassFile, ClassParser>(file, parser)
+            file.isDirectory -> DirectoryClassSet(file, parser)
+            file.extension matches ARCHIVES -> ArchivedClassSet(file, parser)
             else -> {
                 System.err.println(red("unsupported file: $file"))
                 EmptyClassSet(parser)
