@@ -13,7 +13,6 @@ import com.didiglobal.booster.kotlinx.NCPU
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.green
 import com.didiglobal.booster.kotlinx.red
-import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.AbstractKlassPool
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.Collector
@@ -22,6 +21,7 @@ import com.didiglobal.booster.transform.artifacts
 import com.didiglobal.booster.transform.util.CompositeCollector
 import com.didiglobal.booster.transform.util.collect
 import com.didiglobal.booster.transform.util.transform
+import org.apache.commons.codec.digest.DigestUtils.md5Hex
 import java.io.File
 import java.net.URI
 import java.util.concurrent.Callable
@@ -160,8 +160,7 @@ internal class BoosterTransformInvocation(
         executor.submit {
             val format = if (input is DirectoryInput) Format.DIRECTORY else Format.JAR
             outputProvider?.let { provider ->
-                project.logger.info("Transforming ${input.file}")
-                input.transform(provider.getContentLocation(input.name, input.contentTypes, input.scopes, format))
+                input.transform(provider.getContentLocation(input.id, input.contentTypes, input.scopes, format))
             }
         }
     }
@@ -187,9 +186,8 @@ internal class BoosterTransformInvocation(
         when (jarInput.status) {
             REMOVED -> jarInput.file.delete()
             else -> {
-                project.logger.info("Transforming ${jarInput.file}")
                 outputProvider?.let { provider ->
-                    jarInput.transform(provider.getContentLocation(jarInput.name, jarInput.contentTypes, jarInput.scopes, Format.JAR))
+                    jarInput.transform(provider.getContentLocation(jarInput.id, jarInput.contentTypes, jarInput.scopes, Format.JAR))
                 }
             }
         }
@@ -200,9 +198,8 @@ internal class BoosterTransformInvocation(
         dirInput.changedFiles.forEach { (file, status) ->
             when (status) {
                 REMOVED -> {
-                    project.logger.info("Deleting $file")
                     outputProvider?.let { provider ->
-                        provider.getContentLocation(dirInput.name, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY).parentFile.listFiles()?.asSequence()
+                        provider.getContentLocation(dirInput.id, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY).parentFile.listFiles()?.asSequence()
                                 ?.filter { it.isDirectory }
                                 ?.map { File(it, dirInput.file.toURI().relativize(file.toURI()).path) }
                                 ?.filter { it.exists() }
@@ -211,14 +208,10 @@ internal class BoosterTransformInvocation(
                     file.delete()
                 }
                 else -> {
-                    project.logger.info("Transforming $file")
                     outputProvider?.let { provider ->
-                        val root = provider.getContentLocation(dirInput.name, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY)
+                        val root = provider.getContentLocation(dirInput.id, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY)
                         val output = File(root, base.relativize(file.toURI()).path)
-                        outputs += output
-                        file.transform(output) { bytecode ->
-                            bytecode.transform()
-                        }
+                        file.transform(output)
                     }
                 }
             }
@@ -234,9 +227,15 @@ internal class BoosterTransformInvocation(
         }
     }
 
-    private fun QualifiedContent.transform(output: File) {
+    private val QualifiedContent.id: String
+        get() = md5Hex(file.absolutePath)
+
+    private fun QualifiedContent.transform(output: File) = this.file.transform(output)
+
+    private fun File.transform(output: File) {
         outputs += output
-        this.file.transform(output) { bytecode ->
+        project.logger.info("Booster transforming $this => $output")
+        this.transform(output) { bytecode ->
             bytecode.transform()
         }
     }
