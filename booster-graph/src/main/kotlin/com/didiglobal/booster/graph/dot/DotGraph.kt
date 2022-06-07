@@ -12,6 +12,8 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import kotlin.reflect.full.memberProperties
 
+private val DOT = CommandService.fromPath("dot${OS.executableSuffix}")
+
 /**
  * Represents the graph type
  *
@@ -64,25 +66,18 @@ sealed class DotGraph : GraphRenderer {
             graph: Graph<N>,
             output: File,
             options: DotOptions,
-            dot: Command = CommandService.fromPath("dot${OS.executableSuffix}"),
+            dot: Command = DOT,
             prettify: (Node) -> String = Node::toPrettyString
     ) {
         output.touch().writeText(render(graph, options, prettify).toString())
-        dot.location.file.let(::File).takeIf(File::exists)?.let {
-            "${it.canonicalPath} -T${options.format} -O ${output.canonicalPath}".also(::println).execute()
-        }?.let { p ->
-            p.waitFor()
-            if (p.exitValue() != 0) {
-                throw IOException(p.stderr)
-            }
-        } ?: throw FileNotFoundException(dot.location.file)
+        dot.execute("-T${options.format}", "-O", output.canonicalPath)
     }
 
     fun <N : Node> visualize(
             graph: Graph<N>,
             output: File,
             format: String = "png",
-            dot: Command = CommandService.fromPath("dot${OS.executableSuffix}"),
+            dot: Command = DOT,
             prettify: (Node) -> String = Node::toPrettyString
     ) = visualize(graph, output, DotOptions(format), dot, prettify)
 

@@ -1,6 +1,7 @@
 package com.didiglobal.booster.command
 
 import java.io.ByteArrayInputStream
+import java.io.IOException
 import java.io.InputStream
 import java.net.URL
 import java.net.URLConnection
@@ -11,7 +12,9 @@ import java.net.URLStreamHandler
  *
  * @author johnsonlee
  */
-internal class NoneCommand(name: String) : Command(name, URL("cmd", "localhost", 9102, "/${name}", HANDLER))
+internal class NoneCommand(name: String) : Command(name, URL("cmd", "localhost", 9102, "/${name}", HANDLER)) {
+    override fun execute(vararg args: String) = throw IOException("Command $name is not installed")
+}
 
 private val HANDLER = object : URLStreamHandler() {
 
