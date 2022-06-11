@@ -20,10 +20,12 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import org.junit.rules.TestRule
+import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 import kotlin.test.fail
 
 private const val MIN_SDK_VERSION = 18
@@ -48,7 +50,7 @@ abstract class V70IntegrationTest(private val isLib: Boolean) {
     @get:Rule
     val ruleChain: TestRule = rule(projectDir) {
         rule(LocalProperties(projectDir::getRoot)) {
-            GradleExecutor(projectDir::getRoot, "7.0", *ARGS)
+            GradleExecutor(projectDir::getRoot, "7.0.2", *ARGS)
         }
     }
 
@@ -57,6 +59,7 @@ abstract class V70IntegrationTest(private val isLib: Boolean) {
         projectDir.copyFromResource("${if (isLib) "lib" else "app"}.gradle", "build.gradle")
         projectDir.copyFromResource("buildSrc")
         projectDir.copyFromResource("src")
+        projectDir.newFile("gradle.properties").writeText("org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=2g")
         assertEquals(7, AGP.revision.major)
         assertEquals(0, AGP.revision.minor)
     }
@@ -108,10 +111,6 @@ abstract class V70IntegrationTest(private val isLib: Boolean) {
     @Test
     @Case(VariantScopeTestUnit::class)
     fun `test AGPInterface#variantScope`() = Unit
-
-    @Test
-    @Case(GlobalScopeTestCase::class)
-    fun `test AGPInterface#globalScope`() = Unit
 
     @Test
     @Case(OriginalApplicationIdTestUnit::class)
@@ -186,11 +185,6 @@ abstract class V70IntegrationTest(private val isLib: Boolean) {
     @Case(AllClassesTestUnit::class)
     fun `test AGPInterface#allClasses`() {
     }
-
-//    @Test
-//    @Case(BuildToolsTestUnit::class)
-//    fun `test AGPInterface#buildTools`() {
-//    }
 
 }
 
@@ -279,12 +273,6 @@ class VariantScopeTestUnit : VariantTestCase() {
     }
 }
 
-class GlobalScopeTestCase : VariantTestCase() {
-    override fun apply(variant: BaseVariant) {
-        assertNotNull(AGP.run { variant.globalScope })
-    }
-}
-
 class OriginalApplicationIdTestUnit : VariantTestCase() {
     override fun apply(variant: BaseVariant) {
         assertNotNull(AGP.run { variant.originalApplicationId })
@@ -302,7 +290,7 @@ class RawAndroidResourcesTestUnit : VariantTestCase() {
         AGP.run { variant.assembleTask }.doFirst {
             val rawAndroidResources = AGP.run { variant.rawAndroidResources }
             assertNotNull(rawAndroidResources)
-            if (rawAndroidResources.isEmpty()) {
+            if (rawAndroidResources.isEmpty) {
                 fail("rawAndroidResources is empty")
             }
             rawAndroidResources.forEach {
@@ -425,7 +413,7 @@ class MergedResourcesTestUnit : VariantTestCase() {
     override fun apply(variant: BaseVariant) {
         AGP.run { variant.assembleTask }.doFirst {
             val mergedResources = AGP.run { variant.mergedRes }
-            if (mergedResources.isEmpty()) {
+            if (mergedResources.isEmpty) {
                 fail("mergedRes is empty")
             }
             mergedResources.forEach {
@@ -439,7 +427,7 @@ class MergedAssetsTestUnit : VariantTestCase() {
     override fun apply(variant: BaseVariant) {
         AGP.run { variant.assembleTask }.doFirst {
             val mergedAssets = AGP.run { variant.mergedAssets }
-            if (mergedAssets.isEmpty()) {
+            if (mergedAssets.isEmpty) {
                 fail("mergedAssets is empty")
             }
             mergedAssets.forEach {
@@ -475,7 +463,7 @@ class SymbolListTestUnit : VariantTestCase() {
     override fun apply(variant: BaseVariant) {
         AGP.run { variant.assembleTask }.doFirst {
             val symbolList = AGP.run { variant.symbolList }
-            if (symbolList.isEmpty()) {
+            if (symbolList.isEmpty) {
                 fail("symbolList is empty")
             }
             symbolList.forEach {
@@ -489,7 +477,7 @@ class SymbolListWithPackageNameTestUnit : VariantTestCase() {
     override fun apply(variant: BaseVariant) {
         AGP.run { variant.assembleTask }.doFirst {
             val symbolListWithPackageName = AGP.run { variant.symbolListWithPackageName }
-            if (symbolListWithPackageName.isEmpty()) {
+            if (symbolListWithPackageName.isEmpty) {
                 fail("symbolListWithPackageName is empty")
             }
             symbolListWithPackageName.forEach {
@@ -502,27 +490,11 @@ class SymbolListWithPackageNameTestUnit : VariantTestCase() {
 class AllClassesTestUnit : VariantTestCase() {
     override fun apply(variant: BaseVariant) {
         AGP.run { variant.assembleTask }.doFirst {
-            val allClasses = AGP.run { variant.allClasses }.search {
-                it.extension == "class"
-            }
-            if (allClasses.isEmpty()) {
-                fail("allClasses is empty")
-            }
-            allClasses.forEach {
-                println(" - ${it.path}")
+            val location = AGP.run { variant.allClasses }.files
+            assertTrue("ALL_CLASSES: $location", location::isNotEmpty)
+            assertTrue("No class file found at $location") {
+                location.search(File::isFile).isNotEmpty()
             }
         }
     }
 }
-
-//class BuildToolsTestUnit : VariantTestCase() {
-//    override fun apply(variant: BaseVariant) {
-//        val buildTools = AGP.run { variant.buildTools }
-//        assertNotNull(buildTools)
-//        BuildToolInfo.PathId.values().map {
-//            it.name to buildTools.getPath(it)
-//        }.forEach { (k, v) ->
-//            println(" - $k => $v")
-//        }
-//    }
-//}

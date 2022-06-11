@@ -15,9 +15,9 @@ import com.android.build.gradle.internal.scope.MultipleArtifactType
 import com.android.build.gradle.internal.scope.SingleArtifactType
 import com.android.build.gradle.internal.scope.VariantScope
 import com.android.build.gradle.internal.variant.BaseVariantData
+import com.android.builder.core.DefaultApiVersion
 import com.android.builder.core.VariantType
 import com.android.builder.model.ApiVersion
-import com.android.sdklib.AndroidVersion
 import com.android.sdklib.BuildToolInfo
 import com.didiglobal.booster.gradle.AGPInterface
 import org.gradle.api.Project
@@ -26,6 +26,7 @@ import org.gradle.api.artifacts.ArtifactCollection
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.FileSystemLocation
 import org.gradle.api.tasks.TaskProvider
+import java.io.File
 import java.util.TreeMap
 
 @Suppress("UnstableApiUsage")
@@ -58,6 +59,7 @@ internal object V40 : AGPInterface {
         return try {
             project.objects.fileCollection().from(variantScope.artifacts.getOperations().get(type))
         } catch (e: Throwable) {
+            project.logger.warn(e.message, e)
             project.objects.fileCollection().builtBy(variantScope.artifacts.getOperations().get(type))
         }
     }
@@ -67,6 +69,7 @@ internal object V40 : AGPInterface {
         return try {
             project.objects.fileCollection().from(variantScope.artifacts.getOperations().getAll(type))
         } catch (e: Throwable) {
+            project.logger.warn(e.message, e)
             project.objects.fileCollection().builtBy(variantScope.artifacts.getOperations().getAll(type))
         }
     }
@@ -121,7 +124,7 @@ internal object V40 : AGPInterface {
     override val BaseVariant.variantScope: VariantScope
         get() = variantData.scope
 
-    override val BaseVariant.globalScope: GlobalScope
+    private val BaseVariant.globalScope: GlobalScope
         get() = variantScope.globalScope
 
     override val BaseVariant.originalApplicationId: String
@@ -165,8 +168,8 @@ internal object V40 : AGPInterface {
             }
         }
 
-    override val BaseVariant.minSdkVersion: AndroidVersion
-        get() = variantData.variantDslInfo.minSdkVersion
+    override val BaseVariant.minSdkVersion: ApiVersion
+        get() = DefaultApiVersion(variantData.variantDslInfo.minSdkVersion.apiLevel)
 
     override val BaseVariant.targetSdkVersion: ApiVersion
         get() = variantData.variantDslInfo.targetSdkVersion
@@ -217,7 +220,11 @@ internal object V40 : AGPInterface {
         get() = getFinalArtifactFiles(InternalArtifactType.DATA_BINDING_DEPENDENCY_ARTIFACTS)
 
     override val BaseVariant.allClasses: FileCollection
-        get() = getFinalArtifactFiles(InternalArtifactType.JAVAC)
+        get() = when (this) {
+            is ApplicationVariant -> getFinalArtifactFiles(InternalArtifactType.JAVAC) + project.files("build${File.separator}tmp${File.separator}kotlin-classes${File.separator}${dirName}")
+            is LibraryVariant -> getFinalArtifactFiles(InternalArtifactType.AAR_MAIN_JAR)
+            else -> project.files()
+        }
 
     override val BaseVariant.buildTools: BuildToolInfo
         get() = globalScope.sdkComponents.buildToolInfoProvider.get()

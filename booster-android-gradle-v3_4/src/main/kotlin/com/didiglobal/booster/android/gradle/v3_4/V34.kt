@@ -20,7 +20,6 @@ import com.android.build.gradle.internal.variant.BaseVariantData
 import com.android.builder.core.VariantType
 import com.android.builder.model.AndroidProject
 import com.android.builder.model.ApiVersion
-import com.android.sdklib.AndroidVersion
 import com.android.sdklib.BuildToolInfo
 import com.didiglobal.booster.gradle.AGPInterface
 import org.gradle.api.Project
@@ -46,6 +45,7 @@ internal object V34 : AGPInterface {
         return try {
             variantScope.artifacts.getFinalArtifactFiles(type).get()
         } catch (e: Throwable) {
+            project.logger.warn(e.message, e)
             project.files()
         }
     }
@@ -96,7 +96,7 @@ internal object V34 : AGPInterface {
     override val BaseVariant.variantScope: VariantScope
         get() = variantData.scope
 
-    override val BaseVariant.globalScope: GlobalScope
+    private val BaseVariant.globalScope: GlobalScope
         get() = variantScope.globalScope
 
     override val BaseVariant.originalApplicationId: String
@@ -132,8 +132,20 @@ internal object V34 : AGPInterface {
             name to artifacts
         }
 
-    override val BaseVariant.minSdkVersion: AndroidVersion
-        get() = variantData.variantConfiguration.minSdkVersion
+    override val BaseVariant.minSdkVersion: ApiVersion
+        get() = variantData.variantConfiguration.minSdkVersion.let { minSdkVersion ->
+            object : ApiVersion {
+                override fun getApiLevel(): Int = minSdkVersion.apiLevel
+                override fun getCodename(): String? = minSdkVersion.codename
+                override fun getApiString(): String = minSdkVersion.apiString
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) return true
+                    if (other !is ApiVersion) return false
+                    return apiLevel == other.apiLevel || codename.equals(other.codename, false)
+                }
+                override fun hashCode(): Int = codename?.hashCode() ?: apiLevel
+            }
+        }
 
     override val BaseVariant.targetSdkVersion: ApiVersion
         get() = variantData.variantConfiguration.targetSdkVersion

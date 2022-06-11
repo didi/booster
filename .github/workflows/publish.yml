@@ -11,18 +11,14 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     if: github.repository_owner == 'johnsonlee'
-
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Setup Java
-      uses: actions/setup-java@v2
+    - uses: actions/checkout@v3
+    - uses: actions/setup-java@v3
       with:
         distribution: 'adopt'
         java-version: '11'
-
-    - name: Publish to Sonatype
+        cache: 'gradle'
+    - shell: bash
       run: |
         echo "Create GPG private key"
         echo $GPG_KEY_ARMOR | base64 --decode > $GITHUB_WORKSPACE/secring.gpg

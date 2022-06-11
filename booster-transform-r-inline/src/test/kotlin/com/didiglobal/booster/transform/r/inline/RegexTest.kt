@@ -22,12 +22,4 @@ class RegexTest {
         }
     }
 
-    @Test
-    fun `valid symbol`() {
-        assertTrue(isValidSymbol("H"))
-        assertTrue(isValidSymbol("icon"))
-        assertTrue(isValidSymbol("ic_app"))
-        assertFalse(isValidSymbol("4:1"))
-    }
-
 }

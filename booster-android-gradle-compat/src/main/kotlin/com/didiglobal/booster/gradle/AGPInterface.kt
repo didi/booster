@@ -97,8 +97,6 @@ interface AGPInterface {
 
     val BaseVariant.variantScope: VariantScope
 
-    val BaseVariant.globalScope: GlobalScope
-
     val BaseVariant.originalApplicationId: String
 
     val BaseVariant.hasDynamicFeature: Boolean
@@ -133,7 +131,7 @@ interface AGPInterface {
 
     val BaseVariant.allArtifacts: Map<String, FileCollection>
 
-    val BaseVariant.minSdkVersion: AndroidVersion
+    val BaseVariant.minSdkVersion: ApiVersion
 
     val BaseVariant.targetSdkVersion: ApiVersion
 
