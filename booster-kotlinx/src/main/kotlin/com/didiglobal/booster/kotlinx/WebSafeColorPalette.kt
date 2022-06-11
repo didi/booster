@@ -1,4 +1,4 @@
-package com.didiglobal.booster.graph.dot
+package com.didiglobal.booster.kotlinx
 
 import java.util.Random
 
@@ -7,7 +7,7 @@ import java.util.Random
  *
  * @author johnsonlee
  */
-internal object WebSafeColorPalette {
+object WebSafeColorPalette {
 
     private const val N = 216
 

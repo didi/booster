@@ -5,6 +5,8 @@ dependencies {
     implementation project(':booster-aapt2')
     implementation project(':booster-api')
     implementation project(':booster-cha')
+    implementation project(':booster-graph-dot')
+    implementation project(':booster-graph-json')
     implementation project(':booster-transform-asm')
     compileOnly 'com.android.tools.build:gradle:4.0.0'
     testCompileOnly 'com.android.tools.build:gradle:4.0.0'
