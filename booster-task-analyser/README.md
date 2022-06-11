@@ -2,27 +2,27 @@
 
 This module is used for static analysing.
 
-## Getting Started
+## Performance Analysis
 
-Start analysing by executing the following command
+Start performance analysis by executing the following command
 
 ```bash
-./gradlew analyseDebug
+./gradlew analysePerformanceDebug
 ```
 
 or 
 
 ```bash
-./gradlew analyseRelease
+./gradlew analysePerformanceRelease
 ```
 
 or
 
 ```bash
-./gradlew analyse
+./gradlew analysePerformance
 ```
 
-## Analyser Reports
+### Analyser Reports
 
 The [dot](https://www.graphviz.org/doc/info/lang.html) format reports is located at `build/reports/${variant}/booster-task-analyser/`,  you can convert the dot files to PNGs by using the following command:
 
@@ -54,3 +54,25 @@ or configured in the `gradle.properties`:
 ```properties
 booster.task.analyser.whitelist=file:///Users/booster/whitelist.txt
 ```
+
+## Reference Analysis
+
+Start reference analysis by executing the following command
+
+```bash
+./gradlew analyseReferenceDebug
+```
+
+or
+
+```bash
+./gradlew analyseReferenceRelease
+```
+
+or
+
+```bash
+./gradlew analyseReference
+```
+
+The reports are located at `build/reports/booster-task-analyser/reference/`
