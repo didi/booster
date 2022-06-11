@@ -5,6 +5,7 @@ import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactSco
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactType.AAR
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactType.JAR
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH
+import com.android.builder.model.AndroidProject
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.separatorsToSystem
 import com.didiglobal.booster.kotlinx.touch
@@ -74,7 +75,7 @@ class ResolvedArtifactResults(private val variant: BaseVariant) : Collection<Res
     /**
      * Default output location: $buildDir/intermediates/dependencies/${variantDirName}/dependencies.txt
      */
-    private fun makeDependenciesOutput() = AGP.run { variant.globalScope }.intermediatesDir.file(
+    private fun makeDependenciesOutput() = File(variant.project.buildDir, AndroidProject.FD_INTERMEDIATES).file(
             "dependencies",
             variant.dirName.separatorsToSystem(),
             "dependencies.txt"

@@ -42,10 +42,8 @@ class ClassSetTest {
         val arch1 = ClassSet.from(classes, AsmClassFileParser)
         val jar = File(javaClass.protectionDomain.codeSource.location.file).resolve("..${File.separator}..${File.separator}..${File.separator}libs${File.separator}${Build.ARTIFACT}-${Build.VERSION}.jar")
         val arch2 = ClassSet.from(jar.canonicalFile, AsmClassFileParser)
-
-        (arch1 + arch2).parallelStream().forEach {
-            println(it.className)
-        }
+        assertTrue(arch1.size > 0)
+        assertTrue(arch2.size > 0)
     }
 
     @Test
@@ -55,18 +53,22 @@ class ClassSetTest {
         val jar = File(javaClass.protectionDomain.codeSource.location.file).resolve("..${File.separator}..${File.separator}..${File.separator}libs${File.separator}${Build.ARTIFACT}-${Build.VERSION}.jar")
         val arch2 = ClassSet.from(jar.canonicalFile, AsmClassFileParser)
         (arch1 + arch2).use(ClassSet<ClassNode, AsmClassFileParser>::load)
+        assertTrue(arch1.size > 0)
+        assertTrue(arch2.size > 0)
     }
 
     @Test
     fun `load directory backed class archives`() {
         val classes = File(javaClass.protectionDomain.codeSource.location.file)
-        ClassSet.from(classes, AsmClassFileParser).use(ClassSet<ClassNode, AsmClassFileParser>::load)
+        val arch = ClassSet.from(classes, AsmClassFileParser).use(ClassSet<ClassNode, AsmClassFileParser>::load)
+        assertTrue(arch.size > 0)
     }
 
     @Test
     fun `load jar backed class archives`() {
         val jar = File(javaClass.protectionDomain.codeSource.location.file).resolve("..${File.separator}..${File.separator}..${File.separator}libs${File.separator}${Build.ARTIFACT}-${Build.VERSION}.jar")
-        ClassSet.from(jar.canonicalFile, AsmClassFileParser).use(ClassSet<ClassNode, AsmClassFileParser>::load)
+        val arch = ClassSet.from(jar.canonicalFile, AsmClassFileParser).use(ClassSet<ClassNode, AsmClassFileParser>::load)
+        assertTrue(arch.size > 0)
     }
 
 }

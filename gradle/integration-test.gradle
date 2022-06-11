@@ -24,7 +24,7 @@ task integrationTest(type: Test) {
     classpath = sourceSets.integrationTest.runtimeClasspath
     mustRunAfter test
     testLogging {
-        events "passed", "skipped", "failed", "standardError"
+        events "passed", "skipped", "failed", "standardOut", "standardError"
     }
 }
 

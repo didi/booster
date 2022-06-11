@@ -17,9 +17,9 @@ import com.android.build.gradle.internal.scope.InternalArtifactType
 import com.android.build.gradle.internal.scope.VariantScope
 import com.android.build.gradle.internal.scope.getOutputDir
 import com.android.build.gradle.internal.variant.BaseVariantData
+import com.android.builder.core.DefaultApiVersion
 import com.android.builder.core.VariantType
 import com.android.builder.model.ApiVersion
-import com.android.sdklib.AndroidVersion
 import com.android.sdklib.BuildToolInfo
 import com.didiglobal.booster.gradle.AGPInterface
 import org.gradle.api.Project
@@ -45,6 +45,7 @@ internal object V35 : AGPInterface {
         return try {
             project.objects.fileCollection().from(variantScope.artifacts.getFinalArtifactFiles(type))
         } catch (e: Throwable) {
+            project.logger.warn(e.message, e)
             project.objects.fileCollection().builtBy(variantScope.artifacts.getFinalArtifactFiles(type))
         }
     }
@@ -96,7 +97,7 @@ internal object V35 : AGPInterface {
     override val BaseVariant.variantScope: VariantScope
         get() = variantData.scope
 
-    override val BaseVariant.globalScope: GlobalScope
+    private val BaseVariant.globalScope: GlobalScope
         get() = variantScope.globalScope
 
     override val BaseVariant.originalApplicationId: String
@@ -143,8 +144,8 @@ internal object V35 : AGPInterface {
             name to artifacts
         }
 
-    override val BaseVariant.minSdkVersion: AndroidVersion
-        get() = variantData.variantConfiguration.minSdkVersion
+    override val BaseVariant.minSdkVersion: ApiVersion
+        get() = DefaultApiVersion(variantData.variantConfiguration.minSdkVersion.apiLevel)
 
     override val BaseVariant.targetSdkVersion: ApiVersion
         get() = variantData.variantConfiguration.targetSdkVersion

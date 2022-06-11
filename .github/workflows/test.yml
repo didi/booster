@@ -2,36 +2,303 @@ name: Run tests
 
 on:
   push:
-    tags:
-      - '*'
+    branches: [ '*' ]
+  pull_request:
+    branches: [ '*' ]
   repository_dispatch:
     types: [test]
 
+env:
+  GPG_KEY_ARMOR: ${{ secrets.GPG_KEY_ARMOR }}
+  GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+  GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+  OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+  OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+  OSSRH_STAGING_PROFILE_ID: ${{ secrets.OSSRH_STAGING_PROFILE_ID }}
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  test:
+  build:
+    name: Build
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+          cache: 'gradle'
+      - uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ github.run_number }}
+      - uses: actions/cache@v3
+        with:
+          path: '**/build'
+          key: ${{ runner.os }}-build-${{ github.run_number }}
+      - shell: bash
+        run: |
+          echo "Create GPG private key"
+          echo ${GPG_KEY_ARMOR} | base64 --decode > ${GITHUB_WORKSPACE}/secring.gpg
+          rm -rvf ~/.m2
+          ./gradlew clean publishToMavenLocal -S --no-daemon -Pversion=${{ github.run_number }} -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_PASSPHRASE} -Psigning.secretKeyRingFile=${GITHUB_WORKSPACE}/secring.gpg
 
-    - name: Setup Java
-      uses: actions/setup-java@v2
-      with:
-        distribution: 'adopt'
-        java-version: '11'
+  test:
+    name: Unit Test
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+          cache: 'gradle'
+      - uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ github.run_number }}
+      - uses: actions/cache@v3
+        with:
+          path: '**/build'
+          key: ${{ runner.os }}-build-${{ github.run_number }}
+      - shell: bash
+        run: ./gradlew test -S --no-daemon -Pversion=${{ github.run_number }}
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: unit-test-report
+          path: '**/build/reports/tests/test'
 
-    - name: Run tests
-      run: |
-        echo "Create GPG private key"
-        echo $GPG_KEY_ARMOR | base64 --decode > $GITHUB_WORKSPACE/secring.gpg
-        ./gradlew publishToMavenLocal check -POSSRH_USERNAME=${OSSRH_USERNAME} -POSSRH_PASSWORD=${OSSRH_PASSWORD} -POSSRH_STAGING_PROFILE_ID=${OSSRH_STAGING_PROFILE_ID} -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_PASSPHRASE} -Psigning.secretKeyRingFile=${GITHUB_WORKSPACE}/secring.gpg -S --no-daemon
-      env:
-        JAVA_OPTS: -Xmx8g -XX:MaxPermSize=1g -XX:MetaspaceSize=1g -Dfile.encoding=UTF-8
-        JVM_OPTS: -Xmx8g -XX:MaxPermSize=1g -XX:MetaspaceSize=1g -Dfile.encoding=UTF-8
-        GPG_KEY_ARMOR: ${{ secrets.GPG_KEY_ARMOR }}
-        GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
-        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-        OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-        OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-        OSSRH_STAGING_PROFILE_ID: ${{ secrets.OSSRH_STAGING_PROFILE_ID }}
+  integration-test-agp-v3_3:
+    name: AGP 3.3 Integration Test
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+          cache: 'gradle'
+      - uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ github.run_number }}
+      - shell: bash
+        run: ./gradlew booster-android-gradle-v3_3:integrationTest -S --no-daemon -Pversion=${{ github.run_number }}
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: booster-android-gradle-v3_3
+          path: booster-android-gradle-v3_3/build/reports/tests/integrationTest
+
+  integration-test-agp-v3_4:
+    name: AGP 3.4 Integration Test
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+          cache: 'gradle'
+      - uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ github.run_number }}
+      - shell: bash
+        run: ./gradlew booster-android-gradle-v3_4:integrationTest -S --no-daemon -Pversion=${{ github.run_number }}
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: booster-android-gradle-v3_4
+          path: booster-android-gradle-v3_4/build/reports/tests/integrationTest
+
+  integration-test-agp-v3_5:
+    name: AGP 3.5 Integration Test
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+          cache: 'gradle'
+      - uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ github.run_number }}
+      - shell: bash
+        run: ./gradlew booster-android-gradle-v3_5:integrationTest -S --no-daemon -Pversion=${{ github.run_number }}
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: booster-android-gradle-v3_5
+          path: booster-android-gradle-v3_5/build/reports/tests/integrationTest
+
+  integration-test-agp-v3_6:
+    name: AGP 3.6 Integration Test
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+          cache: 'gradle'
+      - uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ github.run_number }}
+      - shell: bash
+        run: ./gradlew booster-android-gradle-v3_6:integrationTest -S --no-daemon -Pversion=${{ github.run_number }}
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: booster-android-gradle-v3_6
+          path: booster-android-gradle-v3_6/build/reports/tests/integrationTest
+
+  integration-test-agp-v4_0:
+    name: AGP 4.0 Integration Test
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+          cache: 'gradle'
+      - uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ github.run_number }}
+      - shell: bash
+        run: ./gradlew booster-android-gradle-v4_0:integrationTest -S --no-daemon -Pversion=${{ github.run_number }}
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: booster-android-gradle-v4_0
+          path: booster-android-gradle-v4_0/build/reports/tests/integrationTest
+
+  integration-test-agp-v4_1:
+    name: AGP 4.1 Integration Test
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+          cache: 'gradle'
+      - uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ github.run_number }}
+      - shell: bash
+        run: ./gradlew booster-android-gradle-v4_1:integrationTest -S --no-daemon -Pversion=${{ github.run_number }}
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: booster-android-gradle-v4_1
+          path: booster-android-gradle-v4_1/build/reports/tests/integrationTest
+
+  integration-test-agp-v4_2:
+    name: AGP 4.2 Integration Test
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+          cache: 'gradle'
+      - uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ github.run_number }}
+      - shell: bash
+        run: ./gradlew booster-android-gradle-v4_2:integrationTest -S --no-daemon -Pversion=${{ github.run_number }}
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: booster-android-gradle-v4_2
+          path: booster-android-gradle-v4_2/build/reports/tests/integrationTest
+
+  integration-test-agp-v7_0:
+    name: AGP 7.0 Integration Test
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+          cache: 'gradle'
+      - uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ github.run_number }}
+      - shell: bash
+        run: ./gradlew booster-android-gradle-v7_0:integrationTest -S --no-daemon -Pversion=${{ github.run_number }}
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: booster-android-gradle-v7_0
+          path: booster-android-gradle-v7_0/build/reports/tests/integrationTest
+
+  integration-test-agp-v7_1:
+    name: AGP 7.1 Integration Test
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+          cache: 'gradle'
+      - uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ github.run_number }}
+      - shell: bash
+        run: ./gradlew booster-android-gradle-v7_1:integrationTest -S --no-daemon -Pversion=${{ github.run_number }}
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: booster-android-gradle-v7_1
+          path: booster-android-gradle-v7_1/build/reports/tests/integrationTest
+
+  integration-test-agp-v7_2:
+    name: AGP 7.2 Integration Test
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+          cache: 'gradle'
+      - uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ github.run_number }}
+      - shell: bash
+        run: ./gradlew booster-android-gradle-v7_2:integrationTest -S --no-daemon -Pversion=${{ github.run_number }}
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: booster-android-gradle-v7_2
+          path: booster-android-gradle-v7_2/build/reports/tests/integrationTest

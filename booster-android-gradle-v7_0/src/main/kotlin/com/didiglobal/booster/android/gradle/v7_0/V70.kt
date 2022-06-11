@@ -22,9 +22,9 @@ import com.android.build.gradle.internal.scope.InternalArtifactType
 import com.android.build.gradle.internal.scope.InternalMultipleArtifactType
 import com.android.build.gradle.internal.scope.VariantScope
 import com.android.build.gradle.internal.variant.BaseVariantData
+import com.android.builder.core.DefaultApiVersion
 import com.android.builder.core.VariantType
 import com.android.builder.model.ApiVersion
-import com.android.sdklib.AndroidVersion
 import com.android.sdklib.BuildToolInfo
 import com.didiglobal.booster.gradle.AGPInterface
 import org.gradle.api.Project
@@ -33,6 +33,7 @@ import org.gradle.api.artifacts.ArtifactCollection
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.FileSystemLocation
 import org.gradle.api.tasks.TaskProvider
+import java.io.File
 import java.util.TreeMap
 
 @Suppress("UnstableApiUsage")
@@ -45,7 +46,7 @@ private val SINGLE_ARTIFACT_TYPES = arrayOf(
 ).map {
     it.sealedSubclasses
 }.flatten().map {
-    it.objectInstance as SingleArtifact<out FileSystemLocation>
+    it.objectInstance as Artifact.Single<out FileSystemLocation>
 }.associateBy {
     it.javaClass.simpleName
 }
@@ -56,7 +57,7 @@ private val MULTIPLE_ARTIFACT_TYPES = arrayOf(
 ).map {
     it.sealedSubclasses
 }.flatten().map {
-    it.objectInstance as MultipleArtifact<out FileSystemLocation>
+    it.objectInstance as Artifact.Multiple<out FileSystemLocation>
 }.associateBy {
     it.javaClass.simpleName
 }
@@ -74,6 +75,7 @@ internal object V70 : AGPInterface {
         return try {
             project.objects.fileCollection().from(artifacts.get(type))
         } catch (e: Throwable) {
+            project.logger.warn(e.message, e)
             project.objects.fileCollection().builtBy(artifacts.get(type))
         }
     }
@@ -83,6 +85,7 @@ internal object V70 : AGPInterface {
         return try {
             project.objects.fileCollection().from(artifacts.getAll(type))
         } catch (e: Throwable) {
+            project.logger.warn(e.message, e)
             project.objects.fileCollection().builtBy(artifacts.getAll(type))
         }
     }
@@ -146,7 +149,7 @@ internal object V70 : AGPInterface {
         get() = component.variantScope
 
     @Suppress("DEPRECATION")
-    override val BaseVariant.globalScope: GlobalScope
+    private val BaseVariant.globalScope: GlobalScope
         get() = component.globalScope
 
     override val BaseVariant.originalApplicationId: String
@@ -190,11 +193,8 @@ internal object V70 : AGPInterface {
             }
         }
 
-    override val BaseVariant.minSdkVersion: AndroidVersion
-        get() = component.minSdkVersion.run {
-            @Suppress("UnstableApiUsage")
-            AndroidVersion(apiLevel, codename)
-        }
+    override val BaseVariant.minSdkVersion: ApiVersion
+        get() = DefaultApiVersion(component.minSdkVersion.apiLevel)
 
     override val BaseVariant.targetSdkVersion: ApiVersion
         get() = component.variantDslInfo.targetSdkVersion
@@ -241,14 +241,14 @@ internal object V70 : AGPInterface {
         get() = getFinalArtifactFiles(InternalArtifactType.DATA_BINDING_DEPENDENCY_ARTIFACTS)
 
     override val BaseVariant.allClasses: FileCollection
-        get() = getFinalArtifactFiles(InternalArtifactType.JAVAC)
+        get() = when (this) {
+            is ApplicationVariant -> getFinalArtifactFiles(InternalArtifactType.JAVAC) + project.files("build${File.separator}tmp${File.separator}kotlin-classes${File.separator}${dirName}")
+            is LibraryVariant -> getFinalArtifactFiles(InternalArtifactType.COMPILE_LIBRARY_CLASSES_JAR)
+            else -> project.files()
+        }
 
     override val BaseVariant.buildTools: BuildToolInfo
-        get() {
-            val compileSdkVersion = project.provider { globalScope.extension.compileSdkVersion!! }
-            val buildToolRevision = project.provider(globalScope.extension::buildToolsRevision)
-            return globalScope.sdkComponents.get().sdkLoader(compileSdkVersion, buildToolRevision).buildToolInfoProvider.get()
-        }
+        get() = globalScope.versionedSdkLoader.get().buildToolInfoProvider.get()
 
     override val BaseVariant.isPrecompileDependenciesResourcesEnabled: Boolean
         get() = component.isPrecompileDependenciesResourcesEnabled

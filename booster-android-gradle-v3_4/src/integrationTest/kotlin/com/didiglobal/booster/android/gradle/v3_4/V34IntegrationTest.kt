@@ -21,10 +21,12 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import org.junit.rules.TestRule
+import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 import kotlin.test.fail
 
 private const val MIN_SDK_VERSION = 18
@@ -58,6 +60,7 @@ abstract class V34IntegrationTest(private val isLib: Boolean) {
         projectDir.copyFromResource("${if (isLib) "lib" else "app"}.gradle", "build.gradle")
         projectDir.copyFromResource("buildSrc")
         projectDir.copyFromResource("src")
+        projectDir.newFile("gradle.properties").writeText("org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=2g")
         assertEquals(3, AGP.revision.major)
         assertEquals(4, AGP.revision.minor)
     }
@@ -109,10 +112,6 @@ abstract class V34IntegrationTest(private val isLib: Boolean) {
     @Test
     @Case(VariantScopeTestUnit::class)
     fun `test AGPInterface#variantScope`() = Unit
-
-    @Test
-    @Case(GlobalScopeTestCase::class)
-    fun `test AGPInterface#globalScope`() = Unit
 
     @Test
     @Case(OriginalApplicationIdTestUnit::class)
@@ -266,12 +265,6 @@ class VariantDataTestUnit : VariantTestCase() {
 class VariantScopeTestUnit : VariantTestCase() {
     override fun apply(variant: BaseVariant) {
         assertNotNull(AGP.run { variant.variantScope })
-    }
-}
-
-class GlobalScopeTestCase : VariantTestCase() {
-    override fun apply(variant: BaseVariant) {
-        assertNotNull(AGP.run { variant.globalScope })
     }
 }
 
@@ -486,14 +479,10 @@ class SymbolListWithPackageNameTestUnit : VariantTestCase() {
 class AllClassesTestUnit : VariantTestCase() {
     override fun apply(variant: BaseVariant) {
         AGP.run { variant.assembleTask }.doFirst {
-            val allClasses = AGP.run { variant.allClasses }.search {
-                it.extension == "class"
-            }
-            if (allClasses.isEmpty()) {
-                fail("allClasses is empty")
-            }
-            allClasses.forEach {
-                println(" - ${it.path}")
+            val location = AGP.run { variant.allClasses }.files
+            assertTrue("ALL_CLASSES: $location", location::isNotEmpty)
+            assertTrue("No class file found at $location") {
+                location.search(File::isFile).isNotEmpty()
             }
         }
     }

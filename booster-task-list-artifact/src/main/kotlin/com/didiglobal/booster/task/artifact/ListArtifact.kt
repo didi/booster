@@ -5,6 +5,7 @@ import com.didiglobal.booster.gradle.allArtifacts
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 
 internal open class ListArtifact : DefaultTask() {
 
@@ -17,7 +18,11 @@ internal open class ListArtifact : DefaultTask() {
         val maxTypeWidth: Int = artifacts.keys.map { it.length }.max()!!
 
         artifacts.forEach { (type, files) ->
-            println("${".".repeat(maxTypeWidth - type.length + 1)}$type : ${files.files}")
+            println("${".".repeat(maxTypeWidth - type.length + 1)}$type : ${try {
+                files.files
+            } catch (e: Throwable) {
+                emptyList<File>()
+            }}")
         }
     }
 

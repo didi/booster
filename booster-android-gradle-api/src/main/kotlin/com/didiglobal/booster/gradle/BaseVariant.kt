@@ -5,7 +5,7 @@ import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.publishing.AndroidArtifacts
 import com.android.build.gradle.tasks.ProcessAndroidResources
 import com.android.builder.core.VariantType
-import com.android.sdklib.AndroidVersion
+import com.android.builder.model.ApiVersion
 import com.android.sdklib.BuildToolInfo
 import com.didiglobal.booster.kotlinx.file
 import org.gradle.api.Incubating
@@ -115,7 +115,7 @@ fun BaseVariant.getTaskName(prefix: String, suffix: String): String = AGP.run {
     getTaskName(prefix, suffix)
 }
 
-val BaseVariant.minSdkVersion: AndroidVersion
+val BaseVariant.minSdkVersion: ApiVersion
     get() = AGP.run {
         minSdkVersion
     }
