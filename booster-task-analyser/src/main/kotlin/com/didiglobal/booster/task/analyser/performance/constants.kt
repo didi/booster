@@ -84,3 +84,5 @@ internal val ANY_THREAD_ANNOTATIONS = arrayOf(
         "android/support/annotation/AnyThread",
         "android/annotation/AnyThread"
 )
+
+internal val TASK_ANALYSE_PERFORMANCE = "analysePerformance"
