@@ -1,3 +1,13 @@
+## v4.10.0
+
+- Improve ClassSet to avoid memory leaks
+- Improve ClassSet to support loading classes from AAR
+- Fix transform output conflicts
+- Add `execute(...)` for `Command`
+- Add class reference analysis for [booster-task-analyser](https://github.com/didi/booster/blob/v4.10.0/booster-task-analyser)
+- Splitting [booster-graph](https://github.com/didi/booster/blob/v4.10.0/booster-graph) into [booster-graph](https://github.com/didi/booster/blob/v4.10.0/booster-graph), [booster-graph-dot](https://github.com/didi/booster/blob/v4.10.0/booster-graph-dot) and [booster-graph-json](https://github.com/didi/booster/blob/v4.10.0/booster-graph-json)
+- AGP 7.1 & 7.2 compatibility support
+
 ## v4.9.0
 
 - Fix [CVE-2020-15250] In JUnit4 from version 4.7 and before 4.13.1, the test rule TemporaryFolder contains a local information disclosure vulnerability
