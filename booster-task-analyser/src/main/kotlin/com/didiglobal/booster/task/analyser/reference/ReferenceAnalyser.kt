@@ -1,25 +1,16 @@
 package com.didiglobal.booster.task.analyser.reference
 
-import com.android.build.gradle.AppExtension
-import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.api.BaseVariant
 import com.didiglobal.booster.cha.ClassSet
-import com.didiglobal.booster.gradle.dependencies
-import com.didiglobal.booster.gradle.getAndroid
-import com.didiglobal.booster.gradle.getTaskName
-import com.didiglobal.booster.gradle.isAndroid
-import com.didiglobal.booster.gradle.isJavaLibrary
-import com.didiglobal.booster.gradle.javaCompilerTaskProvider
+import com.didiglobal.booster.gradle.getJars
+import com.didiglobal.booster.gradle.getResolvedArtifactResults
 import com.didiglobal.booster.graph.Graph
 import com.didiglobal.booster.kotlinx.NCPU
 import com.didiglobal.booster.kotlinx.green
 import com.didiglobal.booster.kotlinx.yellow
 import com.didiglobal.booster.task.analyser.AsmClassFileParser
 import org.gradle.api.Project
-import org.gradle.api.artifacts.component.ComponentArtifactIdentifier
 import org.gradle.api.artifacts.component.ProjectComponentIdentifier
-import org.gradle.api.plugins.JavaPlugin
 import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.FieldVisitor
@@ -32,7 +23,6 @@ import org.objectweb.asm.TypePath
 import org.objectweb.asm.signature.SignatureReader
 import org.objectweb.asm.signature.SignatureVisitor
 import org.objectweb.asm.tree.ClassNode
-import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -40,41 +30,40 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class ReferenceAnalyser(
         private val project: Project,
-        private val variant: String
+        private val variant: BaseVariant?
 ) {
 
-    private val upstreamClassSets = project.upstreamArtifacts.associateWith {
+    private val upstreamClassSets = project.getResolvedArtifactResults(true, variant).associateWith {
         when (val id = it.id.componentIdentifier) {
             is ProjectComponentIdentifier -> project.rootProject.project(id.projectPath).classSets
-            else -> mapOf(DEFAULT_VARIANT to ClassSet.from(it.file, AsmClassFileParser))
+            else -> ClassSet.from(it.file, AsmClassFileParser)
         }
     }
 
-    private val upstreamClassToVariant = upstreamClassSets.values.map { upstream ->
-        upstream.map { (variant, classSet) ->
-            classSet.map { klass ->
-                klass.name to variant
-            }
+    /**
+     * Returns the [ClassSet] of all variants, the key is the variant name
+     */
+    private val Project.classSets: ClassSet<ClassNode, AsmClassFileParser>
+        get() = getJars(variant).map {
+            ClassSet.from(it, AsmClassFileParser)
+        }.let {
+            ClassSet.of(it)
         }
-    }.flatten().flatten().toMap()
 
     fun analyse(): Graph<ReferenceNode> {
         val executor = Executors.newFixedThreadPool(NCPU)
-        val graphs = ConcurrentHashMap<Reference, Graph.Builder<ReferenceNode>>()
+        val graphs = ConcurrentHashMap<ClassName, Graph.Builder<ReferenceNode>>()
 
         try {
-            val classes = project.classSets.map { (variant, classSet) ->
-                classSet.map {
-                    it to variant
-                }
-            }.flatten()
+            val classes = project.classSets
             val index = AtomicInteger(0)
             val count = classes.size
-            classes.map { (klass, variant) ->
+
+            classes.map { klass ->
                 val edge = { to: ReferenceNode ->
-                    graphs.getOrPut(Reference(klass.name, variant)) {
+                    graphs.getOrPut(klass.name) {
                         Graph.Builder()
-                    }.addEdge(ReferenceNode(this.project.name, variant, klass.name), to)
+                    }.addEdge(ReferenceNode(this.project.name, klass.name, variant), to)
                 }
                 val av = AnnotationAnalyser(edge)
                 val sv = SignatureAnalyser(edge)
@@ -94,9 +83,7 @@ class ReferenceAnalyser(
             executor.awaitTermination(1, TimeUnit.MINUTES)
         }
 
-        return graphs.entries.filter {
-            it.key.variant == variant
-        }.fold(Graph.Builder<ReferenceNode>()) { acc, (_, builder) ->
+        return graphs.entries.fold(Graph.Builder<ReferenceNode>()) { acc, (_, builder) ->
             builder.build().forEach { edge ->
                 acc.addEdge(edge)
             }
@@ -114,19 +101,16 @@ class ReferenceAnalyser(
 
     private fun analyse(types: Iterable<Type>, edge: (ReferenceNode) -> Graph.Builder<ReferenceNode>) {
         types.filter {
-            upstreamClassToVariant.keys.contains(it.internalName)
+            findReference(it.internalName) != null
         }.forEach {
             findReference(it.internalName)?.let { (artifact, _) ->
-                edge(ReferenceNode(artifact.id.componentIdentifier.displayName, upstreamClassToVariant[it.internalName]
-                        ?: "", it.internalName))
+                edge(ReferenceNode(artifact.id.componentIdentifier.displayName, it.internalName, variant))
             }
         }
     }
 
     private fun findReference(owner: String) = upstreamClassSets.entries.find { (_, classSets) ->
-        classSets.entries.find { (_, classSet) ->
-            classSet.contains(owner)
-        } != null
+        classSets.contains(owner)
     }
 
 
@@ -349,61 +333,4 @@ class ReferenceAnalyser(
 
 }
 
-private data class Reference(val name: String, val variant: String)
-
-internal data class Artifact(val id: ComponentArtifactIdentifier, val file: File)
-
-private val Project.upstreamArtifacts: Set<Artifact>
-    get() = when {
-        isAndroid -> {
-            when (val android = getAndroid<BaseExtension>()) {
-                is LibraryExtension -> android.libraryVariants
-                is AppExtension -> android.applicationVariants
-                else -> emptyList<BaseVariant>()
-            }.asSequence().map(BaseVariant::dependencies).flatten().distinctBy {
-                it.id.componentIdentifier
-            }.map {
-                Artifact(it.id, it.file)
-            }.toSet()
-        }
-        isJavaLibrary -> {
-            configurations.getByName(JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME).resolvedConfiguration.resolvedArtifacts.distinctBy {
-                it.id.componentIdentifier
-            }.map {
-                Artifact(it.id, it.file)
-            }.toSet()
-        }
-        else -> emptySet()
-    }
-
-/**
- * Returns the [ClassSet] of all variants, the key is the variant name
- */
-private val Project.classSets: Map<String, ClassSet<ClassNode, AsmClassFileParser>>
-    get() = when {
-        isAndroid -> when (val android = getAndroid<BaseExtension>()) {
-            is LibraryExtension -> android.libraryVariants.associate { variant ->
-                variant.name to tasks.named(variant.getTaskName(TASK_CREATE_FULL_JAR)).get().outputs.files.map {
-                    ClassSet.from(it, AsmClassFileParser)
-                }.let {
-                    ClassSet.of(it)
-                }
-            }
-            is AppExtension -> android.applicationVariants.associate { variant ->
-                variant.name to variant.javaCompilerTaskProvider.get().outputs.files.map {
-                    ClassSet.from(it, AsmClassFileParser)
-                }.let {
-                    ClassSet.of(it)
-                }
-            }
-            else -> emptyMap()
-        }
-        isJavaLibrary -> {
-            mapOf(DEFAULT_VARIANT to tasks.named(JavaPlugin.JAR_TASK_NAME).get().outputs.files.map {
-                ClassSet.from(it, AsmClassFileParser)
-            }.let {
-                ClassSet.of(it)
-            })
-        }
-        else -> emptyMap()
-    }
+typealias ClassName = String

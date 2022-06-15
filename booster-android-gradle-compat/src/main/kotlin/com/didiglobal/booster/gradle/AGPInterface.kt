@@ -10,18 +10,18 @@ import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.pipeline.TransformManager
 import com.android.build.gradle.internal.pipeline.TransformTask
 import com.android.build.gradle.internal.publishing.AndroidArtifacts
-import com.android.build.gradle.internal.scope.GlobalScope
 import com.android.build.gradle.internal.scope.VariantScope
 import com.android.build.gradle.internal.variant.BaseVariantData
 import com.android.builder.core.VariantType
 import com.android.builder.model.ApiVersion
 import com.android.builder.model.Version
 import com.android.repository.Revision
-import com.android.sdklib.AndroidVersion
 import com.android.sdklib.BuildToolInfo
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.ArtifactCollection
+import org.gradle.api.artifacts.component.ComponentIdentifier
+import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.TaskProvider
 import java.io.File
@@ -162,6 +162,11 @@ interface AGPInterface {
     val BaseVariant.buildTools: BuildToolInfo
 
     val BaseVariant.isPrecompileDependenciesResourcesEnabled: Boolean
+
+    fun BaseVariant.getDependencies(
+            transitive: Boolean = true,
+            filter: (ComponentIdentifier) -> Boolean = { true }
+    ): Collection<ResolvedArtifactResult>
 
     val Context.task: TransformTask
 
