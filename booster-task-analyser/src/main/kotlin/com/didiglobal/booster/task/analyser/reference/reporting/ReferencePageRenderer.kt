@@ -1,5 +1,6 @@
 package com.didiglobal.booster.task.analyser.reference.reporting
 
+import com.android.build.gradle.api.BaseVariant
 import com.didiglobal.booster.graph.Edge
 import com.didiglobal.booster.graph.Graph
 import com.didiglobal.booster.task.analyser.reference.ReferenceNode
@@ -12,12 +13,12 @@ import java.net.URL
 private val URL_STYLE = ReferencePageRenderer::class.java.getResource("/style.css")!!
 
 class ReferencePageRenderer(
-        val project: Project,
-        val variant: String
+        private val project: Project,
+        private val variant: BaseVariant?
 ) : TabbedPageRenderer<Graph<ReferenceNode>>() {
 
     private val _title: String by lazy {
-        "${project.name}:${variant}"
+        if (variant == null) project.name else "${project.name}:${variant.name}"
     }
 
     override fun getTitle(): String = _title

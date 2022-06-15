@@ -1,11 +1,16 @@
 package com.didiglobal.booster.task.analyser.reference
 
+import com.android.build.gradle.api.BaseVariant
 import com.didiglobal.booster.graph.GroupedNode
 
-data class ReferenceNode(val component: String, val variant: String, val klass: String) : GroupedNode<String> {
+data class ReferenceNode(
+        val component: String,
+        val klass: String,
+        val variant: BaseVariant? = null
+) : GroupedNode<String> {
 
     private val group: String by lazy {
-        if (variant == DEFAULT_VARIANT) component else "${component}:${variant}"
+        if (variant == null) component else "${component}:${variant.name}"
     }
 
     private val symbol: String by lazy {

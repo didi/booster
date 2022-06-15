@@ -47,7 +47,7 @@ class PerformanceAnalysisVariantProcessor : VariantProcessor {
                     transformTask.outputs.files.single()
                 }
                 it.dependsOn(transformTask)
-                it.configureReportConvention("performance", variantName)
+                it.configureReportConvention("performance", variant)
             }
             profiles.dependsOn(profile)
         }

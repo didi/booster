@@ -19,6 +19,11 @@ import java.io.PrintWriter
  * @author johnsonlee
  */
 @Suppress("UnstableApiUsage")
+@Deprecated(
+        message = "Use AGPInterface instead",
+        replaceWith = ReplaceWith("BaseVariant.getDependencies(Boolean, (ComponentIdentifier) -> Boolean)"),
+        level = DeprecationLevel.WARNING
+)
 class ResolvedArtifactResults(private val variant: BaseVariant) : Collection<ResolvedArtifactResult> {
 
     private val results = listOf(AAR, JAR)

@@ -3,6 +3,8 @@ package com.didiglobal.booster.gradle
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.publishing.AndroidArtifacts
+import com.android.build.gradle.internal.publishing.AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH
+import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactScope.ALL
 import com.android.build.gradle.tasks.ProcessAndroidResources
 import com.android.builder.core.VariantType
 import com.android.builder.model.ApiVersion
@@ -13,7 +15,9 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.UnknownTaskException
 import org.gradle.api.artifacts.ArtifactCollection
+import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
+import org.gradle.api.artifacts.result.ResolvedDependencyResult
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.TaskProvider
 import java.io.File
@@ -49,7 +53,9 @@ val BaseVariant.platform: File
  * The variant dependencies
  */
 val BaseVariant.dependencies: Collection<ResolvedArtifactResult>
-    get() = ResolvedArtifactResults(this)
+    get() = AGP.run {
+        getDependencies(true)
+    }
 
 val BaseVariant.javaCompilerTaskProvider: TaskProvider<out Task>
     get() = AGP.run { javaCompilerTaskProvider }
@@ -66,7 +72,7 @@ val BaseVariant.mergeAssetsTaskProvider: TaskProvider<out Task>
 val BaseVariant.mergeResourcesTaskProvider: TaskProvider<out Task>
     get() = AGP.run { mergeResourcesTaskProvider }
 
-val BaseVariant.mergeNativeLibsTaskProvider:TaskProvider<out Task>
+val BaseVariant.mergeNativeLibsTaskProvider: TaskProvider<out Task>
     get() = AGP.run { mergeNativeLibsTaskProvider }
 
 val BaseVariant.processJavaResourcesTaskProvider: TaskProvider<out Task>
