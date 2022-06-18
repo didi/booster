@@ -9,6 +9,7 @@ import org.gradle.internal.html.SimpleHtmlWriter
 import org.gradle.reporting.ReportRenderer
 import org.gradle.reporting.TabbedPageRenderer
 import java.net.URL
+import java.util.TreeMap
 
 private val URL_STYLE = ReferencePageRenderer::class.java.getResource("/style.css")!!
 
@@ -34,8 +35,8 @@ class ReferencePageRenderer(
             output.run {
                 model.groupBy {
                     it.to.groupBy()
-                }.map { (group, edges) ->
-                    group to edges.mapTo(mutableSetOf<ReferenceNode>(), Edge<ReferenceNode>::to)
+                }.toSortedMap(ReferenceNode.COMPONENT_COMPARATOR).map { (group, edges) ->
+                    group to edges.mapTo(sortedSetOf(compareBy(ReferenceNode::klass)), Edge<ReferenceNode>::to)
                 }.forEach { (title, items) ->
                     startElement("h2").characters(title).endElement()
                     startElement("ul")

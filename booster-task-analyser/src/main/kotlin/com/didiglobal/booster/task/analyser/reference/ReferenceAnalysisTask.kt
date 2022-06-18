@@ -102,7 +102,7 @@ open class ReferenceAnalysisTask : DefaultTask(), Reporting<ReferenceReports> {
         if (!reports.json.isEnabled) return
 
         val json = JsonGraphRender.render(graph) { node ->
-            """{"component": "${node.component}", "variant": "${node.variant?.name ?: DEFAULT_VARIANT}", "class": "${node.klass}"}"""
+            """{"component": "${node.component}", "class": "${node.klass}"}"""
         }.toString()
         reports.json.destination.touch().writeText(json)
     }
