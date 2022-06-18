@@ -63,7 +63,7 @@ class ReferenceAnalyser(
                 val edge = { to: ReferenceNode ->
                     graphs.getOrPut(klass.name) {
                         Graph.Builder()
-                    }.addEdge(ReferenceNode(this.project.name, klass.name, variant), to)
+                    }.addEdge(ReferenceNode(this.project.name, klass.name), to)
                 }
                 val av = AnnotationAnalyser(edge)
                 val sv = SignatureAnalyser(edge)
@@ -104,7 +104,7 @@ class ReferenceAnalyser(
             findReference(it.internalName) != null
         }.forEach {
             findReference(it.internalName)?.let { (artifact, _) ->
-                edge(ReferenceNode(artifact.id.componentIdentifier.displayName, it.internalName, variant))
+                edge(ReferenceNode(artifact.id.componentIdentifier.displayName, it.internalName))
             }
         }
     }

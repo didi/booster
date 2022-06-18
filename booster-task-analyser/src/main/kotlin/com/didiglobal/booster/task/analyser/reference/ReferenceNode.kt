@@ -1,23 +1,29 @@
 package com.didiglobal.booster.task.analyser.reference
 
-import com.android.build.gradle.api.BaseVariant
 import com.didiglobal.booster.graph.GroupedNode
 
 data class ReferenceNode(
         val component: String,
-        val klass: String,
-        val variant: BaseVariant? = null
+        val klass: String
 ) : GroupedNode<String> {
 
-    private val group: String by lazy {
-        if (variant == null) component else "${component}:${variant.name}"
+    companion object {
+        val COMPONENT_COMPARATOR = Comparator<String> { a, b ->
+            val ap = a.startsWith("project ")
+            val bp = b.startsWith("project ")
+            when {
+                (ap && bp) || (!ap && !bp) -> a.compareTo(b)
+                ap -> -1
+                else -> 1
+            }
+        }
     }
 
     private val symbol: String by lazy {
         klass.replace('/', '.')
     }
 
-    override val groupBy: () -> String = ::group
+    override val groupBy: () -> String = ::component
 
     override fun toPrettyString() = symbol
 
