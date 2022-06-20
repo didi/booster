@@ -22,4 +22,16 @@ interface ClassFileParser<ClassNode> {
 
     fun isFinal(classNode: ClassNode): Boolean = Modifier.isFinal(getAccessFlags(classNode))
 
+    fun isAbstract(classNode: ClassNode): Boolean = Modifier.isAbstract(getAccessFlags(classNode))
+
+    fun isPublic(classNode: ClassNode): Boolean = Modifier.isPublic(getAccessFlags(classNode))
+
+    fun isProtected(classNode: ClassNode): Boolean = Modifier.isProtected(getAccessFlags(classNode))
+
+    fun isPrivate(classNode: ClassNode): Boolean = Modifier.isPrivate(getAccessFlags(classNode))
+
+    fun isStatic(classNode: ClassNode): Boolean = Modifier.isStatic(getAccessFlags(classNode))
+
+    fun isStrict(classNode: ClassNode): Boolean = Modifier.isStrict(getAccessFlags(classNode))
+
 }

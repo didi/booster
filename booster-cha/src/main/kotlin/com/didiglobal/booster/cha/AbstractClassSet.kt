@@ -3,13 +3,10 @@ package com.didiglobal.booster.cha
 /**
  * @author johnsonlee
  */
-abstract class AbstractClassSet<ClassFile, ClassParser : ClassFileParser<ClassFile>> : ClassSet<ClassFile, ClassParser> {
+abstract class AbstractClassSet<ClassFile, ClassParser> : ClassSet<ClassFile, ClassParser>
+        where ClassParser : ClassFileParser<ClassFile> {
 
-    override fun contains(element: ClassFile) = contains(parser.getClassName(element))
-
-    override fun containsAll(elements: Collection<ClassFile>) = elements.all {
-        contains(parser.getClassName(it))
-    }
+    override fun containsAll(elements: Collection<ClassFile>) = elements.all(::contains)
 
     override fun load() = this
 

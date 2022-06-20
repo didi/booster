@@ -8,6 +8,7 @@ import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.didiglobal.booster.BOOSTER
 import com.didiglobal.booster.gradle.getAndroid
 import com.didiglobal.booster.gradle.getJarTaskProviders
+import com.didiglobal.booster.gradle.getTaskName
 import com.didiglobal.booster.gradle.isAndroid
 import com.didiglobal.booster.gradle.isJava
 import com.didiglobal.booster.gradle.isJavaLibrary
@@ -16,6 +17,7 @@ import com.didiglobal.booster.task.analyser.configureReportConvention
 import com.didiglobal.booster.task.spi.VariantProcessor
 import com.google.auto.service.AutoService
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.UnknownTaskException
 import org.gradle.api.tasks.TaskProvider
 
@@ -24,50 +26,41 @@ class ReferenceAnalysisVariantProcessor : VariantProcessor {
 
     override fun process(variant: BaseVariant) {
         variant.project.gradle.projectsEvaluated { gradle ->
-            val prerequisites = gradle.rootProject.allprojects.map { project ->
-                project.getJarTaskProviders(variant)
-            }.flatten()
-            gradle.rootProject.allprojects { project ->
-                project.setup(prerequisites)
-            }
+            gradle.rootProject.allprojects(Project::setup)
         }
     }
 
 }
 
-private fun Project.setup(prerequisites: List<TaskProvider<*>>) {
+private fun Project.setup() {
     try {
         project.tasks.named(TASK_ANALYSE_REFERENCE)
     } catch (e: UnknownTaskException) {
         when {
-            isAndroid -> setupAndroid(prerequisites)
-            isJavaLibrary || isJava -> setupJava(prerequisites)
+            isAndroid -> setupAndroid()
+            isJavaLibrary || isJava -> setupTasks()
         }
     }
 }
 
-private fun Project.setupJava(prerequisites: List<TaskProvider<*>>) {
-    tasks.register(TASK_ANALYSE_REFERENCE, ReferenceAnalysisTask::class.java) {
+private fun Project.setupTasks(variant: BaseVariant? = null): TaskProvider<out Task> {
+    val taskName = variant?.getTaskName(TASK_ANALYSE_REFERENCE) ?: TASK_ANALYSE_REFERENCE
+    return tasks.register(taskName, ReferenceAnalysisTask::class.java) {
         it.group = BOOSTER
-        it.description = "Analyses class reference for Java projects"
+        it.description = "Analyses class reference for ${if (variant != null) variant.name else "Java projects"}"
         it.variant = null
         it.configureReportConvention("reference", null)
-    }.dependsOn(prerequisites)
+    }.dependsOn(rootProject.allprojects.map { project ->
+        project.getJarTaskProviders(variant)
+    }.flatten())
 }
 
-private fun Project.setupAndroid(prerequisites: List<TaskProvider<*>>) {
+private fun Project.setupAndroid() {
     val subtasks = when (val android = getAndroid<BaseExtension>()) {
         is LibraryExtension -> android.libraryVariants
         is AppExtension -> android.applicationVariants
         else -> emptyList<BaseVariant>()
-    }.map { variant ->
-        tasks.register("${TASK_ANALYSE_REFERENCE}${variant.name.capitalize()}", ReferenceAnalysisTask::class.java) {
-            it.group = BOOSTER
-            it.description = "Analyses class reference for ${variant.name}"
-            it.variant = variant
-            it.configureReportConvention("reference", variant)
-        }.dependsOn(prerequisites)
-    }
+    }.map(::setupTasks)
     tasks.register(TASK_ANALYSE_REFERENCE) {
         it.group = BOOSTER
         it.description = "Analyses class reference"

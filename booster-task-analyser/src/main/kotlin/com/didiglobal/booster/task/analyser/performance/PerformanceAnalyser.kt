@@ -4,6 +4,7 @@ import com.didiglobal.booster.aapt2.metadata
 import com.didiglobal.booster.cha.ClassHierarchy
 import com.didiglobal.booster.cha.ClassSet
 import com.didiglobal.booster.cha.JAVA_LANG_OBJECT
+import com.didiglobal.booster.cha.asm.from
 import com.didiglobal.booster.cha.fold
 import com.didiglobal.booster.cha.graph.CallNode
 import com.didiglobal.booster.cha.graph.ROOT
@@ -18,7 +19,6 @@ import com.didiglobal.booster.kotlinx.search
 import com.didiglobal.booster.kotlinx.separatorsToSystem
 import com.didiglobal.booster.kotlinx.yellow
 import com.didiglobal.booster.task.analyser.Build
-import com.didiglobal.booster.task.analyser.AsmClassFileParser
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.asm.args
 import com.didiglobal.booster.transform.asm.className
@@ -62,16 +62,20 @@ class PerformanceAnalyser(
 ) {
 
     private val providedClasses = providedClasspath.map {
-        ClassSet.from(it, AsmClassFileParser)
+        ClassSet.from(it)
     }.fold()
 
     private val compileClasses = compileClasspath.map {
-        ClassSet.from(it, AsmClassFileParser)
+        ClassSet.from(it)
     }.fold()
 
     private val classes = providedClasses + compileClasses
 
-    private val hierarchy = ClassHierarchy(classes)
+    private val unresolvedClasses = mutableSetOf<String>()
+
+    private val hierarchy = ClassHierarchy(classes) {
+        unresolvedClasses += it
+    }
 
     /**
      * The global call graph of whole project
@@ -113,7 +117,7 @@ class PerformanceAnalyser(
             this.loadEntryPoints()
             this.analyse()
             this.dump(output)
-            this.hierarchy.unresolvedClasses.forEach {
+            this.unresolvedClasses.forEach {
                 println("Unresolved class ${red(it.replace('/', '.'))}")
             }
         }
@@ -245,7 +249,7 @@ class PerformanceAnalyser(
                     } else {
                         classesRunOnUiThread[desc] = clazz
 
-                        hierarchy.getSuperClasses(clazz).filter {
+                        hierarchy.getSuperTypes(clazz).filter {
                             it.name != JAVA_LANG_OBJECT
                         }.forEach {
                             classesRunOnUiThread[it.name] = it

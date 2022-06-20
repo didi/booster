@@ -32,7 +32,16 @@ class Graph<N : Node> private constructor(
         })
     }
 
-    operator fun get(node: N): Set<N> = edges[node]?.let(Collections::unmodifiableSet) ?: emptySet()
+    operator fun get(from: N): Set<N> = edges[from]?.let(Collections::unmodifiableSet) ?: emptySet()
+
+    fun reversed(): Graph<N> {
+        return edges.entries.fold(Builder<N>()) { builder, entry ->
+            entry.value.forEach {  to ->
+                builder.addEdge(to, entry.key)
+            }
+            builder
+        }.build()
+    }
 
     /**
      * Print this graph

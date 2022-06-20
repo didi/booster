@@ -1,31 +1,68 @@
 package com.didiglobal.booster.cha
 
-import java.util.Collections
+import com.didiglobal.booster.cha.graph.ClassNode
+import com.didiglobal.booster.graph.Graph
 import java.util.Objects
-import java.util.concurrent.ConcurrentHashMap
+import java.util.Stack
 
 /**
  * @author johnsonlee
  */
 @Suppress("MemberVisibilityCanBePrivate")
-class ClassHierarchy<ClassFile, ClassParser : ClassFileParser<ClassFile>>(
-        private val classSet: ClassSet<ClassFile, ClassParser>
-) : ClassFileParser<ClassFile> by classSet.parser {
+class ClassHierarchy<ClassFile : Any, ClassParser>(
+        private val classSet: ClassSet<ClassFile, ClassParser>,
+        private val onClassResolveFailed: OnClassResolveFailed? = null
+) : ClassFileParser<ClassFile> by classSet
+        where ClassParser : ClassFileParser<ClassFile> {
 
-    private val unresolved = ConcurrentHashMap.newKeySet<String>()
+    /**
+     * A graph that each edge is from parent type to children types
+     */
+    private val graph: Graph<ClassNode> by lazy {
+        classSet.load().fold(Graph.Builder<ClassNode>()) { builder, clazz ->
+            val className = getClassName(clazz)
+            getSuperName(clazz)?.let { superName ->
+                builder.addEdge(ClassNode(superName), ClassNode(className))
+            }
+            getInterfaces(clazz).forEach { interfaceName ->
+                builder.addEdge(ClassNode(interfaceName), ClassNode(className))
+            }
+            builder
+        }.build()
+    }
 
-    val unresolvedClasses: Set<String>
-        get() = Collections.unmodifiableSet(unresolved)
+    val classes: Iterable<ClassFile> = classSet
 
     operator fun get(name: String?): ClassFile? {
-        val clazz = name?.let { classSet[it] }
+        val qn = name ?: return null
+        val clazz = classSet[qn]
         if (null == clazz) {
-            unresolved += name
+            onClassResolveFailed?.invoke(qn)
         }
         return clazz
     }
 
-    val classes: Iterable<ClassFile> = classSet
+    fun getDerivedTypes(
+            name: String?,
+            filter: ClassFileParser<ClassFile>.(clazz: ClassFile) -> Boolean = { true }
+    ): Set<ClassFile> {
+        val fq = name ?: return emptySet()
+        val stack = Stack<String>().apply {
+            push(fq)
+        }
+
+        val children = mutableSetOf<ClassFile>()
+        while (stack.isNotEmpty()) {
+            children += graph[ClassNode(stack.pop())].takeIf(Set<ClassNode>::isNotEmpty)?.mapNotNull {
+                get(it.name)
+            }?.filter {
+                filter(this, it)
+            }?.onEach {
+                stack.push(getClassName(it))
+            } ?: emptyList()
+        }
+        return children
+    }
 
     fun isInheritFrom(child: ClassFile, parent: ClassFile) = when {
         getClassName(child) == getClassName(parent) -> true
@@ -63,43 +100,43 @@ class ClassHierarchy<ClassFile, ClassParser : ClassFileParser<ClassFile>>(
     }
 
     fun isInheritFromClass(child: ClassFile, parent: ClassFile): Boolean {
-        if (Objects.equals(getSuperName(child), getClassName(parent))) {
+        val childSuperName = getSuperName(child)
+        val parentName = getClassName(parent)
+        if (Objects.equals(childSuperName, parentName)) {
             return true
         }
 
-        if (null == getSuperName(child)
-                || Objects.equals(getSuperName(child), getSuperName(parent))
+        if (null == childSuperName
+                || Objects.equals(childSuperName, getSuperName(parent))
                 || Objects.equals(getSuperName(parent), getClassName(child))) {
             return false
         }
 
-        return this[getSuperName(child)]?.let {
+        return this[childSuperName]?.let {
             isInheritFromClass(it, parent)
         } ?: false
     }
 
-    fun getSuperClasses(clazz: ClassFile): Set<ClassFile> {
-        if (getSuperName(clazz) == null) {
-            return emptySet()
-        }
+    fun getSuperTypes(clazz: ClassFile): Set<ClassFile> {
+        val superName = getSuperName(clazz) ?: return emptySet()
+        var parent = this[superName]
 
-        if (getSuperName(clazz) == JAVA_LANG_OBJECT) {
-            return setOf(this[getSuperName(clazz)]!!)
+        if (superName == JAVA_LANG_OBJECT) {
+            return parent?.let(::setOf) ?: throw ClassNotFoundException(superName)
         }
 
         val classes = mutableSetOf<ClassFile>()
-        var parent = this[getSuperName(clazz)]
 
         while (null != parent) {
             classes += parent
-            parent = getSuperName(parent)?.let {
-                this[it]
-            }
+            parent = getSuperName(parent)?.let(this::get)
         }
 
         return classes
     }
 
 }
+
+typealias OnClassResolveFailed = (String) -> Unit
 
 const val JAVA_LANG_OBJECT = "java/lang/Object"
