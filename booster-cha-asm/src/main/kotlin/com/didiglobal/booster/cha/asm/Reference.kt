@@ -1,8 +1,8 @@
-package com.didiglobal.booster.task.analyser.reference
+package com.didiglobal.booster.cha.asm
 
 import com.didiglobal.booster.graph.GroupedNode
 
-data class ReferenceNode(
+data class Reference(
         val component: String,
         val klass: String
 ) : GroupedNode<String> {

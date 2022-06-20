@@ -4,5 +4,6 @@ dependencies {
     api project(':booster-command')
     api project(':booster-graph')
     api project(':booster-transform-util')
+    implementation 'io.johnsonlee:once:1.2.0'
     testImplementation project(':booster-transform-asm')
 }

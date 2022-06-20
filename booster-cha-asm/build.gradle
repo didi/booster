@@ -1,0 +1,8 @@
+apply from: "$rootDir/gradle/booster.gradle"
+
+dependencies {
+    api project(':booster-cha')
+    api 'org.ow2.asm:asm:7.1'
+    api 'org.ow2.asm:asm-tree:7.1'
+    testImplementation project(':booster-transform-asm')
+}
