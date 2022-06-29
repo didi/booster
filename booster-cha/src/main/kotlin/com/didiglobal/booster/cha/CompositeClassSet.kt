@@ -153,7 +153,7 @@ internal class CompositeClassSet<ClassFile, ClassParser>(
     }
 
     private fun <R> delegate(classNode: ClassFile, block: ClassSet<ClassFile, ClassParser>.() -> R): R {
-        val classSet = classSets.find {
+        val classSet = load().classSets.find {
             it.contains(classNode)
         } ?: throw IllegalArgumentException("Unknown class node $classNode")
         return classSet.run(block)
