@@ -1,16 +1,13 @@
-package com.didiglobal.booster.task.analyser.reference.reporting
+package com.didiglobal.booster.task.analyser.reference
 
 import com.android.build.gradle.api.BaseVariant
 import com.didiglobal.booster.cha.asm.Reference
-import com.didiglobal.booster.graph.Edge
 import com.didiglobal.booster.graph.Graph
 import org.gradle.api.Project
 import org.gradle.internal.html.SimpleHtmlWriter
 import org.gradle.reporting.ReportRenderer
 import org.gradle.reporting.TabbedPageRenderer
 import java.net.URL
-
-private val URL_STYLE = ReferencePageRenderer::class.java.getResource("/style.css")!!
 
 class ReferencePageRenderer(
         private val project: Project,
@@ -35,12 +32,19 @@ class ReferencePageRenderer(
                 model.groupBy {
                     it.to.groupBy()
                 }.toSortedMap(Reference.COMPONENT_COMPARATOR).map { (group, edges) ->
-                    group to edges.mapTo(sortedSetOf(compareBy(Reference::klass)), Edge<Reference>::to)
-                }.forEach { (title, items) ->
+                    group to edges.groupBy({ it.to.klass }) { it.from.klass }
+                }.forEach { (title, references) ->
                     startElement("h2").characters(title).endElement()
-                    startElement("ul")
-                    items.forEach { item ->
-                        startElement("li").characters(item.klass).endElement()
+                    startElement("ul").attribute("class", "refs")
+                    references.forEach { (ref, sources) ->
+                        startElement("li")
+                        startElement("div").characters(ref).endElement()
+                        startElement("ul")
+                        sources.forEach {
+                            startElement("li").characters(it).endElement()
+                        }
+                        endElement()
+                        endElement()
                     }
                     endElement()
                 }
@@ -49,6 +53,6 @@ class ReferencePageRenderer(
 
     }
 
-    override fun getStyleUrl(): URL = URL_STYLE
+    override fun getStyleUrl(): URL = ReferencePageRenderer::class.java.getResource("/style.css")
 
 }
