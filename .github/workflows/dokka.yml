@@ -3,7 +3,10 @@ name: Deploy API reference
 on:
   push:
     tags:
-      - '*'
+      - 'v**'
+      - '!**-alpha**'
+      - '!**-beta**'
+      - '!**-rc**'
   repository_dispatch:
     types: [publish]
 
