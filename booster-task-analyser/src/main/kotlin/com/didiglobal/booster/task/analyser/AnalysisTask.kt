@@ -2,6 +2,7 @@ package com.didiglobal.booster.task.analyser
 
 import com.android.build.gradle.api.BaseVariant
 import com.didiglobal.booster.BOOSTER
+import com.didiglobal.booster.cha.asm.AsmClassSetCache
 import com.didiglobal.booster.kotlinx.touch
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Internal
@@ -11,6 +12,9 @@ abstract class AnalysisTask : DefaultTask() {
 
     @get:Internal
     var variant: BaseVariant? = null
+
+    @get:Internal
+    lateinit var classSetCache: AsmClassSetCache
 
     @Internal
     final override fun getGroup(): String = BOOSTER

@@ -1,11 +1,7 @@
 package com.didiglobal.booster.task.analyser.reference
 
-import com.android.build.gradle.api.BaseVariant
-import com.didiglobal.booster.cha.ClassSet
-import com.didiglobal.booster.cha.asm.AsmClassSet
 import com.didiglobal.booster.cha.asm.Reference
 import com.didiglobal.booster.cha.asm.ReferenceAnalyser
-import com.didiglobal.booster.cha.asm.from
 import com.didiglobal.booster.cha.fold
 import com.didiglobal.booster.gradle.getJars
 import com.didiglobal.booster.gradle.getResolvedArtifactResults
@@ -16,7 +12,6 @@ import com.didiglobal.booster.kotlinx.green
 import com.didiglobal.booster.kotlinx.yellow
 import com.didiglobal.booster.task.analyser.AnalysisTask
 import com.didiglobal.booster.task.analyser.report
-import org.gradle.api.Project
 import org.gradle.api.artifacts.component.ProjectComponentIdentifier
 import org.gradle.api.tasks.TaskAction
 import org.gradle.reporting.HtmlReportRenderer
@@ -36,13 +31,15 @@ open class ReferenceAnalysisTask : AnalysisTask() {
     override fun analyse() {
         val upstream = project.getResolvedArtifactResults(true, variant).associate {
             it.id.componentIdentifier.displayName to when (val id = it.id.componentIdentifier) {
-                is ProjectComponentIdentifier -> project.rootProject.project(id.projectPath).getClassSet(variant)
-                else -> ClassSet.from(it.file)
+                is ProjectComponentIdentifier -> project.rootProject.project(id.projectPath).getJars(variant).map { file ->
+                    classSetCache[file.toURI().toURL()]
+                }.fold()
+                else -> classSetCache[it.file.toURI().toURL()]
             }
         }
 
         val origin = project.name to project.getJars(variant).map {
-            ClassSet.from(it)
+            classSetCache[it.toURI().toURL()]
         }.fold()
         val graph = ReferenceAnalyser().analyse(origin, upstream) { klass, progress, duration ->
             project.logger.info("${green(String.format("%3d%%", progress * 100))} Analyse class ${klass.name} in ${yellow(duration.toMillis())} ms")
@@ -83,10 +80,4 @@ open class ReferenceAnalysisTask : AnalysisTask() {
         report("json").writeText(json)
     }
 
-}
-
-private fun Project.getClassSet(variant: BaseVariant?): AsmClassSet {
-    return project.getJars(variant).map {
-        ClassSet.from(it)
-    }.fold()
 }

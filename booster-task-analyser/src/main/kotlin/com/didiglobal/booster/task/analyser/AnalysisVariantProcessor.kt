@@ -5,6 +5,7 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.tasks.factory.dependsOn
+import com.didiglobal.booster.cha.asm.AsmClassSetCache
 import com.didiglobal.booster.gradle.getAndroid
 import com.didiglobal.booster.gradle.getJarTaskProviders
 import com.didiglobal.booster.gradle.getTaskName
@@ -26,51 +27,56 @@ import kotlin.reflect.KClass
 @AutoService(VariantProcessor::class)
 class AnalysisVariantProcessor : VariantProcessor {
 
+    private val classSetCache = AsmClassSetCache()
+
     override fun process(variant: BaseVariant) {
         variant.project.gradle.projectsEvaluated { gradle ->
-            gradle.rootProject.allprojects(Project::setup)
+            gradle.rootProject.allprojects {
+                it.setup()
+            }
+        }
+    }
+
+    private fun Project.setup() {
+        when {
+            isAndroid -> {
+                setupAndroid<PerformanceAnalysisTask>()
+                setupAndroid<ReferenceAnalysisTask>()
+            }
+            isJavaLibrary || isJava -> {
+                setupTasks<ReferenceAnalysisTask>()
+            }
+        }
+    }
+
+    private inline fun <reified T : AnalysisTask> Project.setupTasks(variant: BaseVariant? = null): TaskProvider<out Task> {
+        val taskName = variant?.getTaskName(T::class.taskName) ?: T::class.taskName
+        return try {
+            tasks.named(taskName)
+        } catch (e: UnknownTaskException) {
+            tasks.register(taskName, T::class.java) {
+                it.variant = variant
+                it.classSetCache = classSetCache
+            }.dependsOn(getUpstreamProjects(false, variant).plus(this).map {
+                it.getJarTaskProviders(variant)
+            }.flatten())
+        }
+    }
+
+    private inline fun <reified T : AnalysisTask> Project.setupAndroid() {
+        when (val android = getAndroid<BaseExtension>()) {
+            is LibraryExtension -> android.libraryVariants
+            is AppExtension -> android.applicationVariants
+            else -> emptyList<BaseVariant>()
+        }.map {
+            setupTasks<T>(it)
         }
     }
 
 }
 
-private fun Project.setup() {
-    when {
-        isAndroid -> {
-            setupAndroid<PerformanceAnalysisTask>()
-            setupAndroid<ReferenceAnalysisTask>()
-        }
-        isJavaLibrary || isJava -> {
-            setupTasks<ReferenceAnalysisTask>()
-        }
-    }
-}
-
-private inline fun <reified T: AnalysisTask> Project.setupTasks(variant: BaseVariant? = null): TaskProvider<out Task> {
-    val taskName = variant?.getTaskName(T::class.taskName) ?: T::class.taskName
-    return try {
-        tasks.named(taskName)
-    } catch (e: UnknownTaskException) {
-        tasks.register(taskName, T::class.java) {
-            it.variant = variant
-        }.dependsOn(getUpstreamProjects(false, variant).plus(this).map {
-            it.getJarTaskProviders(variant)
-        }.flatten())
-    }
-}
-
-private inline fun <reified T: AnalysisTask> Project.setupAndroid() {
-    when (val android = getAndroid<BaseExtension>()) {
-        is LibraryExtension -> android.libraryVariants
-        is AppExtension -> android.applicationVariants
-        else -> emptyList<BaseVariant>()
-    }.map {
-        setupTasks<T>(it)
-    }
-}
-
-internal inline val <reified T: AnalysisTask> KClass<T>.category: String
+internal inline val <reified T : AnalysisTask> KClass<T>.category: String
     get() = T::class.java.simpleName.substringBefore(AnalysisTask::class.java.simpleName).toLowerCase()
 
-internal inline val <reified T: AnalysisTask> KClass<T>.taskName: String
+internal inline val <reified T : AnalysisTask> KClass<T>.taskName: String
     get() = "analyse${category.capitalize()}"
