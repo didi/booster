@@ -111,7 +111,9 @@ private fun Project.getResolvedArtifactResultsRecursively(transitive: Boolean, r
 
         if (!transitive) continue
 
-        resolved.filterIsInstance<ProjectComponentIdentifier>().map {
+        resolved.map {
+            it.id.componentIdentifier
+        }.filterIsInstance<ProjectComponentIdentifier>().map {
             rootProject.project(it.projectPath)
         }.let(stack::addAll)
     }
