@@ -1,3 +1,13 @@
+## v4.11.0
+
+- Grouping tasks into group `booster`
+- Dependency acquisition enhancement
+- Fix transform timing issue
+- Add [booster-cha-asm](https://github.com/didi/booster/blob/v4.11.0/booster-cha-asm) to support ASM based CHA
+- Improvement for [booster-task-analyser](https://github.com/didi/booster/blob/v4.11.0/booster-task-analyser)
+- Load all classes of a composite class set before accessing
+- Fix bug of resolving project dependencies
+
 ## v4.10.0
 
 - Improve ClassSet to avoid memory leaks
@@ -13,20 +23,20 @@
 - Fix [CVE-2020-15250] In JUnit4 from version 4.7 and before 4.13.1, the test rule TemporaryFolder contains a local information disclosure vulnerability
 - Fix variant artifacts acquiring
 - Fix integration tests
-- Refactoring `booster-graph` to support grouping and render options
+- Refactoring [booster-graph](https://github.com/didi/booster/blob/v4.9.0/booster-graph) to support grouping and render options
 
 ## v4.8.0
 
 - Fix issue [#311](https://github.com/didi/booster/issues/311)
 - Add api `mergeNativeLibsTaskProvider`
-- Add `booster-graph` to generate graph with `dot`
+- Add [booster-graph](https://github.com/didi/booster/blob/v4.8.0/booster-graph) to generate graph with `dot`
 - Using deferred task instead of creating task directly
 - Reverse the edge direction of the task graph
 
 ## v4.7.0
 
 - Add `DotGraph.visualize()` for graph visualization
-- Add `booster-task-graph` for task graph visualization
+- Add [booster-task-graph](https://github.com/didi/booster/blob/v4.7.0/booster-task-graph) for task graph visualization
 - Fix improper task dependencies
 - Fix issue [#304](https://github.com/didi/booster/issues/304): `ScheduledThreadPoolExecutor` transform bug
 
