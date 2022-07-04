@@ -8,6 +8,8 @@ import org.gradle.api.Task
 import org.gradle.api.execution.TaskExecutionAdapter
 
 /**
+ * Only for AGP version lower than 3.6.0
+ *
  * @author neighbWang
  */
 class BoosterTransformTaskExecutionListener(private val project: Project) : TaskExecutionAdapter() {
