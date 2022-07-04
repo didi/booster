@@ -7,6 +7,7 @@ import com.android.build.api.transform.QualifiedContent
 import com.android.build.api.transform.Status.NOTCHANGED
 import com.android.build.api.transform.Status.REMOVED
 import com.android.build.api.transform.TransformInvocation
+import com.android.build.gradle.BaseExtension
 import com.android.dex.DexFormat
 import com.didiglobal.booster.gradle.util.dex
 import com.didiglobal.booster.kotlinx.NCPU
@@ -17,6 +18,7 @@ import com.didiglobal.booster.transform.AbstractKlassPool
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.Collector
 import com.didiglobal.booster.transform.TransformContext
+import com.didiglobal.booster.transform.Transformer
 import com.didiglobal.booster.transform.artifacts
 import com.didiglobal.booster.transform.util.CompositeCollector
 import com.didiglobal.booster.transform.util.collect
@@ -38,14 +40,29 @@ import java.util.concurrent.TimeUnit
  */
 internal class BoosterTransformInvocation(
         private val delegate: TransformInvocation,
-        internal val transform: BoosterTransform
+        private val transform: BoosterTransform
 ) : TransformInvocation by delegate, TransformContext, ArtifactManager {
-
-    private val project = transform.project
 
     private val outputs = CopyOnWriteArrayList<File>()
 
     private val collectors = CopyOnWriteArrayList<Collector<*>>()
+
+    /*
+     * Preload transformers as List to fix NoSuchElementException caused by ServiceLoader in parallel mode
+     */
+    private val transformers: List<Transformer> = transform.parameter.transformers.map {
+        try {
+            it.getConstructor(ClassLoader::class.java).newInstance(transform.parameter.buildscript.classLoader)
+        } catch (e1: Throwable) {
+            try {
+                it.getConstructor().newInstance()
+            } catch (e2: Throwable) {
+                throw e2.apply {
+                    addSuppressed(e1)
+                }
+            }
+        }
+    }
 
     override val name: String = delegate.context.variantName
 
@@ -71,7 +88,13 @@ internal class BoosterTransformInvocation(
         }
     }
 
-    override val klassPool: AbstractKlassPool = object : AbstractKlassPool(compileClasspath, transform.bootKlassPool) {}
+    private val bootKlassPool by lazy {
+        object : AbstractKlassPool(project.getAndroid<BaseExtension>().bootClasspath) {}
+    }
+
+    override val klassPool by lazy {
+        object : AbstractKlassPool(compileClasspath, bootKlassPool) {}
+    }
 
     override val applicationId = delegate.applicationId
 
@@ -114,13 +137,13 @@ internal class BoosterTransformInvocation(
     }
 
     private fun onPreTransform() {
-        transform.transformers.forEach {
+        transformers.forEach {
             it.onPreTransform(this)
         }
     }
 
     private fun onPostTransform() {
-        transform.transformers.forEach {
+        transformers.forEach {
             it.onPostTransform(this)
         }
     }
@@ -241,7 +264,7 @@ internal class BoosterTransformInvocation(
     }
 
     private fun ByteArray.transform(): ByteArray {
-        return transform.transformers.fold(this) { bytes, transformer ->
+        return transformers.fold(this) { bytes, transformer ->
             transformer.transform(this@BoosterTransformInvocation, bytes)
         }
     }
