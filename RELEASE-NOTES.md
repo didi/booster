@@ -1,3 +1,9 @@
+## v4.12.0
+
+- Enable class set cache for static analysis to reduce memory footprint
+- Support Gradle configuration cache [#248](https://github.com/didi/booster/issues/248)
+- Loading and initializing variant processor earlier
+
 ## v4.11.0
 
 - Grouping tasks into group `booster`
