@@ -2,6 +2,7 @@ package com.didiglobal.booster.graph
 
 import java.io.PrintWriter
 import java.util.Collections
+import java.util.Stack
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArraySet
 
@@ -34,9 +35,43 @@ class Graph<N : Node> private constructor(
 
     operator fun get(from: N): Set<N> = edges[from]?.let(Collections::unmodifiableSet) ?: emptySet()
 
+    fun getPredecessors(node: N): Set<N> {
+        val stack = Stack<N>().apply {
+            push(node)
+        }
+        val predecessors = mutableSetOf<N>()
+        while (stack.isNotEmpty()) {
+            val current = stack.pop()
+            predecessors += entries.filter {
+                it.to == current && it.from !in predecessors
+            }.map {
+                it.from
+            }.onEach {
+                stack.push(it)
+            }
+        }
+        return predecessors
+    }
+
+    fun getSuccessors(node: N): Set<N> {
+        val stack = Stack<N>().apply {
+            push(node)
+        }
+        val successors = mutableSetOf<N>()
+        while (stack.isNotEmpty()) {
+            val current = stack.pop()
+            successors += get(current).filter {
+                it !in successors
+            }.onEach {
+                stack.push(it)
+            }
+        }
+        return successors
+    }
+
     fun reversed(): Graph<N> {
         return edges.entries.fold(Builder<N>()) { builder, entry ->
-            entry.value.forEach {  to ->
+            entry.value.forEach { to ->
                 builder.addEdge(to, entry.key)
             }
             builder

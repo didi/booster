@@ -46,22 +46,42 @@ class ClassHierarchy<ClassFile : Any, ClassParser>(
             name: String?,
             filter: ClassFileParser<ClassFile>.(clazz: ClassFile) -> Boolean = { true }
     ): Set<ClassFile> {
-        val fq = name ?: return emptySet()
-        val stack = Stack<String>().apply {
-            push(fq)
-        }
+        return get(name)?.let {
+            getDerivedTypes(it, filter)
+        } ?: emptySet()
+    }
 
-        val children = mutableSetOf<ClassFile>()
-        while (stack.isNotEmpty()) {
-            children += graph[ClassNode(stack.pop())].takeIf(Set<ClassNode>::isNotEmpty)?.mapNotNull {
-                get(it.name)
-            }?.filter {
-                filter(this, it)
-            }?.onEach {
-                stack.push(getClassName(it))
-            } ?: emptyList()
-        }
-        return children
+    fun getDerivedTypes(
+            clazz: ClassFile,
+            filter: ClassFileParser<ClassFile>.(clazz: ClassFile) -> Boolean = { true }
+    ): Set<ClassFile> {
+        val node = ClassNode(getClassName(clazz))
+        return graph.getSuccessors(node).filter {
+            get(it.name)?.let { v -> filter(this, v) } == true
+        }.mapNotNull {
+            get(it.name)
+        }.toSet()
+    }
+
+    fun getSuperTypes(
+            name: String?,
+            filter: ClassFileParser<ClassFile>.(clazz: ClassFile) -> Boolean = { true }
+    ): Set<ClassFile> {
+        return get(name)?.let {
+           getSuperTypes(it, filter)
+        } ?: emptySet()
+    }
+
+    fun getSuperTypes(
+            clazz: ClassFile,
+            filter: ClassFileParser<ClassFile>.(clazz: ClassFile) -> Boolean = { true }
+    ): Set<ClassFile> {
+        val node = ClassNode(getClassName(clazz))
+        return graph.getPredecessors(node).filter {
+            get(it.name)?.let { v -> filter(this, v) } == true
+        }.mapNotNull {
+            get(it.name)
+        }.toSet()
     }
 
     fun isInheritFrom(child: ClassFile, parent: ClassFile) = when {
@@ -115,24 +135,6 @@ class ClassHierarchy<ClassFile : Any, ClassParser>(
         return this[childSuperName]?.let {
             isInheritFromClass(it, parent)
         } ?: false
-    }
-
-    fun getSuperTypes(clazz: ClassFile): Set<ClassFile> {
-        val superName = getSuperName(clazz) ?: return emptySet()
-        var parent = this[superName]
-
-        if (superName == JAVA_LANG_OBJECT) {
-            return parent?.let(::setOf) ?: throw ClassNotFoundException(superName)
-        }
-
-        val classes = mutableSetOf<ClassFile>()
-
-        while (null != parent) {
-            classes += parent
-            parent = getSuperName(parent)?.let(this::get)
-        }
-
-        return classes
     }
 
 }
