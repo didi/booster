@@ -3,6 +3,7 @@ package com.didiglobal.booster.instrument;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author johnsonlee
@@ -40,6 +41,9 @@ public class ShadowScheduledThreadPoolExecutor extends ScheduledThreadPoolExecut
     ) {
         super(corePoolSize, new NamedThreadFactory(prefix));
         if (optimize) {
+            if(getKeepAliveTime(TimeUnit.NANOSECONDS) <= 0L) {
+                setKeepAliveTime(10L, TimeUnit.MILLISECONDS);
+            }
             allowCoreThreadTimeOut(true);
         }
     }
@@ -79,6 +83,9 @@ public class ShadowScheduledThreadPoolExecutor extends ScheduledThreadPoolExecut
     ) {
         super(corePoolSize, new NamedThreadFactory(threadFactory, prefix));
         if (optimize) {
+            if(getKeepAliveTime(TimeUnit.NANOSECONDS) <= 0L) {
+                setKeepAliveTime(10L, TimeUnit.MILLISECONDS);
+            }
             allowCoreThreadTimeOut(true);
         }
     }
@@ -118,6 +125,9 @@ public class ShadowScheduledThreadPoolExecutor extends ScheduledThreadPoolExecut
     ) {
         super(corePoolSize, new NamedThreadFactory(prefix), handler);
         if (optimize) {
+            if(getKeepAliveTime(TimeUnit.NANOSECONDS) <= 0L) {
+                setKeepAliveTime(10L, TimeUnit.MILLISECONDS);
+            }
             allowCoreThreadTimeOut(true);
         }
     }
@@ -161,6 +171,9 @@ public class ShadowScheduledThreadPoolExecutor extends ScheduledThreadPoolExecut
     ) {
         super(corePoolSize, new NamedThreadFactory(threadFactory, prefix), handler);
         if (optimize) {
+            if(getKeepAliveTime(TimeUnit.NANOSECONDS) <= 0L) {
+                setKeepAliveTime(10L, TimeUnit.MILLISECONDS);
+            }
             allowCoreThreadTimeOut(true);
         }
     }
