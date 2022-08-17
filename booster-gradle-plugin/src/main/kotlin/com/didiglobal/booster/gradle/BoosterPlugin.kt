@@ -31,6 +31,7 @@ class BoosterPlugin : Plugin<Project> {
                 project.setup(processors)
             }
         }
+        project.getAndroid<BaseExtension>().registerTransform(BoosterTransform.newInstance(project))
     }
 
     private fun Project.setup(processors: List<VariantProcessor>) {
@@ -40,7 +41,6 @@ class BoosterPlugin : Plugin<Project> {
             is LibraryExtension -> android.libraryVariants
             else -> emptyList<BaseVariant>()
         }.takeIf<Collection<BaseVariant>>(Collection<BaseVariant>::isNotEmpty)?.let { variants ->
-            android.registerTransform(BoosterTransform.newInstance(project))
             variants.forEach { variant ->
                 processors.forEach { processor ->
                     processor.process(variant)
