@@ -132,12 +132,8 @@ fun Project.getJars(variant: BaseVariant? = null): Set<File> = getJarTaskProvide
 
 fun Project.getJarTaskProviders(variant: BaseVariant? = null): Collection<TaskProvider<out Task>> = when {
     isAndroid -> when (getAndroid<BaseExtension>()) {
-        is LibraryExtension -> filterByVariant(variant).map {
-            tasks.named(it.getTaskName("createFullJar"))
-        }
-        is AppExtension -> filterByVariant(variant).map {
-            tasks.named(it.getTaskName("bundle", "Classes"))
-        }
+        is LibraryExtension -> filterByVariant(variant).mapNotNull(BaseVariant::createFullJarTaskProvider)
+        is AppExtension -> filterByVariant(variant).mapNotNull(BaseVariant::bundleClassesTaskProvider)
         else -> emptyList()
     }
     isJavaLibrary -> listOf(tasks.named(JavaPlugin.JAR_TASK_NAME))

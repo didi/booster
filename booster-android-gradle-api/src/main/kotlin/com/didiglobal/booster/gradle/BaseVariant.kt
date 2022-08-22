@@ -3,8 +3,6 @@ package com.didiglobal.booster.gradle
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.publishing.AndroidArtifacts
-import com.android.build.gradle.internal.publishing.AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH
-import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactScope.ALL
 import com.android.build.gradle.tasks.ProcessAndroidResources
 import com.android.builder.core.VariantType
 import com.android.builder.model.ApiVersion
@@ -15,9 +13,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.UnknownTaskException
 import org.gradle.api.artifacts.ArtifactCollection
-import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
-import org.gradle.api.artifacts.result.ResolvedDependencyResult
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.TaskProvider
 import java.io.File
@@ -81,36 +77,60 @@ val BaseVariant.processJavaResourcesTaskProvider: TaskProvider<out Task>
 val BaseVariant.processResTaskProvider: TaskProvider<out Task>?
     get() = try {
         project.tasks.named(getTaskName("process", "Resources"))
-    } catch (e: UnknownTaskException) {
+    } catch (_: UnknownTaskException) {
         null
     }
 
 val BaseVariant.bundleResourcesTaskProvider: TaskProvider<out Task>?
     get() = try {
         project.tasks.named(getTaskName("bundle", "Resources"))
-    } catch (e: UnknownTaskException) {
+    } catch (_: UnknownTaskException) {
         null
     }
 
 val BaseVariant.packageTaskProvider: TaskProvider<out Task>?
     get() = try {
         project.tasks.named(getTaskName("package"))
-    } catch (e: UnknownTaskException) {
+    } catch (_: UnknownTaskException) {
         null
     }
 
 val BaseVariant.packageBundleTaskProvider: TaskProvider<out Task>?
     get() = try {
         project.tasks.named(getTaskName("package", "Bundle"))
-    } catch (e: UnknownTaskException) {
+    } catch (_: UnknownTaskException) {
         null
     }
 
 val BaseVariant.mergeJavaResourceTaskProvider: TaskProvider<out Task>?
     get() = try {
         project.tasks.named(getTaskName("merge", "JavaResource"))
-    } catch (e: UnknownTaskException) {
+    } catch (_: UnknownTaskException) {
         null
+    }
+
+val BaseVariant.createFullJarTaskProvider: TaskProvider<out Task>?
+    get() = try {
+        project.tasks.named(getTaskName("createFullJar"))
+    } catch (_: UnknownTaskException) {
+        null
+    }
+
+val BaseVariant.bundleClassesTaskProvider: TaskProvider<out Task>?
+    get() = try {
+        // for AGP < 7.2.0
+        project.tasks.named(getTaskName("bundle", "Classes"))
+    } catch (_: UnknownTaskException) {
+        // for AGP >= 7.2.0+
+        try {
+            project.tasks.named(getTaskName("bundle", "ClassesToRuntimeJar"))
+        } catch (_: UnknownTaskException) {
+            try {
+                project.tasks.named(getTaskName("bundle", "ClassesToCompileJar"))
+            } catch (_: UnknownTaskException) {
+                null
+            }
+        }
     }
 
 fun BaseVariant.getTaskName(prefix: String): String = AGP.run {
