@@ -64,7 +64,9 @@ fun ZipFile.transform(
         runnable.run()
     }))
 
-    entries().asSequence().forEach { entry ->
+    entries().asSequence().filterNot {
+        isJarSignatureRelatedFiles(it.name)
+    }.forEach { entry ->
         if (!entries.contains(entry.name)) {
             val zae = entryFactory(entry)
             val stream = InputStreamSupplier {
@@ -108,7 +110,9 @@ fun ZipInputStream.transform(
     val entries = mutableSetOf<String>()
 
     while (true) {
-        val entry = nextEntry?.takeIf { true } ?: break
+        val entry = nextEntry?.takeUnless {
+            isJarSignatureRelatedFiles(it.name)
+        } ?: break
         if (!entries.contains(entry.name)) {
             val zae = entryFactory(entry)
             val data = readBytes()
@@ -129,6 +133,12 @@ fun ZipInputStream.transform(
         transformer: (ByteArray) -> ByteArray
 ) = output.touch().outputStream().buffered().use {
     transform(it, entryFactory, transformer)
+}
+
+private val JAR_SIGNATURE_EXTENSIONS = setOf("SF", "RSA", "DSA", "EC")
+
+private fun isJarSignatureRelatedFiles(name: String): Boolean {
+    return name.startsWith("META-INF/") && name.substringAfterLast('.') in JAR_SIGNATURE_EXTENSIONS
 }
 
 private const val DEFAULT_BUFFER_SIZE = 8 * 1024
