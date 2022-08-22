@@ -31,6 +31,8 @@ class Aapt2Container(val header: Header, private vararg val _entries: Entry<*>) 
 
     open class Png(header: ResourcesInternal.CompiledFile, val image: ByteBuffer) : ResFile(header)
 
+    open class WebP(header: ResourcesInternal.CompiledFile, val image: ByteBuffer) : ResFile(header)
+
     open class Xml(file: ResourcesInternal.CompiledFile, val root: Resources.XmlNode) : ResFile(file)
 
     val entries: List<Entry<*>>

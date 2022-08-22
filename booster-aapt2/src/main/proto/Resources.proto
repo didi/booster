@@ -41,6 +41,12 @@ message Source {
   SourcePosition position = 2;
 }
 
+// The name and version fingerprint of a build tool.
+message ToolFingerprint {
+  string tool = 1;
+  string version = 2;
+}
+
 // Top level message representing a resource table.
 message ResourceTable {
   // The string pool containing source paths referenced throughout the resource table. This does
@@ -49,6 +55,10 @@ message ResourceTable {
 
   // Resource definitions corresponding to an Android package.
   repeated Package package = 2;
+  // The <overlayable> declarations within the resource table.
+  repeated Overlayable overlayable = 3;
+  // The version fingerprints of the tools that built the resource table.
+  repeated ToolFingerprint tool_fingerprint = 4;
 }
 
 // A package ID in the range [0x00, 0xff].
@@ -121,6 +131,11 @@ message Visibility {
 
   // The comment associated with the <public> tag.
   string comment = 3;
+
+  // Indicates that the resource id may change across builds and that the public R.java identifier
+  // for this resource should not be final. This is set to `true` for resources in `staging-group`
+  // tags.
+  bool staged_api = 4;
 }
 
 // Whether a resource comes from a compile-time overlay and is explicitly allowed to not overlay an
@@ -133,15 +148,49 @@ message AllowNew {
   string comment = 2;
 }
 
-// Whether a resource is overlayable by runtime resource overlays (RRO).
+// Represents a set of overlayable resources.
 message Overlayable {
-  // Where this declaration was defined in source.
+  // The name of the <overlayable>.
+  string name = 1;
+  // The location of the <overlayable> declaration in the source.
+  Source source = 2;
+  // The component responsible for enabling and disabling overlays targeting this <overlayable>.
+  string actor = 3;
+}
+
+// Represents an overlayable <item> declaration within an <overlayable> tag.
+message OverlayableItem {
+  enum Policy {
+    NONE = 0;
+    PUBLIC = 1;
+    SYSTEM = 2;
+    VENDOR = 3;
+    PRODUCT = 4;
+    SIGNATURE = 5;
+    ODM = 6;
+    OEM = 7;
+    ACTOR = 8;
+    CONFIG_SIGNATURE = 9;
+  }
+  // The location of the <item> declaration in source.
   Source source = 1;
 
   // Any comment associated with the declaration.
   string comment = 2;
+
+  // The policy defined by the enclosing <policy> tag of this <item>.
+  repeated Policy policy = 3;
+
+  // The index into overlayable list that points to the <overlayable> tag that contains
+  // this <item>.
+  uint32 overlayable_idx = 4;
 }
 
+// The staged resource ID definition of a finalized resource.
+message StagedId {
+  Source source = 1;
+  uint32 staged_id = 2;
+}
 // An entry ID in the range [0x0000, 0xffff].
 message EntryId {
   uint32 id = 1;
@@ -169,11 +218,13 @@ message Entry {
   AllowNew allow_new = 4;
 
   // Whether this resource can be overlaid by a runtime resource overlay (RRO).
-  Overlayable overlayable = 5;
-
+  OverlayableItem overlayable_item = 5;
   // The set of values defined for this entry, each corresponding to a different
   // configuration/variant.
   repeated ConfigValue config_value = 6;
+
+  // The staged resource ID of this finalized resource.
+  StagedId staged_id = 7;
 }
 
 // A Configuration/Value pair.
@@ -225,7 +276,13 @@ message CompoundValue {
     Styleable styleable = 3;
     Array array = 4;
     Plural plural = 5;
+    MacroBody macro = 6;
   }
+}
+
+// Message holding a boolean, so it can be optionally encoded.
+message Boolean {
+  bool value = 1;
 }
 
 // A value that is a reference to another resource. This reference can be by name or resource ID.
@@ -248,6 +305,16 @@ message Reference {
 
   // Whether this reference is referencing a private resource (@*package:type/entry).
   bool private = 4;
+
+  // Whether this reference is dynamic.
+  Boolean is_dynamic = 5;
+
+  // The type flags used when compiling the reference. Used for substituting the contents of macros.
+  uint32 type_flags = 6;
+
+  // Whether raw string values would have been accepted in place of this reference definition. Used
+  // for substituting the contents of macros.
+  bool allow_raw = 7;
 }
 
 // A value that represents an ID. This is just a placeholder, as ID values are used to occupy a
@@ -346,6 +413,9 @@ message Attribute {
 
     // The value of the enum/flag.
     uint32 value = 4;
+
+    // The data type of the enum/flag as defined in android::Res_value.
+    uint32 type = 5;
   }
 
   // Bitmask of formats allowed for an attribute.
@@ -531,4 +601,33 @@ message XmlAttribute {
 
   // The optional interpreted/compiled version of the `value` string.
   Item compiled_item = 6;
+}
+
+message MacroBody {
+  string raw_string = 1;
+  StyleString style_string = 2;
+  repeated UntranslatableSection untranslatable_sections = 3;
+  repeated NamespaceAlias namespace_stack = 4;
+  SourcePosition source = 5;
+}
+
+message NamespaceAlias {
+  string prefix = 1;
+  string package_name = 2;
+  bool is_private = 3;
+}
+
+message StyleString {
+  message Span {
+    string name = 1;
+    uint32 start_index = 2;
+    uint32 end_index = 3;
+  }
+  string str = 1;
+  repeated Span spans = 2;
+}
+
+message UntranslatableSection {
+  uint64 start_index = 1;
+  uint64 end_index = 2;
 }

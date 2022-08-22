@@ -7,6 +7,7 @@ import com.didiglobal.booster.aapt2.Aapt2Container.Metadata
 import com.didiglobal.booster.aapt2.Aapt2Container.Png
 import com.didiglobal.booster.aapt2.Aapt2Container.ResFile
 import com.didiglobal.booster.aapt2.Aapt2Container.ResTable
+import com.didiglobal.booster.aapt2.Aapt2Container.WebP
 import com.didiglobal.booster.aapt2.Aapt2Container.Xml
 import com.didiglobal.booster.aapt2.legacy.ResourcesInternalLegacy
 import java.io.File
@@ -25,6 +26,7 @@ val File.metadata: Metadata
             MAGIC -> {
                 parser.parseHeader()
                 val type = parser.readInt()
+                @Suppress("UNUSED_VARIABLE")
                 val length = parser.readLong()
 
                 when (type) {
@@ -39,6 +41,7 @@ val File.metadata: Metadata
 
 private fun BinaryParser.parseResFileMetadata(): Metadata {
     val headerSize = readInt()
+    @Suppress("UNUSED_VARIABLE")
     val dataSize = readLong()
 
     return parse {
@@ -86,11 +89,7 @@ private fun BinaryParser.parseResFileMetadata(): Metadata {
                 height = it.config.screenHeightDp.toShort()
             }
             // TODO localScript = ...
-            it.config.localeBytes.takeIf { l ->
-                l.size() > 0
-            }?.let { l ->
-                l.copyTo(localeVariant, 0, 0, l.size())
-            }
+            it.config.localeBytes.takeIf { l -> l.size() > 0 }?.copyTo(localeScript, 0)
             screenConfig2.apply {
                 layout = it.config.screenRoundValue.toByte()
                 colorMode = (it.config.hdrValue shl 2 and it.config.wideColorGamutValue).toByte()
@@ -100,6 +99,7 @@ private fun BinaryParser.parseResFileMetadata(): Metadata {
 }
 
 private fun BinaryParser.parseLegacyMetadata(): Metadata {
+    @Suppress("UNUSED_VARIABLE")
     val entryType = readInt()
     val entryLength = readLong()
     return parse {
@@ -156,6 +156,7 @@ fun BinaryParser.parseHeader(): Header {
 fun BinaryParser.parseResEntry(): Entry<*> {
     val p = tell()
     val type = readInt()
+    @Suppress("UNUSED_VARIABLE")
     val length = readLong()
 
     try {
@@ -164,7 +165,7 @@ fun BinaryParser.parseResEntry(): Entry<*> {
             RES_TABLE -> ResTable(parse {
                 Resources.ResourceTable.parseFrom(it)
             })
-            else -> TODO("Unknown type 0x`${type.toString(16)}`")
+            else -> TODO("Unknown type 0x${type.toString(16)} at 0x${p.toString(16)}: $file")
         }
     } finally {
         //seek(p + length.toInt())
@@ -234,17 +235,24 @@ private fun BinaryParser.parseResFile(): ResFile {
     val header = parse {
         ResourcesInternal.CompiledFile.parseFrom(readBytes(headerSize))
     }
-    val padding = readBytes((4 - tell() % 4) % 4)
 
-    return when (header.type) {
-        Resources.FileReference.Type.PNG -> parsePng(header)
-        Resources.FileReference.Type.BINARY_XML -> TODO("binary XML")
-        Resources.FileReference.Type.PROTO_XML -> Xml(header, Resources.XmlNode.parseFrom(readBytes(dataSize.toInt())))
-        Resources.FileReference.Type.UNKNOWN -> when (header.resourcePath.substringAfter('.')) {
-            "png", "9.png" -> parsePng(header)
-            else -> TODO("Unknown RES_FILE `$file`")
+    readBytes((4 - tell() % 4) % 4) // header padding
+
+    try {
+        @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
+        return when (header.type) {
+            Resources.FileReference.Type.PNG -> parsePng(header)
+            Resources.FileReference.Type.BINARY_XML -> TODO("binary XML")
+            Resources.FileReference.Type.PROTO_XML -> Xml(header, Resources.XmlNode.parseFrom(readBytes(dataSize.toInt())))
+            Resources.FileReference.Type.UNKNOWN -> when (header.resourcePath.substringAfter('.')) {
+                "png", "9.png" -> parsePng(header)
+                "webp" -> parseWebP(header)
+                else -> TODO("Unknown RES_FILE `$file`")
+            }
+            Resources.FileReference.Type.UNRECOGNIZED -> TODO("Unrecognized resource file `${header.sourcePath}`")
         }
-        Resources.FileReference.Type.UNRECOGNIZED -> TODO("Unrecognized resource file `${header.sourcePath}`")
+    } finally {
+        readBytes((4 - tell() % 4) % 4) // data padding
     }
 }
 
@@ -254,6 +262,23 @@ private fun BinaryParser.parsePng(header: ResourcesInternal.CompiledFile): Png {
         val magic = readInt()
         if (0x474E5089 != magic) {
             throw Aapt2ParseException("Not a PNG entry `$file`")
+        }
+        seek(p)
+        it
+    })
+}
+
+/**
+ * @see <a href="https://developers.google.com/speed/webp/docs/riff_container">WebP Container Specification</a>
+ */
+private fun BinaryParser.parseWebP(header: ResourcesInternal.CompiledFile): WebP {
+    return WebP(header, parse {
+        val p = tell()
+        val riff = readInt() // 'RIFF'
+        val size = readUInt() // size of the file in bytes starting at offset 8
+        val webp = readInt() // 'WEBP'
+        if (0x46464952 != riff || size <= 0 || 0x50424557 != webp) {
+            throw Aapt2ParseException("Not a WebP entry `$file`")
         }
         seek(p)
         it
