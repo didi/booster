@@ -13,6 +13,8 @@ import com.didiglobal.booster.gradle.mergeResourcesTaskProvider
 import com.didiglobal.booster.gradle.preBuildTaskProvider
 import com.didiglobal.booster.gradle.processResTaskProvider
 import com.didiglobal.booster.gradle.project
+import com.didiglobal.booster.gradle.GTE_V7_2
+import com.didiglobal.booster.gradle.getTaskName
 import com.didiglobal.booster.kotlinx.Wildcard
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -53,6 +55,10 @@ class SimpleCompressionTaskCreator(private val tool: CompressionTool, private va
             task.images = lazy(supplier)::value
         }.apply {
             dependsOn(install)
+            // only agp >=7.2.0 has this mapSourceTask, when mapSourceTask finished,u can get the map file
+            if (GTE_V7_2) {
+                dependsOn(variant.getTaskName("map", "SourceSetPaths"))
+            }
             deps.forEach { dependsOn(it) }
             variant.processResTaskProvider?.dependsOn(this)
             variant.bundleResourcesTaskProvider?.dependsOn(this)

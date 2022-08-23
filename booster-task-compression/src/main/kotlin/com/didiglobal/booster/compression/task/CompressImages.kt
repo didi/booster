@@ -9,6 +9,8 @@ import com.didiglobal.booster.compression.CompressionOptions
 import com.didiglobal.booster.compression.CompressionResult
 import com.didiglobal.booster.compression.CompressionResults
 import com.didiglobal.booster.compression.CompressionTool
+import com.didiglobal.booster.gradle.GTE_V7_2
+import com.didiglobal.booster.gradle.allArtifacts
 import com.didiglobal.booster.kotlinx.Wildcard
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
@@ -57,6 +59,14 @@ abstract class CompressImages<T : CompressionOptions> : DefaultTask() {
     val variantName: String
         get() = variant.name
 
+
+    /**
+     * only agp>=7.2.0 this map is not empty
+     */
+    @get:Internal
+    val sourceSetMap: Map<String, String> by lazy(::initSourceSetMap)
+
+
     protected open fun includes(arg: Pair<File, Aapt2Container.Metadata>): Boolean {
         val (input, metadata) = arg
         return if (filter(metadata.resourceName)) true else false.also {
@@ -74,6 +84,30 @@ abstract class CompressImages<T : CompressionOptions> : DefaultTask() {
         val s0 = dest.length()
         results.add(CompressionResult(dest, s0, s0, src))
         logger.info("${tool.command.name}: exclude $resName $dest => $src")
+    }
+
+    private fun initSourceSetMap(): Map<String, String> {
+        // if agp >=7.2.0 create map<Relative Path，Absolute Path> from sourceSetMap file
+        return if (GTE_V7_2) {
+            variant.allArtifacts["SOURCE_SET_PATH_MAP"]?.filter {
+                it.exists()
+            }?.flatMap {
+                it.readLines()
+            }?.map {
+                it.split(" ")
+            }?.filter { it.size >= 2 }?.associateBy(keySelector = { it[0] }, valueTransform = { it[1] }) ?: emptyMap()
+        } else emptyMap()
+    }
+
+
+    protected fun Aapt2Container.Metadata.remap(): Aapt2Container.Metadata {
+        if (!GTE_V7_2) {
+            return this
+        }
+        val array = sourcePath.split(":")
+        return if (sourceSetMap.isNotEmpty() && array.size >= 2 && sourceSetMap.containsKey(array[0])) copy(
+            sourcePath = "${sourceSetMap[array[0]]}${array[1]}"
+        ) else this
     }
 
 }

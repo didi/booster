@@ -13,3 +13,4 @@ val GTE_V4_2: Boolean by lazy { AGP.revision.major > 4 || (AGP.revision.major ==
 val GTE_V4_1: Boolean by lazy { AGP.revision.major > 4 || (AGP.revision.major == 4 && AGP.revision.minor >= 1) }
 
 val GTE_V7_X: Boolean by lazy { AGP.revision.major >= 7 }
+val GTE_V7_2: Boolean by lazy { AGP.revision.major > 7 || (AGP.revision.major == 7 && AGP.revision.minor >= 2) }

@@ -46,7 +46,7 @@ internal abstract class PngquantCompressFlatImages : AbstractPngquantCompressIma
         compressedRes.file(FD_RES_DRAWABLE).mkdirs()
 
         images().parallelStream().map {
-            it to it.metadata
+            it to it.metadata.remap()
         }.filter(this::includes).map {
             val output = compressedRes.file("${it.second.resourcePath.substringBeforeLast('.')}$DOT_PNG")
             Aapt2ActionData(it.first, it.second, output,

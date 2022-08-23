@@ -57,7 +57,7 @@ internal abstract class CwebpCompressFlatImages : AbstractCwebpCompressImages() 
         }
 
         images().parallelStream().map {
-            it to it.metadata
+            it to it.metadata.remap()
         }.filter(this::includes).filter(isNotLauncherIcon).filter {
             filter(File(it.second.sourcePath))
         }.map {
