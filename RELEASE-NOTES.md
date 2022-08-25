@@ -1,3 +1,11 @@
+## v4.13.0
+
+- Fix incompatibility issue of `ShadowScheduledThreadPoolExecutor` on Android 5.1.1 and below
+- Fix issue [#364](https://github.com/didi/booster/issues/364) booster transform cannot be registered successfully
+- Fix issue [#368](https://github.com/didi/booster/issues/368) by removing JAR signature related files to prevent JAR signature verification
+- Fix issue [#370](https://github.com/didi/booster/issues/370) by improving the compatibility of AGP 7.2.0+
+- Improve [booster-aapt2](https://github.com/didi/booster/blob/v4.13.0/booster-aapt2) compatibility
+
 ## v4.12.0
 
 - Enable class set cache for static analysis to reduce memory footprint
