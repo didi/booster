@@ -42,7 +42,7 @@ open class ReferenceAnalysisTask : AnalysisTask() {
             classSetCache[it.toURI().toURL()]
         }.fold()
         val graph = ReferenceAnalyser().analyse(origin, upstream) { klass, progress, duration ->
-            project.logger.info("${green(String.format("%3d%%", progress * 100))} Analyse class ${klass.name} in ${yellow(duration.toMillis())} ms")
+            project.logger.info("${green(String.format("%3f%%", progress * 100))} Analyse class ${klass.name} in ${yellow(duration.toMillis())} ms")
         }
         val executor = Executors.newFixedThreadPool(3)
 
