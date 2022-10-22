@@ -86,7 +86,7 @@ class AsmTransformer : Transformer {
 
         val w1 = this.durations.keys.map {
             it.javaClass.name.length
-        }.max() ?: 20
+        }.maxOrNull() ?: 20
         this.durations.forEach { (transformer, ns) ->
             println("${transformer.javaClass.name.padEnd(w1 + 1)}: ${ns.toMillis()} ms")
         }

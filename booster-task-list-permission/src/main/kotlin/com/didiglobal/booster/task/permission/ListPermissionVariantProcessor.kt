@@ -23,6 +23,7 @@ class ListPermissionVariantProcessor : VariantProcessor {
                     it.description = "List the permissions declared in AndroidManifest.xml"
                 }
             }
+            @Suppress("DEPRECATION")
             tasks.register("list${variant.name.capitalize()}Permissions", ListPermission::class.java) {
                 it.group = BOOSTER
                 it.description = "List the permission declared in AndroidManifest.xml for ${variant.name}"

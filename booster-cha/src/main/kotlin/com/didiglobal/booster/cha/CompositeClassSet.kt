@@ -26,7 +26,7 @@ internal class CompositeClassSet<ClassFile, ClassParser>(
     private val once = Once<CompositeClassSet<ClassFile, ClassParser>>()
 
     override val size: Int by lazy {
-        load().classSets.sumBy(ClassSet<ClassFile, ClassParser>::size)
+        load().classSets.sumOf(ClassSet<ClassFile, ClassParser>::size)
     }
 
     override val classpath: List<URL> by lazy {
@@ -114,7 +114,7 @@ internal class CompositeClassSet<ClassFile, ClassParser>(
             }
         }
         val t1 = System.nanoTime()
-        val size = classSets.sumBy(ClassSet<ClassFile, ClassParser>::size)
+        val size = classSets.sumOf(ClassSet<ClassFile, ClassParser>::size)
         println(classpath.joinToString("\n", "Load ${green(size)} classes from ${green(n)} class sets in ${yellow(Duration.ofNanos(t1 - t0).toMillis())} ms\n") {
             "  ✨ $it"
         })

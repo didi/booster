@@ -23,6 +23,7 @@ class ListSharedLibraryVariantProcessor : VariantProcessor {
                     it.description = "List the shared libraries that current project depends on"
                 }
             }
+            @Suppress("DEPRECATION")
             tasks.register("list${variant.name.capitalize()}SharedLibraries", ListSharedLibrary::class.java) {
                 it.group = BOOSTER
                 it.description = "List the shared libraries that current project depends on for ${variant.name}"

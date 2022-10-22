@@ -109,7 +109,7 @@ class RInlineTransformer : ClassTransformer {
 
     override fun onPostTransform(context: TransformContext) {
         val totalSize = removedR.map { it.value }.sum()
-        val maxWidth = removedR.map { it.key.length }.max()?.plus(10) ?: 10
+        val maxWidth = removedR.map { it.key.length }.maxOrNull()?.plus(10) ?: 10
         this.logger.run {
             println("Delete files:")
             removedR.toSortedMap().forEach {

@@ -42,6 +42,7 @@ class SimpleCompressionTaskCreator(private val tool: CompressionTool, private va
         val aapt2 = project.isAapt2Enabled
         val install = getCommandInstaller(variant)
 
+        @Suppress("DEPRECATION")
         return project.tasks.register("compress${variant.name.capitalize()}${name.capitalize()}With${tool.command.name.substringBefore('.').capitalize()}", getCompressionTaskClass(aapt2).java) { task ->
             task.group = BOOSTER
             task.description = "Compress image resources by ${tool.command.name} for ${variant.name}"
@@ -83,6 +84,7 @@ class SimpleCompressionTaskCreator(private val tool: CompressionTool, private va
     }
 
     private fun getInstallTaskName(variant: String = ""): String {
+        @Suppress("DEPRECATION")
         return "install${variant.capitalize()}${tool.command.name.substringBefore('.').capitalize()}"
     }
 

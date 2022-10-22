@@ -23,6 +23,7 @@ class ListArtifactVariantProcessor : VariantProcessor {
                     it.description = "List build artifacts"
                 }
             }
+            @Suppress("DEPRECATION")
             tasks.register("list${variant.name.capitalize()}Artifacts", ListArtifact::class.java) {
                 it.group = BOOSTER
                 it.description = "List build artifacts for ${variant.name}"

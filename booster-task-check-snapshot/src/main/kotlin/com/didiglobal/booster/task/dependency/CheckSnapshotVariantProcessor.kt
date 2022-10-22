@@ -24,6 +24,7 @@ class CheckSnapshotVariantProcessor : VariantProcessor {
                     it.description = "Check snapshot dependencies"
                 }
             }
+            @Suppress("DEPRECATION")
             tasks.register("check${variant.name.capitalize()}Snapshot", CheckSnapshot::class.java) {
                 it.group = BOOSTER
                 it.description = "Check snapshot dependencies for ${variant.name}"

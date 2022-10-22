@@ -145,7 +145,7 @@ private val File.services: List<Pair<String, Set<String>>>
         }.map { spi ->
             spi.name to spi.readLines().services
         }
-        isFile -> when (extension.toLowerCase(Locale.getDefault())) {
+        isFile -> when (extension.lowercase()) {
             "jar" -> ZipFile(this).use { zip ->
                 zip.entries()
                         .asSequence()

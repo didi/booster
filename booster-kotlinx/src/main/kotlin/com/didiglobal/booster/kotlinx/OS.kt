@@ -1,16 +1,14 @@
 package com.didiglobal.booster.kotlinx
 
-import java.util.Locale
-
 object OS {
 
-    val name: String = System.getProperty("os.name", "").toLowerCase(Locale.US)
+    val name: String = System.getProperty("os.name", "").lowercase()
 
-    val arch: String = System.getProperty("os.arch", "").toLowerCase(Locale.US)
+    val arch: String = System.getProperty("os.arch", "").lowercase()
 
     val version = object : Comparable<String> {
 
-        private val version = System.getProperty("os.version", "").toLowerCase(Locale.US)
+        private val version = System.getProperty("os.version", "").lowercase()
 
         override fun compareTo(other: String): Int {
             val part1 = version.split("[\\._\\-]".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()

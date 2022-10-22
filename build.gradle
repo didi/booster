@@ -1,4 +1,3 @@
-import java.time.Duration
 import static org.gradle.kotlin.dsl.KotlinDependencyExtensionsKt.embeddedKotlinVersion
 
 buildscript {
@@ -8,7 +7,7 @@ buildscript {
         mavenLocal()
         google()
         mavenCentral()
-        maven { url 'https://plugins.gradle.org/m2/' }
+        gradlePluginPortal()
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -166,65 +165,5 @@ nexusPublishing {
     transitionCheckOptions {
         maxRetries.set(3000)
         delayBetween.set(Duration.ofMillis(3000))
-    }
-}
-
-task reference(type: org.jetbrains.dokka.gradle.DokkaTask, group: 'Documentation') {
-    subProjects = [
-            'booster-aapt2',
-            'booster-android-gradle-api',
-            'booster-android-gradle-compat',
-            'booster-annotations',
-            'booster-api',
-            'booster-build',
-            'booster-cha',
-            'booster-cha-asm',
-            'booster-command',
-            'booster-graph',
-            'booster-graph-dot',
-            'booster-graph-json',
-            'booster-kotlinx',
-            'booster-task-compression',
-            'booster-task-spi',
-            'booster-transform-asm',
-            'booster-transform-javassist',
-            'booster-transform-spi',
-            'booster-transform-util'
-    ]
-    outputFormat = 'html'
-    outputDirectory = "${buildDir}/reference"
-    configuration {
-        perPackageOption {
-            prefix = 'com.didiglobal.booster.aapt2.legacy'
-            suppress = true
-        }
-        perPackageOption {
-            prefix = 'com.didiglobal.booster.build.BoosterServiceLoader'
-            suppress = true
-        }
-        includes = [
-                'booster-aapt2/packages-zh-CN.md',
-                'booster-android-gradle-api/packages-zh-CN.md',
-                'booster-annotations/packages-zh-CN.md',
-                'booster-api/packages-zh-CN.md',
-                'booster-build/packages-zh-CN.md',
-                'booster-cha/packages-zh-CN.md',
-                'booster-cha-asm/packages-zh-CN.md',
-                'booster-command/packages-zh-CN.md',
-                'booster-graph/packages-zh-CN.md',
-                'booster-graph-dot/packages-zh-CN.md',
-                'booster-graph-json/packages-zh-CN.md',
-                'booster-kotlinx/packages-zh-CN.md',
-                'booster-task-compression/packages-zh-CN.md',
-                'booster-task-spi/packages-zh-CN.md',
-                'booster-test/packages-zh-CN.md',
-                'booster-test-asm/packages-zh-CN.md',
-                'booster-test-javassist/packages-zh-CN.md',
-                'booster-transform-asm/packages-zh-CN.md',
-                'booster-transform-javassist/packages-zh-CN.md',
-                'booster-transform-spi/packages-zh-CN.md',
-                'booster-transform-util/packages-zh-CN.md',
-        ]
-        jdkVersion = 8
     }
 }

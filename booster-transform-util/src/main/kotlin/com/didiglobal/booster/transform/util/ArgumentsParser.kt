@@ -64,6 +64,6 @@ class ArgumentsParser(private val signature: String, private val offset: Int = 0
         return buf.toString()
     }
 
-    private fun nextChar() = if (pos < limit) signature[pos++].toInt() else -1
+    private fun nextChar() = if (pos < limit) signature[pos++].code else -1
 
 }

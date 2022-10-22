@@ -22,6 +22,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.UnknownTaskException
 import org.gradle.api.tasks.TaskProvider
+import java.util.Locale
 import kotlin.reflect.KClass
 
 @AutoService(VariantProcessor::class)
@@ -76,7 +77,7 @@ class AnalysisVariantProcessor : VariantProcessor {
 }
 
 internal inline val <reified T : AnalysisTask> KClass<T>.category: String
-    get() = T::class.java.simpleName.substringBefore(AnalysisTask::class.java.simpleName).toLowerCase()
+    get() = T::class.java.simpleName.substringBefore(AnalysisTask::class.java.simpleName).lowercase()
 
 internal inline val <reified T : AnalysisTask> KClass<T>.taskName: String
-    get() = "analyse${category.capitalize()}"
+    get() = @Suppress("DEPRECATION") "analyse${category.capitalize()}"
