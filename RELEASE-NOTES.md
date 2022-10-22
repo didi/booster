@@ -1,3 +1,7 @@
+## v4.14.0
+
+- CHA improvement
+
 ## v4.13.0
 
 - Fix incompatibility issue of `ShadowScheduledThreadPoolExecutor` on Android 5.1.1 and below
