@@ -89,7 +89,7 @@ private fun BinaryParser.parseResFileMetadata(): Metadata {
                 height = it.config.screenHeightDp.toShort()
             }
             // TODO localScript = ...
-            it.config.localeBytes.takeIf { l -> l.size() > 0 }?.copyTo(localeScript, 0)
+            it.config.localeBytes.takeIf { l -> l.size() > 0 }?.copyTo(localeVariant, 0)
             screenConfig2.apply {
                 layout = it.config.screenRoundValue.toByte()
                 colorMode = (it.config.hdrValue shl 2 and it.config.wideColorGamutValue).toByte()
