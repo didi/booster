@@ -7,7 +7,7 @@ sourceSets {
             srcDirs += ['src/integrationTest/kotlin', 'src/integrationTest/java']
         }
         resources.srcDir file('src/integrationTest/resources')
-        compileClasspath += sourceSets.main.output + configurations.testRuntime
+        compileClasspath += sourceSets.main.output + configurations.testRuntimeClasspath
         runtimeClasspath += output + compileClasspath
     }
 }
@@ -32,4 +32,8 @@ check.dependsOn integrationTest
 
 compileIntegrationTestKotlin {
     kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8
+}
+
+tasks.withType(ProcessResources).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

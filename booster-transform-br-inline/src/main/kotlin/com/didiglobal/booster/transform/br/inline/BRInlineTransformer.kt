@@ -48,8 +48,8 @@ class BRInlineTransformer : ClassTransformer {
         }
         // Remove all BR class files
         allBR.also { pairs ->
-            val totalSize = allBR.map { it.first.length() }.sum()
-            val maxWidth = allBR.map { it.second.length }.max()?.plus(10) ?: 10
+            val totalSize = allBR.sumOf { it.first.length() }
+            val maxWidth = allBR.maxOfOrNull { it.second.length }?.plus(10) ?: 10
 
             logger.println("Delete files:")
 

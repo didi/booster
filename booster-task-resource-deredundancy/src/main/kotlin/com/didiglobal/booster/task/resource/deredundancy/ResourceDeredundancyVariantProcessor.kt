@@ -29,6 +29,7 @@ class ResourceDeredundancyVariantProcessor : VariantProcessor {
         val project = variant.project
         val results = CompressionResults()
         val klassRemoveRedundantImages = if (project.isAapt2Enabled) RemoveRedundantFlatImages::class else RemoveRedundantImages::class
+        @Suppress("DEPRECATION")
         val deredundancy = variant.project.tasks.register("remove${variant.name.capitalize()}RedundantResources", klassRemoveRedundantImages.java) { task ->
             task.group = BOOSTER
             task.description = "Remove redundant resources for ${variant.name}"

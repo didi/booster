@@ -11,7 +11,6 @@ import java.net.URL
 import java.time.Duration
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
-import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 
 private val CLASS_FILE_FILTER = { file: File -> file.extension.equals("class", true) }
@@ -40,7 +39,9 @@ internal class DirectoryClassSet<ClassFile, ClassParser>(
                         parser.getClassName(clazz) to clazz
                     }
                 })
-            }.mapNotNull(Future<Pair<String, ClassFile>?>::get).toMap()
+            }.mapNotNull {
+                it.get()
+            }.toMap()
         } finally {
             executor.shutdown()
             executor.awaitTermination(1, TimeUnit.HOURS)

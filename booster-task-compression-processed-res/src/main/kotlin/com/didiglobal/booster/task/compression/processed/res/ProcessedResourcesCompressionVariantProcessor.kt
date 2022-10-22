@@ -36,6 +36,7 @@ import java.util.zip.ZipFile
 class ProcessedResourcesCompressionVariantProcessor : VariantProcessor {
 
     override fun process(variant: BaseVariant) {
+        @Suppress("DEPRECATION")
         val compress = variant.project.tasks.register("compress${variant.name.capitalize()}ProcessedRes", CompressProcessedRes::class.java) {
             it.group = BOOSTER
             it.description = "Compress the processed resource file for ${variant.name}"
@@ -118,10 +119,10 @@ private fun BaseVariant.generateReport(results: CompressionResults) {
                 it.fourth
         )
     }
-    val maxWith1 = table.map { it.first.length }.max() ?: 0
-    val maxWith5 = table.map { it.fifth.length }.max() ?: 0
-    val maxWith6 = table.map { it.sixth.length }.max() ?: 0
-    val maxWith7 = table.map { it.seventh.length }.max() ?: 0
+    val maxWith1 = table.maxOfOrNull { it.first.length } ?: 0
+    val maxWith5 = table.maxOfOrNull { it.fifth.length } ?: 0
+    val maxWith6 = table.maxOfOrNull { it.sixth.length } ?: 0
+    val maxWith7 = table.maxOfOrNull { it.seventh.length } ?: 0
     val fullWith = maxWith1 + maxWith5 + maxWith6 + 8
 
     project.buildDir.file("reports", Build.ARTIFACT, name, "report.txt").touch().printWriter().use { logger ->
@@ -134,7 +135,7 @@ private fun BaseVariant.generateReport(results: CompressionResults) {
             logger.println("${it.sixth.padStart(maxWith6)} ${it.first.padEnd(maxWith1)} ${it.fifth.padStart(maxWith5)} ${it.seventh.padStart(maxWith7)} ${it.eighth}")
         }
         logger.println("-".repeat(maxWith1 + maxWith5 + maxWith6 + 2))
-        logger.println(" TOTAL ${decimal(table.sumByDouble { it.fourth.toDouble() }).padStart(fullWith - 13)}")
+        logger.println(" TOTAL ${decimal(table.sumOf { it.fourth.toDouble() }).padStart(fullWith - 13)}")
     }
 
 }

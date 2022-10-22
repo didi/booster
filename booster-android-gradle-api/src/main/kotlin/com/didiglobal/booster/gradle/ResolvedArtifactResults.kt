@@ -35,9 +35,9 @@ class ResolvedArtifactResults(private val variant: BaseVariant) : Collection<Res
             .sortedBy { it.id.componentIdentifier.displayName }
             .toList()
 
-    private val maxNameWidth = map { it.id.componentIdentifier.displayName.length }.max() ?: 0
+    private val maxNameWidth = map { it.id.componentIdentifier.displayName.length }.maxOrNull() ?: 0
 
-    private val maxFileWidth = map { it.file.path.length }.max() ?: 0
+    private val maxFileWidth = map { it.file.path.length }.maxOrNull() ?: 0
 
     override val size: Int
         get() = results.count()

@@ -78,7 +78,7 @@ internal object V33 : AGPInterface {
         get() = mergeResourcesProvider
 
     override val BaseVariant.mergeNativeLibsTaskProvider: TaskProvider<out Task>
-        get() = project.tasks.named("transformNativeLibsWithMergeJniLibsFor${name.capitalize()}")
+        get() = @Suppress("DEPRECATION") project.tasks.named("transformNativeLibsWithMergeJniLibsFor${name.capitalize()}")
 
     override val BaseVariant.processJavaResourcesTaskProvider: TaskProvider<out Task>
         get() = processJavaResourcesProvider

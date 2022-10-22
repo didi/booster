@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.didiglobal.booster.android.gradle.v4_0
 
 import com.android.build.gradle.AppExtension

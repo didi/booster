@@ -51,7 +51,7 @@ internal open class RemoveRedundantFlatImages : RemoveRedundantImages() {
                 it.first to it.second
             }).map { group -> // resource name with configuration => resources
                 // calculate the maximum density of the resource group with same name
-                val highest = group.value.maxBy {
+                val highest = group.value.maxByOrNull {
                     it.second.configuration.screenType.density
                 }?.second?.configuration?.screenType?.density
 

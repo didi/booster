@@ -30,7 +30,7 @@ class AndroidSdk {
             it.name.startsWith("android-") && File(it, "android.jar").exists()
         }?.map {
             it.name.substringAfter("android-")
-        }?.max()?.toInt() ?: throw RuntimeException("No platform found")
+        }?.maxOrNull()?.toInt() ?: throw RuntimeException("No platform found")
 
         /**
          * Returns the Android SDK location, the search order:
