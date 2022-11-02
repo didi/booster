@@ -7,13 +7,11 @@ import com.didiglobal.booster.annotations.Priority
 import com.didiglobal.booster.compression.CompressionResults
 import com.didiglobal.booster.compression.generateReport
 import com.didiglobal.booster.compression.task.CompressImages
-import com.didiglobal.booster.gradle.getTaskName
-import com.didiglobal.booster.gradle.isAapt2Enabled
-import com.didiglobal.booster.gradle.mergeResourcesTaskProvider
-import com.didiglobal.booster.gradle.project
+import com.didiglobal.booster.gradle.*
 import com.didiglobal.booster.task.spi.VariantProcessor
 import com.google.auto.service.AutoService
 import org.gradle.api.UnknownTaskException
+import java.io.File
 
 
 /**
@@ -28,9 +26,10 @@ class ResourceDeredundancyVariantProcessor : VariantProcessor {
     override fun process(variant: BaseVariant) {
         val project = variant.project
         val results = CompressionResults()
-        val klassRemoveRedundantImages = if (project.isAapt2Enabled) RemoveRedundantFlatImages::class else RemoveRedundantImages::class
+        val mapSourceSetPaths = project.tasks.findByName(variant.getTaskName("map", "SourceSetPaths"))
+
         @Suppress("DEPRECATION")
-        val deredundancy = variant.project.tasks.register("remove${variant.name.capitalize()}RedundantResources", klassRemoveRedundantImages.java) { task ->
+        val deredundancy = variant.project.tasks.register("remove${variant.name.capitalize()}RedundantResources", RemoveRedundantImages::class.java) { task ->
             task.group = BOOSTER
             task.description = "Remove redundant resources for ${variant.name}"
             task.outputs.upToDateWhen { false }
@@ -45,6 +44,9 @@ class ResourceDeredundancyVariantProcessor : VariantProcessor {
                 dependsOn(it)
             }
             dependsOn(variant.mergeResourcesTaskProvider)
+            mapSourceSetPaths?.let {
+                dependsOn(it)
+            }
             configure {
                 it.doLast {
                     results.generateReport(variant, Build.ARTIFACT)
@@ -57,6 +59,16 @@ class ResourceDeredundancyVariantProcessor : VariantProcessor {
         }.forEach {
             it.dependsOn(deredundancy)
         }
+        variant.processResTaskProvider?.dependsOn(deredundancy)
     }
 
+    private fun BaseVariant.cachedMap(): Map<String, String> {
+        return this.allArtifacts["SOURCE_SET_PATH_MAP"]
+                ?.flatMap(File::readLines)
+                ?.map {
+                    it.split(" ")
+                }?.associate {
+                    it[0] to it[1]
+                } ?: emptyMap()
+    }
 }

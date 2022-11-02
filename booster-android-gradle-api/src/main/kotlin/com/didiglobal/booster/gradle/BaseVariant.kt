@@ -4,7 +4,6 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.publishing.AndroidArtifacts
 import com.android.build.gradle.tasks.ProcessAndroidResources
-import com.android.builder.core.VariantType
 import com.android.builder.model.ApiVersion
 import com.android.sdklib.BuildToolInfo
 import com.didiglobal.booster.kotlinx.file
@@ -146,9 +145,19 @@ val BaseVariant.minSdkVersion: ApiVersion
         minSdkVersion
     }
 
-val BaseVariant.variantType: VariantType
+val BaseVariant.isApplication: Boolean
     get() = AGP.run {
-        variantType
+        isApplication
+    }
+
+val BaseVariant.isLibrary: Boolean
+    get() = AGP.run {
+        isLibrary
+    }
+
+val BaseVariant.isDynamicFeature: Boolean
+    get() = AGP.run {
+        isDynamicFeature
     }
 
 val BaseVariant.originalApplicationId: String

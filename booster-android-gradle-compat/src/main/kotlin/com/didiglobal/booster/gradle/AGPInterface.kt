@@ -12,7 +12,6 @@ import com.android.build.gradle.internal.pipeline.TransformTask
 import com.android.build.gradle.internal.publishing.AndroidArtifacts
 import com.android.build.gradle.internal.scope.VariantScope
 import com.android.build.gradle.internal.variant.BaseVariantData
-import com.android.builder.core.VariantType
 import com.android.builder.model.ApiVersion
 import com.android.builder.model.Version
 import com.android.repository.Revision
@@ -135,7 +134,11 @@ interface AGPInterface {
 
     val BaseVariant.targetSdkVersion: ApiVersion
 
-    val BaseVariant.variantType: VariantType
+    val BaseVariant.isApplication: Boolean
+
+    val BaseVariant.isLibrary: Boolean
+
+    val BaseVariant.isDynamicFeature: Boolean
 
     val BaseVariant.aar: FileCollection
 
