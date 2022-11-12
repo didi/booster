@@ -13,6 +13,7 @@ dependencies {
     implementation project(':booster-android-gradle-v7_0')
     implementation project(':booster-android-gradle-v7_1')
     implementation project(':booster-android-gradle-v7_2')
+    implementation project(':booster-android-gradle-v7_3')
     compileOnly 'com.android.tools.build:gradle:3.0.0'
     testCompileOnly 'com.android.tools.build:gradle:3.0.0'
 }

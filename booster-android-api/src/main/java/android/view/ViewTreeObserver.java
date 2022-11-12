@@ -75,9 +75,6 @@ public final class ViewTreeObserver {
          * their scroll bounds or even to request a new layout before drawing occurs.
          *
          * @return Return true to proceed with the current drawing pass, or false to cancel.
-         * @see android.view.View#onMeasure
-         * @see android.view.View#onLayout
-         * @see android.view.View#onDraw
          */
         public boolean onPreDraw();
     }
@@ -96,9 +93,6 @@ public final class ViewTreeObserver {
          * <p>An {@link OnDrawListener} listener <strong>cannot be added or removed</strong>
          * from this method.</p>
          *
-         * @see android.view.View#onMeasure
-         * @see android.view.View#onLayout
-         * @see android.view.View#onDraw
          */
         public void onDraw();
     }

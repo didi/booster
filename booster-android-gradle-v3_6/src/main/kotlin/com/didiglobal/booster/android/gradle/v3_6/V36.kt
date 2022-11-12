@@ -4,6 +4,9 @@ import com.android.build.api.artifact.ArtifactType
 import com.android.build.api.artifact.BuildArtifactType
 import com.android.build.api.transform.Context
 import com.android.build.api.transform.QualifiedContent
+import com.android.build.gradle.AppPlugin
+import com.android.build.gradle.DynamicFeaturePlugin
+import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.ApplicationVariant
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.LibraryVariant
@@ -151,8 +154,15 @@ object V36 : AGPInterface {
     override val BaseVariant.targetSdkVersion: ApiVersion
         get() = variantData.variantConfiguration.targetSdkVersion
 
-    override val BaseVariant.variantType: VariantType
-        get() = variantData.type
+    private val BaseVariant.variantType: VariantType
+        get() = variantScope.type
+
+    override val BaseVariant.isApplication: Boolean
+        get() = project.plugins.hasPlugin(AppPlugin::class.java)
+    override val BaseVariant.isLibrary: Boolean
+        get() = project.plugins.hasPlugin(LibraryPlugin::class.java)
+    override val BaseVariant.isDynamicFeature: Boolean
+        get() = project.plugins.hasPlugin(DynamicFeaturePlugin::class.java)
 
     override val BaseVariant.aar: FileCollection
         get() = project.files(variantScope.aarLocation.absolutePath)
