@@ -217,7 +217,6 @@ public final class Log {
     /**
      * Like {@link #wtf(String, String)}, but also writes to the log the full
      * call stack.
-     * @hide
      */
     public static int wtfStack(String tag, String msg) {
         throw new RuntimeException("Stub!");

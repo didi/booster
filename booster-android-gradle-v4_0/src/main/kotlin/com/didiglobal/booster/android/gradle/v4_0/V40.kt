@@ -2,6 +2,9 @@ package com.didiglobal.booster.android.gradle.v4_0
 
 import com.android.build.api.transform.Context
 import com.android.build.api.transform.QualifiedContent
+import com.android.build.gradle.AppPlugin
+import com.android.build.gradle.DynamicFeaturePlugin
+import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.ApplicationVariant
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.LibraryVariant
@@ -177,8 +180,17 @@ internal object V40 : AGPInterface {
     override val BaseVariant.targetSdkVersion: ApiVersion
         get() = variantData.variantDslInfo.targetSdkVersion
 
-    override val BaseVariant.variantType: VariantType
-        get() = variantData.variantDslInfo.variantType
+    private val BaseVariant.variantType: VariantType
+        get() = variantScope.type
+
+    override val BaseVariant.isApplication: Boolean
+        get() = variantType.isApk
+
+    override val BaseVariant.isLibrary: Boolean
+        get() = variantType.isAar
+
+    override val BaseVariant.isDynamicFeature: Boolean
+        get() = variantType.isDynamicFeature
 
     override val BaseVariant.aar: FileCollection
         get() = getFinalArtifactFiles(InternalArtifactType.AAR)
