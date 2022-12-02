@@ -26,12 +26,18 @@ task integrationTest(type: Test) {
     testLogging {
         events "passed", "skipped", "failed", "standardOut", "standardError"
     }
+    systemProperty('gradle.args', 'buildEnv dependencies assemble -S')
+    systemProperty 'android.minsdk.version', 18
 }
 
 check.dependsOn integrationTest
 
 compileIntegrationTestKotlin {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+        apiVersion = "1.5"
+        freeCompilerArgs = ["-Xno-optimized-callable-references"]
+    }
 }
 
 tasks.withType(ProcessResources).configureEach {

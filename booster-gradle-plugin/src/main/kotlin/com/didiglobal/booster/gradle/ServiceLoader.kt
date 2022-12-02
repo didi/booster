@@ -26,9 +26,9 @@ private class ServiceLoaderImpl<T>(
                 try {
                     provider.getConstructor(*types).newInstance(*args) as T
                 } catch (e: NoSuchMethodException) {
-                    provider.newInstance() as T
+                    provider.getDeclaredConstructor().newInstance() as T
                 }
-            } catch (e: ClassNotFoundException) {
+            } catch (e: Throwable) {
                 throw ServiceConfigurationError("Provider $provider not found")
             }
         }
@@ -66,15 +66,7 @@ internal fun lookupTransformers(classLoader: ClassLoader): Set<Class<Transformer
 }
 
 /**
- * Load [Transformer]s with the specified [classLoader]
- */
-@Throws(ServiceConfigurationError::class)
-internal fun loadTransformers(classLoader: ClassLoader): List<Transformer> {
-    return newServiceLoader<Transformer>(classLoader, ClassLoader::class.java).load(classLoader)
-}
-
-/**
- * Load [VariantProcessor]s with the specified [classLoader]
+ * Load [VariantProcessor]s with the specified [project]
  */
 @Throws(ServiceConfigurationError::class)
 internal fun loadVariantProcessors(project: Project): List<VariantProcessor> {
@@ -87,7 +79,7 @@ private fun parse(u: URL) = try {
         it.isNotEmpty() && it.isNotBlank() && !it.startsWith('#')
     }.map(String::trim).filter(::isJavaClassName)
 } catch (e: Throwable) {
-    emptyList<String>()
+    emptyList()
 }
 
 private fun isJavaClassName(text: String): Boolean {
@@ -97,7 +89,7 @@ private fun isJavaClassName(text: String): Boolean {
 
     for (i in 1 until text.length) {
         val cp = text.codePointAt(i)
-        if (!Character.isJavaIdentifierPart(cp) && cp != '.'.toInt()) {
+        if (!Character.isJavaIdentifierPart(cp) && cp != '.'.code) {
             throw ServiceConfigurationError("Illegal provider-class name: $text")
         }
     }

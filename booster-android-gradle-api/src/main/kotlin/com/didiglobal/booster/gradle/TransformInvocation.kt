@@ -2,6 +2,7 @@ package com.didiglobal.booster.gradle
 
 import com.android.build.api.transform.TransformInvocation
 import com.android.build.gradle.api.BaseVariant
+import com.android.builder.model.ApiVersion
 import org.gradle.api.Project
 import java.io.File
 
@@ -20,6 +21,9 @@ val TransformInvocation.project: Project
  */
 val TransformInvocation.variant: BaseVariant
     get() = AGP.run { variant }
+
+val TransformInvocation.targetSdkVersion: ApiVersion
+    get() = AGP.run { variant.targetSdkVersion }
 
 val TransformInvocation.bootClasspath: Collection<File>
     get() = AGP.run { bootClasspath }

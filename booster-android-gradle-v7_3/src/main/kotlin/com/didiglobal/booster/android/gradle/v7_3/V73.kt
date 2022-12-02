@@ -32,6 +32,7 @@ import org.gradle.api.artifacts.ArtifactCollection
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.api.artifacts.result.ResolvedDependencyResult
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.FileSystemLocation
 import org.gradle.api.tasks.TaskProvider
@@ -87,16 +88,6 @@ internal object V73 : AGPInterface {
         } catch (e: Throwable) {
             project.objects.fileCollection().builtBy(artifacts.getAll(type))
         }
-    }
-
-    private inline fun <T, R : Any> Sequence<T>.firstOfOrNull(transform: (T) -> R?): R? {
-        for (element in this) {
-            val result = transform(element)
-            if (result != null) {
-                return result
-            }
-        }
-        return null
     }
 
     @Suppress("UnstableApiUsage")
@@ -168,9 +159,32 @@ internal object V73 : AGPInterface {
         get() = component.global.hasDynamicFeatures
 
     override val BaseVariant.rawAndroidResources: FileCollection
-        get() = ComponentImpl::class.java.getDeclaredField("allRawAndroidResources").apply {
-            isAccessible = true
-        }.get(component) as FileCollection
+        get() {
+            val allRes: ConfigurableFileCollection = component.services.fileCollection()
+
+            allRes.from(component.variantDependencies.getArtifactCollection(
+                    AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH,
+                    ArtifactScope.ALL,
+                    AndroidArtifacts.ArtifactType.ANDROID_RES
+            ).artifactFiles)
+
+            allRes.from(component.services.fileCollection(variantData.extraGeneratedResFolders)
+                    .builtBy(listOfNotNull(variantData.extraGeneratedResFolders.builtBy)))
+
+            component.taskContainer.generateApkDataTask?.let {
+                allRes.from(artifacts.get(InternalArtifactType.MICRO_APK_RES))
+            }
+
+            allRes.from(component.sources.res.getVariantSources().map { allSources ->
+                allSources.map { directoryEntries ->
+                    directoryEntries.directoryEntries.map {
+                        it.asFiles(component.services::directoryProperty)
+                    }
+                }
+            })
+
+            return allRes
+        }
 
     override fun BaseVariant.getArtifactCollection(
             configType: AndroidArtifacts.ConsumedConfigType,
@@ -260,7 +274,7 @@ internal object V73 : AGPInterface {
     override val BaseVariant.allClasses: FileCollection
         get() = when (this) {
             is ApplicationVariant -> getFinalArtifactFiles(InternalArtifactType.JAVAC) + project.files("build${File.separator}tmp${File.separator}kotlin-classes${File.separator}${dirName}")
-            is LibraryVariant -> getFinalArtifactFiles(InternalArtifactType.COMPILE_LIBRARY_CLASSES_JAR)
+            is LibraryVariant -> getFinalArtifactFiles(InternalArtifactType.AAR_MAIN_JAR)
             else -> project.files()
         }
 

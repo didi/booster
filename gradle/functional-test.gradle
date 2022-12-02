@@ -26,10 +26,16 @@ task functionalTest(type: Test) {
     testLogging {
         events "passed", "skipped", "failed", "standardError"
     }
+    systemProperty('gradle.args', 'buildEnv dependencies assemble -S')
+    systemProperty 'android.minsdk.version', 18
 }
 
 check.dependsOn functionalTest
 
 compileFunctionalTestKotlin {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+        apiVersion = "1.5"
+        freeCompilerArgs = ["-Xno-optimized-callable-references"]
+    }
 }

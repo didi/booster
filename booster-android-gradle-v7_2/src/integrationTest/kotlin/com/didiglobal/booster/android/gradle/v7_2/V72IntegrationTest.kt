@@ -6,7 +6,6 @@ import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.api.BaseVariant
-import com.android.builder.core.VariantTypeImpl
 import com.didiglobal.booster.gradle.AGP
 import com.didiglobal.booster.gradle.getAndroid
 import com.didiglobal.booster.kotlinx.search
@@ -30,12 +29,11 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
-private const val MIN_SDK_VERSION = 18
+private val MIN_SDK_VERSION = System.getProperty("android.minsdk.version").toInt()
 
 private const val TARGET_SDK_VERSION = 30
 
-private val ARGS = arrayOf(
-        "assemble", "-S",
+private val ARGS = System.getProperty("gradle.args").split("\\s+".toRegex()) + listOf(
         "-Pbooster_version=${Build.VERSION}",
         "-Pandroid_gradle_version=7.2.0",
         "-Pcompile_sdk_version=30",
@@ -52,7 +50,7 @@ abstract class V72IntegrationTest(private val isLib: Boolean) {
     @get:Rule
     val ruleChain: TestRule = rule(projectDir) {
         rule(LocalProperties(projectDir::getRoot)) {
-            GradleExecutor(projectDir::getRoot, "7.3.3", *ARGS)
+            GradleExecutor(projectDir::getRoot, "7.3.3", *ARGS.toTypedArray())
         }
     }
 
@@ -137,11 +135,6 @@ abstract class V72IntegrationTest(private val isLib: Boolean) {
     @Test
     @Case(TargetSdkVersionTestUnit::class)
     fun `test AGPInterface#targetSdkVersion`() = Unit
-
-    @Test
-    @Case(VariantTypeTestUnit::class)
-    fun `test AGPInterface#variantType`() {
-    }
 
     @Test
     @Case(AarTestUnit::class)
@@ -335,18 +328,6 @@ class TargetSdkVersionTestUnit : VariantTestCase() {
         val targetSdkVersion = AGP.run { variant.targetSdkVersion }
         assertNotNull(targetSdkVersion)
         assertEquals(TARGET_SDK_VERSION, targetSdkVersion.apiLevel)
-    }
-}
-
-class VariantTypeTestUnit : VariantTestCase() {
-    override fun apply(variant: BaseVariant) {
-        val project = AGP.run { variant.project }
-        val variantType = AGP.run { variant.variantType }
-        if (project.plugins.hasPlugin("com.android.application")) {
-            assertEquals(VariantTypeImpl.BASE_APK, variantType)
-        } else if (project.plugins.hasPlugin("com.android.library")) {
-            assertEquals(VariantTypeImpl.LIBRARY, variantType)
-        }
     }
 }
 

@@ -96,10 +96,15 @@ interface AGPInterface {
 
     val BaseVariant.variantScope: VariantScope
 
+    @Deprecated(
+            message = "Use BaseVariant.namespace instead",
+            replaceWith = ReplaceWith(expression = "variant.namespace"),
+    )
     val BaseVariant.originalApplicationId: String
 
     val BaseVariant.hasDynamicFeature: Boolean
 
+    @Deprecated(message = "Deprecated, don't use it")
     val BaseVariant.rawAndroidResources: FileCollection
 
     val BaseVariant.javaCompilerTaskProvider: TaskProvider<out Task>
@@ -181,6 +186,7 @@ interface AGPInterface {
     )
     val Project.aapt2Enabled: Boolean
 
+    @Suppress("DEPRECATION")
     val Project.isAapt2Enabled: Boolean
         get() = aapt2Enabled
 
