@@ -14,6 +14,7 @@ import org.gradle.api.UnknownTaskException
 import org.gradle.api.artifacts.ArtifactCollection
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.api.file.FileCollection
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
 import java.io.File
 

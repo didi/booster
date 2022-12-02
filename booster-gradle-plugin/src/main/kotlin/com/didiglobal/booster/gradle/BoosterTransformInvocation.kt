@@ -244,7 +244,7 @@ internal class BoosterTransformInvocation(
     private fun doVerify() {
         outputs.sortedBy(File::nameWithoutExtension).forEach { input ->
             val output = temporaryDir.file(input.name)
-            val rc = input.dex(output, variant.extension.defaultConfig.targetSdkVersion?.apiLevel ?: DexFormat.API_NO_EXTENDED_OPCODES)
+            val rc = input.dex(output, targetSdkVersion.apiLevel)
             println("${if (rc != 0) red("✗") else green("✓")} $input")
             output.deleteRecursively()
         }

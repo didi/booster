@@ -302,3 +302,27 @@ jobs:
         with:
           name: booster-android-gradle-v7_2
           path: booster-android-gradle-v7_2/build/reports/tests/integrationTest
+
+  integration-test-agp-v7_3:
+    name: AGP 7.3 Integration Test
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+          cache: 'gradle'
+      - uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ github.run_number }}
+      - shell: bash
+        run: ./gradlew booster-android-gradle-v7_3:integrationTest -S --no-daemon -Pversion=${{ github.run_number }}
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: booster-android-gradle-v7_3
+          path: booster-android-gradle-v7_3/build/reports/tests/integrationTest
+

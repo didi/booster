@@ -7,9 +7,6 @@ import com.android.build.api.artifact.impl.ArtifactsImpl
 import com.android.build.api.component.impl.ComponentImpl
 import com.android.build.api.transform.Context
 import com.android.build.api.transform.QualifiedContent
-import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.DynamicFeaturePlugin
-import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.ApplicationVariant
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.LibraryVariant
@@ -265,7 +262,7 @@ internal object V72 : AGPInterface {
     override val BaseVariant.allClasses: FileCollection
         get() = when (this) {
             is ApplicationVariant -> getFinalArtifactFiles(InternalArtifactType.JAVAC) + project.files("build${File.separator}tmp${File.separator}kotlin-classes${File.separator}${dirName}")
-            is LibraryVariant -> getFinalArtifactFiles(InternalArtifactType.COMPILE_LIBRARY_CLASSES_JAR)
+            is LibraryVariant -> getFinalArtifactFiles(InternalArtifactType.AAR_MAIN_JAR)
             else -> project.files()
         }
 

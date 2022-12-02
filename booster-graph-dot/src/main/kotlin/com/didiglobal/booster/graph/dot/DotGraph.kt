@@ -6,10 +6,11 @@ import com.didiglobal.booster.graph.Graph
 import com.didiglobal.booster.graph.GraphRenderer
 import com.didiglobal.booster.graph.GroupedNode
 import com.didiglobal.booster.graph.Node
-import com.didiglobal.booster.kotlinx.*
+import com.didiglobal.booster.kotlinx.OS
+import com.didiglobal.booster.kotlinx.RGB
+import com.didiglobal.booster.kotlinx.WebSafeColorPalette
+import com.didiglobal.booster.kotlinx.touch
 import java.io.File
-import java.io.FileNotFoundException
-import java.io.IOException
 import kotlin.reflect.full.memberProperties
 
 private val DOT = CommandService.fromPath("dot${OS.executableSuffix}")
@@ -24,27 +25,27 @@ sealed class DotGraph : GraphRenderer {
     object DIGRAPH : DotGraph() {
 
         override fun <N : Node> render(graph: Graph<N>, options: GraphRenderer.Options, prettify: (N) -> String): CharSequence {
-            return StringBuilder().apply {
-                appendln("digraph \"${graph.title}\" {")
-                appendln("    graph [bgcolor=\"transparent\",pad=\"0.555\"];")
-                appendln("    node [color=\"#00BFC4\",fillcolor=\"#00BFC440\",fontcolor=\"#333333\",fontname=Helvetica,shape=box,style=filled];")
-                appendln("    edge [fontname=Helvetica];")
-                appendln("    rankdir = ${options["rankdir"] ?: "TB"};")
+            return buildString {
+                appendLine("digraph \"${graph.title}\" {")
+                appendLine("    graph [bgcolor=\"transparent\",pad=\"0.555\"];")
+                appendLine("    node [color=\"#00BFC4\",fillcolor=\"#00BFC440\",fontcolor=\"#333333\",fontname=Helvetica,shape=box,style=filled];")
+                appendLine("    edge [fontname=Helvetica];")
+                appendLine("    rankdir = ${options["rankdir"] ?: "TB"};")
 
                 graph.nodes.filterIsInstance<GroupedNode<*>>().groupBy {
                     it.groupBy() ?: ""
                 }.entries.withIndex().forEach { (index, entry) ->
                     val color = RGB.valueOf(WebSafeColorPalette.random(0x000000, 0xffffff))
-                    appendln("    subgraph cluster_${index} {")
-                    appendln("        style=\"rounded,dashed\";")
-                    appendln("        label=\"${entry.key}\";")
-                    appendln("        fgcolor=\"${color}\";")
+                    appendLine("    subgraph cluster_${index} {")
+                    appendLine("        style=\"rounded,dashed\";")
+                    appendLine("        label=\"${entry.key}\";")
+                    appendLine("        fgcolor=\"${color}\";")
                     entry.value.map { node ->
                         @Suppress("UNCHECKED_CAST") (node as N)
                     }.forEach { node ->
-                        appendln("        \"${prettify(node)}\";")
+                        appendLine("        \"${prettify(node)}\";")
                     }
-                    appendln("    }")
+                    appendLine("    }")
                 }
 
                 graph.nodes.joinTo(this, "\n    ", "    ", "\n") { node ->
@@ -56,7 +57,7 @@ sealed class DotGraph : GraphRenderer {
                     val color = RGB.valueOf(WebSafeColorPalette.random(0x000000, 0xffffff)).toString() // except white color
                     "\"${prettify(edge.from)}\" -> \"${prettify(edge.to)}\" [color=\"#$color\",fontcolor=\"#$color\"];"
                 }
-                appendln("}")
+                appendLine("}")
             }
         }
 

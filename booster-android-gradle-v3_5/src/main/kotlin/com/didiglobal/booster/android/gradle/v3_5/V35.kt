@@ -4,9 +4,6 @@ import com.android.build.api.artifact.ArtifactType
 import com.android.build.api.artifact.BuildArtifactType
 import com.android.build.api.transform.Context
 import com.android.build.api.transform.QualifiedContent
-import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.DynamicFeaturePlugin
-import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.ApplicationVariant
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.LibraryVariant
