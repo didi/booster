@@ -44,9 +44,9 @@ Booster provides a collection of modules for performance detection, multithreadi
 
 ## Prerequisite | 先决条件
 
-- JDK (`1.8` is recommended)
-- Gradle version `4.1+`
-- Android Gradle Plugin version `3.0+`
+- JDK (minimum version required is `JDK 1.8`, `JDK 11` is recommended)
+- Gradle version `4.10+`
+- Android Gradle Plugin version `3.3+`
 
 The following table lists which version of Gradle is required for each version of the Android Gradle plugin. For the best performance, please use the latest possible version of both Gradle and the plugin.
 
@@ -54,9 +54,6 @@ The following table lists which version of Gradle is required for each version o
 
 | Android Gradle Plugin |  Gradle  |
 |:---------------------:|:--------:|
-| 3.0.0+                | 4.1+     |
-| 3.1.0+                | 4.4+     |
-| 3.2.0 - 3.2.1         | 4.6+     |
 | 3.3.0 - 3.3.3         | 4.10.1+  |
 | 3.4.0 - 3.4.3         | 5.1.1+   |
 | 3.5.0 - 3.5.4         | 5.4.1+   |
@@ -67,6 +64,7 @@ The following table lists which version of Gradle is required for each version o
 | 7.0                   | 7.0+     |
 | 7.1                   | 7.1+     |
 | 7.2                   | 7.3.3+   |
+| 7.3                   | 7.4+     |
 
 ## Best Practise | 最佳实践
 
