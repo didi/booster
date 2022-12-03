@@ -1,3 +1,11 @@
+## v4.15.0
+
+- Fix issue [#381](https://github.com/didi/booster/issues/381)
+- Fix issue [#387](https://github.com/didi/booster/issues/387)
+- Upgrade Kotlin API version to 1.5.0
+- Support AGP 7.3
+- Fix integration tests
+
 ## v4.14.0
 
 - CHA improvement
