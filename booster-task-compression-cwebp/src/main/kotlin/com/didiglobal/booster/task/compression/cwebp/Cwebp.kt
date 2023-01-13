@@ -58,6 +58,7 @@ internal val PREBUILT_CWEBP_EXECUTABLE = "bin/" + when {
         else -> TODO("Unsupported architecture ${OS.arch}")
     }
     OS.isMac() -> "macosx/" + when {
+        OS.isArm64Chip() -> "arm64"
         OS.version >= "10.15" -> "10.15"
         OS.version >= "10.14" -> "10.14"
         OS.version >= "10.13" -> "10.13"
