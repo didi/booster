@@ -64,6 +64,8 @@ object OS {
 
     fun isMac() = name.startsWith("mac")
 
+    fun isArm64Chip() = arch.startsWith("aarch64")
+
     fun isWindows() = name.startsWith("windows")
 
 }
