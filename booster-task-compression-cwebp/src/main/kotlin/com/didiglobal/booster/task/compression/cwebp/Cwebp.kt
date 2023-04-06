@@ -57,13 +57,16 @@ internal val PREBUILT_CWEBP_EXECUTABLE = "bin/" + when {
         "x64", "x86_64", "amd64" -> "x64"
         else -> TODO("Unsupported architecture ${OS.arch}")
     }
-    OS.isMac() -> "macosx/" + when {
-        OS.isArm64Chip() -> "arm64"
-        OS.version >= "10.15" -> "10.15"
-        OS.version >= "10.14" -> "10.14"
-        OS.version >= "10.13" -> "10.13"
-        OS.version >= "10.12" -> "10.12"
-        else -> TODO("Unsupported system version ${OS.version}")
+    OS.isMac() -> "macosx/" + when (OS.arch) {
+        "arm64" -> "arm64"
+        "x86_64" -> "x86_64/" + when {
+            OS.version >= "10.15" -> "10.15"
+            OS.version >= "10.14" -> "10.14"
+            OS.version >= "10.13" -> "10.13"
+            OS.version >= "10.12" -> "10.12"
+            else -> TODO("Unsupported system version ${OS.version}")
+        }
+        else -> TODO("Unsupported architecture ${OS.arch}")
     }
     OS.isWindows() -> "windows/" + when (OS.arch) {
         "x64", "x86_64", "amd64" -> "x64"
