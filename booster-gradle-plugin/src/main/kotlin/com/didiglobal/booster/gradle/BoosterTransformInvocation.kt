@@ -207,7 +207,11 @@ internal class BoosterTransformInvocation(
     @Suppress("NON_EXHAUSTIVE_WHEN")
     private fun doIncrementalTransform(jarInput: JarInput) {
         when (jarInput.status) {
-            REMOVED -> jarInput.file.delete()
+            REMOVED -> {
+                outputProvider?.getContentLocation(jarInput.id, jarInput.contentTypes, jarInput.scopes, Format.JAR)?.takeIf {
+                    it.exists()
+                }?.delete()
+            }
             else -> {
                 outputProvider?.let { provider ->
                     jarInput.transform(provider.getContentLocation(jarInput.id, jarInput.contentTypes, jarInput.scopes, Format.JAR))
