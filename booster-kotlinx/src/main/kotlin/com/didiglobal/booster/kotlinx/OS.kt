@@ -6,7 +6,11 @@ object OS {
 
     val name: String = System.getProperty("os.name", "").toLowerCase(Locale.US)
 
-    val arch: String = System.getProperty("os.arch", "").toLowerCase(Locale.US)
+    val arch: String = try {
+        "arch".execute().stdout.trim().lowercase()
+    } catch (e: Throwable) {
+        System.getProperty("os.arch", "").lowercase()
+    }
 
     val version = object : Comparable<String> {
 
@@ -63,8 +67,6 @@ object OS {
     fun isLinux() = name.startsWith("linux", true)
 
     fun isMac() = name.startsWith("mac")
-
-    fun isArm64Chip() = arch.startsWith("aarch64")
 
     fun isWindows() = name.startsWith("windows")
 
