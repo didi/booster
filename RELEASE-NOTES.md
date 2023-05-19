@@ -1,3 +1,8 @@
+## v4.16.1
+
+- Fix issue [#406](https://github.com/didi/booster/issues/406) : incremental build with jar removal
+- Fix issue [#407](https://github.com/didi/booster/issues/407) : Apple M1 chipset support for cwebp
+
 ## v4.15.0
 
 - Fix issue [#381](https://github.com/didi/booster/issues/381)
