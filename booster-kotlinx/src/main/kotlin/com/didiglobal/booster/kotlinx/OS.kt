@@ -6,10 +6,12 @@ object OS {
 
     val name: String = System.getProperty("os.name", "").toLowerCase(Locale.US)
 
-    val arch: String = try {
-        "arch".execute().stdout.trim().lowercase()
+    val arch: String = System.getProperty("os.arch", "").toLowerCase(Locale.US)
+
+    val uname = try {
+        "uname -a".execute().stdout.trim().toLowerCase(Locale.US)
     } catch (e: Throwable) {
-        System.getProperty("os.arch", "").lowercase()
+        arch
     }
 
     val version = object : Comparable<String> {
