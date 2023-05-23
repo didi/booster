@@ -6,7 +6,7 @@ import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.didiglobal.booster.cha.asm.AsmClassSetCache
-import com.didiglobal.booster.gradle.getAndroid
+import com.didiglobal.booster.gradle.getAndroidOrNull
 import com.didiglobal.booster.gradle.getJarTaskProviders
 import com.didiglobal.booster.gradle.getTaskName
 import com.didiglobal.booster.gradle.getUpstreamProjects
@@ -64,7 +64,7 @@ class AnalysisVariantProcessor : VariantProcessor {
     }
 
     private inline fun <reified T : AnalysisTask> Project.setupAndroid() {
-        when (val android = getAndroid<BaseExtension>()) {
+        when (val android = getAndroidOrNull<BaseExtension>()) {
             is LibraryExtension -> android.libraryVariants
             is AppExtension -> android.applicationVariants
             else -> emptyList<BaseVariant>()

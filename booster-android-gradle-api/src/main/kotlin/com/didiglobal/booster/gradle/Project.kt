@@ -131,7 +131,7 @@ fun Project.getJars(variant: BaseVariant? = null): Set<File> = getJarTaskProvide
 }.flatten().toSet()
 
 fun Project.getJarTaskProviders(variant: BaseVariant? = null): Collection<TaskProvider<out Task>> = when {
-    isAndroid -> when (getAndroid<BaseExtension>()) {
+    isAndroid -> when (getAndroidOrNull<BaseExtension>()) {
         is LibraryExtension -> filterByVariant(variant).mapNotNull(BaseVariant::createFullJarTaskProvider)
         is AppExtension -> filterByVariant(variant).mapNotNull(BaseVariant::bundleClassesTaskProvider)
         else -> emptyList()
@@ -141,7 +141,7 @@ fun Project.getJarTaskProviders(variant: BaseVariant? = null): Collection<TaskPr
 }
 
 private fun Project.filterByVariant(variant: BaseVariant? = null): Collection<BaseVariant> {
-    val variants = when (val android = getAndroid<BaseExtension>()) {
+    val variants = when (val android = getAndroidOrNull<BaseExtension>()) {
         is AppExtension -> android.applicationVariants
         is LibraryExtension -> android.libraryVariants
         else -> emptyList<BaseVariant>()
