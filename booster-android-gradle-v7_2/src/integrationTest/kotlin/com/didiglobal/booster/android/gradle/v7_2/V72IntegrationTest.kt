@@ -109,10 +109,6 @@ abstract class V72IntegrationTest(private val isLib: Boolean) {
     fun `test AGPInterface#variantData`() = Unit
 
     @Test
-    @Case(VariantScopeTestUnit::class)
-    fun `test AGPInterface#variantScope`() = Unit
-
-    @Test
     @Case(OriginalApplicationIdTestUnit::class)
     fun `test AGPInterface#originalApplicationId`() = Unit
 
@@ -264,12 +260,6 @@ class GetTaskName2TestUnit : VariantTestCase() {
 class VariantDataTestUnit : VariantTestCase() {
     override fun apply(variant: BaseVariant) {
         assertNotNull(AGP.run { variant.variantData })
-    }
-}
-
-class VariantScopeTestUnit : VariantTestCase() {
-    override fun apply(variant: BaseVariant) {
-        assertNotNull(AGP.run { variant.variantScope })
     }
 }
 

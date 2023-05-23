@@ -1,12 +1,11 @@
 @file:Suppress("DEPRECATION")
 
-package com.didiglobal.booster.android.gradle.v4_2
+package com.didiglobal.booster.android.gradle.v7_4
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.api.BaseVariant
-import com.android.sdklib.BuildToolInfo
 import com.didiglobal.booster.gradle.AGP
 import com.didiglobal.booster.gradle.getAndroid
 import com.didiglobal.booster.kotlinx.search
@@ -32,26 +31,26 @@ import kotlin.test.fail
 
 private val MIN_SDK_VERSION = System.getProperty("android.minsdk.version").toInt()
 
-private const val TARGET_SDK_VERSION = 26
+private const val TARGET_SDK_VERSION = 30
 
 private val ARGS = System.getProperty("gradle.args").split("\\s+".toRegex()) + listOf(
         "-Pbooster_version=${Build.VERSION}",
-        "-Pandroid_gradle_version=4.2.1",
-        "-Pcompile_sdk_version=28",
-        "-Pbuild_tools_version=26.0.3",
+        "-Pandroid_gradle_version=7.4.2",
+        "-Pcompile_sdk_version=30",
+        "-Pbuild_tools_version=29.0.2",
         "-Pmin_sdk_version=${MIN_SDK_VERSION}",
         "-Ptarget_sdk_version=${TARGET_SDK_VERSION}"
 )
 
 @Suppress("RemoveCurlyBracesFromTemplate", "FunctionName")
-abstract class V42IntegrationTest(val isLib: Boolean) {
+abstract class V74IntegrationTest(private val isLib: Boolean) {
 
     private val projectDir = TemporaryFolder()
 
     @get:Rule
     val ruleChain: TestRule = rule(projectDir) {
         rule(LocalProperties(projectDir::getRoot)) {
-            GradleExecutor(projectDir::getRoot, "6.7.1", *ARGS.toTypedArray())
+            GradleExecutor(projectDir::getRoot, "7.5", *ARGS.toTypedArray())
         }
     }
 
@@ -61,8 +60,8 @@ abstract class V42IntegrationTest(val isLib: Boolean) {
         projectDir.copyFromResource("buildSrc")
         projectDir.copyFromResource("src")
         projectDir.newFile("gradle.properties").writeText("org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=2g")
-        assertEquals(4, AGP.revision.major)
-        assertEquals(2, AGP.revision.minor)
+        assertEquals(7, AGP.revision.major)
+        assertEquals(4, AGP.revision.minor)
     }
 
     @Test
@@ -135,49 +134,59 @@ abstract class V42IntegrationTest(val isLib: Boolean) {
 
     @Test
     @Case(AarTestUnit::class)
-    fun `test AGPInterface#aar`() = Unit
+    fun `test AGPInterface#aar`() {
+    }
 
     @Test
     @Case(ApkTestUnit::class)
-    fun `test AGPInterface#apk`() = Unit
+    fun `test AGPInterface#apk`() {
+    }
 
     @Test
     @Case(MergedManifestsTestUnit::class)
-    fun `test AGPInterface#mergedManifests`() = Unit
+    fun `test AGPInterface#mergedManifests`() {
+    }
 
     @Test
     @Case(MergedResourcesTestUnit::class)
-    fun `test AGPInterface#mergedRes`() = Unit
+    fun `test AGPInterface#mergedRes`() {
+    }
 
     @Test
     @Case(MergedAssetsTestUnit::class)
-    fun `test AGPInterface#mergedAssets`() = Unit
+    fun `test AGPInterface#mergedAssets`() {
+    }
 
     @Test
     @Case(ProcessedResTestUnit::class)
-    fun `test AGPInterface#processedRes`() = Unit
+    fun `test AGPInterface#processedRes`() {
+    }
 
     @Test
     @Case(SymbolListTestUnit::class)
-    fun `test AGPInterface#symbolList`() = Unit
+    fun `test AGPInterface#symbolList`() {
+    }
 
     @Test
     @Case(SymbolListWithPackageNameTestUnit::class)
-    fun `test AGPInterface#symbolListWithPackageName`() = Unit
+    fun `test AGPInterface#symbolListWithPackageName`() {
+    }
 
     @Test
     @Case(AllClassesTestUnit::class)
-    fun `test AGPInterface#allClasses`() = Unit
+    fun `test AGPInterface#allClasses`() {
+    }
 
-    @Test
-    @Case(BuildToolsTestUnit::class)
-    fun `test AGPInterface#buildTools`() = Unit
+//    @Test
+//    @Case(BuildToolsTestUnit::class)
+//    fun `test AGPInterface#buildTools`() {
+//    }
 
 }
 
-class V42AppIntegrationTest : V42IntegrationTest(false)
+class V74AppIntegrationTest : V74IntegrationTest(false)
 
-class V42LibIntegrationTest : V42IntegrationTest(true)
+class V74LibIntegrationTest : V74IntegrationTest(true)
 
 class ScopeFullWithFeaturesTest : TestCase {
     override fun apply(project: Project) {
@@ -256,7 +265,9 @@ class VariantDataTestUnit : VariantTestCase() {
 
 class OriginalApplicationIdTestUnit : VariantTestCase() {
     override fun apply(variant: BaseVariant) {
-        assertNotNull(AGP.run { variant.originalApplicationId })
+        AGP.run { variant.assembleTask }.doFirst {
+            assertNotNull(AGP.run { variant.originalApplicationId })
+        }
     }
 }
 
@@ -464,18 +475,6 @@ class AllClassesTestUnit : VariantTestCase() {
             assertTrue("No class file found at $location") {
                 location.search(File::isFile).isNotEmpty()
             }
-        }
-    }
-}
-
-class BuildToolsTestUnit : VariantTestCase() {
-    override fun apply(variant: BaseVariant) {
-        val buildTools = AGP.run { variant.buildTools }
-        assertNotNull(buildTools)
-        BuildToolInfo.PathId.values().map {
-            it.name to buildTools.getPath(it)
-        }.forEach { (k, v) ->
-            println(" - $k => $v")
         }
     }
 }

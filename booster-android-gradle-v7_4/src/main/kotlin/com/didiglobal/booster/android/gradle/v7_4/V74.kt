@@ -188,23 +188,15 @@ internal object V74 : AGPInterface {
         }
 
     override val BaseVariant.localAndroidResources: FileCollection
-        get() {
-            val localRes: ConfigurableFileCollection = component.services.fileCollection()
-
-            localRes.from(component.sources.res.getVariantSources().map { allSources ->
-                allSources.getEntries().map {
-                    if (it is TaskProviderBasedDirectoryEntryImpl) {
-                        it.directoryProvider
-                    } else {
-                        it.asFiles(component.services.provider {
-                            component.services.projectInfo.projectDirectory
-                        })
-                    }
+        get() = component.services.fileCollection().from(component.sources.res.getLocalSources().values.map {
+            it.map { dirs ->
+                dirs.map { dir ->
+                    dir.asFileTree
+                }.reduce { acc, dir ->
+                    acc.plus(dir)
                 }
-            })
-
-            return localRes
-        }
+            }
+        })
 
     override fun BaseVariant.getArtifactCollection(
             configType: AndroidArtifacts.ConsumedConfigType,

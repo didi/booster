@@ -145,7 +145,7 @@ internal object V73 : AGPInterface {
             isAccessible = true
         }.invoke(this) as BaseVariantData
 
-    override val BaseVariant.variantScope: VariantScope
+    val BaseVariant.variantScope: VariantScope
         get() = component.variantScope
 
     @Suppress("DEPRECATION")
@@ -187,19 +187,11 @@ internal object V73 : AGPInterface {
         }
 
     override val BaseVariant.localAndroidResources: FileCollection
-        get() {
-            val localRes: ConfigurableFileCollection = component.services.fileCollection()
-
-            localRes.from(component.sources.res.getVariantSources().map { allSources ->
-                allSources.map { directoryEntries ->
-                    directoryEntries.directoryEntries.map {
-                        it.asFiles(component.services::directoryProperty)
-                    }
-                }
-            })
-
-            return localRes
-        }
+        get() = component.services.fileCollection().from(component.sources.res.getLocalSourcesAsFileCollection().map {
+            it.values.reduce { acc, files ->
+                acc.plus(files)
+            }
+        })
 
     override fun BaseVariant.getArtifactCollection(
             configType: AndroidArtifacts.ConsumedConfigType,
