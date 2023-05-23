@@ -97,7 +97,7 @@ internal object V35 : AGPInterface {
             isAccessible = true
         }.invoke(this) as BaseVariantData
 
-    override val BaseVariant.variantScope: VariantScope
+    val BaseVariant.variantScope: VariantScope
         get() = variantData.scope
 
     private val BaseVariant.globalScope: GlobalScope

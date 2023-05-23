@@ -95,8 +95,6 @@ interface AGPInterface {
 
     val BaseVariant.variantData: BaseVariantData
 
-    val BaseVariant.variantScope: VariantScope
-
     @Deprecated(
             message = "Use BaseVariant.namespace instead",
             replaceWith = ReplaceWith(expression = "variant.namespace"),

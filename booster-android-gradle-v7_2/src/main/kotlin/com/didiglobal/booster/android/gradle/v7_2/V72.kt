@@ -155,7 +155,7 @@ internal object V72 : AGPInterface {
             isAccessible = true
         }.invoke(this) as BaseVariantData
 
-    override val BaseVariant.variantScope: VariantScope
+    val BaseVariant.variantScope: VariantScope
         get() = component.variantScope
 
     @Suppress("DEPRECATION")
