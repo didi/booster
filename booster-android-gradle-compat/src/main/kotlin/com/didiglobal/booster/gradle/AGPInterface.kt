@@ -108,6 +108,8 @@ interface AGPInterface {
     @Deprecated(message = "Deprecated, don't use it")
     val BaseVariant.rawAndroidResources: FileCollection
 
+    val BaseVariant.localAndroidResources: FileCollection
+
     val BaseVariant.javaCompilerTaskProvider: TaskProvider<out Task>
 
     val BaseVariant.preBuildTaskProvider: TaskProvider<out Task>

@@ -1,4 +1,4 @@
-package com.didiglobal.booster.android.gradle.v7_2
+package com.didiglobal.booster.android.gradle.v7_4
 
 import com.android.build.api.artifact.Artifact
 import com.android.build.api.artifact.MultipleArtifact
@@ -7,6 +7,7 @@ import com.android.build.api.artifact.impl.ArtifactsImpl
 import com.android.build.api.component.impl.ComponentImpl
 import com.android.build.api.transform.Context
 import com.android.build.api.transform.QualifiedContent
+import com.android.build.api.variant.impl.TaskProviderBasedDirectoryEntryImpl
 import com.android.build.gradle.api.ApplicationVariant
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.LibraryVariant
@@ -19,11 +20,9 @@ import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactSco
 import com.android.build.gradle.internal.scope.BuildArtifactType
 import com.android.build.gradle.internal.scope.InternalArtifactType
 import com.android.build.gradle.internal.scope.InternalMultipleArtifactType
-import com.android.build.gradle.internal.scope.VariantScope
 import com.android.build.gradle.internal.tasks.factory.GlobalTaskCreationConfigImpl
 import com.android.build.gradle.internal.variant.BaseVariantData
 import com.android.builder.core.DefaultApiVersion
-import com.android.builder.core.VariantType
 import com.android.builder.model.ApiVersion
 import com.android.sdklib.BuildToolInfo
 import com.didiglobal.booster.gradle.AGPInterface
@@ -33,6 +32,7 @@ import org.gradle.api.artifacts.ArtifactCollection
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.api.artifacts.result.ResolvedDependencyResult
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.FileSystemLocation
 import org.gradle.api.tasks.TaskProvider
@@ -65,12 +65,12 @@ private val MULTIPLE_ARTIFACT_TYPES = arrayOf(
 }
 
 @Suppress("DEPRECATION")
-internal object V72 : AGPInterface {
+internal object V74 : AGPInterface {
 
-    private val BaseVariant.component: ComponentImpl
+    private val BaseVariant.component: ComponentImpl<*>
         get() = BaseVariantImpl::class.java.getDeclaredField("component").apply {
             isAccessible = true
-        }.get(this) as ComponentImpl
+        }.get(this) as ComponentImpl<*>
 
     @Suppress("UnstableApiUsage")
     private fun <T : FileSystemLocation> BaseVariant.getFinalArtifactFiles(type: Artifact.Single<T>): FileCollection {
@@ -88,16 +88,6 @@ internal object V72 : AGPInterface {
         } catch (e: Throwable) {
             project.objects.fileCollection().builtBy(artifacts.getAll(type))
         }
-    }
-
-    private inline fun <T, R : Any> Sequence<T>.firstOfOrNull(transform: (T) -> R?): R? {
-        for (element in this) {
-            val result = transform(element)
-            if (result != null) {
-                return result
-            }
-        }
-        return null
     }
 
     @Suppress("UnstableApiUsage")
@@ -155,25 +145,65 @@ internal object V72 : AGPInterface {
             isAccessible = true
         }.invoke(this) as BaseVariantData
 
-    override val BaseVariant.variantScope: VariantScope
-        get() = component.variantScope
-
     @Suppress("DEPRECATION")
     private val BaseVariant.globalScope: GlobalTaskCreationConfigImpl
         get() = component.global as GlobalTaskCreationConfigImpl
 
     override val BaseVariant.originalApplicationId: String
-        get() = component.variantDslInfo.namespace.get()
+        get() = component.namespace.get()
 
     override val BaseVariant.hasDynamicFeature: Boolean
-        get() = globalScope.hasDynamicFeatures
+        get() = component.global.hasDynamicFeatures
 
     override val BaseVariant.rawAndroidResources: FileCollection
-        get() = component.variantData.allRawAndroidResources
+        get() {
+            val allRes: ConfigurableFileCollection = component.services.fileCollection()
+
+            allRes.from(component.variantDependencies.getArtifactCollection(
+                    AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH,
+                    ArtifactScope.ALL,
+                    AndroidArtifacts.ArtifactType.ANDROID_RES
+            ).artifactFiles)
+
+            allRes.from(component.services.fileCollection(variantData.extraGeneratedResFolders)
+                    .builtBy(listOfNotNull(variantData.extraGeneratedResFolders.builtBy)))
+
+            component.taskContainer.generateApkDataTask?.let {
+                allRes.from(artifacts.get(InternalArtifactType.MICRO_APK_RES))
+            }
+
+            allRes.from(component.sources.res.getVariantSources().map { allSources ->
+                allSources.getEntries().map {
+                    if (it is TaskProviderBasedDirectoryEntryImpl) {
+                        it.directoryProvider
+                    } else {
+                        it.asFiles(component.services.provider {
+                            component.services.projectInfo.projectDirectory
+                        })
+                    }
+                }
+            })
+
+            return allRes
+        }
 
     override val BaseVariant.localAndroidResources: FileCollection
-        get() = component.variantData.androidResources.values.reduce { collection, file ->
-            collection.plus(file)
+        get() {
+            val localRes: ConfigurableFileCollection = component.services.fileCollection()
+
+            localRes.from(component.sources.res.getVariantSources().map { allSources ->
+                allSources.getEntries().map {
+                    if (it is TaskProviderBasedDirectoryEntryImpl) {
+                        it.directoryProvider
+                    } else {
+                        it.asFiles(component.services.provider {
+                            component.services.projectInfo.projectDirectory
+                        })
+                    }
+                }
+            })
+
+            return localRes
         }
 
     override fun BaseVariant.getArtifactCollection(
@@ -214,17 +244,14 @@ internal object V72 : AGPInterface {
     override val BaseVariant.targetSdkVersion: ApiVersion
         get() = DefaultApiVersion(component.targetSdkVersion.apiLevel)
 
-    private val BaseVariant.variantType: VariantType
-        get() = component.variantType
-
     override val BaseVariant.isApplication: Boolean
-        get() = variantType.isApk
+        get() = component.componentType.isApk
 
     override val BaseVariant.isLibrary: Boolean
-        get() = variantType.isAar
+        get() = component.componentType.isAar
 
     override val BaseVariant.isDynamicFeature: Boolean
-        get() = variantType.isDynamicFeature
+        get() = component.componentType.isDynamicFeature
 
     override val BaseVariant.aar: FileCollection
         get() = getFinalArtifactFiles(SingleArtifact.AAR)
@@ -245,7 +272,7 @@ internal object V72 : AGPInterface {
         get() = when (this) {
             is ApplicationVariant -> getFinalArtifactFiles(InternalArtifactType.COMPRESSED_ASSETS)
             is LibraryVariant -> getFinalArtifactFiles(InternalArtifactType.LIBRARY_ASSETS)
-            else -> TODO("Unsupported variant type: $variantType")
+            else -> TODO("Unsupported variant type: $name")
         }
 
     override val BaseVariant.processedRes: FileCollection
@@ -255,7 +282,7 @@ internal object V72 : AGPInterface {
         get() = when (this) {
             is ApplicationVariant -> getFinalArtifactFiles(InternalArtifactType.RUNTIME_SYMBOL_LIST)
             is LibraryVariant -> getFinalArtifactFiles(InternalArtifactType.COMPILE_SYMBOL_LIST)
-            else -> TODO("Unsupported variant type : $variantType")
+            else -> TODO("Unsupported variant type : $name")
         }
 
     override val BaseVariant.symbolListWithPackageName: FileCollection
@@ -275,7 +302,7 @@ internal object V72 : AGPInterface {
         get() = globalScope.versionedSdkLoader.get().buildToolInfoProvider.get()
 
     override val BaseVariant.isPrecompileDependenciesResourcesEnabled: Boolean
-        get() = component.isPrecompileDependenciesResourcesEnabled
+        get() = component.androidResourcesCreationConfig?.isPrecompileDependenciesResourcesEnabled == true
 
     override fun BaseVariant.getDependencies(transitive: Boolean, filter: (ComponentIdentifier) -> Boolean): Collection<ResolvedArtifactResult> {
         val all = getArtifactCollection(
