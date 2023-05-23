@@ -156,6 +156,11 @@ internal object V41 : AGPInterface {
     override val BaseVariant.rawAndroidResources: FileCollection
         get() = componentProperties.variantData.allRawAndroidResources
 
+    override val BaseVariant.localAndroidResources: FileCollection
+        get() = componentProperties.variantData.androidResources.values.reduce { collection, file ->
+            collection.plus(file)
+        }
+
     override fun BaseVariant.getArtifactCollection(
             configType: AndroidArtifacts.ConsumedConfigType,
             scope: ArtifactScope,

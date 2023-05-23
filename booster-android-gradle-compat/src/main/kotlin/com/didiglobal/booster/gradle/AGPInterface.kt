@@ -104,6 +104,8 @@ interface AGPInterface {
 
     val BaseVariant.rawAndroidResources: FileCollection
 
+    val BaseVariant.localAndroidResources: FileCollection
+
     val BaseVariant.javaCompilerTaskProvider: TaskProvider<out Task>
 
     val BaseVariant.preBuildTaskProvider: TaskProvider<out Task>
