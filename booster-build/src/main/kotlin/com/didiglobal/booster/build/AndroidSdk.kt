@@ -28,8 +28,8 @@ class AndroidSdk {
 
         fun findPlatform(): Int = File(location, "platforms").listFiles()?.filter {
             it.name.startsWith("android-") && File(it, "android.jar").exists()
-        }?.map {
-            it.name.substringAfter("android-")
+        }?.mapNotNull {
+            it.name.substringAfter("android-").toIntOrNull()
         }?.max()?.toInt() ?: throw RuntimeException("No platform found")
 
         /**
