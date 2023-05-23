@@ -18,6 +18,7 @@ import com.android.repository.Revision
 import com.android.sdklib.BuildToolInfo
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.UnknownDomainObjectException
 import org.gradle.api.artifacts.ArtifactCollection
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
@@ -217,6 +218,12 @@ interface AGPInterface {
 }
 
 inline fun <reified T : BaseExtension> Project.getAndroid(): T = extensions.getByName("android") as T
+
+inline fun <reified T : BaseExtension> Project.getAndroidOrNull(): T? = try {
+    extensions.getByName("android") as? T
+} catch (e: UnknownDomainObjectException) {
+    null
+}
 
 private val REVISION: Revision by lazy {
     Revision.parseRevision(Version.ANDROID_GRADLE_PLUGIN_VERSION)
