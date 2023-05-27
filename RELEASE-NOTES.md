@@ -1,3 +1,9 @@
+## v4.16.2
+
+- Fix `Project.getJarTaskProviders(BaseVariant?)` with projects do not have `android` extension
+- Add extension `BaseVariant.localAndroidResources`
+- Fix `AndroidSdk.findPlatform()`: Ignore Android SDK extension
+
 ## v4.16.1
 
 - Fix issue [#406](https://github.com/didi/booster/issues/406) : incremental build with jar removal
