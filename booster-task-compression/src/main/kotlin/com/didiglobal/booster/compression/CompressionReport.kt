@@ -4,9 +4,7 @@ import com.android.SdkConstants
 import com.android.build.gradle.api.BaseVariant
 import com.didiglobal.booster.gradle.getReport
 import com.didiglobal.booster.gradle.project
-import com.didiglobal.booster.kotlinx.Octuple
-import com.didiglobal.booster.kotlinx.Quadruple
-import com.didiglobal.booster.kotlinx.touch
+import com.didiglobal.booster.kotlinx.*
 import java.io.File
 import java.text.DecimalFormat
 import java.util.concurrent.CopyOnWriteArrayList
@@ -32,10 +30,10 @@ fun CompressionResults.generateReport(variant: BaseVariant, artifact: String) {
                 it.fourth
         )
     }
-    val maxWith1 = table.maxOfOrNull { it.first.length } ?: 0
-    val maxWith5 = table.maxOfOrNull { it.fifth.length } ?: 0
-    val maxWith6 = table.maxOfOrNull { it.sixth.length } ?: 0
-    val maxWith7 = table.maxOfOrNull { it.seventh.length } ?: 0
+    val maxWith1 = table.maxOfOrNull<CompressionReport, Int> { it.first.length } ?: 0
+    val maxWith5 = table.maxOfOrNull<CompressionReport, Int> { it.fifth.length } ?: 0
+    val maxWith6 = table.maxOfOrNull<CompressionReport, Int> { it.sixth.length } ?: 0
+    val maxWith7 = table.maxOfOrNull<CompressionReport, Int> { it.seventh.length } ?: 0
     val fullWith = maxWith1 + maxWith5 + maxWith6 + 8
 
     variant.getReport(artifact, "report.txt").touch().printWriter().use { logger ->
@@ -48,7 +46,7 @@ fun CompressionResults.generateReport(variant: BaseVariant, artifact: String) {
             logger.println("${it.sixth.padStart(maxWith6)} ${it.first.padEnd(maxWith1)} ${it.fifth.padStart(maxWith5)} ${it.seventh.padStart(maxWith7)} ${it.eighth}")
         }
         logger.println("-".repeat(maxWith1 + maxWith5 + maxWith6 + 2))
-        logger.println(" TOTAL ${decimal(table.sumOf { it.fourth.toDouble() }).padStart((fullWith - 13).coerceAtLeast(0))}")
+        logger.println(" TOTAL ${decimal(table.sumByDouble { it.fourth.toDouble() }).padStart((fullWith - 13).coerceAtLeast(0))}")
     }
 
 }

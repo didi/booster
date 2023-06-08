@@ -18,7 +18,7 @@ internal open class ListSharedLibrary : DefaultTask() {
     @TaskAction
     fun run() {
         variant.dependencies.forEach { result ->
-            when (result.file.extension.lowercase()) {
+            when (result.file.extension.toLowerCase()) {
                 "aar", "jar" -> {
                     JarFile(result.file).use { jar ->
                         jar.entries().asSequence().filter {

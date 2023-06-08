@@ -2,19 +2,19 @@ package com.didiglobal.booster.kotlinx
 
 object OS {
 
-    val name: String = System.getProperty("os.name", "").lowercase()
+    val name: String = System.getProperty("os.name", "").toLowerCase()
 
-    val arch: String = System.getProperty("os.arch", "").lowercase()
+    val arch: String = System.getProperty("os.arch", "").toLowerCase()
 
     val uname = try {
-        "uname -a".execute().stdout.trim().lowercase()
+        "uname -a".execute().stdout.trim().toLowerCase()
     } catch (e: Throwable) {
         arch
     }
 
     val version = object : Comparable<String> {
 
-        private val version = System.getProperty("os.version", "").lowercase()
+        private val version = System.getProperty("os.version", "").toLowerCase()
 
         override fun compareTo(other: String): Int {
             val part1 = version.split("[\\._\\-]".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()

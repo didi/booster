@@ -8,6 +8,7 @@ import com.didiglobal.booster.compression.isFlatPng
 import com.didiglobal.booster.compression.isPng
 import com.didiglobal.booster.gradle.isAapt2Enabled
 import com.didiglobal.booster.gradle.mergedRes
+import com.didiglobal.booster.kotlinx.maxByOrNull
 import com.didiglobal.booster.kotlinx.search
 import org.gradle.api.tasks.TaskAction
 import java.io.File

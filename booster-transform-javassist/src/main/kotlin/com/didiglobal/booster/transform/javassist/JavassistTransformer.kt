@@ -1,6 +1,7 @@
 package com.didiglobal.booster.transform.javassist
 
 import com.didiglobal.booster.annotations.Priority
+import com.didiglobal.booster.kotlinx.maxOrNull
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.Transformer

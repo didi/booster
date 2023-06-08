@@ -89,7 +89,7 @@ private fun isJavaClassName(text: String): Boolean {
 
     for (i in 1 until text.length) {
         val cp = text.codePointAt(i)
-        if (!Character.isJavaIdentifierPart(cp) && cp != '.'.code) {
+        if (!Character.isJavaIdentifierPart(cp) && cp != '.'.toInt()) {
             throw ServiceConfigurationError("Illegal provider-class name: $text")
         }
     }

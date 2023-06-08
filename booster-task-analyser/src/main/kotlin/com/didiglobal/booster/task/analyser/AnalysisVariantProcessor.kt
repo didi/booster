@@ -77,7 +77,7 @@ class AnalysisVariantProcessor : VariantProcessor {
 }
 
 internal inline val <reified T : AnalysisTask> KClass<T>.category: String
-    get() = T::class.java.simpleName.substringBefore(AnalysisTask::class.java.simpleName).lowercase()
+    get() = T::class.java.simpleName.substringBefore(AnalysisTask::class.java.simpleName).toLowerCase()
 
 internal inline val <reified T : AnalysisTask> KClass<T>.taskName: String
     get() = @Suppress("DEPRECATION") "analyse${category.capitalize()}"

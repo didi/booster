@@ -12,6 +12,7 @@ import com.didiglobal.booster.gradle.processResTaskProvider
 import com.didiglobal.booster.gradle.processedRes
 import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.kotlinx.file
+import com.didiglobal.booster.kotlinx.maxOfOrNull
 import com.didiglobal.booster.kotlinx.search
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.task.spi.VariantProcessor
@@ -119,10 +120,10 @@ private fun BaseVariant.generateReport(results: CompressionResults) {
                 it.fourth
         )
     }
-    val maxWith1 = table.maxOfOrNull { it.first.length } ?: 0
-    val maxWith5 = table.maxOfOrNull { it.fifth.length } ?: 0
-    val maxWith6 = table.maxOfOrNull { it.sixth.length } ?: 0
-    val maxWith7 = table.maxOfOrNull { it.seventh.length } ?: 0
+    val maxWith1 = table.maxOfOrNull<CompressionReport, Int> { it.first.length } ?: 0
+    val maxWith5 = table.maxOfOrNull<CompressionReport, Int> { it.fifth.length } ?: 0
+    val maxWith6 = table.maxOfOrNull<CompressionReport, Int> { it.sixth.length } ?: 0
+    val maxWith7 = table.maxOfOrNull<CompressionReport, Int> { it.seventh.length } ?: 0
     val fullWith = maxWith1 + maxWith5 + maxWith6 + 8
 
     project.buildDir.file("reports", Build.ARTIFACT, name, "report.txt").touch().printWriter().use { logger ->
@@ -135,7 +136,7 @@ private fun BaseVariant.generateReport(results: CompressionResults) {
             logger.println("${it.sixth.padStart(maxWith6)} ${it.first.padEnd(maxWith1)} ${it.fifth.padStart(maxWith5)} ${it.seventh.padStart(maxWith7)} ${it.eighth}")
         }
         logger.println("-".repeat(maxWith1 + maxWith5 + maxWith6 + 2))
-        logger.println(" TOTAL ${decimal(table.sumOf { it.fourth.toDouble() }).padStart(fullWith - 13)}")
+        logger.println(" TOTAL ${decimal(table.sumByDouble { it.fourth.toDouble() }).padStart(fullWith - 13)}")
     }
 
 }

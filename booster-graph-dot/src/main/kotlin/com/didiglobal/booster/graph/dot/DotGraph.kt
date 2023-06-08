@@ -26,26 +26,26 @@ sealed class DotGraph : GraphRenderer {
 
         override fun <N : Node> render(graph: Graph<N>, options: GraphRenderer.Options, prettify: (N) -> String): CharSequence {
             return buildString {
-                appendLine("digraph \"${graph.title}\" {")
-                appendLine("    graph [bgcolor=\"transparent\",pad=\"0.555\"];")
-                appendLine("    node [color=\"#00BFC4\",fillcolor=\"#00BFC440\",fontcolor=\"#333333\",fontname=Helvetica,shape=box,style=filled];")
-                appendLine("    edge [fontname=Helvetica];")
-                appendLine("    rankdir = ${options["rankdir"] ?: "TB"};")
+                appendln("digraph \"${graph.title}\" {")
+                appendln("    graph [bgcolor=\"transparent\",pad=\"0.555\"];")
+                appendln("    node [color=\"#00BFC4\",fillcolor=\"#00BFC440\",fontcolor=\"#333333\",fontname=Helvetica,shape=box,style=filled];")
+                appendln("    edge [fontname=Helvetica];")
+                appendln("    rankdir = ${options["rankdir"] ?: "TB"};")
 
                 graph.nodes.filterIsInstance<GroupedNode<*>>().groupBy {
                     it.groupBy() ?: ""
                 }.entries.withIndex().forEach { (index, entry) ->
                     val color = RGB.valueOf(WebSafeColorPalette.random(0x000000, 0xffffff))
-                    appendLine("    subgraph cluster_${index} {")
-                    appendLine("        style=\"rounded,dashed\";")
-                    appendLine("        label=\"${entry.key}\";")
-                    appendLine("        fgcolor=\"${color}\";")
+                    appendln("    subgraph cluster_${index} {")
+                    appendln("        style=\"rounded,dashed\";")
+                    appendln("        label=\"${entry.key}\";")
+                    appendln("        fgcolor=\"${color}\";")
                     entry.value.map { node ->
                         @Suppress("UNCHECKED_CAST") (node as N)
                     }.forEach { node ->
-                        appendLine("        \"${prettify(node)}\";")
+                        appendln("        \"${prettify(node)}\";")
                     }
-                    appendLine("    }")
+                    appendln("    }")
                 }
 
                 graph.nodes.joinTo(this, "\n    ", "    ", "\n") { node ->
@@ -57,7 +57,7 @@ sealed class DotGraph : GraphRenderer {
                     val color = RGB.valueOf(WebSafeColorPalette.random(0x000000, 0xffffff)).toString() // except white color
                     "\"${prettify(edge.from)}\" -> \"${prettify(edge.to)}\" [color=\"#$color\",fontcolor=\"#$color\"];"
                 }
-                appendLine("}")
+                appendln("}")
             }
         }
 

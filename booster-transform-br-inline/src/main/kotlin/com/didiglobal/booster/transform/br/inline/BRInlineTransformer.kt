@@ -1,8 +1,6 @@
 package com.didiglobal.booster.transform.br.inline
 
-import com.didiglobal.booster.kotlinx.asIterable
-import com.didiglobal.booster.kotlinx.search
-import com.didiglobal.booster.kotlinx.touch
+import com.didiglobal.booster.kotlinx.*
 import com.didiglobal.booster.transform.ArtifactManager.Companion.ALL_CLASSES
 import com.didiglobal.booster.transform.ArtifactManager.Companion.DATA_BINDING_DEPENDENCY_ARTIFACTS
 import com.didiglobal.booster.transform.TransformContext
@@ -48,8 +46,8 @@ class BRInlineTransformer : ClassTransformer {
         }
         // Remove all BR class files
         allBR.also { pairs ->
-            val totalSize = allBR.sumOf { it.first.length() }
-            val maxWidth = allBR.maxOfOrNull { it.second.length }?.plus(10) ?: 10
+            val totalSize = allBR.sumByLong { it.first.length() }
+            val maxWidth = allBR.maxOfOrNull<Pair<File, String>, Int> { it.second.length }?.plus(10) ?: 10
 
             logger.println("Delete files:")
 

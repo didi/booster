@@ -1,15 +1,12 @@
 package com.didiglobal.booster.cha
 
-import com.didiglobal.booster.kotlinx.NCPU
-import com.didiglobal.booster.kotlinx.green
-import com.didiglobal.booster.kotlinx.parallelStream
-import com.didiglobal.booster.kotlinx.yellow
+import com.didiglobal.booster.kotlinx.*
 import io.johnsonlee.once.Once
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
 import java.time.Duration
-import java.util.Stack
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -26,7 +23,7 @@ internal class CompositeClassSet<ClassFile, ClassParser>(
     private val once = Once<CompositeClassSet<ClassFile, ClassParser>>()
 
     override val size: Int by lazy {
-        load().classSets.sumOf(ClassSet<ClassFile, ClassParser>::size)
+        load().classSets.sumBy(ClassSet<ClassFile, ClassParser>::size)
     }
 
     override val classpath: List<URL> by lazy {
@@ -114,7 +111,7 @@ internal class CompositeClassSet<ClassFile, ClassParser>(
             }
         }
         val t1 = System.nanoTime()
-        val size = classSets.sumOf(ClassSet<ClassFile, ClassParser>::size)
+        val size = classSets.sumBy(ClassSet<ClassFile, ClassParser>::size)
         println(classpath.joinToString("\n", "Load ${green(size)} classes from ${green(n)} class sets in ${yellow(Duration.ofNanos(t1 - t0).toMillis())} ms\n") {
             "  ✨ $it"
         })

@@ -26,16 +26,16 @@ sourceSets {
 
 compileKotlin {
     kotlinOptions{
-        jvmTarget = JavaVersion.VERSION_11
-        apiVersion = "1.5"
+        jvmTarget = JavaVersion.VERSION_1_8
+        apiVersion = "1.3"
         freeCompilerArgs = ["-Xno-optimized-callable-references"]
     }
 }
 
 compileTestKotlin {
     kotlinOptions{
-        jvmTarget = JavaVersion.VERSION_11
-        apiVersion = "1.5"
+        jvmTarget = JavaVersion.VERSION_1_8
+        apiVersion = "1.3"
         freeCompilerArgs = ["-Xno-optimized-callable-references"]
     }
 }

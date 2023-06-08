@@ -1,10 +1,6 @@
 package com.didiglobal.booster.transform.r.inline
 
-import com.didiglobal.booster.kotlinx.Wildcard
-import com.didiglobal.booster.kotlinx.asIterable
-import com.didiglobal.booster.kotlinx.execute
-import com.didiglobal.booster.kotlinx.ifNotEmpty
-import com.didiglobal.booster.kotlinx.touch
+import com.didiglobal.booster.kotlinx.*
 import com.didiglobal.booster.transform.ArtifactManager.Companion.MERGED_RES
 import com.didiglobal.booster.transform.ArtifactManager.Companion.SYMBOL_LIST
 import com.didiglobal.booster.transform.TransformContext
