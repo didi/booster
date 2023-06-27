@@ -100,7 +100,11 @@ fun <R> File.collect(collector: Collector<R>): List<R> = when {
                 }.filterNot(ArchiveEntry::isDirectory).filter { entry ->
                     collector.accept(entry.name)
                 }.map { entry ->
-                    collector.collect(entry.name, archive::readBytes)
+                    var entryData: ByteArray? = null
+                    collector.collect(entry.name) {
+                        entryData = entryData ?: archive.readBytes()
+                        entryData!!
+                    }
                 }.toList()
             }
         }
