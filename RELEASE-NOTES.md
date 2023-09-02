@@ -1,3 +1,8 @@
+## v4.14.1
+
+- Sync from 4.16.2
+- Exclude AGP 7.3 and Kotlin API version 1.5.0 upgrading
+
 ## v4.16.2
 
 - Fix `Project.getJarTaskProviders(BaseVariant?)` with projects do not have `android` extension
@@ -16,8 +21,6 @@
 - Upgrade Kotlin API version to 1.5.0
 - Support AGP 7.3
 - Fix integration tests
-
-## v4.14.0
 
 - CHA improvement
 
