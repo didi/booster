@@ -3,11 +3,10 @@ package com.didiglobal.booster.transform.util
 import com.didiglobal.booster.kotlinx.search
 import com.didiglobal.booster.transform.AbstractTransformContext
 import com.didiglobal.booster.transform.TransformContext
-import org.apache.commons.compress.archivers.ArchiveEntry
-import org.apache.commons.compress.archivers.ArchiveStreamFactory
 import java.io.File
-import java.io.IOException
 import java.util.regex.Pattern
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
 
 typealias Collector<T> = com.didiglobal.booster.transform.Collector<T>
 
@@ -88,22 +87,17 @@ fun <R> File.collect(collector: Collector<R>): List<R> = when {
             collector.collect(base.relativize(f.toURI()).normalize().path, f::readBytes)
         }
     }
-    this.isFile -> {
-        this.inputStream().buffered().use {
-            ArchiveStreamFactory().createArchiveInputStream(it).let { archive ->
-                generateSequence {
-                    try {
-                        archive.nextEntry
-                    } catch (e: IOException) {
-                        null
-                    }
-                }.filterNot(ArchiveEntry::isDirectory).filter { entry ->
-                    collector.accept(entry.name)
-                }.map { entry ->
-                    collector.collect(entry.name, archive::readBytes)
-                }.toList()
-            }
+    this.isFile -> when (this.extension.lowercase()) {
+        "jar", "zip" -> ZipFile(this).use { zip ->
+            zip.entries().asSequence().filterNot(ZipEntry::isDirectory).filter { entry ->
+                collector.accept(entry.name)
+            }.map { entry ->
+                collector.collect(entry.name) {
+                    zip.getInputStream(entry).readBytes()
+                }
+            }.toList()
         }
+        else -> emptyList()
     }
     else -> emptyList()
 }

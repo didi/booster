@@ -16,10 +16,11 @@ class CompositeCollector(private val collectors: Iterable<Collector<*>>) : Colle
     }
 
     override fun collect(name: String, data: () -> ByteArray): List<*> {
+        val bytes by lazy(data) // to avoid end-of-stream caused by multiple readers
         return collectors.filter {
             it.accept(name)
         }.mapNotNull {
-            it.collect(name, data)
+            it.collect(name) { bytes }
         }
     }
 
