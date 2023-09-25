@@ -4,6 +4,7 @@ import com.didiglobal.booster.kotlinx.asIterable
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
+import com.didiglobal.booster.transform.logcat.Build.*
 import com.google.auto.service.AutoService
 import org.objectweb.asm.Opcodes.GETSTATIC
 import org.objectweb.asm.Opcodes.INVOKESTATIC
@@ -30,7 +31,7 @@ class LogcatTransformer : ClassTransformer {
 
     private lateinit var logger: PrintWriter
 
-    override val name: String = Build.ARTIFACT
+    override val name: String = ARTIFACT
 
     override fun onPreTransform(context: TransformContext) {
         this.logger = getReport(context, "report.txt").touch().printWriter()

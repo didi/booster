@@ -1,19 +1,22 @@
 package com.didiglobal.booster.transform.toast
 
-import com.android.build.gradle.api.BaseVariant
-import com.android.build.gradle.api.LibraryVariant
-import com.didiglobal.booster.gradle.isDynamicFeature
-import com.didiglobal.booster.gradle.project
+import com.android.build.api.variant.DynamicFeatureVariantBuilder
+import com.android.build.api.variant.LibraryVariantBuilder
+import com.android.build.api.variant.VariantBuilder
 import com.didiglobal.booster.task.spi.VariantProcessor
+import com.didiglobal.booster.transform.toast.Build.GROUP
+import com.didiglobal.booster.transform.toast.Build.VERSION
 import com.google.auto.service.AutoService
+import org.gradle.api.Project
 
 @AutoService(VariantProcessor::class)
-class ToastVariantProcessor : VariantProcessor {
+class ToastVariantProcessor(private val project: Project) : VariantProcessor {
 
-    override fun process(variant: BaseVariant) {
-        if (variant !is LibraryVariant && !variant.isDynamicFeature) {
-            variant.project.dependencies.add("implementation", "${Build.GROUP}:booster-android-instrument-toast:${Build.VERSION}")
+    override fun beforeProcess(variantBuilder: VariantBuilder) {
+        if (variantBuilder is LibraryVariantBuilder || variantBuilder is DynamicFeatureVariantBuilder) {
+            return
         }
+        project.dependencies.add("${variantBuilder.name}Implementation", "$GROUP:booster-android-instrument-toast:$VERSION")
     }
 
 }

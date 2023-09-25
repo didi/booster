@@ -12,15 +12,14 @@ package android.util;
  * into an application except during development.  Debug logs are compiled
  * in but stripped at runtime.  Error, warning and info logs are always kept.
  *
- * <p><b>Tip:</b> A good convention is to declare a <code>TAG</code> constant
+ * <b>Tip:</b> A good convention is to declare a <code>TAG</code> constant
  * in your class:
  *
  * <pre>private static final String TAG = "MyActivity";</pre>
  *
  * and use that in subsequent calls to the log methods.
- * </p>
  *
- * <p><b>Tip:</b> Don't forget that when you make a call like
+ * <b>Tip:</b> Don't forget that when you make a call like
  * <pre>Log.v(TAG, "index=" + i);</pre>
  * that when you're building the string to pass into Log.d, the compiler uses a
  * StringBuilder and at least three allocations occur: the StringBuilder

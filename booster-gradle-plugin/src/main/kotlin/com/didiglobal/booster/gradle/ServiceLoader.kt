@@ -73,6 +73,14 @@ internal fun loadVariantProcessors(project: Project): List<VariantProcessor> {
     return newServiceLoader<VariantProcessor>(project.buildscript.classLoader, Project::class.java).load(project)
 }
 
+/**
+ * Load [VariantProcessor]s with the specified [variant]
+ */
+@Throws(ServiceConfigurationError::class)
+internal fun loadTransformers(classLoader: ClassLoader): List<Transformer> {
+    return newServiceLoader<Transformer>(classLoader, ClassLoader::class.java).load(classLoader)
+}
+
 @Throws(ServiceConfigurationError::class)
 private fun parse(u: URL) = try {
     u.openStream().bufferedReader(StandardCharsets.UTF_8).readLines().filter {

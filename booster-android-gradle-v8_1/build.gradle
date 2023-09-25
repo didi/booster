@@ -1,0 +1,29 @@
+apply plugin: 'java-gradle-plugin'
+
+apply from: "$rootDir/gradle/booster.gradle"
+apply from: "$rootDir/gradle/integration-test.gradle"
+apply from: "$rootDir/gradle/functional-test.gradle"
+
+dependencies {
+    kapt 'com.google.auto.service:auto-service:1.0'
+    api 'com.google.auto.service:auto-service:1.0'
+    api project(':booster-android-gradle-compat')
+    compileOnly 'com.android.tools:repository:30.0.0'
+    compileOnly 'com.android.tools:common:30.0.0'
+    compileOnly 'com.android.tools:sdklib:30.0.0'
+    compileOnly 'com.android.tools.build:gradle-api:8.1.0'
+    compileOnly 'com.android.tools.build:gradle:8.1.0'
+    testImplementation 'com.android.tools.build:gradle:8.1.0'
+    testImplementation 'com.android.tools:common:30.0.0'
+    testImplementation 'io.bootstage.testkit:testkit-gradle-plugin:2.1.0'
+    testImplementation project(':booster-build')
+    testImplementation project(':booster-android-gradle-api')
+}
+
+jar {
+    exclude('com/android/sdklib/BuildToolInfo.class')
+}
+
+gradlePlugin {
+    testSourceSets sourceSets.functionalTest, sourceSets.integrationTest
+}
