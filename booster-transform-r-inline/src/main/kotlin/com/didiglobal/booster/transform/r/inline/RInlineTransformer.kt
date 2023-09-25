@@ -9,6 +9,7 @@ import com.didiglobal.booster.transform.ArtifactManager.Companion.MERGED_RES
 import com.didiglobal.booster.transform.ArtifactManager.Companion.SYMBOL_LIST
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
+import com.didiglobal.booster.transform.r.inline.Build.*
 import com.google.auto.service.AutoService
 import org.gradle.api.logging.Logging
 import org.objectweb.asm.ClassWriter
@@ -43,7 +44,7 @@ class RInlineTransformer : ClassTransformer {
         ConcurrentHashMap<String, Int>()
     }
 
-    override val name: String = Build.ARTIFACT
+    override val name: String = ARTIFACT
 
     override fun onPreTransform(context: TransformContext) {
         this.appPackage = context.originalApplicationId.replace('.', '/')
@@ -169,7 +170,7 @@ private fun TransformContext.findRetainedSymbols(): Set<String> {
     }.flatten().toSet()
 }
 
-private val PROPERTY_PREFIX = Build.ARTIFACT.replace('-', '.')
+private val PROPERTY_PREFIX = ARTIFACT.replace('-', '.')
 
 private val PROPERTY_IGNORES = "$PROPERTY_PREFIX.ignores"
 

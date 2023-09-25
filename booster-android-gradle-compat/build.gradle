@@ -4,8 +4,8 @@ dependencies {
     api gradleApi()
     api 'com.android.tools:repository:26.0.0'
     api 'com.android.tools:sdklib:26.0.0'
-    compileOnly 'com.android.tools.build:gradle:3.0.0'
-    testCompileOnly 'com.android.tools.build:gradle:3.0.0'
+    compileOnly 'com.android.tools.build:gradle:8.0.0'
+    testCompileOnly 'com.android.tools.build:gradle:8.0.0'
     testApi project(':booster-build')
     testApi gradleTestKit()
     testApi 'org.spockframework:spock-core:1.3-groovy-2.5'

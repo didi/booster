@@ -1,2 +1,0 @@
-# booster-task-resource-deredundancy
-

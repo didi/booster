@@ -2,8 +2,8 @@ apply plugin: 'kotlin'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'io.johnsonlee.buildprops'
 
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = JavaVersion.VERSION_11
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 sourceSets {
     main {
@@ -26,7 +26,7 @@ sourceSets {
 
 compileKotlin {
     kotlinOptions{
-        jvmTarget = JavaVersion.VERSION_11
+        jvmTarget = JavaVersion.VERSION_17
         apiVersion = "1.5"
         freeCompilerArgs = ["-Xno-optimized-callable-references"]
     }
@@ -34,7 +34,7 @@ compileKotlin {
 
 compileTestKotlin {
     kotlinOptions{
-        jvmTarget = JavaVersion.VERSION_11
+        jvmTarget = JavaVersion.VERSION_17
         apiVersion = "1.5"
         freeCompilerArgs = ["-Xno-optimized-callable-references"]
     }
@@ -47,3 +47,8 @@ dependencies {
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
     testImplementation gradleTestKit()
 }
+
+project.tasks.named('packageSources') {
+    dependsOn ":${project.name}:generateBuildJavaFile"
+}
+

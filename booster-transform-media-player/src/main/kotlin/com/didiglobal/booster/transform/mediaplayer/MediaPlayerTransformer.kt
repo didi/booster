@@ -6,6 +6,7 @@ import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
 import com.didiglobal.booster.transform.asm.transform
 import com.didiglobal.booster.transform.media.player.Build
+import com.didiglobal.booster.transform.media.player.Build.*
 import com.google.auto.service.AutoService
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
@@ -25,7 +26,7 @@ class MediaPlayerTransformer : ClassTransformer {
 
     private lateinit var logger: PrintWriter
 
-    override val name: String = Build.ARTIFACT
+    override val name: String = ARTIFACT
 
     override fun onPreTransform(context: TransformContext) {
         this.logger = getReport(context, "report.txt").touch().printWriter()

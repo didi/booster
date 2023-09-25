@@ -16,7 +16,7 @@ jobs:
     - uses: actions/setup-java@v3
       with:
         distribution: 'adopt'
-        java-version: '11'
+        java-version: '17'
         cache: 'gradle'
     - shell: bash
       run: |
@@ -24,8 +24,8 @@ jobs:
         echo $GPG_KEY_ARMOR | base64 --decode > $GITHUB_WORKSPACE/secring.gpg
         ./gradlew publishToSonatype closeAndReleaseStagingRepository -Pversion=${GITHUB_REF/refs\/tags\/v/} -POSSRH_USERNAME=${OSSRH_USERNAME} -POSSRH_PASSWORD=${OSSRH_PASSWORD} -POSSRH_STAGING_PROFILE_ID=${OSSRH_STAGING_PROFILE_ID} -Psigning.keyId=${GPG_KEY_ID} -Psigning.password=${GPG_PASSPHRASE} -Psigning.secretKeyRingFile=${GITHUB_WORKSPACE}/secring.gpg -S --no-daemon
       env:
-        JAVA_OPTS: -Xmx8g -XX:MaxPermSize=1g -XX:MetaspaceSize=1g -Dfile.encoding=UTF-8
-        JVM_OPTS: -Xmx8g -XX:MaxPermSize=1g -XX:MetaspaceSize=1g -Dfile.encoding=UTF-8
+        JAVA_OPTS: -Xmx8g -XX:MetaspaceSize=1g -Dfile.encoding=UTF-8
+        JVM_OPTS: -Xmx8g -XX:MetaspaceSize=1g -Dfile.encoding=UTF-8
         GPG_KEY_ARMOR: ${{ secrets.GPG_KEY_ARMOR }}
         GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
