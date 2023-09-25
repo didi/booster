@@ -5,6 +5,7 @@ import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.didiglobal.booster.BOOSTER
 import com.didiglobal.booster.gradle.javaCompilerTaskProvider
 import com.didiglobal.booster.gradle.project
+import com.didiglobal.booster.kotlinx.capitalized
 import com.didiglobal.booster.task.spi.VariantProcessor
 import com.google.auto.service.AutoService
 import org.gradle.api.UnknownTaskException
@@ -24,8 +25,7 @@ class CheckSnapshotVariantProcessor : VariantProcessor {
                     it.description = "Check snapshot dependencies"
                 }
             }
-            @Suppress("DEPRECATION")
-            tasks.register("check${variant.name.capitalize()}Snapshot", CheckSnapshot::class.java) {
+            tasks.register("check${variant.name.capitalized()}Snapshot", CheckSnapshot::class.java) {
                 it.group = BOOSTER
                 it.description = "Check snapshot dependencies for ${variant.name}"
                 it.variant = variant

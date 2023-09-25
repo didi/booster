@@ -47,6 +47,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.stream.Collectors
 import javax.xml.parsers.SAXParserFactory
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -130,7 +131,7 @@ class PerformanceAnalyser(
     }
 
     private fun analyse() {
-        val classes = this.compileClasses.parallelStream().filter(ClassNode::isInclude).toList()
+        val classes = this.compileClasses.parallelStream().filter(ClassNode::isInclude).collect(Collectors.toList())
         val index = AtomicInteger(0)
         val count = classes.size
         val executor = Executors.newFixedThreadPool(NCPU)

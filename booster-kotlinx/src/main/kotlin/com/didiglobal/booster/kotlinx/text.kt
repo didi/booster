@@ -3,6 +3,7 @@ package com.didiglobal.booster.kotlinx
 import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
+import java.util.Locale
 import java.util.regex.Pattern
 
 private val PATTERN_JAVA_IDENTIFIER = Pattern.compile("[a-zA-Z_\$][a-zA-Z\\d_\$]*")
@@ -24,3 +25,7 @@ fun String.matches(wildcard: Wildcard): Boolean {
 }
 
 fun String.isValidJavaIdentifier(): Boolean = PATTERN_JAVA_IDENTIFIER.matcher(this).matches()
+
+fun String.capitalized(): String = replaceFirstChar {
+    if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+}

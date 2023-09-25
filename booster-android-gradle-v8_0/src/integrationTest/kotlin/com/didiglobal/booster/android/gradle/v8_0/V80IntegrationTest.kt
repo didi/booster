@@ -139,14 +139,14 @@ class MergeResourcesTaskTestUnit : VariantTestCase() {
 
 class GetTaskNameTestUnit : VariantTestCase() {
      override fun apply(variant: Variant) {
-        assertEquals("assemble${variant.name.capitalize()}", AGP.run { variant.getTaskName("assemble") })
+        assertEquals("assemble${variant.name.capitalized()}", AGP.run { variant.getTaskName("assemble") })
     }
 }
 
 
 class GetTaskName2TestUnit : VariantTestCase() {
      override fun apply(variant: Variant) {
-        assertEquals("merge${variant.name.capitalize()}Resources", AGP.run { variant.getTaskName("merge", "Resources") })
+        assertEquals("merge${variant.name.capitalized()}Resources", AGP.run { variant.getTaskName("merge", "Resources") })
     }
 }
 

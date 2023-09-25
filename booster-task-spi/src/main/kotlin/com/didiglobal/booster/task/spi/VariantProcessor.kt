@@ -1,6 +1,7 @@
 package com.didiglobal.booster.task.spi
 
 import com.android.build.api.variant.Variant
+import com.android.build.api.variant.VariantBuilder
 import com.android.build.gradle.api.BaseVariant
 
 interface VariantProcessor {
@@ -11,8 +12,10 @@ interface VariantProcessor {
             expression = "process(variant: Pair<Project, Variant>)"
         )
     )
-    fun process(variant: BaseVariant) {}
+    fun process(variant: BaseVariant) = Unit
 
-    fun process(variant: Variant) {}
+    fun beforeProcess(variantBuilder: VariantBuilder) = Unit
+
+    fun process(variant: Variant) = Unit
 
 }

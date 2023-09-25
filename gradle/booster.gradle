@@ -47,3 +47,8 @@ dependencies {
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
     testImplementation gradleTestKit()
 }
+
+project.tasks.named('packageSources') {
+    dependsOn ":${project.name}:generateBuildJavaFile"
+}
+

@@ -8,6 +8,7 @@ import com.didiglobal.booster.compression.CompressionResults
 import com.didiglobal.booster.compression.generateReport
 import com.didiglobal.booster.compression.task.CompressImages
 import com.didiglobal.booster.gradle.*
+import com.didiglobal.booster.kotlinx.capitalized
 import com.didiglobal.booster.task.spi.VariantProcessor
 import com.google.auto.service.AutoService
 import org.gradle.api.UnknownTaskException
@@ -26,8 +27,7 @@ class ResourceDeredundancyVariantProcessor : VariantProcessor {
         val project = variant.project
         val results = CompressionResults()
         val klassRemoveRedundantImages = if (project.isAapt2Enabled) RemoveRedundantFlatImages::class else RemoveRedundantImages::class
-        @Suppress("DEPRECATION")
-        val deredundancy = variant.project.tasks.register("remove${variant.name.capitalize()}RedundantResources", klassRemoveRedundantImages.java) { task ->
+        val deredundancy = variant.project.tasks.register("remove${variant.name.capitalized()}RedundantResources", klassRemoveRedundantImages.java) { task ->
             task.group = BOOSTER
             task.description = "Remove redundant resources for ${variant.name}"
             task.outputs.upToDateWhen { false }
