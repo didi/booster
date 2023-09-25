@@ -1,12 +1,8 @@
 package com.didiglobal.booster.task.analyser
 
-import com.android.build.gradle.AppExtension
-import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.LibraryExtension
-import com.android.build.gradle.api.BaseVariant
+import com.android.build.api.variant.Variant
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.didiglobal.booster.cha.asm.AsmClassSetCache
-import com.didiglobal.booster.gradle.getAndroidOrNull
 import com.didiglobal.booster.gradle.getJarTaskProviders
 import com.didiglobal.booster.gradle.getTaskName
 import com.didiglobal.booster.gradle.getUpstreamProjects
@@ -22,7 +18,6 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.UnknownTaskException
 import org.gradle.api.tasks.TaskProvider
-import java.util.Locale
 import kotlin.reflect.KClass
 
 @AutoService(VariantProcessor::class)
@@ -30,27 +25,24 @@ class AnalysisVariantProcessor : VariantProcessor {
 
     private val classSetCache = AsmClassSetCache()
 
-    override fun process(variant: BaseVariant) {
-        variant.project.gradle.projectsEvaluated { gradle ->
-            gradle.rootProject.allprojects {
-                it.setup()
-            }
-        }
+    override fun process(variant: Variant) {
+        variant.project.setup(variant)
     }
 
-    private fun Project.setup() {
+    private fun Project.setup(variant: Variant) {
         when {
-            isAndroid -> {
-                setupAndroid<PerformanceAnalysisTask>()
-                setupAndroid<ReferenceAnalysisTask>()
+            isAndroid               -> {
+                setupTasks<PerformanceAnalysisTask>(variant)
+                setupTasks<ReferenceAnalysisTask>(variant)
             }
+
             isJavaLibrary || isJava -> {
                 setupTasks<ReferenceAnalysisTask>()
             }
         }
     }
 
-    private inline fun <reified T : AnalysisTask> Project.setupTasks(variant: BaseVariant? = null): TaskProvider<out Task> {
+    private inline fun <reified T : AnalysisTask> Project.setupTasks(variant: Variant? = null): TaskProvider<out Task> {
         val taskName = variant?.getTaskName(T::class.taskName) ?: T::class.taskName
         return try {
             tasks.named(taskName)
@@ -63,17 +55,6 @@ class AnalysisVariantProcessor : VariantProcessor {
             }.flatten())
         }
     }
-
-    private inline fun <reified T : AnalysisTask> Project.setupAndroid() {
-        when (val android = getAndroidOrNull<BaseExtension>()) {
-            is LibraryExtension -> android.libraryVariants
-            is AppExtension -> android.applicationVariants
-            else -> emptyList<BaseVariant>()
-        }.map {
-            setupTasks<T>(it)
-        }
-    }
-
 }
 
 internal inline val <reified T : AnalysisTask> KClass<T>.category: String

@@ -2,15 +2,12 @@ package com.didiglobal.booster.task.compression.cwebp
 
 import com.android.SdkConstants
 import com.android.SdkConstants.FD_RES
-import com.android.builder.model.AndroidProject.FD_INTERMEDIATES
 import com.android.sdklib.BuildToolInfo
 import com.didiglobal.booster.aapt2.Aapt2Container
 import com.didiglobal.booster.aapt2.metadata
 import com.didiglobal.booster.compression.CompressionResult
 import com.didiglobal.booster.compression.task.Aapt2ActionData
-import com.didiglobal.booster.gradle.buildTools
-import com.didiglobal.booster.gradle.mergedManifests
-import com.didiglobal.booster.gradle.project
+import com.didiglobal.booster.gradle.*
 import com.didiglobal.booster.kotlinx.CSI_RED
 import com.didiglobal.booster.kotlinx.CSI_RESET
 import com.didiglobal.booster.kotlinx.file
@@ -31,7 +28,7 @@ internal abstract class CwebpCompressFlatImages : AbstractCwebpCompressImages() 
 
     @get:OutputDirectory
     val compressedRes: File
-        get() = variant.project.buildDir.file(FD_INTERMEDIATES).file("compressed_${FD_RES}_cwebp", variant.dirName, this.name)
+        get() = variant.project.buildDir.file("intermediates").file("compressed_${FD_RES}_cwebp", variant.name, this.name)
 
     override fun compress(filter: (File) -> Boolean) {
         val cwebp = this.compressor.canonicalPath

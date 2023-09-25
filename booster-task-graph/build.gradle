@@ -6,8 +6,8 @@ dependencies {
     implementation project(':booster-graph-dot')
     implementation project(':booster-command')
     implementation 'io.johnsonlee:once:1.2.0'
-    compileOnly 'com.android.tools.build:gradle:4.0.0'
+    compileOnly 'com.android.tools.build:gradle:8.0.0'
     compileOnly 'com.android.tools.build:builder:4.0.0'
-    testCompileOnly 'com.android.tools.build:gradle:4.0.0'
+    testCompileOnly 'com.android.tools.build:gradle:8.0.0'
     testCompileOnly 'com.android.tools.build:builder:4.0.0'
 }

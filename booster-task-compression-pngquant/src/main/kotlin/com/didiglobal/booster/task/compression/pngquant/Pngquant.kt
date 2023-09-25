@@ -1,6 +1,5 @@
 package com.didiglobal.booster.task.compression.pngquant
 
-import com.android.build.gradle.api.BaseVariant
 import com.didiglobal.booster.command.CommandService
 import com.didiglobal.booster.compression.CompressionTaskCreatorFactory
 import com.didiglobal.booster.compression.CompressionTool
@@ -23,7 +22,7 @@ internal class Pngquant : CompressionTool(CommandService.get(PNGQUANT)), Compres
 
         const val PROGRAM = "pngquant"
 
-        fun get(@Suppress("UNUSED_PARAMETER") variant: BaseVariant): Pngquant? {
+        fun get(): Pngquant {
             return Pngquant()
         }
 

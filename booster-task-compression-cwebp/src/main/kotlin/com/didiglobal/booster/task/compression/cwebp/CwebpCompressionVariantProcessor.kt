@@ -1,16 +1,14 @@
 package com.didiglobal.booster.task.compression.cwebp
 
-import com.android.build.gradle.api.BaseVariant
+import com.android.build.api.variant.Variant
 import com.didiglobal.booster.compression.CompressionResults
 import com.didiglobal.booster.compression.generateReport
 import com.didiglobal.booster.compression.isFlatPngExceptRaw
 import com.didiglobal.booster.compression.isPngExceptRaw
-import com.didiglobal.booster.gradle.isAapt2Enabled
-import com.didiglobal.booster.gradle.mergeResourcesTaskProvider
-import com.didiglobal.booster.gradle.mergedRes
-import com.didiglobal.booster.gradle.project
+import com.didiglobal.booster.gradle.*
 import com.didiglobal.booster.kotlinx.Wildcard
 import com.didiglobal.booster.kotlinx.search
+import com.didiglobal.booster.task.compression.cwebp.Build.ARTIFACT
 import com.didiglobal.booster.task.spi.VariantProcessor
 import com.google.auto.service.AutoService
 
@@ -20,7 +18,7 @@ import com.google.auto.service.AutoService
 @AutoService(VariantProcessor::class)
 class CwebpCompressionVariantProcessor : VariantProcessor {
 
-    override fun process(variant: BaseVariant) {
+    override fun process(variant: Variant) {
         val project = variant.project
         val results = CompressionResults()
         val ignores = project.findProperty(PROPERTY_IGNORES)?.toString()?.trim()?.split(',')?.map {
@@ -31,13 +29,13 @@ class CwebpCompressionVariantProcessor : VariantProcessor {
             variant.mergedRes.search(if (project.isAapt2Enabled) ::isFlatPngExceptRaw else ::isPngExceptRaw)
         }, ignores, variant.mergeResourcesTaskProvider)?.configure {
             it.doLast {
-                results.generateReport(variant, Build.ARTIFACT)
+                results.generateReport(variant, ARTIFACT)
             }
         }
     }
 
 }
 
-private val PROPERTY_PREFIX = Build.ARTIFACT.replace('-', '.')
+private val PROPERTY_PREFIX = ARTIFACT.replace('-', '.')
 
 private val PROPERTY_IGNORES = "$PROPERTY_PREFIX.ignores"

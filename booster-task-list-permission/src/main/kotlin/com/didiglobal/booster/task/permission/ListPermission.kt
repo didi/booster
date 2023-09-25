@@ -1,7 +1,7 @@
 package com.didiglobal.booster.task.permission
 
 import com.android.SdkConstants
-import com.android.build.gradle.api.BaseVariant
+import com.android.build.api.variant.Variant
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactScope.ALL
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactType.AAR
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH
@@ -21,7 +21,7 @@ internal open class ListPermission : DefaultTask() {
     private val factory = SAXParserFactory.newInstance()
 
     @get:Internal
-    lateinit var variant: BaseVariant
+    lateinit var variant: Variant
 
     init {
         factory.isXIncludeAware = false

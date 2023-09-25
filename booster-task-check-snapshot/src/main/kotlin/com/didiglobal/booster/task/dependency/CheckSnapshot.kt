@@ -1,6 +1,6 @@
 package com.didiglobal.booster.task.dependency
 
-import com.android.build.gradle.api.BaseVariant
+import com.android.build.api.variant.Variant
 import com.didiglobal.booster.gradle.dependencies
 import com.didiglobal.booster.kotlinx.CSI_RESET
 import com.didiglobal.booster.kotlinx.CSI_YELLOW
@@ -13,18 +13,16 @@ import org.gradle.api.tasks.TaskAction
 internal open class CheckSnapshot : DefaultTask() {
 
     @get:Internal
-    lateinit var variant: BaseVariant
+    lateinit var variant: Variant
 
     @TaskAction
     fun run() {
-        if (!variant.buildType.isDebuggable) {
-            variant.dependencies.filter {
-                it.id.componentIdentifier is MavenUniqueSnapshotComponentIdentifier
-            }.map {
-                it.id.componentIdentifier as MavenUniqueSnapshotComponentIdentifier
-            }.ifNotEmpty { snapshots ->
-                println("$CSI_YELLOW ⚠️  ${snapshots.size} SNAPSHOT artifacts found in ${variant.name} variant:$CSI_RESET\n${snapshots.joinToString("\n") { snapshot -> "$CSI_YELLOW→  ${snapshot.displayName}$CSI_RESET" }}")
-            }
+        variant.dependencies.filter {
+            it.id.componentIdentifier is MavenUniqueSnapshotComponentIdentifier
+        }.map {
+            it.id.componentIdentifier as MavenUniqueSnapshotComponentIdentifier
+        }.ifNotEmpty { snapshots ->
+            println("$CSI_YELLOW ⚠️  ${snapshots.size} SNAPSHOT artifacts found in ${variant.name} variant:$CSI_RESET\n${snapshots.joinToString("\n") { snapshot -> "$CSI_YELLOW→  ${snapshot.displayName}$CSI_RESET" }}")
         }
     }
 

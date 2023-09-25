@@ -6,6 +6,7 @@ import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
 import com.didiglobal.booster.transform.asm.className
 import com.didiglobal.booster.transform.asm.findAll
+import com.didiglobal.booster.transform.finalizer.watchdog.daemon.Build.ARTIFACT
 import com.didiglobal.booster.transform.util.ComponentHandler
 import com.google.auto.service.AutoService
 import org.objectweb.asm.Opcodes
@@ -33,7 +34,7 @@ class FinalizerWatchdogDaemonTransformer : ClassTransformer {
     private lateinit var logger: PrintWriter
     private val applications = mutableSetOf<String>()
 
-    override val name: String = Build.ARTIFACT
+    override val name: String = ARTIFACT
 
     override fun onPreTransform(context: TransformContext) {
         val parser = SAXParserFactory.newInstance().newSAXParser()

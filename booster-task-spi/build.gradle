@@ -1,6 +1,7 @@
 apply from: "$rootDir/gradle/booster.gradle"
 
 dependencies {
-    compileOnly 'com.android.tools.build:gradle:4.0.0'
-    testCompileOnly 'com.android.tools.build:gradle:4.0.0'
+    implementation gradleApi()
+    compileOnly 'com.android.tools.build:gradle:8.0.0'
+    testCompileOnly 'com.android.tools.build:gradle:8.0.0'
 }

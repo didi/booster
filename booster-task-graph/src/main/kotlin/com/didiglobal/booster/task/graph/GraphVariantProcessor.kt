@@ -1,10 +1,7 @@
 package com.didiglobal.booster.task.graph
 
-import com.android.build.gradle.api.BaseVariant
-import com.didiglobal.booster.gradle.getResolvedArtifactResults
-import com.didiglobal.booster.gradle.getTaskName
-import com.didiglobal.booster.gradle.getUpstreamProjects
-import com.didiglobal.booster.gradle.project
+import com.android.build.api.variant.Variant
+import com.didiglobal.booster.gradle.*
 import com.didiglobal.booster.graph.Edge
 import com.didiglobal.booster.graph.Graph
 import com.didiglobal.booster.graph.dot.DotGraph
@@ -12,16 +9,14 @@ import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.task.spi.VariantProcessor
 import com.google.auto.service.AutoService
 import io.johnsonlee.once.Once
-import org.gradle.api.Project
-import org.gradle.api.artifacts.component.ProjectComponentIdentifier
-import java.util.Stack
+import java.util.*
 
 @AutoService(VariantProcessor::class)
 class GraphVariantProcessor : VariantProcessor {
 
     private val once = Once<Boolean>()
 
-    override fun process(variant: BaseVariant) {
+    override fun process(variant: Variant) {
         val project = variant.project
         project.gradle.taskGraph.whenReady {
             once {
@@ -37,7 +32,7 @@ class GraphVariantProcessor : VariantProcessor {
 
 }
 
-private fun BaseVariant.generateTaskGraph(): Boolean {
+private fun Variant.generateTaskGraph(): Boolean {
     val taskNames = project.gradle.startParameter.taskNames
     val dot = project.rootProject.buildDir.file(name, "${taskNames.joinToString("-") { it.replace(":", "") }}.dot")
     val title = "./gradlew ${taskNames.joinToString(" ")}"
@@ -60,7 +55,7 @@ private fun BaseVariant.generateTaskGraph(): Boolean {
     return true
 }
 
-private fun BaseVariant.generateProjectGraph() {
+private fun Variant.generateProjectGraph() {
     val rootProject = project.rootProject
     val graph = Graph.Builder<ProjectNode>().setTitle(project.toString())
     val stack = Stack<ProjectNode>().apply {

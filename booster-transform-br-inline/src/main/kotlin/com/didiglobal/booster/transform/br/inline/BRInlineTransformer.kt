@@ -7,6 +7,7 @@ import com.didiglobal.booster.transform.ArtifactManager.Companion.ALL_CLASSES
 import com.didiglobal.booster.transform.ArtifactManager.Companion.DATA_BINDING_DEPENDENCY_ARTIFACTS
 import com.didiglobal.booster.transform.TransformContext
 import com.didiglobal.booster.transform.asm.ClassTransformer
+import com.didiglobal.booster.transform.br.inline.Build.ARTIFACT
 import com.google.auto.service.AutoService
 import org.gradle.api.logging.Logging
 import org.objectweb.asm.Opcodes.GETSTATIC
@@ -30,7 +31,7 @@ class BRInlineTransformer : ClassTransformer {
     private lateinit var logger: PrintWriter
     private lateinit var validClasses: Set<String>
 
-    override val name: String = Build.ARTIFACT
+    override val name: String = ARTIFACT
 
     override fun onPreTransform(context: TransformContext) {
         logger = getReport(context, "report.txt").touch().printWriter()

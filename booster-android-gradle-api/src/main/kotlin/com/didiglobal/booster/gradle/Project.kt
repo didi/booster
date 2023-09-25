@@ -1,9 +1,8 @@
 package com.didiglobal.booster.gradle
 
-import com.android.build.gradle.AppExtension
-import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.LibraryExtension
-import com.android.build.gradle.api.BaseVariant
+import com.android.build.api.variant.Variant
+import com.android.build.gradle.internal.SdkComponentsBuildService
+import com.android.build.gradle.internal.services.getBuildService
 import com.android.repository.Revision
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -31,11 +30,16 @@ import java.util.Stack
 val Project.gradleVersion: Revision
     get() = Revision.parseRevision(gradle.gradleVersion)
 
+val Project.androidSdkLocation: File
+    get() = getBuildService(gradle.sharedServices, SdkComponentsBuildService::class.java).flatMap {
+        it.sdkDirectoryProvider
+    }.get().asFile
+
 @Deprecated(
-        message = "Use isAapt2Enabled instead",
-        replaceWith = ReplaceWith(
-                expression = "isAapt2Enabled"
-        )
+    message = "Use isAapt2Enabled instead",
+    replaceWith = ReplaceWith(
+        expression = "isAapt2Enabled"
+    )
 )
 val Project.aapt2Enabled: Boolean
     get() = AGP.run { isAapt2Enabled }
@@ -72,7 +76,7 @@ fun <T> Project.getProperty(name: String, defaultValue: T): T {
 
 fun Project.getUpstreamProjects(
         transitive: Boolean = true,
-        variant: BaseVariant? = null
+        variant: Variant? = null
 ): Set<Project> = getResolvedArtifactResults(transitive, variant).mapNotNull {
     (it.id.componentIdentifier as? ProjectComponentIdentifier)?.projectPath?.let { projectPath ->
         rootProject.project(projectPath)
@@ -81,12 +85,11 @@ fun Project.getUpstreamProjects(
 
 fun Project.getResolvedArtifactResults(
         transitive: Boolean = true,
-        variant: BaseVariant? = null
+        variant: Variant? = null
 ): Set<ResolvedArtifactResult> = when {
+    variant == null -> emptySet()
     isAndroid -> getResolvedArtifactResultsRecursively(transitive) {
-        filterByVariant(variant).map { v ->
-            AGP.run { v.getDependencies(transitive) }
-        }.flatten()
+        AGP.run { variant.getDependencies(transitive) }.toList()
     }
     isJava -> getResolvedArtifactResultsRecursively(transitive) {
         configurations.getByName(RUNTIME_CLASSPATH_CONFIGURATION_NAME).resolvedConfiguration.resolvedArtifacts.map {
@@ -128,36 +131,19 @@ private fun Project.getResolvedArtifactResultsRecursively(transitive: Boolean, r
  *
  * @param variant The build variant
  */
-fun Project.getJars(variant: BaseVariant? = null): Set<File> = getJarTaskProviders(variant).map {
+fun Project.getJars(variant: Variant): Set<File> = getJarTaskProviders(variant).filterNotNull().map {
     it.get().outputs.files
 }.flatten().toSet()
 
-fun Project.getJarTaskProviders(variant: BaseVariant? = null): Collection<TaskProvider<out Task>> = when {
-    isAndroid -> when (getAndroidOrNull<BaseExtension>()) {
-        is LibraryExtension -> filterByVariant(variant).mapNotNull(BaseVariant::createFullJarTaskProvider)
-        is AppExtension -> filterByVariant(variant).mapNotNull(BaseVariant::bundleClassesTaskProvider)
-        else -> emptyList()
+fun Project.getJarTaskProviders(variant: Variant? = null): Collection<TaskProvider<out Task>> = when {
+    isAndroid -> when  {
+            variant == null -> emptyList()
+            variant.isLibrary  -> variant.createFullJarTaskProvider?.let(::listOf) ?: emptyList()
+            variant.isApplication || variant.isDynamicFeature -> variant.bundleClassesTaskProvider?.let(::listOf) ?: listOf()
+            else -> emptyList()
     }
     isJavaLibrary -> listOf(tasks.named(JavaPlugin.JAR_TASK_NAME))
     else -> emptyList()
-}
-
-private fun Project.filterByVariant(variant: BaseVariant? = null): Collection<BaseVariant> {
-    val variants = when (val android = getAndroidOrNull<BaseExtension>()) {
-        is AppExtension -> android.applicationVariants
-        is LibraryExtension -> android.libraryVariants
-        else -> emptyList<BaseVariant>()
-    }
-
-    if (null == variant) return variants
-
-    return variants.filter {
-        it.name == variant.name
-    }.takeIf {
-        it.isNotEmpty()
-    } ?: variants.filter {
-        it.buildType.name == variant.buildType.name
-    }
 }
 
 private data class ResolvedArtifactResultImpl(

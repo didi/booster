@@ -1,6 +1,6 @@
 package com.didiglobal.booster.task.so
 
-import com.android.build.gradle.api.BaseVariant
+import com.android.build.api.variant.Variant
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.didiglobal.booster.BOOSTER
 import com.didiglobal.booster.gradle.project
@@ -13,7 +13,7 @@ private const val TASK_NAME = "listSharedLibraries"
 @AutoService(VariantProcessor::class)
 class ListSharedLibraryVariantProcessor : VariantProcessor {
 
-    override fun process(variant: BaseVariant) {
+    override fun process(variant: Variant) {
         variant.project.tasks.let { tasks ->
             val listSharedLibraries = try {
                 tasks.named(TASK_NAME)

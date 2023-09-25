@@ -26,6 +26,7 @@ apply plugin: 'io.github.gradle-nexus.publish-plugin'
 
 allprojects { project ->
     apply plugin: 'java'
+    apply plugin: 'kotlin'
     apply plugin: 'maven-publish'
 
     group = 'com.didiglobal.booster'
@@ -37,17 +38,30 @@ allprojects { project ->
         mavenCentral()
     }
 
+    sourceSets {
+        main {
+            kotlin {
+                srcDirs += ['src/main/kotlin', 'src/main/java', 'build/generated/source/buildprops/main/java']
+            }
+        }
+        test {
+            kotlin {
+                srcDirs += ['src/main/kotlin', 'src/main/java', 'build/generated/source/buildprops/main/java']
+            }
+        }
+    }
+
     javadoc {
         failOnError = false
     }
 
     task packageJavadoc(type: Jar) {
-        classifier = 'javadoc'
+        archiveClassifier = 'javadoc'
         from javadoc
     }
 
     task packageSources(type: Jar) {
-        classifier = 'sources'
+        archiveClassifier = 'sources'
         from sourceSets.main.allSource
     }
 
@@ -71,11 +85,11 @@ allprojects { project ->
         }
 
         artifact project.packageSources {
-            classifier "sources"
+            archiveClassifier.set("sources")
         }
 
         artifact project.packageJavadoc {
-            classifier "javadoc"
+            archiveClassifier.set("javadoc")
         }
 
         pom {

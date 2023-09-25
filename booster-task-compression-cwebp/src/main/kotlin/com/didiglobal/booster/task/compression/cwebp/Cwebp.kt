@@ -1,11 +1,11 @@
 package com.didiglobal.booster.task.compression.cwebp
 
-import com.android.build.gradle.api.BaseVariant
+import com.android.build.api.variant.Variant
 import com.didiglobal.booster.command.CommandService
 import com.didiglobal.booster.compression.CompressionTool
 import com.didiglobal.booster.compression.SimpleCompressionTaskCreator
-import com.didiglobal.booster.gradle.minSdkVersion
 import com.didiglobal.booster.kotlinx.OS
+import com.didiglobal.booster.task.compression.cwebp.Build.*
 import com.didiglobal.booster.task.compression.cwebp.Cwebp.Companion.PROGRAM
 
 /**
@@ -38,7 +38,7 @@ class Cwebp internal constructor(val supportAlpha: Boolean) : CompressionTool(Co
         /**
          * @see <a href="https://developer.android.com/studio/write/convert-webp">convert-webp</a>
          */
-        fun get(variant: BaseVariant): Cwebp? {
+        fun get(variant: Variant): Cwebp? {
             val minSdkVersion = variant.minSdkVersion.apiLevel
             return when {
                 minSdkVersion >= 18 -> Cwebp(true)
@@ -78,5 +78,5 @@ internal val PREBUILT_CWEBP_EXECUTABLE = "bin/" + when {
     else -> TODO("Unsupported OS ${OS.name}")
 } + "/$CWEBP"
 
-private val PROPERTY_PREFIX = Build.ARTIFACT.replace('-', '.')
+private val PROPERTY_PREFIX = ARTIFACT.replace('-', '.')
 internal val PROPERTY_OPTION_QUALITY = "${PROPERTY_PREFIX}.option.quality"
