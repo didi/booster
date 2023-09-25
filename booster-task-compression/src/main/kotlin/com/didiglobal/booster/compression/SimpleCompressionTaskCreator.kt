@@ -9,6 +9,7 @@ import com.didiglobal.booster.compression.task.MATCH_ALL_RESOURCES
 import com.didiglobal.booster.compression.task.excludes
 import com.didiglobal.booster.gradle.*
 import com.didiglobal.booster.kotlinx.Wildcard
+import com.didiglobal.booster.kotlinx.capitalized
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.UnknownTaskException
@@ -37,8 +38,7 @@ class SimpleCompressionTaskCreator(private val tool: CompressionTool, private va
         val aapt2 = project.isAapt2Enabled
         val install = getCommandInstaller(variant)
 
-        @Suppress("DEPRECATION")
-        return project.tasks.register("compress${variant.name.capitalize()}${name.capitalize()}With${tool.command.name.substringBefore('.').capitalize()}", getCompressionTaskClass(aapt2).java) { task ->
+        return project.tasks.register("compress${variant.name.capitalized()}${name.capitalized()}With${tool.command.name.substringBefore('.').capitalized()}", getCompressionTaskClass(aapt2).java) { task ->
             task.group = BOOSTER
             task.description = "Compress image resources by ${tool.command.name} for ${variant.name}"
             task.dependsOn(variant.preBuildTaskProvider.get())
@@ -79,8 +79,7 @@ class SimpleCompressionTaskCreator(private val tool: CompressionTool, private va
     }
 
     private fun getInstallTaskName(variant: String = ""): String {
-        @Suppress("DEPRECATION")
-        return "install${variant.capitalize()}${tool.command.name.substringBefore('.').capitalize()}"
+        return "install${variant.capitalized()}${tool.command.name.substringBefore('.').capitalized()}"
     }
 
 }

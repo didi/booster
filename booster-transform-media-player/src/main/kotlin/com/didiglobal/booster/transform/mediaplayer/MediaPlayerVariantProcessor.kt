@@ -1,23 +1,25 @@
 package com.didiglobal.booster.transform.mediaplayer
 
-import com.android.build.api.variant.Variant
-import com.didiglobal.booster.gradle.isDynamicFeature
-import com.didiglobal.booster.gradle.isLibrary
-import com.didiglobal.booster.gradle.project
+import com.android.build.api.variant.DynamicFeatureVariantBuilder
+import com.android.build.api.variant.LibraryVariantBuilder
+import com.android.build.api.variant.VariantBuilder
 import com.didiglobal.booster.task.spi.VariantProcessor
-import com.didiglobal.booster.transform.media.player.Build.*
+import com.didiglobal.booster.transform.media.player.Build.GROUP
+import com.didiglobal.booster.transform.media.player.Build.VERSION
 import com.google.auto.service.AutoService
+import org.gradle.api.Project
 
 /**
  * @author neighbWang
  */
 @AutoService(VariantProcessor::class)
-class MediaPlayerVariantProcessor : VariantProcessor {
+class MediaPlayerVariantProcessor(private val project: Project) : VariantProcessor {
 
-    override fun process(variant: Variant) {
-        if (!variant.isLibrary && !variant.isDynamicFeature) {
-            variant.project.dependencies.add("implementation", "$GROUP:booster-android-instrument-media-player:$VERSION")
+    override fun beforeProcess(variantBuilder: VariantBuilder) {
+        if (variantBuilder is LibraryVariantBuilder || variantBuilder is DynamicFeatureVariantBuilder) {
+            return
         }
+        project.dependencies.add("${variantBuilder.name}Implementation", "$GROUP:booster-android-instrument-media-player:$VERSION")
     }
 
 }

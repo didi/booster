@@ -4,6 +4,7 @@ import com.android.build.api.variant.Variant
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.didiglobal.booster.BOOSTER
 import com.didiglobal.booster.gradle.project
+import com.didiglobal.booster.kotlinx.capitalized
 import com.didiglobal.booster.task.spi.VariantProcessor
 import com.google.auto.service.AutoService
 import org.gradle.api.UnknownTaskException
@@ -23,8 +24,7 @@ class ListArtifactVariantProcessor : VariantProcessor {
                     it.description = "List build artifacts"
                 }
             }
-            @Suppress("DEPRECATION")
-            tasks.register("list${variant.name.capitalize()}Artifacts", ListArtifact::class.java) {
+            tasks.register("list${variant.name.capitalized()}Artifacts", ListArtifact::class.java) {
                 it.group = BOOSTER
                 it.description = "List build artifacts for ${variant.name}"
                 it.variant = variant

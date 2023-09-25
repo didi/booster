@@ -135,6 +135,15 @@ allprojects { project ->
         if (!project.hasProperty("signing.skip")) {
             apply plugin: 'signing'
 
+            def signingTasks = project.tasks.withType(Sign)
+            project.tasks.withType(PublishToMavenLocal) {
+                dependsOn signingTasks
+            }
+
+            project.tasks.withType(PublishToMavenRepository) {
+                dependsOn signingTasks
+            }
+
             project.signing {
                 sign publication
             }

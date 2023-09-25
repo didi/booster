@@ -1,23 +1,25 @@
 package com.didiglobal.booster.transform.sharedpreferences
 
-import com.android.build.api.variant.Variant
-import com.didiglobal.booster.gradle.isDynamicFeature
-import com.didiglobal.booster.gradle.isLibrary
-import com.didiglobal.booster.gradle.project
+import com.android.build.api.variant.DynamicFeatureVariantBuilder
+import com.android.build.api.variant.LibraryVariantBuilder
+import com.android.build.api.variant.VariantBuilder
 import com.didiglobal.booster.task.spi.VariantProcessor
-import com.didiglobal.booster.transform.shared.preferences.Build
+import com.didiglobal.booster.transform.shared.preferences.Build.GROUP
+import com.didiglobal.booster.transform.shared.preferences.Build.VERSION
 import com.google.auto.service.AutoService
+import org.gradle.api.Project
 
 /**
  * @author neighbWang
  */
 @AutoService(VariantProcessor::class)
-class SharedPreferencesVariantProcessor : VariantProcessor {
+class SharedPreferencesVariantProcessor(private val project: Project) : VariantProcessor {
 
-    override fun process(variant: Variant) {
-        if (!variant.isLibrary && !variant.isDynamicFeature) {
-            variant.project.dependencies.add("implementation", "${Build.GROUP}:booster-android-instrument-shared-preferences:${Build.VERSION}")
+    override fun beforeProcess(variantBuilder: VariantBuilder) {
+        if (variantBuilder is LibraryVariantBuilder || variantBuilder is DynamicFeatureVariantBuilder) {
+            return
         }
+        project.dependencies.add("${variantBuilder.name}Implementation", "$GROUP:booster-android-instrument-shared-preferences:$VERSION")
     }
 
 }

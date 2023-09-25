@@ -6,11 +6,11 @@ import com.android.build.api.artifact.SingleArtifact
 import com.android.build.api.artifact.impl.ArtifactsImpl
 import com.android.build.api.component.analytics.AnalyticsEnabledVariant
 import com.android.build.api.variant.AndroidVersion
+import com.android.build.api.variant.ApplicationVariant
+import com.android.build.api.variant.LibraryVariant
 import com.android.build.api.variant.Variant
 import com.android.build.api.variant.impl.TaskProviderBasedDirectoryEntryImpl
 import com.android.build.api.variant.impl.VariantImpl
-import com.android.build.gradle.api.ApplicationVariant
-import com.android.build.gradle.api.LibraryVariant
 import com.android.build.gradle.internal.api.artifact.SourceArtifactType
 import com.android.build.gradle.internal.publishing.AndroidArtifacts
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactScope
@@ -34,7 +34,6 @@ import org.gradle.api.tasks.TaskProvider
 import java.io.File
 import java.util.*
 import kotlin.reflect.full.declaredMemberProperties
-import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
 @Suppress("UnstableApiUsage")
@@ -270,7 +269,7 @@ internal object V80 : AGPInterface {
         get() = when (this) {
             is ApplicationVariant -> getFinalArtifactFiles(InternalArtifactType.COMPRESSED_ASSETS)
             is LibraryVariant     -> getFinalArtifactFiles(InternalArtifactType.LIBRARY_ASSETS)
-            else                  -> TODO("Unsupported variant type: $name")
+            else                  -> TODO("Unsupported variant type: $name@${javaClass.name}")
         }
 
     override val Variant.processedRes: FileCollection
@@ -280,7 +279,7 @@ internal object V80 : AGPInterface {
         get() = when (this) {
             is ApplicationVariant -> getFinalArtifactFiles(InternalArtifactType.RUNTIME_SYMBOL_LIST)
             is LibraryVariant     -> getFinalArtifactFiles(InternalArtifactType.COMPILE_SYMBOL_LIST)
-            else                  -> TODO("Unsupported variant type : $name")
+            else                  -> TODO("Unsupported variant type : $name@${javaClass.name}")
         }
 
     override val Variant.symbolListWithPackageName: FileCollection

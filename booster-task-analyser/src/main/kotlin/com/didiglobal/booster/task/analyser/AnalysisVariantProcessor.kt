@@ -10,6 +10,7 @@ import com.didiglobal.booster.gradle.isAndroid
 import com.didiglobal.booster.gradle.isJava
 import com.didiglobal.booster.gradle.isJavaLibrary
 import com.didiglobal.booster.gradle.project
+import com.didiglobal.booster.kotlinx.capitalized
 import com.didiglobal.booster.task.analyser.performance.PerformanceAnalysisTask
 import com.didiglobal.booster.task.analyser.reference.ReferenceAnalysisTask
 import com.didiglobal.booster.task.spi.VariantProcessor
@@ -61,4 +62,4 @@ internal inline val <reified T : AnalysisTask> KClass<T>.category: String
     get() = T::class.java.simpleName.substringBefore(AnalysisTask::class.java.simpleName).lowercase()
 
 internal inline val <reified T : AnalysisTask> KClass<T>.taskName: String
-    get() = @Suppress("DEPRECATION") "analyse${category.capitalize()}"
+    get() = "analyse${category.capitalized()}"

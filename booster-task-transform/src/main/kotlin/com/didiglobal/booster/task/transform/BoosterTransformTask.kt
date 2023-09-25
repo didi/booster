@@ -20,7 +20,12 @@ import org.gradle.api.file.Directory
 import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
-import org.gradle.api.tasks.*
+import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.Executors
@@ -42,7 +47,7 @@ abstract class BoosterTransformTask : DefaultTask() {
     abstract var variant: Variant
 
     @get:Internal
-    abstract var androidPlatform: File
+    abstract var bootClasspath: Provider<List<RegularFile>>
 
     @get:InputFiles
     abstract val allJars: ListProperty<RegularFile>
@@ -57,20 +62,14 @@ abstract class BoosterTransformTask : DefaultTask() {
 
     @TaskAction
     fun taskAction() {
-        val inputs = dependencies
-        val classpath = inputs.filter {
-            it.isDirectory || it.extension.run {
-                equals("class", true) || equals("jar", true)
-            }
-        }
         val context = object : AbstractTransformContext(
             applicationId,
             variant.name,
-            androidPlatform.resolve("android.jar").takeIf { it.exists() }?.let { listOf(it) } ?: emptyList(),
-            classpath,
-            classpath
+            bootClasspath.get().map(RegularFile::getAsFile),
+            compileClasspath,
+            compileClasspath
         ) {
-            override val projectDir = this@BoosterTransformTask.project.projectDir
+            override val projectDir = project.projectDir
             override val artifacts = variant.artifactManager
         }
         val executor = Executors.newFixedThreadPool(NCPU)
@@ -83,7 +82,7 @@ abstract class BoosterTransformTask : DefaultTask() {
                 it.get()
             }
 
-            inputs.map { input ->
+            compileClasspath.map { input ->
                 executor.submit {
                     input.takeIf {
                         it.collect(CompositeCollector(context.collectors)).isNotEmpty()
@@ -106,7 +105,7 @@ abstract class BoosterTransformTask : DefaultTask() {
                     }
                 )
 
-                inputs.map {
+                compileClasspath.map {
                     executor.submit {
                         it.transform("", creator) { bytecode ->
                             transformers.fold(bytecode) { bytes, transformer ->
@@ -133,7 +132,7 @@ abstract class BoosterTransformTask : DefaultTask() {
         }
     }
 
-    private val dependencies: Collection<File>
+    private val compileClasspath: Collection<File>
         get() = (allJars.get() + allDirectories.get()).map {
             it.asFile
         }

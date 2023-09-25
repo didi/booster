@@ -5,10 +5,10 @@ dependencies {
     kaptTest 'com.google.auto.service:auto-service:1.0'
     api project(':booster-annotations')
     api project(':booster-transform-util')
-    api 'org.ow2.asm:asm:7.1'
-    api 'org.ow2.asm:asm-analysis:7.1'
-    api 'org.ow2.asm:asm-commons:7.1'
-    api 'org.ow2.asm:asm-tree:7.1'
-    api 'org.ow2.asm:asm-util:7.1'
+    api 'org.ow2.asm:asm:9.1'
+    api 'org.ow2.asm:asm-analysis:9.2'
+    api 'org.ow2.asm:asm-commons:9.2'
+    api 'org.ow2.asm:asm-tree:9.2'
+    api 'org.ow2.asm:asm-util:9.2'
     api 'com.google.auto.service:auto-service:1.0'
 }
