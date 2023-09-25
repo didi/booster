@@ -127,7 +127,6 @@ public final class ViewTreeObserver {
      * This is only used for non-Activity windows. Activity windows can use
      * Activity.onEnterAnimationComplete() to get the same signal.
      *
-     * @hide
      */
     public interface OnWindowShownListener {
         /**

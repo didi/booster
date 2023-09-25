@@ -1,6 +1,6 @@
 package com.didiglobal.booster.compression
 
-import com.android.build.gradle.api.BaseVariant
+import com.android.build.api.variant.Variant
 import com.didiglobal.booster.compression.task.CompressImages
 import com.didiglobal.booster.kotlinx.Wildcard
 import org.gradle.api.Task
@@ -32,7 +32,7 @@ interface CompressionTaskCreator {
      * @param deps The dependent tasks
      */
     fun createCompressionTask(
-            variant: BaseVariant,
+            variant: Variant,
             results: CompressionResults,
             name: String,
             supplier: () -> Collection<File>,
@@ -50,12 +50,12 @@ interface CompressionTaskCreator {
      * @param deps The dependent tasks
      */
     fun createCompressionTask(
-            variant: BaseVariant,
-            results: CompressionResults,
-            name: String,
-            supplier: () -> Collection<File>,
-            ignores: Set<Wildcard> = emptySet(),
-            vararg deps: TaskProvider<out Task>
+        variant: Variant,
+        results: CompressionResults,
+        name: String,
+        supplier: () -> Collection<File>,
+        ignores: Set<Wildcard> = emptySet(),
+        vararg deps: TaskProvider<out Task>
     ): TaskProvider<out CompressImages<out CompressionOptions>>
 
 }

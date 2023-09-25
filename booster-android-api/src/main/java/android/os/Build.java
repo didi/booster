@@ -151,7 +151,6 @@ public class Build {
         private static final String[] ALL_CODENAMES = getStringList("ro.build.version.all_codenames", ",");
 
         /**
-         * @hide
          */
         public static final String[] ACTIVE_CODENAMES = "REL".equals(ALL_CODENAMES[0])
                 ? new String[0] : ALL_CODENAMES;
@@ -161,7 +160,6 @@ public class Build {
          * Use the current SDK version code.  For every active development codename
          * we are operating under, we bump the assumed resource platform version by 1.
          *
-         * @hide
          */
         public static final int RESOURCES_SDK_INT = SDK_INT + ACTIVE_CODENAMES.length;
 

@@ -1,6 +1,6 @@
 package com.didiglobal.booster.task.analyser.reference
 
-import com.android.build.gradle.api.BaseVariant
+import com.android.build.api.variant.Variant
 import com.didiglobal.booster.cha.asm.Reference
 import com.didiglobal.booster.graph.Graph
 import org.gradle.api.Project
@@ -11,7 +11,7 @@ import java.net.URL
 
 class ReferencePageRenderer(
         private val project: Project,
-        private val variant: BaseVariant?
+        private val variant: Variant?
 ) : TabbedPageRenderer<Graph<Reference>>() {
 
     private val _title: String by lazy {

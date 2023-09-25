@@ -1,6 +1,6 @@
 package com.didiglobal.booster.compression.task
 
-import com.android.build.gradle.api.BaseVariant
+import com.android.build.api.variant.Variant
 import com.didiglobal.booster.aapt2.Aapt2Container
 import com.didiglobal.booster.aapt2.resourceName
 import com.didiglobal.booster.command.Command
@@ -23,7 +23,7 @@ import java.io.File
 abstract class CompressImages<T : CompressionOptions> : DefaultTask() {
 
     @get:Internal
-    lateinit var variant: BaseVariant
+    lateinit var variant: Variant
 
     @get:Internal
     lateinit var tool: CompressionTool

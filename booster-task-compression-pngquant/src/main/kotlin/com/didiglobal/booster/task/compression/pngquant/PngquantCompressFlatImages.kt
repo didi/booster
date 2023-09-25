@@ -4,7 +4,6 @@ import com.android.SdkConstants.DOT_PNG
 import com.android.SdkConstants.FD_RES
 import com.android.SdkConstants.FD_RES_DRAWABLE
 import com.android.SdkConstants.FD_RES_MIPMAP
-import com.android.builder.model.AndroidProject.FD_INTERMEDIATES
 import com.android.sdklib.BuildToolInfo
 import com.didiglobal.booster.aapt2.metadata
 import com.didiglobal.booster.compression.CompressionResult
@@ -27,15 +26,15 @@ import java.io.File
 internal abstract class PngquantCompressFlatImages : AbstractPngquantCompressImages() {
 
     private val intermediates: File
-        get() = variant.project.buildDir.file(FD_INTERMEDIATES)
+        get() = variant.project.buildDir.file("intermediates")
 
     @get:OutputDirectory
     val compressedRes: File
-        get() = intermediates.file("compressed_${FD_RES}_pngquant", variant.dirName, this.name)
+        get() = intermediates.file("compressed_${FD_RES}_pngquant", variant.name, this.name)
 
     @get:OutputDirectory
     val compiledRes: File
-        get() = intermediates.file("compiled_${FD_RES}_pngquant", variant.dirName, this.name)
+        get() = intermediates.file("compiled_${FD_RES}_pngquant", variant.name, this.name)
 
     override fun compress() {
         val pngquant = this.compressor.canonicalPath

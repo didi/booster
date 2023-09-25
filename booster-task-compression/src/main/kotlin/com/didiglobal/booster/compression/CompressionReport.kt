@@ -1,7 +1,7 @@
 package com.didiglobal.booster.compression
 
 import com.android.SdkConstants
-import com.android.build.gradle.api.BaseVariant
+import com.android.build.api.variant.Variant
 import com.didiglobal.booster.gradle.getReport
 import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.kotlinx.Octuple
@@ -17,7 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList
  *
  * reduction percentage | file path | reduced size
  */
-fun CompressionResults.generateReport(variant: BaseVariant, artifact: String) {
+fun CompressionResults.generateReport(variant: Variant, artifact: String) {
     val base = variant.project.buildDir.toURI()
     val table = this.map {
         val delta = it.second - it.third

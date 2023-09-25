@@ -1,11 +1,10 @@
 package com.didiglobal.booster.gradle
 
-import com.android.build.gradle.api.BaseVariant
+import com.android.build.api.variant.Variant
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactScope.ALL
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactType.AAR
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactType.JAR
 import com.android.build.gradle.internal.publishing.AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH
-import com.android.builder.model.AndroidProject
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.separatorsToSystem
 import com.didiglobal.booster.kotlinx.touch
@@ -21,10 +20,10 @@ import java.io.PrintWriter
 @Suppress("UnstableApiUsage")
 @Deprecated(
         message = "Use AGPInterface instead",
-        replaceWith = ReplaceWith("BaseVariant.getDependencies(Boolean, (ComponentIdentifier) -> Boolean)"),
+        replaceWith = ReplaceWith("BoosterVariant.getDependencies(Boolean, (ComponentIdentifier) -> Boolean)"),
         level = DeprecationLevel.WARNING
 )
-class ResolvedArtifactResults(private val variant: BaseVariant) : Collection<ResolvedArtifactResult> {
+class ResolvedArtifactResults(private val variant: Variant) : Collection<ResolvedArtifactResult> {
 
     private val results = listOf(AAR, JAR)
             .asSequence()
@@ -80,9 +79,9 @@ class ResolvedArtifactResults(private val variant: BaseVariant) : Collection<Res
     /**
      * Default output location: $buildDir/intermediates/dependencies/${variantDirName}/dependencies.txt
      */
-    private fun makeDependenciesOutput() = File(variant.project.buildDir, AndroidProject.FD_INTERMEDIATES).file(
+    private fun makeDependenciesOutput() = File(variant.project.buildDir, "intermediates").file(
             "dependencies",
-            variant.dirName.separatorsToSystem(),
+            variant.name,
             "dependencies.txt"
     )
 

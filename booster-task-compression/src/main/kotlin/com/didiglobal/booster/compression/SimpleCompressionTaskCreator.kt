@@ -1,18 +1,13 @@
 package com.didiglobal.booster.compression
 
-import com.android.build.gradle.api.BaseVariant
+import com.android.build.api.variant.Variant
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.didiglobal.booster.BOOSTER
 import com.didiglobal.booster.command.CommandInstaller
 import com.didiglobal.booster.compression.task.CompressImages
 import com.didiglobal.booster.compression.task.MATCH_ALL_RESOURCES
 import com.didiglobal.booster.compression.task.excludes
-import com.didiglobal.booster.gradle.bundleResourcesTaskProvider
-import com.didiglobal.booster.gradle.isAapt2Enabled
-import com.didiglobal.booster.gradle.mergeResourcesTaskProvider
-import com.didiglobal.booster.gradle.preBuildTaskProvider
-import com.didiglobal.booster.gradle.processResTaskProvider
-import com.didiglobal.booster.gradle.project
+import com.didiglobal.booster.gradle.*
 import com.didiglobal.booster.kotlinx.Wildcard
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -31,12 +26,12 @@ class SimpleCompressionTaskCreator(private val tool: CompressionTool, private va
     override fun getCompressionTaskClass(aapt2: Boolean) = compressor(aapt2)
 
     override fun createCompressionTask(
-            variant: BaseVariant,
-            results: CompressionResults,
-            name: String,
-            supplier: () -> Collection<File>,
-            ignores: Set<Wildcard>,
-            vararg deps: TaskProvider<out Task>
+        variant: Variant,
+        results: CompressionResults,
+        name: String,
+        supplier: () -> Collection<File>,
+        ignores: Set<Wildcard>,
+        vararg deps: TaskProvider<out Task>
     ): TaskProvider<out CompressImages<out CompressionOptions>> {
         val project = variant.project
         val aapt2 = project.isAapt2Enabled
@@ -60,7 +55,7 @@ class SimpleCompressionTaskCreator(private val tool: CompressionTool, private va
         }
     }
 
-    private fun getCommandInstaller(variant: BaseVariant): TaskProvider<out Task> {
+    private fun getCommandInstaller(variant: Variant): TaskProvider<out Task> {
         return variant.project.tasks.register(getInstallTaskName(variant.name)) {
             it.group = BOOSTER
             it.description = "Install ${tool.command.name} for ${variant.name}"

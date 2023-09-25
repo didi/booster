@@ -2,15 +2,13 @@ package com.didiglobal.booster.task.compression.processed.res
 
 import com.android.SdkConstants
 import com.android.SdkConstants.DOT_PNG
-import com.android.build.gradle.api.BaseVariant
+import com.android.build.api.variant.Variant
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.didiglobal.booster.BOOSTER
 import com.didiglobal.booster.compression.CompressionReport
 import com.didiglobal.booster.compression.CompressionResult
 import com.didiglobal.booster.compression.CompressionResults
-import com.didiglobal.booster.gradle.processResTaskProvider
-import com.didiglobal.booster.gradle.processedRes
-import com.didiglobal.booster.gradle.project
+import com.didiglobal.booster.gradle.*
 import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.kotlinx.search
 import com.didiglobal.booster.kotlinx.touch
@@ -35,7 +33,7 @@ import java.util.zip.ZipFile
 @AutoService(VariantProcessor::class)
 class ProcessedResourcesCompressionVariantProcessor : VariantProcessor {
 
-    override fun process(variant: BaseVariant) {
+    override fun process(variant: Variant) {
         @Suppress("DEPRECATION")
         val compress = variant.project.tasks.register("compress${variant.name.capitalize()}ProcessedRes", CompressProcessedRes::class.java) {
             it.group = BOOSTER
@@ -55,7 +53,7 @@ class ProcessedResourcesCompressionVariantProcessor : VariantProcessor {
 internal abstract class CompressProcessedRes : DefaultTask() {
 
     @get:Internal
-    lateinit var variant: BaseVariant
+    lateinit var variant: Variant
 
     @TaskAction
     fun compress() {
@@ -66,7 +64,7 @@ internal abstract class CompressProcessedRes : DefaultTask() {
 
 }
 
-private fun BaseVariant.compressProcessedRes(results: CompressionResults) {
+private fun Variant.compressProcessedRes(results: CompressionResults) {
     val files = processedRes.search {
         it.name.startsWith(SdkConstants.FN_RES_BASE) && it.extension == SdkConstants.EXT_RES
     }
@@ -104,7 +102,7 @@ private fun File.repack(shouldCompress: (ZipEntry) -> Boolean) {
  *
  * reduction percentage | file path | reduced size
  */
-private fun BaseVariant.generateReport(results: CompressionResults) {
+private fun Variant.generateReport(results: CompressionResults) {
     val base = project.buildDir.toURI()
     val table = results.map {
         val delta = it.second - it.third

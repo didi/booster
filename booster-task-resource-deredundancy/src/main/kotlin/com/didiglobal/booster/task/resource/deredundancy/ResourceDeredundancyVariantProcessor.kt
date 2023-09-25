@@ -1,16 +1,13 @@
 package com.didiglobal.booster.task.resource.deredundancy
 
-import com.android.build.gradle.api.BaseVariant
+import com.android.build.api.variant.Variant
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.didiglobal.booster.BOOSTER
 import com.didiglobal.booster.annotations.Priority
 import com.didiglobal.booster.compression.CompressionResults
 import com.didiglobal.booster.compression.generateReport
 import com.didiglobal.booster.compression.task.CompressImages
-import com.didiglobal.booster.gradle.getTaskName
-import com.didiglobal.booster.gradle.isAapt2Enabled
-import com.didiglobal.booster.gradle.mergeResourcesTaskProvider
-import com.didiglobal.booster.gradle.project
+import com.didiglobal.booster.gradle.*
 import com.didiglobal.booster.task.spi.VariantProcessor
 import com.google.auto.service.AutoService
 import org.gradle.api.UnknownTaskException
@@ -25,7 +22,7 @@ import org.gradle.api.UnknownTaskException
 @AutoService(VariantProcessor::class)
 class ResourceDeredundancyVariantProcessor : VariantProcessor {
 
-    override fun process(variant: BaseVariant) {
+    override fun process(variant: Variant) {
         val project = variant.project
         val results = CompressionResults()
         val klassRemoveRedundantImages = if (project.isAapt2Enabled) RemoveRedundantFlatImages::class else RemoveRedundantImages::class

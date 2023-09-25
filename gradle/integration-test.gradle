@@ -34,7 +34,7 @@ check.dependsOn integrationTest
 
 compileIntegrationTestKotlin {
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
+        jvmTarget = JavaVersion.VERSION_17
         apiVersion = "1.5"
         freeCompilerArgs = ["-Xno-optimized-callable-references"]
     }

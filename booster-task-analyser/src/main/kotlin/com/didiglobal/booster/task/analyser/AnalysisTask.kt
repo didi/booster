@@ -1,6 +1,6 @@
 package com.didiglobal.booster.task.analyser
 
-import com.android.build.gradle.api.BaseVariant
+import com.android.build.api.variant.Variant
 import com.didiglobal.booster.BOOSTER
 import com.didiglobal.booster.cha.asm.AsmClassSetCache
 import com.didiglobal.booster.kotlinx.touch
@@ -11,7 +11,7 @@ import java.io.File
 abstract class AnalysisTask : DefaultTask() {
 
     @get:Internal
-    var variant: BaseVariant? = null
+    var variant: Variant? = null
 
     @get:Internal
     lateinit var classSetCache: AsmClassSetCache
@@ -31,7 +31,7 @@ internal val AnalysisTask.reportDir: File
             .resolve("reports")
             .resolve(Build.ARTIFACT)
             .resolve(javaClass.kotlin.category)
-            .resolve(variant?.dirName ?: ".")
+            .resolve(variant?.name ?: ".")
 
 internal fun AnalysisTask.report(name: String): File {
     return reportDir.resolve(name).resolve("index.${name}").touch()

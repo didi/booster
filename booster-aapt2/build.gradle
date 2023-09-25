@@ -1,6 +1,6 @@
 apply from: "$rootDir/gradle/booster.gradle"
 
 dependencies {
-    api 'com.google.protobuf:protobuf-java:3.10.0'
-    testImplementation 'com.android.tools.build:gradle:4.0.0'
+    api 'com.google.protobuf:protobuf-java:3.19.3'
+    testImplementation 'com.android.tools.build:gradle:8.0.0'
 }

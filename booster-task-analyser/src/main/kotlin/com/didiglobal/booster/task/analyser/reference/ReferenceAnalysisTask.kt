@@ -29,16 +29,17 @@ open class ReferenceAnalysisTask : AnalysisTask() {
 
     @TaskAction
     override fun analyse() {
+        requireNotNull(variant)
         val upstream = project.getResolvedArtifactResults(true, variant).associate {
             it.id.componentIdentifier.displayName to when (val id = it.id.componentIdentifier) {
-                is ProjectComponentIdentifier -> project.rootProject.project(id.projectPath).getJars(variant).map { file ->
+                is ProjectComponentIdentifier -> project.rootProject.project(id.projectPath).getJars(variant!!).map { file ->
                     classSetCache[file.toURI().toURL()]
                 }.fold()
                 else -> classSetCache[it.file.toURI().toURL()]
             }
         }
 
-        val origin = project.name to project.getJars(variant).map {
+        val origin = project.name to project.getJars(variant!!).map {
             classSetCache[it.toURI().toURL()]
         }.fold()
         val graph = ReferenceAnalyser().analyse(origin, upstream) { klass, progress, duration ->

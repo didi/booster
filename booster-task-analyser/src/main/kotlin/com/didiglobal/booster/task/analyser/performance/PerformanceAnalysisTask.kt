@@ -3,9 +3,10 @@ package com.didiglobal.booster.task.analyser.performance
 import com.didiglobal.booster.gradle.extension
 import com.didiglobal.booster.gradle.getJars
 import com.didiglobal.booster.gradle.getUpstreamProjects
+import com.didiglobal.booster.gradle.resourceSetMap
 import com.didiglobal.booster.task.analyser.AnalysisTask
 import com.didiglobal.booster.task.analyser.reportDir
-import com.didiglobal.booster.transform.artifacts
+import com.didiglobal.booster.transform.artifactManager
 import org.gradle.api.tasks.TaskAction
 
 /**
@@ -25,10 +26,11 @@ open class PerformanceAnalysisTask : AnalysisTask() {
         }.flatten()
 
         PerformanceAnalyser(
-                variant.extension.bootClasspath,
-                classpath,
-                variant.artifacts,
-                project.properties
+            variant.extension.bootClasspath,
+            classpath,
+            variant.resourceSetMap.files,
+            variant.artifactManager,
+            project.properties
         ).analyse(reportDir)
     }
 

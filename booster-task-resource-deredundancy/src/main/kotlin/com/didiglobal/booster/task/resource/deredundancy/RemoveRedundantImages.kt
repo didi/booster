@@ -1,7 +1,7 @@
 package com.didiglobal.booster.task.resource.deredundancy
 
 import com.android.SdkConstants
-import com.android.build.gradle.api.BaseVariant
+import com.android.build.api.variant.Variant
 import com.didiglobal.booster.compression.CompressionResults
 import com.didiglobal.booster.gradle.mergedManifests
 import com.didiglobal.booster.kotlinx.search
@@ -16,7 +16,7 @@ import javax.xml.parsers.SAXParserFactory
 internal open class RemoveRedundantImages : DefaultTask() {
 
     @get:Internal
-    lateinit var variant: BaseVariant
+    lateinit var variant: Variant
 
     @get:Internal
     lateinit var results: CompressionResults
@@ -28,7 +28,7 @@ internal open class RemoveRedundantImages : DefaultTask() {
 
 }
 
-internal val BaseVariant.isSupportsRtl: Boolean
+internal val Variant.isSupportsRtl: Boolean
     get() {
         val parser = SAXParserFactory.newInstance().newSAXParser()
         return mergedManifests.search {
