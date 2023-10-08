@@ -1,3 +1,12 @@
+## v4.16.3
+
+- Support AGP 7.4
+- Fix issue [#422](https://github.com/didi/booster/pull/422) end-of-stream caused by multiple collector
+
+## v4.14.2
+
+- Fix issue [#422](https://github.com/didi/booster/pull/422) end-of-stream caused by multiple collector
+
 ## v4.14.1
 
 - Sync from 4.16.2
