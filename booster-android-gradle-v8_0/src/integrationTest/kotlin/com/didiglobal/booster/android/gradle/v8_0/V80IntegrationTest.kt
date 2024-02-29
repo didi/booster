@@ -4,6 +4,7 @@ package com.didiglobal.booster.android.gradle.v8_0
 
 import com.android.build.api.variant.Variant
 import com.didiglobal.booster.gradle.AGP
+import com.didiglobal.booster.kotlinx.capitalized
 import com.didiglobal.booster.kotlinx.search
 import io.bootstage.testkit.gradle.Case
 import io.bootstage.testkit.gradle.TestCase
