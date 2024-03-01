@@ -2,40 +2,22 @@ package com.didiglobal.booster.gradle
 
 import com.android.build.api.variant.AndroidVersion
 import com.android.build.api.variant.Variant
-import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.SdkComponentsBuildService
 import com.android.build.gradle.internal.publishing.AndroidArtifacts
 import com.android.build.gradle.internal.services.getBuildService
-import com.android.build.gradle.tasks.ProcessAndroidResources
 import com.android.sdklib.BuildToolInfo
-import com.didiglobal.booster.kotlinx.file
-import org.gradle.api.Incubating
+import org.apache.groovy.lang.annotation.Incubating
 import org.gradle.api.Project
-import org.gradle.api.Task
-import org.gradle.api.UnknownTaskException
 import org.gradle.api.artifacts.ArtifactCollection
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.api.file.FileCollection
-import org.gradle.api.tasks.TaskProvider
 import java.io.File
-
-
-fun Variant.getReport(artifactName: String, fileName: String): File {
-    return project.buildDir.file("reports", artifactName, name, fileName)
-}
 
 /**
  * The project which this variant belongs
  */
 val Variant.project: Project
     get() = AGP.run { project }
-
-
-/**
- * The `android` extension associates with this variant
- */
-val Variant.extension: BaseExtension
-    get() = project.getAndroid()
 
 /**
  * The location of `$ANDROID_HOME`/platforms/android-`${compileSdkVersion}`
@@ -55,80 +37,6 @@ val Variant.dependencies: Collection<ResolvedArtifactResult>
 
 val Variant.targetVersion: AndroidVersion
     get() = AGP.run { targetVersion }
-
-val Variant.javaCompilerTaskProvider: TaskProvider<out Task>
-    get() = AGP.run { javaCompilerTaskProvider }
-
-val Variant.preBuildTaskProvider: TaskProvider<out Task>
-    get() = AGP.run { preBuildTaskProvider }
-
-val Variant.assembleTaskProvider: TaskProvider<out Task>
-    get() = AGP.run { assembleTaskProvider }
-
-val Variant.mergeAssetsTaskProvider: TaskProvider<out Task>
-    get() = AGP.run { mergeAssetsTaskProvider }
-
-val Variant.mergeResourcesTaskProvider: TaskProvider<out Task>
-    get() = AGP.run { mergeResourcesTaskProvider }
-
-val Variant.mergeNativeLibsTaskProvider: TaskProvider<out Task>
-    get() = AGP.run { mergeNativeLibsTaskProvider }
-
-val Variant.processJavaResourcesTaskProvider: TaskProvider<out Task>
-    get() = AGP.run { processJavaResourcesTaskProvider }
-
-val Variant.processResTaskProvider: TaskProvider<out Task>?
-    get() = try {
-        project.tasks.named(getTaskName("process", "Resources"))
-    } catch (_: UnknownTaskException) {
-        null
-    }
-
-val Variant.bundleResourcesTaskProvider: TaskProvider<out Task>?
-    get() = try {
-        project.tasks.named(getTaskName("bundle", "Resources"))
-    } catch (_: UnknownTaskException) {
-        null
-    }
-
-val Variant.packageTaskProvider: TaskProvider<out Task>?
-    get() = try {
-        project.tasks.named(getTaskName("package"))
-    } catch (_: UnknownTaskException) {
-        null
-    }
-
-val Variant.packageBundleTaskProvider: TaskProvider<out Task>?
-    get() = try {
-        project.tasks.named(getTaskName("package", "Bundle"))
-    } catch (_: UnknownTaskException) {
-        null
-    }
-
-val Variant.mergeJavaResourceTaskProvider: TaskProvider<out Task>?
-    get() = try {
-        project.tasks.named(getTaskName("merge", "JavaResource"))
-    } catch (_: UnknownTaskException) {
-        null
-    }
-
-val Variant.createFullJarTaskProvider: TaskProvider<out Task>?
-    get() = try {
-        project.tasks.named(getTaskName("createFullJar"))
-    } catch (_: UnknownTaskException) {
-        null
-    }
-
-val Variant.bundleClassesTaskProvider: TaskProvider<out Task>?
-    get() = try {
-        project.tasks.named(getTaskName("bundle", "ClassesToRuntimeJar"))
-    } catch (_: UnknownTaskException) {
-        try {
-            project.tasks.named(getTaskName("bundle", "ClassesToCompileJar"))
-        } catch (_: UnknownTaskException) {
-            null
-        }
-    }
 
 fun Variant.getTaskName(prefix: String): String = AGP.run {
     getTaskName(prefix)
@@ -160,9 +68,9 @@ val Variant.originalApplicationId: String
 
 @Incubating
 fun Variant.getArtifactCollection(
-    configType: AndroidArtifacts.ConsumedConfigType,
-    scope: AndroidArtifacts.ArtifactScope,
-    artifactType: AndroidArtifacts.ArtifactType
+        configType: AndroidArtifacts.ConsumedConfigType,
+        scope: AndroidArtifacts.ArtifactScope,
+        artifactType: AndroidArtifacts.ArtifactType
 ): ArtifactCollection = AGP.run {
     getArtifactCollection(configType, scope, artifactType)
 }
@@ -266,107 +174,3 @@ val Variant.isPrecompileDependenciesResourcesEnabled: Boolean
     get() = AGP.run {
         isPrecompileDependenciesResourcesEnabled
     }
-
-/**
- * The `compileJava` task associates with this variant
- */
-@Deprecated(
-    message = "Use javaCompilerTaskProvider instead",
-    replaceWith = ReplaceWith(expression = "javaCompilerTaskProvider"),
-    level = DeprecationLevel.WARNING
-)
-val Variant.javaCompilerTask: Task
-    get() = AGP.run { javaCompilerTask }
-
-/**
- * The `preBuild` task associates with this variant
- */
-@Deprecated(
-    message = "Use preBuildTaskProvider instead",
-    replaceWith = ReplaceWith(expression = "preBuildTaskProvider"),
-    level = DeprecationLevel.WARNING
-)
-val Variant.preBuildTask: Task
-    get() = AGP.run { preBuildTask }
-
-/**
- * The `assemble` task associates with this variant
- */
-@Deprecated(
-    message = "Use assembleTaskProvider instead",
-    replaceWith = ReplaceWith(expression = "assembleTaskProvider"),
-    level = DeprecationLevel.WARNING
-)
-val Variant.assembleTask: Task
-    get() = AGP.run { assembleTask }
-
-/**
- * The `mergeAssets` task associates with this variant
- */
-@Deprecated(
-    message = "Use mergeAssetsTaskProvider instead",
-    replaceWith = ReplaceWith(expression = "mergeAssetsTaskProvider"),
-    level = DeprecationLevel.WARNING
-)
-val Variant.mergeAssetsTask: Task
-    get() = AGP.run { mergeAssetsTask }
-
-/**
- * The `mergeResources` task associates with this variant
- */
-@Deprecated(
-    message = "Use mergeResourcesTaskProvider instead",
-    replaceWith = ReplaceWith(expression = "mergeResourcesTaskProvider"),
-    level = DeprecationLevel.WARNING
-)
-val Variant.mergeResourcesTask: Task
-    get() = AGP.run { mergeResourcesTask }
-
-@Deprecated(
-    message = "Use processJavaResourcesTaskProvider instead",
-    replaceWith = ReplaceWith(expression = "processJavaResourcesTaskProvider"),
-    level = DeprecationLevel.WARNING
-)
-val Variant.processJavaResourcesTask: Task
-    get() = AGP.run { processJavaResourcesTask }
-
-/**
- * The `processRes` task associates with this variant
- */
-@Deprecated(
-    message = "Use processResTaskProvider instead",
-    replaceWith = ReplaceWith(expression = "processResTaskProvider"),
-    level = DeprecationLevel.WARNING
-)
-val Variant.processResTask: ProcessAndroidResources?
-    get() = project.tasks.findByName(getTaskName("process", "Resources")) as? ProcessAndroidResources
-
-/**
- * The `bundleResources` tasks associates with this variant
- */
-@Deprecated(
-    message = "Use bundleResourcesTaskProvider instead",
-    replaceWith = ReplaceWith(expression = "bundleResourcesTaskProvider"),
-    level = DeprecationLevel.WARNING
-)
-val Variant.bundleResourcesTask: Task?
-    get() = project.tasks.findByName(getTaskName("bundle", "Resources"))
-
-/**
- * The `packageBundle` tasks associates with this variant
- */
-@Deprecated(
-    message = "Use packageBundleTaskProvider instead",
-    replaceWith = ReplaceWith(expression = "packageBundleTaskProvider"),
-    level = DeprecationLevel.WARNING
-)
-val Variant.packageBundleTask: Task?
-    get() = project.tasks.findByName(getTaskName("package", "Bundle"))
-
-@Deprecated(
-    message = "Use mergeJavaResourceTaskProvider instead",
-    replaceWith = ReplaceWith(expression = "mergeJavaResourceTaskProvider"),
-    level = DeprecationLevel.WARNING
-)
-val Variant.mergeJavaResourceTask: Task?
-    get() = project.tasks.findByName(getTaskName("merge", "JavaResource"))

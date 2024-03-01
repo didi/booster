@@ -7,9 +7,9 @@ import com.android.build.gradle.api.BaseVariant
 interface VariantProcessor {
 
     @Deprecated(
-        message = "BaseVariant is deprecated,  please use process(variant: Pair<Project, Variant>) method instead",
+        message = "BaseVariant is deprecated,  please use process(variant: Variant) method instead",
         replaceWith = ReplaceWith(
-            expression = "process(variant: Pair<Project, Variant>)"
+            expression = "process(variant: Variant)"
         )
     )
     fun process(variant: BaseVariant) = Unit

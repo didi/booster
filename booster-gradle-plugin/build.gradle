@@ -5,7 +5,6 @@ dependencies {
     api gradleApi()
     api project(':booster-annotations')
     api project(':booster-api')
-    implementation project(':booster-task-transform')
     compileOnly 'com.android.tools.build:gradle:8.0.0'
     testCompileOnly 'com.android.tools.build:gradle:8.0.0'
 }
