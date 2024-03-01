@@ -28,6 +28,7 @@ import org.gradle.api.artifacts.result.ResolvedDependencyResult
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.FileSystemLocation
+import org.gradle.api.provider.Provider
 import java.io.File
 import java.util.TreeMap
 import kotlin.reflect.full.declaredMemberProperties
@@ -179,6 +180,10 @@ internal object V82 : AGPInterface {
                         }
                     }
                 })
+
+    override fun <T : FileSystemLocation> Variant.getSingleArtifact(type: Artifact.Single<T>): Provider<T> {
+        return artifactsImpl.get(type)
+    }
 
     override fun Variant.getArtifactCollection(
             configType: AndroidArtifacts.ConsumedConfigType,

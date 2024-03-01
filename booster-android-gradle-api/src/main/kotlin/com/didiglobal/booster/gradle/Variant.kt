@@ -1,5 +1,6 @@
 package com.didiglobal.booster.gradle
 
+import com.android.build.api.artifact.Artifact
 import com.android.build.api.variant.AndroidVersion
 import com.android.build.api.variant.Variant
 import com.android.build.gradle.internal.SdkComponentsBuildService
@@ -11,6 +12,8 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.ArtifactCollection
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.api.file.FileCollection
+import org.gradle.api.file.FileSystemLocation
+import org.gradle.api.provider.Provider
 import java.io.File
 
 /**
@@ -65,6 +68,12 @@ val Variant.originalApplicationId: String
     get() = AGP.run {
         originalApplicationId
     }
+
+fun <T : FileSystemLocation> Variant.getSingleArtifact(
+        type: Artifact.Single<T>
+): Provider<T> = AGP.run {
+    getSingleArtifact(type)
+}
 
 @Incubating
 fun Variant.getArtifactCollection(
