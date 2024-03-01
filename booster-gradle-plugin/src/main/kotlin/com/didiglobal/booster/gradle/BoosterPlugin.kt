@@ -9,7 +9,6 @@ import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.api.BaseVariant
 import com.didiglobal.booster.kotlinx.capitalized
 import com.didiglobal.booster.task.spi.VariantProcessor
-import com.didiglobal.booster.task.transform.BoosterTransformTask
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project

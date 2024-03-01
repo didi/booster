@@ -5,7 +5,6 @@ import com.android.build.gradle.internal.SdkComponentsBuildService
 import com.android.build.gradle.internal.services.getBuildService
 import com.android.repository.Revision
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.artifacts.component.ComponentArtifactIdentifier
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.component.ProjectComponentIdentifier
@@ -15,10 +14,8 @@ import org.gradle.api.attributes.Attribute
 import org.gradle.api.attributes.AttributeContainer
 import org.gradle.api.capabilities.Capability
 import org.gradle.api.component.Artifact
-import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME
 import org.gradle.api.provider.Provider
-import org.gradle.api.tasks.TaskProvider
 import org.gradle.maven.MavenPomArtifact
 import java.io.File
 import java.util.Optional
@@ -34,18 +31,6 @@ val Project.androidSdkLocation: File
     get() = getBuildService(gradle.sharedServices, SdkComponentsBuildService::class.java).flatMap {
         it.sdkDirectoryProvider
     }.get().asFile
-
-@Deprecated(
-    message = "Use isAapt2Enabled instead",
-    replaceWith = ReplaceWith(
-        expression = "isAapt2Enabled"
-    )
-)
-val Project.aapt2Enabled: Boolean
-    get() = AGP.run { isAapt2Enabled }
-
-val Project.isAapt2Enabled: Boolean
-    get() = AGP.run { isAapt2Enabled }
 
 val Project.isAndroid: Boolean
     get() = plugins.hasPlugin("com.android.application")
@@ -124,26 +109,6 @@ private fun Project.getResolvedArtifactResultsRecursively(transitive: Boolean, r
     }
 
     return results.values.toSet()
-}
-
-/**
- * Returns the jar files which could be the outputs of the jar task or createFullJar task
- *
- * @param variant The build variant
- */
-fun Project.getJars(variant: Variant): Set<File> = getJarTaskProviders(variant).filterNotNull().map {
-    it.get().outputs.files
-}.flatten().toSet()
-
-fun Project.getJarTaskProviders(variant: Variant? = null): Collection<TaskProvider<out Task>> = when {
-    isAndroid -> when  {
-            variant == null -> emptyList()
-            variant.isLibrary  -> variant.createFullJarTaskProvider?.let(::listOf) ?: emptyList()
-            variant.isApplication || variant.isDynamicFeature -> variant.bundleClassesTaskProvider?.let(::listOf) ?: listOf()
-            else -> emptyList()
-    }
-    isJavaLibrary -> listOf(tasks.named(JavaPlugin.JAR_TASK_NAME))
-    else -> emptyList()
 }
 
 private data class ResolvedArtifactResultImpl(

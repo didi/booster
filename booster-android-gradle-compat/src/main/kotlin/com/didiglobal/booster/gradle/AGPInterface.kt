@@ -1,7 +1,10 @@
 package com.didiglobal.booster.gradle
 
+import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.api.variant.AndroidVersion
 import com.android.build.api.variant.Variant
+import com.android.build.api.variant.VariantBuilder
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.publishing.AndroidArtifacts
 import com.android.build.gradle.internal.variant.BaseVariantData
@@ -9,16 +12,12 @@ import com.android.builder.model.Version
 import com.android.repository.Revision
 import com.android.sdklib.BuildToolInfo
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.UnknownDomainObjectException
 import org.gradle.api.artifacts.ArtifactCollection
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.api.file.FileCollection
-import org.gradle.api.tasks.TaskProvider
 import java.util.ServiceLoader
-
-//typealias Variant = Pair<Project, Variant>
 
 interface AGPInterface {
 
@@ -26,55 +25,6 @@ interface AGPInterface {
         get() = REVISION
 
     val Variant.project:Project
-
-    @Deprecated(
-        message = "Use javaCompilerTaskProvider instead",
-        replaceWith = ReplaceWith(expression = "javaCompilerTaskProvider"),
-        level = DeprecationLevel.WARNING
-    )
-    val Variant.javaCompilerTask: Task
-        get() = javaCompilerTaskProvider.get()
-
-    @Deprecated(
-        message = "Use preBuildTaskProvider instead",
-        replaceWith = ReplaceWith(expression = "preBuildTaskProvider"),
-        level = DeprecationLevel.WARNING
-    )
-    val Variant.preBuildTask: Task
-        get() = preBuildTaskProvider.get()
-
-    @Deprecated(
-        message = "Use preBuildTaskProvider instead",
-        replaceWith = ReplaceWith(expression = "preBuildTaskProvider"),
-        level = DeprecationLevel.WARNING
-    )
-    val Variant.assembleTask: Task
-        get() = assembleTaskProvider.get()
-
-    @Deprecated(
-        message = "Use mergeAssetsTaskProvider instead",
-        replaceWith = ReplaceWith(expression = "mergeAssetsTaskProvider"),
-        level = DeprecationLevel.WARNING
-    )
-    val Variant.mergeAssetsTask: Task
-        get() = mergeAssetsTaskProvider.get()
-
-    @Deprecated(
-        message = "Use mergeResourcesTaskProvider instead",
-        replaceWith = ReplaceWith(expression = "mergeResourcesTaskProvider"),
-        level = DeprecationLevel.WARNING
-    )
-    val Variant.mergeResourcesTask: Task
-        get() = mergeResourcesTaskProvider.get()
-
-
-    @Deprecated(
-        message = "Use processJavaResourcesTaskProvider instead",
-        replaceWith = ReplaceWith(expression = "processJavaResourcesTaskProvider"),
-        level = DeprecationLevel.WARNING
-    )
-    val Variant.processJavaResourcesTask: Task
-        get() = processJavaResourcesTaskProvider.get()
 
     fun Variant.getTaskName(prefix: String): String
 
@@ -97,34 +47,19 @@ interface AGPInterface {
 
     val Variant.localAndroidResources: FileCollection
 
-    val Variant.javaCompilerTaskProvider: TaskProvider<out Task>
-
-    val Variant.preBuildTaskProvider: TaskProvider<out Task>
-
-    val Variant.assembleTaskProvider: TaskProvider<out Task>
-
-    val Variant.mergeAssetsTaskProvider: TaskProvider<out Task>
-
-    val Variant.mergeResourcesTaskProvider: TaskProvider<out Task>
-
-    val Variant.mergeNativeLibsTaskProvider: TaskProvider<out Task>
-
-    val Variant.processJavaResourcesTaskProvider: TaskProvider<out Task>
-
     fun Variant.getArtifactCollection(
-        configType: AndroidArtifacts.ConsumedConfigType,
-        scope: AndroidArtifacts.ArtifactScope,
-        artifactType: AndroidArtifacts.ArtifactType
+            configType: AndroidArtifacts.ConsumedConfigType,
+            scope: AndroidArtifacts.ArtifactScope,
+            artifactType: AndroidArtifacts.ArtifactType
     ): ArtifactCollection
 
     fun Variant.getArtifactFileCollection(
-        configType: AndroidArtifacts.ConsumedConfigType,
-        scope: AndroidArtifacts.ArtifactScope,
-        artifactType: AndroidArtifacts.ArtifactType
+            configType: AndroidArtifacts.ConsumedConfigType,
+            scope: AndroidArtifacts.ArtifactScope,
+            artifactType: AndroidArtifacts.ArtifactType
     ): FileCollection
 
     val Variant.allArtifacts: Map<String, FileCollection>
-
 
     val Variant.targetVersion: AndroidVersion
 
@@ -165,25 +100,22 @@ interface AGPInterface {
         filter: (ComponentIdentifier) -> Boolean = { true }
     ): Collection<ResolvedArtifactResult>
 
-
-    @Deprecated(
-        message = "Use isAapt2Enabled instead",
-        replaceWith = ReplaceWith(
-            expression = "isAapt2Enabled"
-        )
-    )
-    val Project.aapt2Enabled: Boolean
-
-    @Suppress("DEPRECATION")
-    val Project.isAapt2Enabled: Boolean
-        get() = aapt2Enabled
-
 }
 
+@Deprecated("Deprecated", ReplaceWith("getAndroidComponent"))
 inline fun <reified T : BaseExtension> Project.getAndroid(): T = extensions.getByName("android") as T
 
+@Deprecated("Deprecated", ReplaceWith("getAndroidComponent"))
 inline fun <reified T : BaseExtension> Project.getAndroidOrNull(): T? = try {
     extensions.getByName("android") as? T
+} catch (e: UnknownDomainObjectException) {
+    null
+}
+
+inline fun <reified T: AndroidComponentsExtension<out CommonExtension<*, *, *, *>, out VariantBuilder, out Variant>> Project.getAndroidComponents() = extensions.getByName("androidComponents") as T
+
+inline fun <reified T: AndroidComponentsExtension<out CommonExtension<*, *, *, *>, out VariantBuilder, out Variant>> Project.getAndroidComponentsOrNull() = try {
+    extensions.getByName("androidComponents") as T
 } catch (e: UnknownDomainObjectException) {
     null
 }

@@ -1,4 +1,4 @@
-package com.didiglobal.booster.task.transform
+package com.didiglobal.booster.gradle
 
 import com.android.build.api.variant.Variant
 import com.didiglobal.booster.kotlinx.NCPU

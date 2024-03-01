@@ -13,7 +13,6 @@ import com.android.build.api.variant.impl.TaskProviderBasedDirectoryEntryImpl
 import com.android.build.api.variant.impl.VariantImpl
 import com.android.build.gradle.internal.api.artifact.SourceArtifactType
 import com.android.build.gradle.internal.publishing.AndroidArtifacts
-import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactScope
 import com.android.build.gradle.internal.scope.BuildArtifactType
 import com.android.build.gradle.internal.scope.InternalArtifactType
 import com.android.build.gradle.internal.scope.InternalMultipleArtifactType
@@ -22,7 +21,6 @@ import com.android.build.gradle.internal.variant.BaseVariantData
 import com.android.sdklib.BuildToolInfo
 import com.didiglobal.booster.gradle.AGPInterface
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.artifacts.ArtifactCollection
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
@@ -30,18 +28,17 @@ import org.gradle.api.artifacts.result.ResolvedDependencyResult
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.FileSystemLocation
-import org.gradle.api.tasks.TaskProvider
 import java.io.File
-import java.util.*
+import java.util.TreeMap
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.jvm.isAccessible
 
 @Suppress("UnstableApiUsage")
 private val SINGLE_ARTIFACT_TYPES = arrayOf(
-    BuildArtifactType::class,
-    InternalArtifactType::class,
-    SingleArtifact::class,
-    SourceArtifactType::class
+        BuildArtifactType::class,
+        InternalArtifactType::class,
+        SingleArtifact::class,
+        SourceArtifactType::class
 ).map {
     it.sealedSubclasses
 }.flatten().map {
@@ -51,8 +48,8 @@ private val SINGLE_ARTIFACT_TYPES = arrayOf(
 }
 
 private val MULTIPLE_ARTIFACT_TYPES = arrayOf(
-    MultipleArtifact::class,
-    InternalMultipleArtifactType::class
+        MultipleArtifact::class,
+        InternalMultipleArtifactType::class
 ).map {
     it.sealedSubclasses
 }.flatten().map {
@@ -63,7 +60,6 @@ private val MULTIPLE_ARTIFACT_TYPES = arrayOf(
 
 @Suppress("DEPRECATION")
 internal object V82 : AGPInterface {
-
 
     private val Variant.component: VariantImpl<*>
         get() = when (this) {
@@ -103,31 +99,6 @@ internal object V82 : AGPInterface {
             }.get(this.component.variantDependencies) as Project
         }
 
-    override val Variant.javaCompilerTaskProvider: TaskProvider<out Task>
-        get() = component.taskContainer.javacTask
-
-    override val Variant.preBuildTaskProvider: TaskProvider<out Task>
-        get() = component.taskContainer.preBuildTask
-
-    override val Variant.assembleTaskProvider: TaskProvider<out Task>
-        get() = component.taskContainer.assembleTask
-
-    override val Variant.mergeAssetsTaskProvider: TaskProvider<out Task>
-        get() = component.taskContainer.mergeAssetsTask
-
-    override val Variant.mergeResourcesTaskProvider: TaskProvider<out Task>
-        get() = try {
-            project.tasks.named(getTaskName("merge", "Resources"))
-        } catch (e: Throwable) {
-            component.taskContainer.mergeResourcesTask
-        }
-
-    override val Variant.mergeNativeLibsTaskProvider: TaskProvider<out Task>
-        get() = project.tasks.named(getTaskName("merge", "NativeLibs"))
-
-    override val Variant.processJavaResourcesTaskProvider: TaskProvider<out Task>
-        get() = component.taskContainer.processJavaResourcesTask
-
     override fun Variant.getTaskName(prefix: String): String {
         return component.computeTaskName(prefix)
     }
@@ -156,16 +127,16 @@ internal object V82 : AGPInterface {
             val allRes: ConfigurableFileCollection = component.services.fileCollection()
 
             allRes.from(
-                component.variantDependencies.getArtifactCollection(
-                    AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH,
-                    ArtifactScope.ALL,
-                    AndroidArtifacts.ArtifactType.ANDROID_RES
-                ).artifactFiles
+                    component.variantDependencies.getArtifactCollection(
+                            AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH,
+                            AndroidArtifacts.ArtifactScope.ALL,
+                            AndroidArtifacts.ArtifactType.ANDROID_RES
+                    ).artifactFiles
             )
 
             allRes.from(
-                component.services.fileCollection(variantData.extraGeneratedResFolders)
-                    .builtBy(listOfNotNull(variantData.extraGeneratedResFolders.builtBy))
+                    component.services.fileCollection(variantData.extraGeneratedResFolders)
+                            .builtBy(listOfNotNull(variantData.extraGeneratedResFolders.builtBy))
             )
 
             component.taskContainer.generateApkDataTask?.let {
@@ -174,19 +145,19 @@ internal object V82 : AGPInterface {
 
             component.sources.res { resSources ->
                 allRes.from(
-                    resSources.getVariantSources().map { directoryEntries ->
-                        directoryEntries.directoryEntries
-                            .map {
-                                if (it is TaskProviderBasedDirectoryEntryImpl) {
-                                    it.directoryProvider
-                                } else {
-                                    it.asFiles(
-                                        component.services.provider {
-                                            component.services.projectInfo.projectDirectory
-                                        })
-                                }
-                            }
-                    }
+                        resSources.getVariantSources().map { directoryEntries ->
+                            directoryEntries.directoryEntries
+                                    .map {
+                                        if (it is TaskProviderBasedDirectoryEntryImpl) {
+                                            it.directoryProvider
+                                        } else {
+                                            it.asFiles(
+                                                    component.services.provider {
+                                                        component.services.projectInfo.projectDirectory
+                                                    })
+                                        }
+                                    }
+                        }
                 )
             }
 
@@ -197,30 +168,30 @@ internal object V82 : AGPInterface {
 
     override val Variant.localAndroidResources: FileCollection
         get() = component.services.fileCollection()
-            .from(component.sources.res?.getVariantSourcesWithFilter {
+                .from(component.sources.res?.getVariantSourcesWithFilter {
                     !it.isUserAdded && !it.isGenerated
                 }?.values?.map {
-            it.map { dirs ->
-                dirs.map { dir ->
-                    dir.asFileTree
-                }.reduce { acc, dir ->
-                    acc.plus(dir)
-                }
-            }
-        })
+                    it.map { dirs ->
+                        dirs.map { dir ->
+                            dir.asFileTree
+                        }.reduce { acc, dir ->
+                            acc.plus(dir)
+                        }
+                    }
+                })
 
     override fun Variant.getArtifactCollection(
-        configType: AndroidArtifacts.ConsumedConfigType,
-        scope: ArtifactScope,
-        artifactType: AndroidArtifacts.ArtifactType
+            configType: AndroidArtifacts.ConsumedConfigType,
+            scope: AndroidArtifacts.ArtifactScope,
+            artifactType: AndroidArtifacts.ArtifactType
     ): ArtifactCollection {
         return component.variantDependencies.getArtifactCollection(configType, scope, artifactType)
     }
 
     override fun Variant.getArtifactFileCollection(
-        configType: AndroidArtifacts.ConsumedConfigType,
-        scope: ArtifactScope,
-        artifactType: AndroidArtifacts.ArtifactType
+            configType: AndroidArtifacts.ConsumedConfigType,
+            scope: AndroidArtifacts.ArtifactScope,
+            artifactType: AndroidArtifacts.ArtifactType
     ): FileCollection {
         return component.variantDependencies.getArtifactFileCollection(configType, scope, artifactType)
     }
@@ -271,8 +242,8 @@ internal object V82 : AGPInterface {
     override val Variant.mergedAssets: FileCollection
         get() = when (this) {
             is ApplicationVariant -> getFinalArtifactFiles(InternalArtifactType.COMPRESSED_ASSETS)
-            is LibraryVariant     -> getFinalArtifactFiles(InternalArtifactType.LIBRARY_ASSETS)
-            else                  -> TODO("Unsupported variant type: $name@${javaClass.name}")
+            is LibraryVariant -> getFinalArtifactFiles(InternalArtifactType.LIBRARY_ASSETS)
+            else -> TODO("Unsupported variant type: $name@${javaClass.name}")
         }
 
     override val Variant.processedRes: FileCollection
@@ -281,8 +252,8 @@ internal object V82 : AGPInterface {
     override val Variant.symbolList: FileCollection
         get() = when (this) {
             is ApplicationVariant -> getFinalArtifactFiles(InternalArtifactType.RUNTIME_SYMBOL_LIST)
-            is LibraryVariant     -> getFinalArtifactFiles(InternalArtifactType.COMPILE_SYMBOL_LIST)
-            else                  -> TODO("Unsupported variant type: $name@${javaClass.name}")
+            is LibraryVariant -> getFinalArtifactFiles(InternalArtifactType.COMPILE_SYMBOL_LIST)
+            else -> TODO("Unsupported variant type: $name@${javaClass.name}")
         }
 
     override val Variant.symbolListWithPackageName: FileCollection
@@ -293,12 +264,9 @@ internal object V82 : AGPInterface {
 
     override val Variant.allClasses: FileCollection
         get() = when {
-            isApplication -> {
-                getFinalArtifactFiles(InternalArtifactType.JAVAC) + project.files("build${File.separator}tmp${File.separator}kotlin-classes${File.separator}${name}")
-            }
-
-            isLibrary     -> getFinalArtifactFiles(InternalArtifactType.AAR_MAIN_JAR)
-            else          -> project.files()
+            isApplication -> getFinalArtifactFiles(InternalArtifactType.JAVAC) + project.files("build${File.separator}tmp${File.separator}kotlin-classes${File.separator}${name}")
+            isLibrary -> getFinalArtifactFiles(InternalArtifactType.AAR_MAIN_JAR)
+            else -> project.files()
         }
 
     override val Variant.buildTools: BuildToolInfo
@@ -308,13 +276,13 @@ internal object V82 : AGPInterface {
         get() = component.androidResourcesCreationConfig?.isPrecompileDependenciesResourcesEnabled == true
 
     override fun Variant.getDependencies(
-        transitive: Boolean,
-        filter: (ComponentIdentifier) -> Boolean
+            transitive: Boolean,
+            filter: (ComponentIdentifier) -> Boolean
     ): Collection<ResolvedArtifactResult> {
         val all = getArtifactCollection(
-            AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH,
-            AndroidArtifacts.ArtifactScope.ALL,
-            AndroidArtifacts.ArtifactType.CLASSES_JAR
+                AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH,
+                AndroidArtifacts.ArtifactScope.ALL,
+                AndroidArtifacts.ArtifactType.CLASSES_JAR
         ).filter { result ->
             filter(result.id.componentIdentifier)
         }.associateBy {
@@ -322,19 +290,15 @@ internal object V82 : AGPInterface {
         }
         val result = if (!transitive) {
             runtimeConfiguration.incoming.resolutionResult.root.dependencies.filterIsInstance<ResolvedDependencyResult>()
-                .mapNotNull {
-                    it.selected.id.displayName.takeIf { id -> id in all.keys }
-                }.associateWith {
-                    all[it]!!
-                }
+                    .mapNotNull {
+                        it.selected.id.displayName.takeIf { id -> id in all.keys }
+                    }.associateWith {
+                        all[it]!!
+                    }
         } else {
             all
         }
         return result.values.toSet()
     }
-
-
-    override val Project.aapt2Enabled: Boolean
-        get() = true
 
 }
