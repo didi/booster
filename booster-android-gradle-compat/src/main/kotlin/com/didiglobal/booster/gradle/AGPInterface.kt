@@ -1,5 +1,6 @@
 package com.didiglobal.booster.gradle
 
+import com.android.build.api.artifact.Artifact
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.api.variant.AndroidVersion
@@ -17,6 +18,8 @@ import org.gradle.api.artifacts.ArtifactCollection
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.api.file.FileCollection
+import org.gradle.api.file.FileSystemLocation
+import org.gradle.api.provider.Provider
 import java.util.ServiceLoader
 
 interface AGPInterface {
@@ -24,7 +27,7 @@ interface AGPInterface {
     val revision: Revision
         get() = REVISION
 
-    val Variant.project:Project
+    val Variant.project: Project
 
     fun Variant.getTaskName(prefix: String): String
 
@@ -33,8 +36,8 @@ interface AGPInterface {
     val Variant.variantData: BaseVariantData
 
     @Deprecated(
-        message = "Use Variant.namespace instead",
-        replaceWith = ReplaceWith(expression = "variant.namespace"),
+            message = "Use Variant.namespace instead",
+            replaceWith = ReplaceWith(expression = "variant.namespace"),
     )
     val Variant.originalApplicationId: String
 
@@ -46,6 +49,10 @@ interface AGPInterface {
     val Variant.sourceSetMap: FileCollection
 
     val Variant.localAndroidResources: FileCollection
+
+    fun <T : FileSystemLocation> Variant.getSingleArtifact(
+            type: Artifact.Single<T>
+    ): Provider<T>
 
     fun Variant.getArtifactCollection(
             configType: AndroidArtifacts.ConsumedConfigType,
@@ -96,8 +103,8 @@ interface AGPInterface {
     val Variant.isPrecompileDependenciesResourcesEnabled: Boolean
 
     fun Variant.getDependencies(
-        transitive: Boolean = true,
-        filter: (ComponentIdentifier) -> Boolean = { true }
+            transitive: Boolean = true,
+            filter: (ComponentIdentifier) -> Boolean = { true }
     ): Collection<ResolvedArtifactResult>
 
 }
@@ -112,9 +119,9 @@ inline fun <reified T : BaseExtension> Project.getAndroidOrNull(): T? = try {
     null
 }
 
-inline fun <reified T: AndroidComponentsExtension<out CommonExtension<*, *, *, *>, out VariantBuilder, out Variant>> Project.getAndroidComponents() = extensions.getByName("androidComponents") as T
+inline fun <reified T : AndroidComponentsExtension<out CommonExtension<*, *, *, *>, out VariantBuilder, out Variant>> Project.getAndroidComponents() = extensions.getByName("androidComponents") as T
 
-inline fun <reified T: AndroidComponentsExtension<out CommonExtension<*, *, *, *>, out VariantBuilder, out Variant>> Project.getAndroidComponentsOrNull() = try {
+inline fun <reified T : AndroidComponentsExtension<out CommonExtension<*, *, *, *>, out VariantBuilder, out Variant>> Project.getAndroidComponentsOrNull() = try {
     extensions.getByName("androidComponents") as T
 } catch (e: UnknownDomainObjectException) {
     null
@@ -126,8 +133,8 @@ private val REVISION: Revision by lazy {
 
 private val FACTORIES: List<AGPInterfaceFactory> by lazy {
     ServiceLoader.load(AGPInterfaceFactory::class.java, AGPInterface::class.java.classLoader)
-        .sortedByDescending(AGPInterfaceFactory::revision)
-        .toList()
+            .sortedByDescending(AGPInterfaceFactory::revision)
+            .toList()
 }
 
 val AGP: AGPInterface by lazy {
