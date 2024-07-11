@@ -1,8 +1,8 @@
 package com.didiglobal.booster.transform.thread
 
-import com.android.build.api.variant.DynamicFeatureVariantBuilder
-import com.android.build.api.variant.LibraryVariantBuilder
-import com.android.build.api.variant.VariantBuilder
+import com.android.build.api.variant.DynamicFeatureVariant
+import com.android.build.api.variant.LibraryVariant
+import com.android.build.api.variant.Variant
 import com.didiglobal.booster.task.spi.VariantProcessor
 import com.didiglobal.booster.transform.thread.Build.GROUP
 import com.didiglobal.booster.transform.thread.Build.VERSION
@@ -12,11 +12,12 @@ import org.gradle.api.Project
 @AutoService(VariantProcessor::class)
 class ThreadVariantProcessor(private val project: Project) : VariantProcessor {
 
-    override fun beforeProcess(variantBuilder: VariantBuilder) {
-        if (variantBuilder is LibraryVariantBuilder || variantBuilder is DynamicFeatureVariantBuilder) {
+    override fun process(variant: Variant) {
+        super.process(variant)
+        if (variant is LibraryVariant || variant is DynamicFeatureVariant) {
             return
         }
-        project.dependencies.add("${variantBuilder.name}Implementation", "$GROUP:booster-android-instrument-thread:$VERSION")
+        project.dependencies.add("${variant.name}Implementation", "$GROUP:booster-android-instrument-thread:$VERSION")
     }
 
 }
