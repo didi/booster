@@ -1,10 +1,16 @@
 package com.didiglobal.booster.gradle
 
+import com.android.build.api.variant.AndroidComponentsExtension
+import com.android.build.api.variant.ApplicationAndroidComponentsExtension
+import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.android.build.api.variant.Variant
 import com.android.build.gradle.internal.SdkComponentsBuildService
+import com.android.build.gradle.internal.plugins.AppPlugin
+import com.android.build.gradle.internal.plugins.LibraryPlugin
 import com.android.build.gradle.internal.services.getBuildService
 import com.android.repository.Revision
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.artifacts.component.ComponentArtifactIdentifier
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.component.ProjectComponentIdentifier
@@ -14,8 +20,10 @@ import org.gradle.api.attributes.Attribute
 import org.gradle.api.attributes.AttributeContainer
 import org.gradle.api.capabilities.Capability
 import org.gradle.api.component.Artifact
+import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.maven.MavenPomArtifact
 import java.io.File
 import java.util.Optional
@@ -74,13 +82,17 @@ fun Project.getResolvedArtifactResults(
 ): Set<ResolvedArtifactResult> = when {
     variant == null -> emptySet()
     isAndroid -> getResolvedArtifactResultsRecursively(transitive) {
-        AGP.run { variant.getDependencies(transitive) }.toList()
+        filterByVariant(variant).map { v ->
+            AGP.run { v.getDependencies(transitive) }
+        }.flatten()
     }
+
     isJava -> getResolvedArtifactResultsRecursively(transitive) {
         configurations.getByName(RUNTIME_CLASSPATH_CONFIGURATION_NAME).resolvedConfiguration.resolvedArtifacts.map {
             ResolvedArtifactResultImpl(it.id, it.file)
         }
     }
+
     else -> emptySet()
 }.distinctBy {
     it.id.componentIdentifier
@@ -109,6 +121,46 @@ private fun Project.getResolvedArtifactResultsRecursively(transitive: Boolean, r
     }
 
     return results.values.toSet()
+}
+
+/**
+ * Returns the jar files which could be the outputs of the jar task or createFullJar task
+ *
+ * @param variant The build variant
+ */
+fun Project.getJars(variant: Variant? = null): Set<File> = getJarTaskProviders(variant).map {
+    it.get().outputs.files
+}.flatten().toSet()
+
+fun Project.getJarTaskProviders(variant: Variant? = null): Collection<TaskProvider<out Task>> = when {
+    isAndroid -> when (getAndroidComponentsOrNull<AndroidComponentsExtension<*, *, *>>()) {
+        is LibraryAndroidComponentsExtension -> filterByVariant(variant).mapNotNull(Variant::createFullJarTaskProvider)
+        is ApplicationAndroidComponentsExtension -> filterByVariant(variant).mapNotNull(Variant::bundleClassesTaskProvider)
+        else -> emptyList()
+    }
+
+    isJavaLibrary -> listOf(tasks.named(JavaPlugin.JAR_TASK_NAME))
+    else -> emptyList()
+}
+
+private fun Project.filterByVariant(variant: Variant? = null): Collection<Variant> {
+    val variants = when (getAndroidComponentsOrNull<AndroidComponentsExtension<*, *, *>>()) {
+        is ApplicationAndroidComponentsExtension -> plugins.getPlugin(AppPlugin::class.java).variantManager
+        is LibraryAndroidComponentsExtension -> plugins.getPlugin(LibraryPlugin::class.java).variantManager
+        else -> null
+    }?.mainComponents?.map {
+        it.variant
+    }?.filterIsInstance<Variant>() ?: emptyList()
+
+    if (null == variant) return variants
+
+    return variants.filter {
+        it.name == variant.name
+    }.takeIf {
+        it.isNotEmpty()
+    } ?: variants.filter {
+        it.buildType == variant.buildType
+    }
 }
 
 private data class ResolvedArtifactResultImpl(
