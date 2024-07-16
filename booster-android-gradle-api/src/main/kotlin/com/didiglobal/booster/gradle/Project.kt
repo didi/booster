@@ -181,7 +181,6 @@ fun Project.getJarTaskProviders(
         is ApplicationAndroidComponentsExtension -> variants.filter().mapNotNull(Variant::bundleClassesTaskProvider)
         else -> emptyList()
     }
-
     isJavaLibrary -> listOf(tasks.named(JavaPlugin.JAR_TASK_NAME))
     else -> emptyList()
 }
