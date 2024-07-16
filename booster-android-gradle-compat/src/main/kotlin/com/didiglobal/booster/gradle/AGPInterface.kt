@@ -165,6 +165,8 @@ interface AGPInterface {
 
     val Variant.isPrecompileDependenciesResourcesEnabled: Boolean
 
+    val Variant.isDebuggable: Boolean
+
     fun Variant.getDependencies(
             transitive: Boolean = true,
             filter: (ComponentIdentifier) -> Boolean = { true }

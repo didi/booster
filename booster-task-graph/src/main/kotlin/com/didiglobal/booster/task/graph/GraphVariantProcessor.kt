@@ -1,7 +1,9 @@
 package com.didiglobal.booster.task.graph
 
 import com.android.build.api.variant.Variant
-import com.didiglobal.booster.gradle.*
+import com.didiglobal.booster.gradle.getTaskName
+import com.didiglobal.booster.gradle.project
+import com.didiglobal.booster.gradle.registerTask
 import com.didiglobal.booster.graph.Edge
 import com.didiglobal.booster.graph.Graph
 import com.didiglobal.booster.graph.dot.DotGraph
@@ -9,7 +11,6 @@ import com.didiglobal.booster.kotlinx.file
 import com.didiglobal.booster.task.spi.VariantProcessor
 import com.google.auto.service.AutoService
 import io.johnsonlee.once.Once
-import java.util.*
 
 @AutoService(VariantProcessor::class)
 class GraphVariantProcessor : VariantProcessor {
@@ -23,11 +24,8 @@ class GraphVariantProcessor : VariantProcessor {
                 variant.generateTaskGraph()
             }
         }
-        project.tasks.register(variant.getTaskName("generate", "dependencyGraph")) {
-            it.doFirst {
-                variant.generateProjectGraph()
-            }
-        }
+
+        variant.registerTask("generate", "dependencyGraph", GenerateProjectGraph.CreationAction())
     }
 
 }
@@ -55,29 +53,3 @@ private fun Variant.generateTaskGraph(): Boolean {
     return true
 }
 
-private fun Variant.generateProjectGraph() {
-    val rootProject = project.rootProject
-    val graph = Graph.Builder<ProjectNode>().setTitle(project.toString())
-    val stack = Stack<ProjectNode>().apply {
-        add(ProjectNode(project.path))
-    }
-
-    while (stack.isNotEmpty()) {
-        val from = stack.pop()
-        rootProject.project(from.path).getUpstreamProjects(false, this).map {
-            ProjectNode(it.path)
-        }.filter { to ->
-            !graph.hasEdge(from, to)
-        }.takeIf(List<ProjectNode>::isNotEmpty)?.forEach { to ->
-            stack.push(to)
-            graph.addEdge(from, to)
-        }
-    }
-
-    try {
-        val dot = project.buildDir.file(name, "dependencies.dot")
-        DotGraph.DIGRAPH.visualize(graph.build(), dot, DotGraph.DotOptions(format = "svg", rankdir = "LR"))
-    } catch (e: Throwable) {
-        project.logger.error(e.message)
-    }
-}
