@@ -197,10 +197,14 @@ internal object V80 : AGPInterface {
     override val Variant.localAndroidResources: FileCollection
         get() = component.services.fileCollection().from(component.sources.res?.getLocalSources()?.values?.map {
             it.map { dirs ->
-                dirs.map { dir ->
-                    dir.asFileTree
-                }.reduce { acc, dir ->
-                    acc.plus(dir)
+                if (dirs.isEmpty()) {
+                    project.files()
+                } else {
+                    dirs.map { dir ->
+                        dir.asFileTree
+                    }.reduce { acc, dir ->
+                        acc.plus(dir)
+                    }
                 }
             }
         })

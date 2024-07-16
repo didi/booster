@@ -1,7 +1,6 @@
 package com.didiglobal.booster.task.graph
 
 import com.android.build.api.variant.Variant
-import com.didiglobal.booster.gradle.getTaskName
 import com.didiglobal.booster.gradle.project
 import com.didiglobal.booster.gradle.registerTask
 import com.didiglobal.booster.graph.Edge

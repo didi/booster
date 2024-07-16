@@ -200,10 +200,14 @@ internal object V81 : AGPInterface {
                     !it.isUserAdded && !it.isGenerated
                 }?.values?.map {
                     it.map { dirs ->
-                        dirs.map { dir ->
-                            dir.asFileTree
-                        }.reduce { acc, dir ->
-                            acc.plus(dir)
+                        if (dirs.isEmpty()) {
+                            project.files()
+                        } else {
+                            dirs.map { dir ->
+                                dir.asFileTree
+                            }.reduce { acc, dir ->
+                                acc.plus(dir)
+                            }
                         }
                     }
                 })
