@@ -68,7 +68,7 @@ internal object V82 : AGPInterface {
         get() = when (this) {
             is VariantImpl<*> -> this
             is AnalyticsEnabledVariant -> this.delegate as VariantImpl<*>
-            else -> TODO("No implementationed!")
+            else -> TODO("No implemented!")
         }
 
     @Suppress("UnstableApiUsage")
@@ -306,6 +306,9 @@ internal object V82 : AGPInterface {
 
     override val Variant.isPrecompileDependenciesResourcesEnabled: Boolean
         get() = component.androidResourcesCreationConfig?.isPrecompileDependenciesResourcesEnabled == true
+
+    override val Variant.isDebuggable: Boolean
+        get() = component.debuggable
 
     override fun Variant.getDependencies(
             transitive: Boolean,
