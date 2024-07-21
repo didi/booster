@@ -1,7 +1,6 @@
 ![Booster](assets/booster-logo.png)
 
 ![GitHub](https://img.shields.io/github/license/didi/booster.svg?style=for-the-badge)
-![Build Status](https://img.shields.io/github/workflow/status/didi/booster/Run%20unit%20tests?style=for-the-badge)
 ![GitHub Release](https://img.shields.io/github/release/didi/booster.svg?style=for-the-badge)
 
 ## Overview | 概览
@@ -18,9 +17,9 @@ Booster provides a collection of modules for performance detection, multithreadi
 
 - Performance detection | 性能检测
 
-  Potential performance issues could be found by using Booster, for example, calling APIs that may block the UI thread or main thread, such as I/O APIs. About the details, please see [booster-task-analyser](./booster-task-analyser).
+  Potential performance issues could be found by using Booster, for example, calling APIs that may block the UI thread or main thread, such as I/O APIs. About the details
 
-  > 使用 Booster 可以发现潜在的性能问题，例如，在应用中调用可能阻塞 UI 线程或者主线程的 API，如：I/O API 等。详情请参见： [booster-task-analyser](./booster-task-analyser)。
+  > 使用 Booster 可以发现潜在的性能问题，例如，在应用中调用可能阻塞 UI 线程或者主线程的 API，如：I/O API 等。
 
 - Performance optimization | 性能优化
 
@@ -30,15 +29,15 @@ Booster provides a collection of modules for performance detection, multithreadi
 
 - System bugs fix | 系统问题修复
 
-  Such as fixing the crash caused by `Toast` globally on [Android API 25](https://developer.android.com/studio/releases/platforms#7.1). About the details, please see [booster-transform-toast](./booster-transform-toast) and [booster-transform-shared-preferences](./booster-transform-shared-preferences).
+  Such as fixing the crash caused by `Toast` globally on [Android API 25](https://developer.android.com/studio/releases/platforms#7.1). About the details, please see [booster-transform-toast](./booster-transform-toast).
 
-  > 例如全局性地修复 [Android API 25](https://developer.android.com/studio/releases/platforms#7.1) 版本中 `Toast` 导致的崩溃。详情请参见：[booster-transform-toast](./booster-transform-toast)、[booster-transform-shared-preferences](./booster-transform-shared-preferences).
+  > 例如全局性地修复 [Android API 25](https://developer.android.com/studio/releases/platforms#7.1) 版本中 `Toast` 导致的崩溃。详情请参见：[booster-transform-toast](./booster-transform-toast).
 
 - Package size reduction | 应用瘦身
 
-  Such as [image resources compression](./booster-task-compression), [r inline](./booster-transform-r-inline), etc.
+  Such as [r inline](./booster-transform-r-inline), etc.
 
-  > 如：[资源压缩及冗余资源删除](./booster-task-compression)、[资源索引内联](./booster-transform-r-inline)。
+  > 如：[资源索引内联](./booster-transform-r-inline)。
 
 - Other things you can imagine | 其它你能想像得到的
 
@@ -52,20 +51,26 @@ The following table lists which version of Gradle is required for each version o
 
 > 下表列出了各个 Android Gradle 插件版本所需的 Gradle 版本。要获得最佳性能，请使用 Gradle 和插件这两者的最新版本。
 
-| Android Gradle Plugin |  Gradle  |
-|:---------------------:|:--------:|
-| 3.3.0 - 3.3.3         | 4.10.1+  |
-| 3.4.0 - 3.4.3         | 5.1.1+   |
-| 3.5.0 - 3.5.4         | 5.4.1+   |
-| 3.6.0 - 3.6.4         | 5.6.4+   |
-| 4.0.0+                | 6.1.1+   |
-| 4.1.0+                | 6.5+     |
-| 4.2.0+                | 6.7.1+   |
-| 7.0                   | 7.0+     |
-| 7.1                   | 7.1+     |
-| 7.2                   | 7.3.3+   |
-| 7.3                   | 7.4+     |
-| 7.4                   | 7.5+     |
+| Android Gradle Plugin | Gradle  | Booster |
+|:---------------------:|:-------:|:-------:|
+|          8.5          |  8.7+   |   N/A   |
+|          8.4          |  8.6+   |   N/A   |
+|          8.3          |  8.4+   |   N/A   |
+|          8.2          |  8.2+   | 5.0.0+  |
+|          8.1          |  8.0+   | 5.0.0+  |
+|          8.0          |  8.0+   | 5.0.0+  |
+|          7.4          |  7.5+   | 4.16.3+ |
+|          7.3          |  7.4+   | 4.15.0+ |
+|          7.2          | 7.3.3+  | 4.10.0+ |
+|          7.1          |  7.1+   | 4.10.0+ |
+|          7.0          |  7.0+   | 4.0.0+  |
+|        4.2.0+         | 6.7.1+  | 3.2.0+  |
+|        4.1.0+         |  6.5+   | 3.0.0+  |
+|        4.0.0+         | 6.1.1+  | 2.0.0+  |
+|     3.6.0 - 3.6.4     | 5.6.4+  | 1.0.0+  |
+|     3.5.0 - 3.5.4     | 5.4.1+  | 1.0.0+  |
+|     3.4.0 - 3.4.3     | 5.1.1+  | 1.0.0+  |
+|     3.3.0 - 3.3.3     | 4.10.1+ | 0.1.0+  |
 
 ## Best Practise | 最佳实践
 
@@ -75,7 +80,7 @@ The best practise of using Booster is integrating the specific module to solve t
 
 ```groovy
 buildscript {
-    ext.booster_version = '4.16.3'
+    ext.booster_version = '5.0.0'
     repositories {
         google()
         mavenCentral()
@@ -123,190 +128,23 @@ The `plugins` DSL also supported since Booster *3.0.0*
 
 ```groovy
 plugins {
-    id 'com.didiglobal.booster' version '4.16.3'
+    id 'com.didiglobal.booster' version '5.0.0'
 }
 ```
 
-Here are all the modules of Booster:
+## Migrate from Booster 4.x to 5.x | 从 Booster 4.x 迁移到 5.x
 
-### Common
+Due to AGP 8's incompatible changes, AGP 7.x and below are no longer supported, if you are still using AGP 7.x, please use Booster 4.x
 
-- [booster-aapt2](./booster-aapt2) - AAPT2 相关 API
+> 由于 AGP 8 的不兼容性变更，AGP 7.x 及以下版本已经不再支持，如果你仍在使用 AGP 7.x，请使用 Booster 4.x
 
-  ```groovy
-  implementation "com.didiglobal.booster:booster-aapt2:$booster_version"
-  ```
+Most `Task` based modules are no longer supported in Booster 5.0.0, however, the `Transform` based modules are still supported without breaking changes.
 
-- [booster-api](./booster-api) - Booster 插件开发 API
+> 大部分基于 `Task` 的模块在 Booster 5.0.0 中已经不再支持，但是基于 `Transform` 的模块仍然支持且没有破坏性变更。
 
-  this module contains both [booster-transform-spi](./booster-transform-spi) and [booster-task-spi](./booster-task-spi)
+About the details, please see [Migrate from Booster 4.x to 5.x](https://booster.johnsonlee.io/en/migration/)
 
-  ```groovy
-  implementation "com.didiglobal.booster:booster-api:$booster_version"
-  ```
-
-- [booster-cha](./booster-cha) - Class Hierarchy Analysis API
-
-  ```groovy
-  implementation "com.didiglobal.booster:booster-cha:$booster_version"
-  ```
-
-- [booster-command](./booster-command) - SPI for external command discovery
-
-  ```groovy
-  implementation "com.didiglobal.booster:booster-command:$booster_version"
-  ```
-
-### Performance
-
-- [booster-task-analyser](./booster-task-analyser) - 静态分析工具
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-task-analyser:$booster_version"
-  ```
-
-- [booster-transform-thread](./booster-transform-thread) - 多线程优化
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-transform-thread:$booster_version"
-  ```
-
-- [booster-transform-webview](./booster-transform-webview) - WebView 预加载
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-transform-webview:$booster_version"
-  ```
-
-- [booster-transform-shared-preferences](./booster-transform-shared-preferences) - `SharedPreferences` 优化
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-transform-shared-preferences:$booster_version"
-  ```
-
-### Package Size
-
-- [booster-task-compression-cwebp](./booster-task-compression-cwebp) - 采用 cwebp 对资源进行压缩
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-task-compression-cwebp:$booster_version"
-  ```
-
-  The option `android.precompileDependenciesResources` need to be set on Android Gradle Plugin 3.6 and higher
-
-  ```properties
-  android.precompileDependenciesResources=false
-  ```
-
-- [booster-task-compression-pngquant](./booster-task-compression-pngquant) - 采用 pngquant 对资源进行压缩
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-task-compression-pngquant:$booster_version"
-  ```
-
-  The option `android.precompileDependenciesResources` need to be set on Android Gradle Plugin 3.6 and higher
-
-  ```properties
-  android.precompileDependenciesResources=false
-  ```
-
-  > [booster-pngquant-provider](https://github.com/johnsonlee/booster-pngquant-provider) could be used for image compressing by *pngquant* without installation
-
-- [booster-task-compression-processed-res](./booster-task-compression-processed-res) - ap_ 文件压缩
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-task-compression-processed-res:$booster_version"
-  ```
-
-- [booster-task-resource-deredundancy](./booster-task-resource-deredundancy) - 去冗余资源
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-task-resource-deredundancy:$booster_version"
-  ```
-
-  The option `android.precompileDependenciesResources` need to be set on Android Gradle Plugin 3.6 and higher
-
-  ```properties
-  android.precompileDependenciesResources=false
-  ```
-
-- [booster-transform-r-inline](./booster-transform-r-inline) - 资源索引内联
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-transform-r-inline:$booster_version"
-  ```
-
-- [booster-transform-br-inline](./booster-transform-br-inline) - DataBinding BR索引内联
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-transform-br-inline:$booster_version"
-  ```
-
-### System Bug
-
-- [booster-transform-finalizer-watchdog-daemon](./booster-transform-finalizer-watchdog-daemon) - 修复 *finalizer* 导致的 `TimeoutException`
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-transform-finalizer-watchdog-daemon:$booster_version"
-  ```
-
-- [booster-transform-media-player](./booster-transform-media-player) - 修复 MediaPlayer 崩溃
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-transform-media-player:$booster_version"
-  ```
-
-- [booster-transform-res-check](./booster-transform-res-check) - 检查覆盖安装导致的 *Resources* 和 *Assets* 未加载的 Bug
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-transform-res-check:$booster_version"
-  ```
-
-- [booster-transform-toast](./booster-transform-toast) - 修复 Toast 在 Android 7.1 上的 Bug
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-transform-toast:$booster_version"
-  ```
-
-- [booster-transform-activity-thread](./booster-transform-activity-thread) - 处理系统 Crash
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-transform-activity-thread:$booster_version"
-  ```
-
-### Utility
-
-- [booster-task-check-snapshot](./booster-task-check-snapshot) - 检查 SNAPSHOT 版本
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-task-check-snapshot:$booster_version"
-  ```
-
-- [booster-task-list-permission](./booster-task-list-permission) - 显示 AAR 使用的权限清单
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-task-list-permission:$booster_version"
-  ```
-
-- [booster-task-list-shared-library](./booster-task-list-shared-library) - 显示 AAR 包含的动态库清单
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-task-list-shared-library:$booster_version"
-  ```
-
-### Unit Test
-
-- [booster-test-asm](./booster-test-asm) - Support running unit test with ASM based transformer
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-task-asm:$booster_version"
-  ```
-
-- [booster-test-javassist](./booster-test-javassist) - Support running unit test with Javassist based transformer
-
-
-  ```groovy
-  classpath "com.didiglobal.booster:booster-task-javassist:$booster_version"
-  ```
+> 详情请参见 [从 Booster 4.x 迁移到 5.x](https://booster.johnsonlee.io/zh/migration
 
 ## Samples | 示例
 

@@ -1,3 +1,20 @@
+## v5.0.0
+
+- Support AGP 8.0, 8.1, 8.2
+- Deprecated module `booster-android-instrument-shared-preferences`
+- Deprecated module `booster-android-instrument-webview`
+- Deprecated module `booster-task-analyser`
+- Deprecated module `booster-task-check-snapshot`
+- Deprecated module `booster-task-compression-cwebp`
+- Deprecated module `booster-task-compression-pngquant`
+- Deprecated module `booster-task-compression-processed-res`
+- Deprecated module `booster-task-compression`
+- Deprecated module `booster-task-resource-deredundancy`
+- Deprecated module `booster-transform-br-inline`
+- Deprecated module `booster-transform-service-loader`
+- Deprecated module `booster-transform-shared-preferences`
+- Deprecated module `booster-transform-webview`
+
 ## v4.16.3
 
 - Support AGP 7.4
