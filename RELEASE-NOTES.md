@@ -1,3 +1,8 @@
+## v5.1.0
+
+- Upgrade javassist version from `3.25.0-GA` to `3.30.2-GA`
+- Fix `TransformContext` properties
+
 ## v5.0.0
 
 - Support AGP 8.0, 8.1, 8.2
