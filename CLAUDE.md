@@ -126,13 +126,30 @@ Each AGP adapter module contains:
 
 ### Running Integration Tests
 
-Integration tests require booster artifacts in local Maven:
+Integration tests require:
+1. Booster artifacts published to local Maven
+2. Android SDK with accepted licenses
+
 ```bash
 # First, publish to local Maven
 ./gradlew publishToMavenLocal
 
+# Accept Android SDK licenses (one-time)
+sdkmanager --licenses
+
 # Then run integration tests
 ./gradlew integrationTest
+```
+
+### Dependency Resolution Issue
+
+The `io.bootstage.testkit:testkit-gradle-plugin:2.1.0` transitively depends on old booster versions from Maven Central. This can cause `NoSuchMethodError` at runtime.
+
+**Solution**: In test project's `buildSrc/build.gradle`, exclude transitive booster dependencies:
+```groovy
+implementation("io.bootstage.testkit:testkit-gradle-plugin:2.1.0") {
+    exclude group: 'com.didiglobal.booster'
+}
 ```
 
 ## 开发扩展

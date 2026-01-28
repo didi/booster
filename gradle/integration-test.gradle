@@ -15,6 +15,18 @@ sourceSets {
 configurations {
     integrationTestImplementation.extendsFrom testImplementation
     integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
+
+    // Force local project versions over transitive Maven dependencies
+    // testkit-gradle-plugin:2.1.0 transitively depends on old booster versions
+    all {
+        resolutionStrategy {
+            dependencySubstitution {
+                substitute module('com.didiglobal.booster:booster-kotlinx') using project(':booster-kotlinx')
+                substitute module('com.didiglobal.booster:booster-build') using project(':booster-build')
+                substitute module('com.didiglobal.booster:booster-annotations') using project(':booster-annotations')
+            }
+        }
+    }
 }
 
 task integrationTest(type: Test) {
