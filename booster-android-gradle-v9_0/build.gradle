@@ -25,12 +25,11 @@ dependencies {
     testImplementation 'io.bootstage.testkit:testkit-gradle-plugin:2.1.0'
     testImplementation project(':booster-build')
     testImplementation project(':booster-android-gradle-api')
+    integrationTestImplementation 'com.android.tools.build:gradle:9.0.0'
+    integrationTestImplementation 'com.android.tools:common:32.0.0'
 }
 
 jar {
     exclude('com/android/sdklib/BuildToolInfo.class')
 }
 
-gradlePlugin {
-    testSourceSets sourceSets.functionalTest, sourceSets.integrationTest
-}
