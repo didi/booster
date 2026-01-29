@@ -186,6 +186,30 @@ tasks.named('integrationTest') {
 }
 ```
 
+### Running e2eTest Projects
+
+Each e2eTest is a standalone Android project that tests the booster plugin end-to-end.
+
+**Setup Requirements:**
+1. Publish booster to local Maven: `./gradlew publishToMavenLocal`
+2. Create `local.properties` with Android SDK path in the e2eTest directory:
+   ```properties
+   sdk.dir=/path/to/Android/sdk
+   ```
+
+**Running e2eTest:**
+```bash
+cd booster-android-gradle-v8_9/src/e2eTest
+./gradlew assembleDebug
+```
+
+**Configuration:**
+- `build.gradle.kts` - Root build file referencing booster plugin with version `1.0.0-SNAPSHOT`
+- `settings.gradle.kts` - Uses `mavenLocal()` in pluginManagement to resolve local booster
+- `app/build.gradle.kts` - Applies the booster plugin
+
+**Note**: `local.properties` is gitignored and must be created locally on each machine.
+
 ## Extending Booster
 
 ### Implementing Custom Transformer
