@@ -1,93 +1,93 @@
-# Booster 项目指南
+# Booster Project Guide
 
-## 项目概述
+## Project Overview
 
-Booster 是滴滴开源的 Android 应用质量优化框架，通过 Gradle 插件 + SPI 机制实现可扩展的字节码转换和任务处理。
+Booster is an open-source Android application quality optimization framework from DiDi, implementing extensible bytecode transformation and task processing through Gradle plugins + SPI mechanism.
 
-**核心功能**：性能检测、系统 Bug 修复、多线程优化、应用瘦身（资源去重、R 类内联等）
+**Core Features**: Performance detection, system bug fixes, multi-threading optimization, app size reduction (resource deduplication, R class inlining, etc.)
 
-**效果**：稳定性提升 15%~25%，包体积减小 1MB~10MB
+**Results**: 15%~25% stability improvement, 1MB~10MB package size reduction
 
-## 技术栈
+## Tech Stack
 
-- **语言**: Kotlin (主) + Java
-- **构建**: Gradle 8.5 + Kotlin DSL
-- **字节码操作**: ASM + Javassist 3.30.2-GA
-- **兼容性**: AGP 8.0 ~ 9.0 (v8_0, v8_1, v8_2, v8_3, v8_4, v8_5, v8_6, v8_7, v8_8, v8_9, v8_10, v8_12, v9_0)
-- **发布**: Maven Central (com.didiglobal.booster)
+- **Language**: Kotlin (primary) + Java
+- **Build**: Gradle 8.5 + Kotlin DSL
+- **Bytecode**: ASM + Javassist 3.30.2-GA
+- **Compatibility**: AGP 8.0 ~ 9.0 (v8_0, v8_1, v8_2, v8_3, v8_4, v8_5, v8_6, v8_7, v8_8, v8_9, v8_10, v8_12, v9_0)
+- **Publishing**: Maven Central (com.didiglobal.booster)
 
-## 模块架构 (48 个模块)
+## Module Architecture
 
-### 核心框架
-- `booster-gradle-plugin` - Gradle 插件入口
-- `booster-api` - 核心 API 和工具类
-- `booster-annotations` - 注解定义
+### Core Framework
+- `booster-gradle-plugin` - Gradle plugin entry point
+- `booster-api` - Core API and utilities
+- `booster-annotations` - Annotation definitions
 
-### SPI 层 (扩展接口)
-- `booster-transform-spi` - 字节码转换接口 (`Transformer`, `TransformContext`, `KlassPool`)
-- `booster-task-spi` - 任务处理器接口 (`VariantProcessor`)
+### SPI Layer (Extension Interfaces)
+- `booster-transform-spi` - Bytecode transformation interfaces (`Transformer`, `TransformContext`, `KlassPool`)
+- `booster-task-spi` - Task processor interface (`VariantProcessor`)
 
-### 字节码转换工具
-- `booster-transform-asm` - ASM 实现
-- `booster-transform-javassist` - Javassist 实现
-- `booster-transform-util` - 工具库
+### Bytecode Transformation Tools
+- `booster-transform-asm` - ASM implementation
+- `booster-transform-javassist` - Javassist implementation
+- `booster-transform-util` - Utility library
 
-### AGP 兼容层
-- `booster-android-gradle-api` - API 抽象
-- `booster-android-gradle-compat` - 兼容支持
-- `booster-android-gradle-v8_*` - AGP 版本适配 (v8_0 ~ v8_12)
-- `booster-android-gradle-v9_0` - AGP 9.0 适配
+### AGP Compatibility Layer
+- `booster-android-gradle-api` - API abstraction
+- `booster-android-gradle-compat` - Compatibility support
+- `booster-android-gradle-v8_*` - AGP version adapters (v8_0 ~ v8_12)
+- `booster-android-gradle-v9_0` - AGP 9.0 adapter
 
-### 转换实现 (主要功能模块)
-- `booster-transform-thread` - 多线程优化
-- `booster-transform-toast` - Toast 崩溃修复
-- `booster-transform-r-inline` - R 类常量内联
-- `booster-transform-res-check` - 资源检查
-- `booster-transform-activity-thread` - ActivityThread 优化
-- `booster-transform-finalizer-watchdog-daemon` - Finalizer 优化
-- `booster-transform-logcat` - Logcat 优化
-- `booster-transform-media-player` - MediaPlayer 优化
+### Transform Implementations
+- `booster-transform-thread` - Multi-threading optimization
+- `booster-transform-toast` - Toast crash fix
+- `booster-transform-r-inline` - R class constant inlining
+- `booster-transform-res-check` - Resource checking
+- `booster-transform-activity-thread` - ActivityThread optimization
+- `booster-transform-finalizer-watchdog-daemon` - Finalizer optimization
+- `booster-transform-logcat` - Logcat optimization
+- `booster-transform-media-player` - MediaPlayer optimization
 
-### 运行时仪器 (配合转换模块使用)
-- `booster-android-instrument-*` - 各功能的运行时 Hook 实现
+### Runtime Instrumentation
+- `booster-android-instrument-*` - Runtime hook implementations for each feature
 
-### 辅助工具
+### Auxiliary Tools
 - `booster-cha` / `booster-cha-asm` - Class Hierarchy Analysis
-- `booster-graph-*` - 任务图可视化
-- `booster-task-list-*` - 任务列表工具
-- `booster-aapt2` - AAPT2 集成
+- `booster-graph-*` - Task graph visualization
+- `booster-task-list-*` - Task list tools
+- `booster-aapt2` - AAPT2 integration
 
-## 关键入口文件
+## Key Entry Files
 
-| 文件 | 路径 | 作用 |
-|------|------|------|
-| `BoosterPlugin.kt` | `booster-gradle-plugin/.../gradle/` | 插件主类，实现 `Plugin<Project>` |
-| `BoosterTransformTask.kt` | 同上 | 字节码转换任务 |
-| `Transformer.kt` | `booster-transform-spi/.../transform/` | 转换器接口定义 |
-| `TransformContext.kt` | 同上 | 转换上下文 |
-| `VariantProcessor.kt` | `booster-task-spi/.../task/spi/` | 变种处理器接口 |
-| `AsmTransformer.kt` | `booster-transform-asm/.../asm/` | ASM 转换器实现 |
-| `ClassTransformer.kt` | 同上 | 类转换抽象类 |
+| File | Path | Purpose |
+|------|------|---------|
+| `BoosterPlugin.kt` | `booster-gradle-plugin/.../gradle/` | Plugin main class, implements `Plugin<Project>` |
+| `BoosterTransformTask.kt` | same | Bytecode transformation task |
+| `Transformer.kt` | `booster-transform-spi/.../transform/` | Transformer interface definition |
+| `TransformContext.kt` | same | Transform context |
+| `VariantProcessor.kt` | `booster-task-spi/.../task/spi/` | Variant processor interface |
+| `AsmTransformer.kt` | `booster-transform-asm/.../asm/` | ASM transformer implementation |
+| `ClassTransformer.kt` | same | Class transformer abstract class |
 
-## 常用命令
+## Common Commands
 
 ```bash
-# 构建项目
+# Build project
 ./gradlew build
 
-# 发布到本地 Maven
+# Publish to local Maven
 ./gradlew publishToMavenLocal
 
-# 运行测试
+# Run tests
 ./gradlew test
 
-# 运行集成测试
+# Run integration tests
 ./gradlew integrationTest
 
-# 编译集成测试（验证兼容性）
+# Compile integration tests (verify compatibility)
 ./gradlew compileIntegrationTestKotlin
 
-# 查看所有任务
+# View all tasks
 ./gradlew tasks
 ```
 
@@ -107,6 +107,15 @@ AGP 8.9+ is compiled with Kotlin 2.0, producing Kotlin metadata incompatible wit
    }
    ```
 
+### AGP Version to Gradle Version Mapping
+
+| AGP Version | Minimum Gradle Version |
+|-------------|------------------------|
+| 8.0 - 8.8   | 8.0+                   |
+| 8.9 - 8.11  | 8.11.1+                |
+| 8.12        | 8.13+                  |
+| 9.0         | 9.1+ (not yet released)|
+
 ### Adding New AGP Version Support
 
 1. Create module `booster-android-gradle-v{major}_{minor}`
@@ -117,6 +126,7 @@ AGP 8.9+ is compiled with Kotlin 2.0, producing Kotlin metadata incompatible wit
    - `kotlin/.../V{major}{minor}IntegrationTest.kt` - Test class
    - `resources/` - Test resources (app.gradle, lib.gradle, buildSrc/, src/)
 6. Create `src/e2eTest/` directory with standalone Android test project
+7. Update `GradleExecutor` version in integration test to match AGP requirements
 
 ### Integration Test Structure
 
@@ -129,6 +139,7 @@ Each AGP adapter module contains:
 Integration tests require:
 1. Booster artifacts published to local Maven
 2. Android SDK with accepted licenses
+3. ANDROID_HOME environment variable set (or SDK at ~/Library/Android/sdk on macOS)
 
 ```bash
 # First, publish to local Maven
@@ -141,9 +152,11 @@ sdkmanager --licenses
 ./gradlew integrationTest
 ```
 
-### Dependency Resolution Issue
+### Known Integration Test Issues
 
-The `io.bootstage.testkit:testkit-gradle-plugin:2.1.0` transitively depends on old booster versions from Maven Central. This can cause `NoSuchMethodError` at runtime.
+#### 1. Dependency Resolution Conflict
+
+**Problem**: `io.bootstage.testkit:testkit-gradle-plugin:2.1.0` transitively depends on old booster versions from Maven Central (e.g., `booster-kotlinx:2.4.0`). This causes `NoSuchMethodError` at runtime because older versions lack methods like `capitalized()`.
 
 **Solution**: In test project's `buildSrc/build.gradle`, exclude transitive booster dependencies:
 ```groovy
@@ -152,22 +165,43 @@ implementation("io.bootstage.testkit:testkit-gradle-plugin:2.1.0") {
 }
 ```
 
-## 开发扩展
+#### 2. Android SDK Detection
 
-### 实现自定义 Transformer
+**Problem**: If `sdkmanager` is in PATH (e.g., from Homebrew), the `AndroidSdk.location` detection may pick up the wrong SDK path.
 
-1. 创建模块，依赖 `booster-transform-spi` 和 `booster-transform-asm`
-2. 继承 `ClassTransformer` 实现转换逻辑
-3. 在 `META-INF/services/` 注册 SPI
+**Solution**: The `integration-test.gradle` sets `ANDROID_HOME` environment variable:
+```groovy
+def androidHome = System.getenv('ANDROID_HOME') ?: "${System.getProperty('user.home')}/Library/Android/sdk"
+environment 'ANDROID_HOME', androidHome
+```
 
-### 实现自定义 VariantProcessor
+#### 3. AGP 9.0 Integration Tests
 
-1. 创建模块，依赖 `booster-task-spi`
-2. 实现 `VariantProcessor` 接口
-3. 在 `META-INF/services/` 注册 SPI
+**Problem**: AGP 9.0 requires Gradle 9.1 which is not yet released.
 
-## 代码规范
+**Solution**: Integration tests for v9_0 are disabled until Gradle 9.1 is available:
+```groovy
+tasks.named('integrationTest') {
+    enabled = false
+}
+```
 
-- 包名前缀: `com.didiglobal.booster`
-- 使用 Kotlin 编写新代码
-- 遵循 Kotlin 官方编码规范
+## Extending Booster
+
+### Implementing Custom Transformer
+
+1. Create module, depend on `booster-transform-spi` and `booster-transform-asm`
+2. Extend `ClassTransformer` to implement transformation logic
+3. Register via SPI in `META-INF/services/`
+
+### Implementing Custom VariantProcessor
+
+1. Create module, depend on `booster-task-spi`
+2. Implement `VariantProcessor` interface
+3. Register via SPI in `META-INF/services/`
+
+## Code Standards
+
+- Package prefix: `com.didiglobal.booster`
+- Write new code in Kotlin
+- Follow Kotlin official coding conventions
