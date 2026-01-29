@@ -7,6 +7,7 @@ on:
     branches: [ '*' ]
   repository_dispatch:
     types: [test]
+  workflow_dispatch:
 
 env:
   GPG_KEY_ARMOR: ${{ secrets.GPG_KEY_ARMOR }}
