@@ -44,7 +44,7 @@ abstract class V90IntegrationTest(private val isLib: Boolean) {
     @get:Rule
     val ruleChain: TestRule = rule(projectDir) {
         rule(LocalProperties(projectDir::getRoot)) {
-            GradleExecutor(projectDir::getRoot, "8.11.1", *ARGS.toTypedArray())
+            GradleExecutor(projectDir::getRoot, "9.1", *ARGS.toTypedArray())
         }
     }
 

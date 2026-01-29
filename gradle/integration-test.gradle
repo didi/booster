@@ -40,6 +40,11 @@ task integrationTest(type: Test) {
     }
     systemProperty('gradle.args', 'buildEnv dependencies assemble -S')
     systemProperty 'android.minsdk.version', 18
+
+    // Pass ANDROID_HOME to avoid sdkmanager in PATH being used as SDK location
+    def androidHome = System.getenv('ANDROID_HOME') ?: "${System.getProperty('user.home')}/Library/Android/sdk"
+    environment 'ANDROID_HOME', androidHome
+    systemProperty 'android.sdk.dir', androidHome
 }
 
 check.dependsOn integrationTest
