@@ -26,17 +26,17 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: 'adopt'
           java-version: '17'
           cache: 'gradle'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ github.run_number }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: '**/build'
           key: ${{ runner.os }}-build-${{ github.run_number }}
@@ -52,23 +52,23 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: 'adopt'
           java-version: '17'
           cache: 'gradle'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ github.run_number }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: '**/build'
           key: ${{ runner.os }}-build-${{ github.run_number }}
       - shell: bash
         run: ./gradlew test -S --no-daemon -Pversion=${{ github.run_number }}
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: unit-test-report
@@ -79,19 +79,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: 'adopt'
           java-version: '17'
           cache: 'gradle'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ github.run_number }}
       - shell: bash
         run: ./gradlew booster-android-gradle-v8_0:integrationTest -S --no-daemon -Pversion=${{ github.run_number }}
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: booster-android-gradle-v8_0
@@ -102,19 +102,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: 'adopt'
           java-version: '17'
           cache: 'gradle'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ github.run_number }}
       - shell: bash
         run: ./gradlew booster-android-gradle-v8_1:integrationTest -S --no-daemon -Pversion=${{ github.run_number }}
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: booster-android-gradle-v8_1
@@ -125,19 +125,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: 'adopt'
           java-version: '17'
           cache: 'gradle'
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ github.run_number }}
       - shell: bash
         run: ./gradlew booster-android-gradle-v8_2:integrationTest -S --no-daemon -Pversion=${{ github.run_number }}
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: booster-android-gradle-v8_2
