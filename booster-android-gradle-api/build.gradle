@@ -6,6 +6,15 @@ dependencies {
     implementation project(':booster-android-gradle-v8_0')
     implementation project(':booster-android-gradle-v8_1')
     implementation project(':booster-android-gradle-v8_2')
+    implementation project(':booster-android-gradle-v8_3')
+    implementation project(':booster-android-gradle-v8_4')
+    implementation project(':booster-android-gradle-v8_5')
+    implementation project(':booster-android-gradle-v8_6')
+    implementation project(':booster-android-gradle-v8_7')
+    implementation project(':booster-android-gradle-v8_8')
+    implementation project(':booster-android-gradle-v8_9')
+    implementation project(':booster-android-gradle-v8_10')
+    implementation project(':booster-android-gradle-v8_12')
     compileOnly 'com.android.tools.build:gradle:8.0.0'
     testCompileOnly 'com.android.tools.build:gradle:8.0.0'
 }
