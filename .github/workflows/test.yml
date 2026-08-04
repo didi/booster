@@ -160,7 +160,8 @@ jobs:
           key: ${{ runner.os }}-m2-${{ github.run_number }}
       - name: Install Android SDK packages
         shell: bash
-        run: sdkmanager "platforms;android-35" "build-tools;36.0.0" >/dev/null
+        run: |
+          "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" "platforms;android-35" "build-tools;36.0.0" >/dev/null
       - shell: bash
         run: ./gradlew booster-android-gradle-v9_0:agp9CoverageReport booster-android-gradle-v9_0:agp9CoverageVerification -S --no-daemon -Pversion=${{ github.run_number }}
       - uses: actions/upload-artifact@v4
