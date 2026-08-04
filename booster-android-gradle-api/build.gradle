@@ -15,6 +15,7 @@ dependencies {
     implementation project(':booster-android-gradle-v8_9')
     implementation project(':booster-android-gradle-v8_10')
     implementation project(':booster-android-gradle-v8_12')
+    implementation project(':booster-android-gradle-v9_0')
     compileOnly 'com.android.tools.build:gradle:8.0.0'
     testCompileOnly 'com.android.tools.build:gradle:8.0.0'
 }

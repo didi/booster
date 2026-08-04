@@ -54,7 +54,7 @@ class BoosterPlugin : Plugin<Project> {
     }
 
     private fun Project.legacySetup(processors: List<VariantProcessor>) {
-        val android = project.getAndroid<BaseExtension>()
+        val android = extensions.findByName("android") as? BaseExtension ?: return
         when (android) {
             is AppExtension -> android.applicationVariants
             is LibraryExtension -> android.libraryVariants

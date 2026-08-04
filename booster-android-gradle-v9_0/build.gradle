@@ -1,0 +1,90 @@
+apply plugin: 'java-gradle-plugin'
+apply plugin: 'jacoco'
+
+apply from: "$rootDir/gradle/booster.gradle"
+apply from: "$rootDir/gradle/integration-test.gradle"
+apply from: "$rootDir/gradle/functional-test.gradle"
+
+def agpVersion = '9.0.1'
+def agp9CoverageFile = layout.buildDirectory.file('jacoco/agp9-integration.exec')
+def agp9CoverageClassDump = layout.buildDirectory.dir('jacoco/agp9-classes')
+
+jacoco {
+    toolVersion = '0.8.13'
+}
+
+// AGP 9.0 is compiled with Kotlin 2.2 metadata.
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        freeCompilerArgs += ['-Xskip-metadata-version-check']
+    }
+}
+
+dependencies {
+    kapt 'com.google.auto.service:auto-service:1.0'
+    api 'com.google.auto.service:auto-service:1.0'
+    api project(':booster-android-gradle-compat')
+    compileOnly 'com.android.tools:repository:32.0.0'
+    compileOnly 'com.android.tools:common:32.0.0'
+    compileOnly 'com.android.tools:sdklib:32.0.0'
+    compileOnly "com.android.tools.build:gradle-api:$agpVersion"
+    compileOnly "com.android.tools.build:gradle:$agpVersion"
+    testImplementation "com.android.tools.build:gradle:$agpVersion"
+    testImplementation 'com.android.tools:common:32.0.0'
+    testImplementation 'io.bootstage.testkit:testkit-gradle-plugin:2.1.0'
+    testImplementation project(':booster-build')
+    testImplementation project(':booster-android-gradle-api')
+    integrationTestImplementation "com.android.tools.build:gradle:$agpVersion"
+    integrationTestImplementation 'com.android.tools:common:32.0.0'
+}
+
+jar {
+    exclude('com/android/sdklib/BuildToolInfo.class')
+}
+
+tasks.named('integrationTest') {
+    systemProperty 'gradle.args', 'buildEnv dependencies assembleDebug -S'
+    outputs.upToDateWhen { false }
+    outputs.cacheIf { false }
+    doFirst {
+        delete agp9CoverageFile
+        delete agp9CoverageClassDump
+        jacoco.destinationFile = agp9CoverageFile.get().asFile
+        def destination = agp9CoverageFile.get().asFile.absolutePath
+        def classDump = agp9CoverageClassDump.get().asFile.absolutePath
+        def agentArgument = jacoco.asJvmArg.replaceFirst(/destfile=[^,]+/, "destfile=${destination}")
+        systemProperty 'jacoco.jvmarg', agentArgument.replace('append=true', "append=true,classdumpdir=${classDump}")
+    }
+}
+
+def agp9CoverageClasses = fileTree(agp9CoverageClassDump) {
+    include 'com/didiglobal/booster/android/gradle/v9_0/V90*.class'
+}
+
+tasks.register('agp9CoverageReport', org.gradle.testing.jacoco.tasks.JacocoReport) {
+    dependsOn integrationTest
+    executionData.from(agp9CoverageFile)
+    classDirectories.from(agp9CoverageClasses)
+    sourceDirectories.from(sourceSets.main.allSource.srcDirs)
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+tasks.register('agp9CoverageVerification', org.gradle.testing.jacoco.tasks.JacocoCoverageVerification) {
+    dependsOn integrationTest
+    executionData.from(agp9CoverageFile)
+    classDirectories.from(agp9CoverageClasses)
+    sourceDirectories.from(sourceSets.main.allSource.srcDirs)
+    violationRules {
+        rule {
+            limit {
+                counter = 'LINE'
+                minimum = 0.95
+            }
+        }
+    }
+}
+
+check.dependsOn agp9CoverageReport, agp9CoverageVerification

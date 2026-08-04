@@ -53,9 +53,15 @@ The following table lists which version of Gradle is required for each version o
 
 | Android Gradle Plugin | Gradle  | Booster |
 |:---------------------:|:-------:|:-------:|
-|          8.5          |  8.7+   |   N/A   |
-|          8.4          |  8.6+   |   N/A   |
-|          8.3          |  8.4+   |   N/A   |
+|         9.0.x         |  9.1+   | 5.2.0+  |
+|         8.12          |  8.13+  | 5.2.0+  |
+|        8.9-8.11       | 8.11.1+ | 5.2.0+  |
+|          8.8          | 8.10.2+ | 5.2.0+  |
+|          8.7          |  8.9+   | 5.2.0+  |
+|          8.6          |  8.7+   | 5.2.0+  |
+|          8.5          |  8.7+   | 5.2.0+  |
+|          8.4          |  8.6+   | 5.2.0+  |
+|          8.3          |  8.4+   | 5.2.0+  |
 |          8.2          |  8.2+   | 5.0.0+  |
 |          8.1          |  8.0+   | 5.0.0+  |
 |          8.0          |  8.0+   | 5.0.0+  |
@@ -172,4 +178,3 @@ Welcome to contribute by creating issues or sending pull requests. See [Contribu
 ## License
 
 Booster is licensed under the [Apache License 2.0](./LICENSE.txt).
-

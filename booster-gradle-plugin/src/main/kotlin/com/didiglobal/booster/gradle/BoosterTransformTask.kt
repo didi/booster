@@ -1,7 +1,6 @@
 package com.didiglobal.booster.gradle
 
 import com.android.build.api.dsl.CommonExtension
-import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.api.variant.Variant
 import com.didiglobal.booster.kotlinx.NCPU
 import com.didiglobal.booster.kotlinx.search
@@ -74,7 +73,8 @@ abstract class BoosterTransformTask : DefaultTask() {
             override val projectDir = project.projectDir
             override val artifacts = variant.artifactManager
             override val isDebuggable: Boolean = variant.isDebuggable
-            override val isDataBindingEnabled: Boolean = (project.getAndroidComponentsOrNull<AndroidComponentsExtension<*, *, *>>() as? CommonExtension<*, *, *, *>)?.dataBinding?.enable == true
+            override val isDataBindingEnabled: Boolean =
+                (project.extensions.findByName("android") as? CommonExtension<*, *, *, *>)?.dataBinding?.enable == true
             override fun hasProperty(name: String): Boolean = project.hasProperty(name)
             override fun <T> getProperty(name: String, default: T): T = project.getProperty(name, default)
         }
@@ -223,5 +223,4 @@ abstract class BoosterTransformTask : DefaultTask() {
         return (entry.isDirectory || entry.name.endsWith(".class")) && !entry.name.startsWith("META-INF/")
     }
 }
-
 
