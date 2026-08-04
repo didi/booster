@@ -142,3 +142,31 @@ jobs:
         with:
           name: booster-android-gradle-v8_2
           path: booster-android-gradle-v8_2/build/reports/tests/integrationTest
+
+  integration-test-agp-v9_0:
+    name: AGP 9.0 Integration Test
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'adopt'
+          java-version: '17'
+          cache: 'gradle'
+      - uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ github.run_number }}
+      - name: Install Android SDK packages
+        shell: bash
+        run: sdkmanager "platforms;android-35" "build-tools;36.0.0" >/dev/null
+      - shell: bash
+        run: ./gradlew booster-android-gradle-v9_0:agp9CoverageReport booster-android-gradle-v9_0:agp9CoverageVerification -S --no-daemon -Pversion=${{ github.run_number }}
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: booster-android-gradle-v9_0
+          path: |
+            booster-android-gradle-v9_0/build/reports/tests/integrationTest
+            booster-android-gradle-v9_0/build/reports/jacoco/agp9CoverageReport

@@ -1,0 +1,63 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+        maven { url 'https://oss.sonatype.org/content/repositories/public/' }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:${project.android_gradle_version}"
+        classpath("com.didiglobal.booster:booster-gradle-plugin:${project.booster_version}") {
+            exclude group: 'com.google.guava'
+        }
+        classpath "io.bootstage.testkit:testkit-gradle-plugin:2.1.0"
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'com.didiglobal.booster'
+
+// testkit-gradle-plugin 2.1.0 uses Gradle's removed GUtil API. Keep its test
+// protocol, but load the generated TestCase service with public JDK APIs.
+def testClasspath = new Properties()
+file('plugin-under-test-classpath.properties').withInputStream(testClasspath::load)
+def testClassLoader = new URLClassLoader(
+        testClasspath.getProperty('classpath').split(File.pathSeparator).collect { file(it).toURI().toURL() } as URL[],
+        Thread.currentThread().contextClassLoader
+)
+def testCases = ServiceLoader.load(io.bootstage.testkit.gradle.TestCase, testClassLoader).toList()
+if (testCases.empty) {
+    throw new GradleException('No TestCase found')
+}
+testCases.each { it.apply(project) }
+
+android {
+    namespace 'com.didiglobal.booster.android.test'
+    compileSdkVersion project.compile_sdk_version as Integer
+    buildToolsVersion project.build_tools_version
+    defaultConfig {
+        applicationId 'com.didiglobal.booster.test'
+        minSdkVersion  project.min_sdk_version as Integer
+        targetSdkVersion project.target_sdk_version as Integer
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    lint {
+        checkReleaseBuilds false
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    google()
+    maven { url 'https://oss.sonatype.org/content/repositories/public/' }
+}

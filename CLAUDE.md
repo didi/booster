@@ -114,7 +114,7 @@ AGP 8.9+ is compiled with Kotlin 2.0, producing Kotlin metadata incompatible wit
 | 8.0 - 8.8   | 8.0+                   |
 | 8.9 - 8.11  | 8.11.1+                |
 | 8.12        | 8.13+                  |
-| 9.0         | 9.1+ (not yet released)|
+| 9.0         | 9.1+                   |
 
 ### Adding New AGP Version Support
 
@@ -173,17 +173,6 @@ implementation("io.bootstage.testkit:testkit-gradle-plugin:2.1.0") {
 ```groovy
 def androidHome = System.getenv('ANDROID_HOME') ?: "${System.getProperty('user.home')}/Library/Android/sdk"
 environment 'ANDROID_HOME', androidHome
-```
-
-#### 3. AGP 9.0 Integration Tests
-
-**Problem**: AGP 9.0 requires Gradle 9.1 which is not yet released.
-
-**Solution**: Integration tests for v9_0 are disabled until Gradle 9.1 is available:
-```groovy
-tasks.named('integrationTest') {
-    enabled = false
-}
 ```
 
 ### Running e2eTest Projects
