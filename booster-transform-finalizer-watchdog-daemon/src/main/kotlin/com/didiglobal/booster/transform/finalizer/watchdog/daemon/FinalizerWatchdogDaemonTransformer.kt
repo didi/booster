@@ -3,6 +3,7 @@ package com.didiglobal.booster.transform.finalizer.watchdog.daemon
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.ArtifactManager
 import com.didiglobal.booster.transform.TransformContext
+import com.didiglobal.booster.transform.TransformScope
 import com.didiglobal.booster.transform.asm.ClassTransformer
 import com.didiglobal.booster.transform.asm.className
 import com.didiglobal.booster.transform.asm.findAll
@@ -35,6 +36,8 @@ class FinalizerWatchdogDaemonTransformer : ClassTransformer {
     private val applications = mutableSetOf<String>()
 
     override val name: String = ARTIFACT
+
+    override val scope: TransformScope = TransformScope.CLASS
 
     override fun onPreTransform(context: TransformContext) {
         val parser = SAXParserFactory.newInstance().newSAXParser()

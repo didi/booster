@@ -3,6 +3,7 @@ package com.didiglobal.booster.transform.mediaplayer
 import com.didiglobal.booster.kotlinx.asIterable
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.TransformContext
+import com.didiglobal.booster.transform.TransformScope
 import com.didiglobal.booster.transform.asm.ClassTransformer
 import com.didiglobal.booster.transform.asm.transform
 import com.didiglobal.booster.transform.media.player.Build
@@ -27,6 +28,8 @@ class MediaPlayerTransformer : ClassTransformer {
     private lateinit var logger: PrintWriter
 
     override val name: String = ARTIFACT
+
+    override val scope: TransformScope = TransformScope.CLASS
 
     override fun onPreTransform(context: TransformContext) {
         this.logger = getReport(context, "report.txt").touch().printWriter()

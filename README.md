@@ -123,9 +123,13 @@ Then using the following command in terminal to check if Booster enabled
 ./gradlew assembleDebug --dry-run
 ```
 
-If *transformClassesWithBoosterForDebug* can be found in the output, it means *Booster* is enabled. Congratulations! 🎉🎉🎉
+If *transformDebugClassesWithAsm* can be found in the output, it means *Booster* is enabled. Congratulations! 🎉🎉🎉
 
-> 如果在命令行输出中能搜到 *transformClassesWithBoosterForDebug* 说明 *Booster* 已经启用了，那么恭喜你！ 🎉🎉🎉
+> 如果在命令行输出中能搜到 *transformDebugClassesWithAsm* 说明 *Booster* 已经启用了，那么恭喜你！ 🎉🎉🎉
+
+Please note that *Booster* only registers the class transformation when at least one `booster-transform-*` module (or a custom `Transformer`) is on the buildscript classpath, otherwise nothing is registered and the build is not affected at all.
+
+> 请注意，只有当 buildscript classpath 中至少存在一个 `booster-transform-*` 模块（或自定义的 `Transformer`）时，*Booster* 才会注册字节码转换，否则不会注册任何转换，也不会对构建产生任何影响。
 
 
 The `plugins` DSL also supported since Booster *3.0.0*
@@ -137,6 +141,46 @@ plugins {
     id 'com.didiglobal.booster' version '5.1.0'
 }
 ```
+
+## Transform Mode | 转换模式
+
+Since *5.3.0*, *Booster* has two modes to transform classes, and chooses one automatically by the [`TransformScope`](./booster-transform-spi/src/main/kotlin/com/didiglobal/booster/transform/TransformScope.kt) which transformers declare:
+
+- `instrumentation`: transforms each class independently with [AGP instrumentation](https://developer.android.com/reference/tools/gradle-api/current/com/android/build/api/variant/Instrumentation), the boundaries of inputs (project classes, subprojects and external libraries) are preserved, so that only the changed classes and jars are re-transformed and re-dexed in incremental builds. Chosen when all transformers declare `TransformScope.CLASS`, which is the case for all the built-in `booster-transform-*` modules.
+- `scoped-artifacts`: merges all classes into a single jar, the transformers have the whole program at hand (full classpath, `Collector`, all artifacts), but a change of a single class causes the whole jar to be re-dexed, see [#498](https://github.com/didi/booster/issues/498). Chosen when any transformer declares `TransformScope.PROGRAM` (the default of the SPI, and always the case for `JavassistTransformer`).
+
+> 从 *5.3.0* 开始，*Booster* 有两种转换模式，并根据 Transformer 声明的 [`TransformScope`](./booster-transform-spi/src/main/kotlin/com/didiglobal/booster/transform/TransformScope.kt) 自动选择：
+>
+> - `instrumentation`：通过 [AGP instrumentation](https://developer.android.com/reference/tools/gradle-api/current/com/android/build/api/variant/Instrumentation) 逐个转换 class，输入的边界（工程 class、子工程和外部依赖）得以保留，因此增量构建时只有变化的 class 和 jar 会被重新转换和 DEX。当所有 Transformer 都声明 `TransformScope.CLASS` 时选用，内置的 `booster-transform-*` 模块均满足。
+> - `scoped-artifacts`：将所有 class 聚合为单个 jar，Transformer 拥有全程序视图（完整 classpath、`Collector`、所有产物），但单个 class 的变化会导致整个 jar 重新 DEX，详见 [#498](https://github.com/didi/booster/issues/498)。当任一 Transformer 声明 `TransformScope.PROGRAM`（SPI 的默认值，`JavassistTransformer` 始终如此）时选用。
+
+Custom transformers which transform each class independently should declare `TransformScope.CLASS` to keep incremental builds fast:
+
+> 逐个 class 独立转换的自定义 Transformer 应当声明 `TransformScope.CLASS` 以保持增量构建的速度：
+
+```kotlin
+@AutoService(ClassTransformer::class)
+class MyTransformer : ClassTransformer {
+    override val scope = TransformScope.CLASS
+    ...
+}
+```
+
+The finalized scope and the transformers which require the whole program are printed at the beginning of the build.
+
+> 最终的 scope 以及要求全程序视图的 Transformer 会在构建开始时打印出来。
+
+The differences between the two modes | 两种模式的差异：
+
+| | `instrumentation` | `scoped-artifacts` |
+|---|---|---|
+| Incremental build | only changed classes/jars are re-transformed and re-dexed | the whole merged jar is re-dexed |
+| `TransformContext.klassPool` | backed by AGP class hierarchy | backed by `URLClassLoader` |
+| `TransformContext.artifacts` | `MERGED_MANIFESTS`, `SYMBOL_LIST` only | all artifacts |
+| `TransformContext.dependencies` | identifiers of runtime dependencies, e.g. `androidx.core:core:1.12.0` | paths of input jars |
+| `TransformContext.compileClasspath` / `runtimeClasspath` | empty | input jars and directories |
+| `Collector` | not supported | supported |
+| `Transformer.onPostTransform` | called once when the build finishes | called when the transform task finishes |
 
 ## Migrate from Booster 4.x to 5.x | 从 Booster 4.x 迁移到 5.x
 

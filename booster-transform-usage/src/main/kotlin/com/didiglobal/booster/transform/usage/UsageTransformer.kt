@@ -3,6 +3,7 @@ package com.didiglobal.booster.transform.usage
 import com.didiglobal.booster.kotlinx.CSI_RESET
 import com.didiglobal.booster.kotlinx.CSI_YELLOW
 import com.didiglobal.booster.transform.TransformContext
+import com.didiglobal.booster.transform.TransformScope
 import com.didiglobal.booster.transform.asm.ClassTransformer
 import com.google.auto.service.AutoService
 import org.objectweb.asm.tree.ClassNode
@@ -20,6 +21,8 @@ class UsageTransformer : ClassTransformer {
     private lateinit var usedApis: Set<String>
 
     override val name: String = Build.ARTIFACT
+
+    override val scope: TransformScope = TransformScope.CLASS
 
     override fun onPreTransform(context: TransformContext) {
         this.usedApis = context.getProperty<String?>(PROPERTY_USED_APIS, null)?.let { uri ->

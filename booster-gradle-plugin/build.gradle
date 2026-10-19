@@ -6,7 +6,11 @@ dependencies {
     api project(':booster-annotations')
     api project(':booster-api')
     compileOnly 'com.android.tools.build:gradle:8.0.0'
+    compileOnly 'org.ow2.asm:asm:9.2'
     testCompileOnly 'com.android.tools.build:gradle:8.0.0'
+    testImplementation 'com.android.tools.build:gradle-api:8.0.0'
+    testImplementation 'org.ow2.asm:asm:9.2'
+    testImplementation 'org.ow2.asm:asm-util:9.2'
 }
 
 apply plugin: 'java-gradle-plugin'

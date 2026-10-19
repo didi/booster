@@ -2,7 +2,10 @@ package com.didiglobal.booster.transform.asm
 
 import com.didiglobal.booster.annotations.Priority
 import com.didiglobal.booster.kotlinx.touch
+import com.didiglobal.booster.transform.CompositeTransformer
 import com.didiglobal.booster.transform.TransformContext
+import com.didiglobal.booster.transform.TransformListener
+import com.didiglobal.booster.transform.TransformScope
 import com.didiglobal.booster.transform.Transformer
 import com.didiglobal.booster.transform.util.diff
 import com.google.auto.service.AutoService
@@ -23,7 +26,7 @@ import java.util.jar.JarFile
  * @author johnsonlee
  */
 @AutoService(Transformer::class)
-class AsmTransformer : Transformer {
+class AsmTransformer : CompositeTransformer {
 
     private val threadMxBean = ManagementFactory.getThreadMXBean()
 
@@ -43,6 +46,15 @@ class AsmTransformer : Transformer {
         this.classLoader = classLoader
         this.transformers = transformers
     }
+
+    override val delegates: Iterable<TransformListener>
+        get() = this.transformers
+
+    /**
+     * [TransformScope.CLASS] only if all of the class transformers are class scoped
+     */
+    override val scope: TransformScope
+        get() = if (this.transformers.all { it.scope == TransformScope.CLASS }) TransformScope.CLASS else TransformScope.PROGRAM
 
     override fun onPreTransform(context: TransformContext) {
         this.transformers.forEach { transformer ->
