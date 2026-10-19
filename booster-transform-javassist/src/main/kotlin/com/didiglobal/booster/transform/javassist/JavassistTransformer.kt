@@ -2,7 +2,10 @@ package com.didiglobal.booster.transform.javassist
 
 import com.didiglobal.booster.annotations.Priority
 import com.didiglobal.booster.kotlinx.touch
+import com.didiglobal.booster.transform.CompositeTransformer
 import com.didiglobal.booster.transform.TransformContext
+import com.didiglobal.booster.transform.TransformListener
+import com.didiglobal.booster.transform.TransformScope
 import com.didiglobal.booster.transform.Transformer
 import com.didiglobal.booster.transform.util.diff
 import com.google.auto.service.AutoService
@@ -21,7 +24,7 @@ import java.util.ServiceLoader
  * @author johnsonlee
  */
 @AutoService(Transformer::class)
-class JavassistTransformer : Transformer {
+class JavassistTransformer : CompositeTransformer {
 
     private val pool = ClassPool()
 
@@ -43,6 +46,15 @@ class JavassistTransformer : Transformer {
         this.classLoader = classLoader
         this.transformers = transformers
     }
+
+    override val delegates: Iterable<TransformListener>
+        get() = this.transformers
+
+    /**
+     * Always [TransformScope.PROGRAM] since the [ClassPool] requires the full classpath to resolve classes
+     */
+    override val scope: TransformScope
+        get() = TransformScope.PROGRAM
 
     override fun onPreTransform(context: TransformContext) {
         context.bootClasspath.forEach { file ->

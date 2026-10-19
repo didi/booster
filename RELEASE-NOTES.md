@@ -1,3 +1,8 @@
+## v5.3.0
+
+- Add `TransformScope` to the transform SPI, transformers which declare `TransformScope.CLASS` (all the built-in ones) are applied with AGP instrumentation to keep incremental builds fast, see [#498](https://github.com/didi/booster/issues/498); the previous single-jar implementation is kept for `TransformScope.PROGRAM` transformers
+- Skip registering class transformation when no transformer is found
+
 ## v5.1.0
 
 - Upgrade javassist version from `3.25.0-GA` to `3.30.2-GA`

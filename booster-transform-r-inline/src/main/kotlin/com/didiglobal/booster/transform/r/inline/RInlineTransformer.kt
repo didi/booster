@@ -8,6 +8,7 @@ import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.ArtifactManager.Companion.MERGED_RES
 import com.didiglobal.booster.transform.ArtifactManager.Companion.SYMBOL_LIST
 import com.didiglobal.booster.transform.TransformContext
+import com.didiglobal.booster.transform.TransformScope
 import com.didiglobal.booster.transform.asm.ClassTransformer
 import com.didiglobal.booster.transform.r.inline.Build.*
 import com.google.auto.service.AutoService
@@ -45,6 +46,8 @@ class RInlineTransformer : ClassTransformer {
     }
 
     override val name: String = ARTIFACT
+
+    override val scope: TransformScope = TransformScope.CLASS
 
     override fun onPreTransform(context: TransformContext) {
         this.appPackage = context.originalApplicationId.replace('.', '/')

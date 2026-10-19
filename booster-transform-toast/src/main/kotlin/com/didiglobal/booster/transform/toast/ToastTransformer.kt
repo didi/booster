@@ -3,6 +3,7 @@ package com.didiglobal.booster.transform.toast
 import com.didiglobal.booster.kotlinx.asIterable
 import com.didiglobal.booster.kotlinx.touch
 import com.didiglobal.booster.transform.TransformContext
+import com.didiglobal.booster.transform.TransformScope
 import com.didiglobal.booster.transform.asm.ClassTransformer
 import com.google.auto.service.AutoService
 import org.objectweb.asm.Opcodes
@@ -22,6 +23,8 @@ class ToastTransformer : ClassTransformer {
     private lateinit var logger: PrintWriter
 
     override val name: String = Build.ARTIFACT
+
+    override val scope: TransformScope = TransformScope.CLASS
 
     override fun onPreTransform(context: TransformContext) {
         this.logger = getReport(context, "report.txt").touch().printWriter()
