@@ -10,6 +10,7 @@ import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.api.BaseVariant
+import com.android.build.gradle.internal.tasks.AndroidVariantTask
 import com.didiglobal.booster.kotlinx.capitalized
 import com.didiglobal.booster.task.spi.VariantProcessor
 import com.didiglobal.booster.transform.CompositeTransformer
@@ -19,8 +20,11 @@ import com.didiglobal.booster.transform.Transformer
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.artifacts.result.ResolvedComponentResult
 import org.gradle.api.artifacts.result.ResolvedDependencyResult
+import org.gradle.api.file.FileCollection
+import java.util.concurrent.Callable
 
 /**
  * Represents the booster gradle plugin
@@ -105,11 +109,17 @@ class BoosterPlugin : Plugin<Project> {
             BoosterInstrumentationService.nameOf(project.path),
             BoosterInstrumentationService::class.java
         ) {}
+        val inputsOfInstrumentedDependencies = project.dependOnInputsOfInstrumentedDependencies()
 
         androidComponents.onVariants { variant ->
             service.get().register(project.path, variant.name, loadTransformers(classLoader))
 
             val scope = if (variant is LibraryVariant) InstrumentationScope.PROJECT else InstrumentationScope.ALL
+            val mergedManifests = variant.mergedManifests
+            val symbolList = variant.symbolList
+            if (scope == InstrumentationScope.ALL) {
+                inputsOfInstrumentedDependencies[variant.name] = listOf(mergedManifests, symbolList)
+            }
             variant.instrumentation.transformClassesWith(BoosterAsmClassVisitorFactory::class.java, scope) { params ->
                 params.projectPath.set(project.path)
                 params.variantName.set(variant.name)
@@ -120,8 +130,8 @@ class BoosterPlugin : Plugin<Project> {
                 params.dependencies.set(variant.runtimeConfiguration.incoming.resolutionResult.rootComponent.map(ResolvedComponentResult::dependencyIds))
                 params.projectDir.set(project.layout.projectDirectory)
                 params.bootClasspath.set(androidComponents.sdkComponents.bootClasspath)
-                params.mergedManifests.from(variant.mergedManifests)
-                params.symbolList.from(variant.symbolList)
+                params.mergedManifests.from(mergedManifests)
+                params.symbolList.from(symbolList)
                 params.service.set(service)
             }
         }
@@ -206,6 +216,50 @@ internal fun resolveTransformMode(mode: String?, transformers: Collection<Transf
     TRANSFORM_MODE_INSTRUMENTATION, TRANSFORM_MODE_SCOPED_ARTIFACTS -> mode
     else -> throw GradleException("Unsupported $PROPERTY_TRANSFORM_MODE `$mode`, expected `$TRANSFORM_MODE_AUTO`, `$TRANSFORM_MODE_INSTRUMENTATION` or `$TRANSFORM_MODE_SCOPED_ARTIFACTS`")
 }
+
+/**
+ * The AGP tasks which consume the dependencies instrumented by [com.android.build.gradle.internal.dependency.AsmClassesTransform],
+ * either directly or through the dexing artifact transforms
+ */
+private val CONSUMERS_OF_INSTRUMENTED_DEPENDENCIES = setOf(
+    "com.android.build.gradle.internal.tasks.DexArchiveBuilderTask",
+    "com.android.build.gradle.internal.tasks.DexFileDependenciesTask",
+    "com.android.build.gradle.internal.tasks.DexMergingTask",
+    "com.android.build.gradle.internal.tasks.GlobalSyntheticsMergeTask",
+    "com.android.build.gradle.internal.tasks.L8DexDesugarLibTask",
+    "com.android.build.gradle.internal.tasks.R8Task",
+    "com.android.build.gradle.internal.tasks.RecalculateStackFramesTask",
+)
+
+/**
+ * AGP instruments the dependencies with artifact transforms, however, Gradle only schedules the producers of
+ * the transform parameters for project dependencies, not for external dependencies, as a result, the transformers
+ * might read the artifacts (e.g. the merged manifest) before they are produced in a clean build.
+ * To make sure the inputs of instrumentation are available, the tasks which consume the instrumented
+ * dependencies have to depend on the inputs explicitly, see https://github.com/didi/booster/issues/500
+ *
+ * @return the mutable inputs of instrumentation keyed by variant name
+ */
+private fun Project.dependOnInputsOfInstrumentedDependencies(): MutableMap<String, List<FileCollection>> {
+    val inputs = mutableMapOf<String, List<FileCollection>>()
+    tasks.withType(AndroidVariantTask::class.java).configureEach { task ->
+        if (task.isConsumerOfInstrumentedDependencies) {
+            // the variant name is not available until the task is configured by AGP
+            task.dependsOn(Callable {
+                inputs[task.variantName].orEmpty()
+            })
+        }
+    }
+    return inputs
+}
+
+/**
+ * Matches by class name to tolerate the AGP tasks which are absent in some versions
+ */
+private val Task.isConsumerOfInstrumentedDependencies: Boolean
+    get() = generateSequence<Class<*>>(javaClass, Class<*>::getSuperclass).any {
+        it.name in CONSUMERS_OF_INSTRUMENTED_DEPENDENCIES
+    }
 
 private const val PROPERTY_PREFIX = "booster."
 
